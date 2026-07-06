@@ -1,0 +1,1 @@
+System.register(["./index-legacy-kAc-zVPm.js"],function(e,t){"use strict";var s,c;return{setters:[function(e){s=e.k,c=e.m}],execute:function(){e("M",s(c.jsx("path",{d:"M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2m0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2m0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2"})))}}});

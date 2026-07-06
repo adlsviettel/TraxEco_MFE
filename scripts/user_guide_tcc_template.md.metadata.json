@@ -1,0 +1,6 @@
+{
+  "summary":  "Refactored user guide in Vietnamese with manual page-break divs inserted before major sections to enforce neat pagination in PDF",
+  "updatedAt":  "2026-06-19T07:53:03.356910200Z",
+  "requestFeedback":  true,
+  "userFacing":  true
+}

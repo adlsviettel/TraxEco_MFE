@@ -1,0 +1,14 @@
+{
+  "name": "traxeco-monorepo",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=apps/host",
+    "build": "npm run build --workspace=apps/host",
+    "lint": "npm run lint --workspace=apps/host",
+    "preview": "npm run preview --workspace=apps/host"
+  }
+}

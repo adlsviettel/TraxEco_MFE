@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sơ Đồ Rơ-Le Của Đại Ca (Đã Fix Lỗi)</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .container { background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .title { text-align: center; color: #d32f2f; }
+        svg { border: 2px solid #ccc; border-radius: 8px; background-color: #fff; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">BẢN VẼ SƠ ĐỒ ĐI DÂY 3 RƠ-LE CỦA ĐẠI CA (ĐÃ CẬP NHẬT CHÂN 86)</h1>
+        <svg width="1000" height="900" viewBox="0 0 1000 900" xmlns="http://www.w3.org/2000/svg">
+            <style>
+                .box { fill: #f0f0f0; stroke: #333; stroke-width: 3px; }
+                .text { font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; }
+                .line-red { stroke: #d32f2f; stroke-width: 6px; fill: none; }
+                .line-blue { stroke: #1976d2; stroke-width: 5px; fill: none; }
+                .line-green { stroke: #388e3c; stroke-width: 4px; fill: none; stroke-dasharray: 8,8; }
+                .line-black { stroke: #212121; stroke-width: 5px; fill: none; }
+                .relay-pin { fill: #fff; stroke: #333; stroke-width: 2px; }
+                .label { font-size: 14px; font-family: Arial; font-weight: bold; fill: #333; }
+                .alert { font-size: 16px; fill: #d32f2f; font-weight: bold; }
+            </style>
+            <!-- Battery -->
+            <rect x="400" y="50" width="200" height="100" rx="10" class="box" fill="#e0e0e0"/>
+            <text x="500" y="105" text-anchor="middle" class="text" font-size="20">BÌNH ẮC-QUY 12V</text>
+            <rect x="430" y="40" width="40" height="15" fill="#d32f2f"/>
+            <text x="450" y="30" text-anchor="middle" class="text" fill="#d32f2f">CỌC ĐỎ (+)</text>
+            <rect x="530" y="40" width="40" height="15" fill="#212121"/>
+            <text x="550" y="30" text-anchor="middle" class="text" fill="#212121">CỌC ÂM (-)</text>
+
+            <!-- Fuses -->
+            <rect x="250" y="250" width="180" height="70" rx="5" class="box" fill="#ffebee"/>
+            <text x="340" y="290" text-anchor="middle" class="text" fill="#d32f2f">CẦU CHÌ 1 (Pha/Cos)</text>
+            
+            <rect x="570" y="250" width="180" height="70" rx="5" class="box" fill="#ffebee"/>
+            <text x="660" y="290" text-anchor="middle" class="text" fill="#d32f2f">CẦU CHÌ 2 (Gầm)</text>
+
+            <!-- Power Lines to Fuses -->
+            <path d="M 450 50 L 450 180 L 340 180 L 340 250" class="line-red"/>
+            <path d="M 450 180 L 660 180 L 660 250" class="line-red"/>
+
+            <!-- Relays -->
+            <rect x="80" y="450" width="200" height="160" rx="8" class="box" fill="#e3f2fd"/>
+            <text x="180" y="480" text-anchor="middle" class="text">RƠ-LE 1: PHA</text>
+            <rect x="160" y="500" width="40" height="30" class="relay-pin"/><text x="180" y="520" text-anchor="middle" class="label">Chân 30</text>
+            <rect x="160" y="560" width="40" height="30" class="relay-pin"/><text x="180" y="580" text-anchor="middle" class="label">Chân 87</text>
+            <rect x="100" y="530" width="40" height="30" class="relay-pin"/><text x="120" y="550" text-anchor="middle" class="label">85</text>
+            <rect x="220" y="530" width="40" height="30" class="relay-pin"/><text x="240" y="550" text-anchor="middle" class="label">86</text>
+
+            <rect x="380" y="450" width="200" height="160" rx="8" class="box" fill="#fff9c4"/>
+            <text x="480" y="480" text-anchor="middle" class="text">RƠ-LE 2: COS</text>
+            <rect x="460" y="500" width="40" height="30" class="relay-pin"/><text x="480" y="520" text-anchor="middle" class="label">Chân 30</text>
+            <rect x="460" y="560" width="40" height="30" class="relay-pin"/><text x="480" y="580" text-anchor="middle" class="label">Chân 87</text>
+            <rect x="400" y="530" width="40" height="30" class="relay-pin"/><text x="420" y="550" text-anchor="middle" class="label">85</text>
+            <rect x="520" y="530" width="40" height="30" class="relay-pin"/><text x="540" y="550" text-anchor="middle" class="label">86</text>
+
+            <rect x="680" y="450" width="200" height="160" rx="8" class="box" fill="#e8f5e9"/>
+            <text x="780" y="480" text-anchor="middle" class="text">RƠ-LE 3: ĐÈN GẦM</text>
+            <rect x="760" y="500" width="40" height="30" class="relay-pin"/><text x="780" y="520" text-anchor="middle" class="label">Chân 30</text>
+            <rect x="760" y="560" width="40" height="30" class="relay-pin"/><text x="780" y="580" text-anchor="middle" class="label">Chân 87</text>
+            <rect x="700" y="530" width="40" height="30" class="relay-pin"/><text x="720" y="550" text-anchor="middle" class="label">85</text>
+            <rect x="820" y="530" width="40" height="30" class="relay-pin"/><text x="840" y="550" text-anchor="middle" class="label">86</text>
+
+            <!-- Fuses to Relays -->
+            <path d="M 340 320 L 340 380 L 180 380 L 180 500" class="line-red"/>
+            <path d="M 340 380 L 480 380 L 480 500" class="line-red"/>
+            <path d="M 660 320 L 660 380 L 780 380 L 780 500" class="line-red"/>
+
+            <!-- Bulbs -->
+            <rect x="180" y="750" width="250" height="100" rx="10" class="box" fill="#f5f5f5"/>
+            <text x="305" y="795" text-anchor="middle" class="text">GIẮC SỨ H4 (Pha/Cos)</text>
+            <text x="305" y="825" text-anchor="middle" class="label" fill="#666">Cắm cho 2 đèn chính</text>
+            
+            <rect x="580" y="750" width="250" height="100" rx="10" class="box" fill="#f5f5f5"/>
+            <text x="705" y="795" text-anchor="middle" class="text">GIẮC SỨ H11 (Đèn Gầm)</text>
+            <text x="705" y="825" text-anchor="middle" class="label" fill="#666">Cắm cho 2 đèn gầm</text>
+
+            <!-- Relay to Bulbs -->
+            <path d="M 180 590 L 180 750" class="line-blue"/>
+            <text x="190" y="680" class="label" fill="#1976d2">Xả điện ra chấu PHA</text>
+
+            <path d="M 480 590 L 480 700 L 380 700 L 380 750" class="line-blue"/>
+            <text x="390" y="680" class="label" fill="#1976d2">Xả điện ra chấu COS</text>
+
+            <path d="M 780 590 L 780 750" class="line-blue"/>
+            <text x="790" y="680" class="label" fill="#1976d2">Xả ra chấu (+) H11</text>
+
+            <!-- Trigger Lines (FIXED PIN 85 AND 86) -->
+            <!-- Pha 85 -->
+            <path d="M 10 545 L 100 545" class="line-green"/>
+            <text x="15" y="535" class="label" fill="#388e3c">Lỗ PHA (Giắc Zin)</text>
+            
+            <!-- Cos 85 -->
+            <path d="M 290 545 L 400 545" class="line-green"/>
+            <text x="295" y="535" class="label" fill="#388e3c">Lỗ COS (Giắc Zin)</text>
+            
+            <!-- COMMON FOR PHA 86 AND COS 86 -->
+            <path d="M 390 635 L 390 585 L 240 585 L 240 560" class="line-green"/> <!-- To Pha 86 -->
+            <path d="M 390 585 L 540 585 L 540 560" class="line-green"/> <!-- To Cos 86 -->
+            <text x="400" y="630" class="label" fill="#388e3c">Lỗ CHUNG (Giắc Zin H4)</text>
+
+            <!-- Gam 85 & 86 -->
+            <path d="M 720 400 L 720 530" class="line-green"/>
+            <text x="730" y="420" class="label" fill="#388e3c">Lỗ GẦM 1 (Giắc Zin)</text>
+
+            <path d="M 970 545 L 860 545" class="line-green"/>
+            <text x="870" y="535" class="label" fill="#388e3c">Lỗ GẦM 2 (Giắc Zin)</text>
+
+            <!-- Ground -->
+            <path d="M 305 850 L 305 880 L 500 880" class="line-black"/>
+            <path d="M 705 850 L 705 880 L 500 880" class="line-black"/>
+            <path d="M 500 880 L 500 890" class="line-black"/>
+            <circle cx="500" cy="890" r="10" fill="#212121"/>
+            <text x="520" y="895" class="text">BẮT ỐC VÀO SƯỜN XE (TIẾP MASS)</text>
+
+            <text x="500" y="930" text-anchor="middle" class="alert">ĐÃ SỬA LỖI: BỔ SUNG CÁP TÍN HIỆU CHO CHÂN 86 THEO YÊU CẦU ĐẠI CA!</text>
+        </svg>
+    </div>
+</body>
+</html>

@@ -1,0 +1,109 @@
+﻿Created At: 2026-07-03T04:00:28Z
+Completed At: 2026-07-03T04:00:28Z
+File Path: `file:///D:/TSI/TestClaudeCode/TraxEco_MFE/packages/shared/src/theme/index.ts`
+Total Lines: 473
+Total Bytes: 14874
+Showing lines 151 to 250
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+151:       },
+152:     },
+153:     MuiTextField: {
+154:       defaultProps: {
+155:         variant: 'outlined',
+156:       },
+157:       styleOverrides: {
+158:         root: {
+159:           '& .MuiOutlinedInput-root': {
+160:             borderRadius: 12,
+161:             backgroundColor: '#ffffff',
+162:             transition: 'all 0.25s ease',
+163:             '& fieldset': {
+164:               borderColor: tokens.slate[300],
+165:               borderWidth: '1px',
+166:               transition: 'all 0.25s ease',
+167:             },
+168:             '&:hover fieldset': { 
+169:               borderColor: tokens.slate[400],
+170:             },
+171:             '&:hover': {
+172:               backgroundColor: '#fff',
+173:             },
+174:             '&.Mui-focused fieldset': {
+175:               borderColor: tokens.primary[500],
+176:               borderWidth: '1px',
+177:             },
+178:             '&.Mui-focused': {
+179:               backgroundColor: '#fff',
+180:               boxShadow: '0 0 0 3px rgba(21, 128, 61, 0.1)',
+181:             },
+182:           },
+183:           '& .MuiInputLabel-root': {
+184:             color: tokens.slate[500],
+185:             '&.Mui-focused': {
+186:               color: tokens.primary[600],
+187:             }
+188:           }
+189:         },
+190:       },
+191:     },
+192:     MuiAutocomplete: {
+193:       styleOverrides: {
+194:         paper: {
+195:           borderRadius: 16,
+196:           boxShadow: tokens.shadow.lg,
+197:           border: '1px solid rgba(0,0,0,0.05)',
+198:         },
+199:         listbox: {
+200:           padding: '8px',
+201:           '& .MuiAutocomplete-option': {
+202:             borderRadius: 8,
+203:             padding: '8px 12px',
+204:             margin: '2px 0',
+205:             fontSize: '0.9rem',
+206:             transition: 'background-color 0.2s',
+207:             '&[aria-selected="true"]': {
+208:               backgroundColor: tokens.primary[50],
+209:               color: tokens.primary[700],
+210:               fontWeight: 500,
+211:             },
+212:             '&[aria-selected="true"].Mui-focused': {
+213:               backgroundColor: tokens.primary[100],
+214:             }
+215:           }
+216:         }
+217:       }
+218:     },
+219:     MuiChip: {
+220:       styleOverrides: {
+221:         root: {
+222:           fontWeight: 500,
+223:           fontSize: '0.8125rem',
+224:           borderRadius: 6,
+225:           transition: 'all 0.2s ease',
+226:         },
+227:         filled: {
+228:           backgroundColor: tokens.slate[100],
+229:           color: tokens.slate[700],
+230:           border: '1px solid transparent',
+231:         }
+232:       },
+233:     },
+234:     MuiDialog: {
+235:       styleOverrides: {
+236:         paper: {
+237:           borderRadius: 24,
+238:           boxShadow: tokens.shadow.xl,
+239:           background: 'rgba(255,255,255,0.9)',
+240:           backdropFilter: 'blur(20px)',
+241:         },
+242:       },
+243:     },
+244:     MuiAlert: {
+245:       styleOverrides: {
+246:         root: {
+247:           borderRadius: 12,
+248:           fontWeight: 500,
+249:         },
+250:       },
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+

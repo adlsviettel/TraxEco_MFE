@@ -1,0 +1,224 @@
+1
+HS: 60063290
+Kode Barang: DK0023-P000Q
+Uraian: KNIT 100% RE POLYESTER-INTERLOCK
+150G/M 70 INCH, Merk: -, Tipe: -,   Ukuran: -, Lain-lain: -
+INDONESIA
+54.2700
+Berat Bersih
+3.0000
+KG
+Satuan
+ (RO)
+246.00
+CIF (USD):
+PEMBERITAHUAN PENGELUARAN BARANG DARI
+TEMPAT PENIMBUNAN BERIKAT DENGAN JAMINAN
+Kantor Pabean
+:
+Nomor Pengajuan
+:
+A. JENIS TRANSAKSI   :
+KPPBC TMP C TEGAL
+000261TRA38420260331000001
+2
+061000
+1. Diperbaiki   2. Disubkontrakkan   3. Dipinjamkan   4. Barang Return   5. Lainnya
+Halaman 1 dari 1
+BC 2.6.1
+B. DATA PEMBERITAHUAN
+D. DIISI OLEH BEA DAN CUKAI
+Nomor Pendaftaran
+Tanggal
+: 31-03-2026
+012544
+14. Valuta
+15. NDPBM
+:
+16. Nilai CIF
+:
+Rp. 4,160,106.00
+US DOLLAR (USD)
+16,911.0000
+246.00
+17. Jenis Sarana Pengangkut
+DARAT
+18. Nomor, Ukuran dan Tipe Peti Kemas
+19. Jumlah, Jenis dan Merek Kemasan
+1
+3 ROLL, -
+20. Berat Kotor (Kg)
+21. Berat Bersih (Kg)
+54.2700
+55.4700
+22.
+No.
+23. - Pos Tarif/HS,
+- Kode Barang,
+- Uraian Jumalah Barang Secara Lengkap, Merek,
+Tipe,
+24. Negara
+Asal Barang
+26. Jumlah dan
+Jenis Satuan
+Berat Bersih (Kg)
+25. Tarif dan Fasilitas
+BM, BMT, Cukai,
+PPN, PPnBM,
+PPh
+27. Nilai CIF (Rp)
+Pengusaha TPB
+1. NPWP
+:
+2. Nama
+:
+3. Alamat
+:
+4. No. dan Tgl. izin TPB :
+Tanggal :
+0624742029513000
+TRAX SUMBIRI INDO
+KAWASAN INDUSTRI TERPADU BATANG KAVLING H07B RT.000
+RW.000, KETANGGAN, GRINGSING, KABUPATEN BATANG, JAWA
+26.2.1.08.25.0017
+15-02-0026
+NITKU
+0624742029513000000000
+:
+Penerima Barang
+5. NPWP
+:
+6. Nama
+:
+7. Alamat
+:
+0316001619505000
+MAKMUR JAYA
+DS KRAJAN RT.001 RW.002, LEMAH IRENG RT.000 RW.000,
+LEMAHIRENG, BAWEN, KABUPATEN SEMARANG, JAWA TENGAH
+0316001619505000000000
+:
+NITKU
+Pemilik Barang
+8. NPWP
+:
+9. Nama
+:
+10. Alamat :
+KAWASAN INDUSTRI TERPADU BATANG KAVLING H07B RT.000
+RW.000, KETANGGAN, GRINGSING, KABUPATEN BATANG, JAWA
+TRAX SUMBIRI INDO
+0624742029513000
+NITKU
+0624742029513000000000
+:
+Dokumen Pelengkap Pabean
+11. Packing
+12. Pemenuhan Persyaratan/Fasilitas Impor
+13. Surat Keputusan/Dokumen Lainnya
+Tgl.
+Tgl.
+No:
+No:
+No:
+Tgl.
+TSI/CUT/III/0001
+06-03-2026
+C. PENGESAHAN PENGUSAHA TPB
+Dengan ini saya menyatakan bertanggung jawab atas kebenaran hal-hal yang diberitahukan
+Tempat, Tanggal
+:
+Nama Lengkap
+:
+Jabatan
+:
+Tanda Tangan dan Stempel Perusahaan :
+BATANG, 31-03-2026
+BUSARA SUTTHIRUT
+GENERAL MANAGER
+E. UNTUK PEJABAT BEA DAN CUKAI
+Data Perhitungan Jaminan
+Data Jaminan
+35. Jenis Jaminan
+36. Nomor Jaminan
+37. Nilai Jaminan
+38. Tanggal Jatuh Tempo
+39. Penjamin
+40. Nomor dan Tanggal
+Bukti Penerimaan Jaminan
+Tanggal
+Tanggal
+CUSTOMS BOND
+1804.26.036.1.00001-1/00
+31-03-2026
+1,270,000
+15-05-2026
+PT. ASURANSI KREDIT INDONESIA
+1804.26.036.1.00001-1/00
+31-03-2026
+:
+:
+:
+:
+:
+:
+:
+Rangkap ke -1 / 2 / 3 : Pengusaha TPB / KPPBC Pengawas / Penerima
+Jenis Pungutan
+Jumlah
+28. Bea Masuk
+29. Bea Masuk
+30. Cukai
+31. PPN
+32. PPn BM
+33. PPh
+34. Jumlah Total
+
+LEMBAR LANJUTAN DOKUMEN PELENGKAP PABEAN
+PEMBERITAHUAN PENGELUARAN BARANG DARI
+TEMPAT PENIMBUNAN BERIKAT DENGAN JAMINAN
+BC 2.6.1
+Kantor Pabean
+:
+Nomor Pengajuan
+:
+Nomor Pendaftaran
+061000
+KPPBC TMP C TEGAL
+000261TRA38420260331000001
+012544
+Jenis Dokumen
+Nomor Dokumen
+Tanggal Dokumen
+No.
+1
+17-03-2026
+PERSETUJUAN SUBKONTRAK KURANG
+DARI 60 (ENAM PULUH) HARI KE TLDDP
+S-2216/KBC.1006/KBC.100604/2026
+2
+04-03-2026
+BC 2.7
+029530
+3
+06-03-2026
+INVOICE
+TSI/CUT/III/0001
+4
+06-03-2026
+PACKING LIST
+TSI/CUT/III/0001
+C. Pengesahan Pengusaha TPB
+Dengan ini saya menyatakan bertanggung jawab atas kebenaran hal-hal yang diberitahukan dalam pemberitahuan pabean ini.
+Tempat, Tanggal
+:
+Nama Lengkap
+:
+Jabatan
+:
+Tanda Tangan dan Stempel Perusahaan :
+BATANG, 31-03-2026
+BUSARA SUTTHIRUT
+GENERAL MANAGER
+Rangkap ke-1 / 2 / 3 : Pengusaha TPB / KPBC Pengawas / Penerima Barang
+

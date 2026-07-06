@@ -1,0 +1,34 @@
+Requirement By : K.Pollawut
+Develop By : K.Shin
+workflow 
+Date :                
+                                                        Trax Intertrade Co.,Ltd                                                        
+REQUIREMENT SPECIFICATION
+Topics :  FGsScan System 
+Process :  Inventory  
+Department : FG
+Date : 20/04/2026 
+Start
+END
+Scan SO
+Scan Barcode UPC
+Click the Use ScanPack menu.
+
+Objective&Scope
+1. Objective
+2. Scope&Condition
+1.Use ScanPack Menu
+Sample of the label in use
+AD
+NON AD
+1.2. Upon scanning, the system shall display the corresponding SO 
+information.
+After that, proceed to scan the UPC barcode as usual.
+1.1. Configure the system to support scanning of both UCC Barcodes and 
+SO numbers.
+optimize the work processes.
+
+New Procedure
+1.1.
+1.2.
+

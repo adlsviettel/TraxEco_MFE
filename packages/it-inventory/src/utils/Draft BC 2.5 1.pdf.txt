@@ -1,0 +1,593 @@
+- DRAFT
+ 34. - Tarif dan Fasilitas
+        - BM -BMT
+        - Cukai
+        - PPN
+        - PPnBM
+        - PPh
+ 33.- Kategori
+         Barang
+       - Kondisi
+          Barang
+ 35. - Jumlah dan
+       Jenis Satuan
+        - Berat Bersih
+        (kg)
+        - Jumlah dan
+        Jenis Kemasan
+ 36. - Nilai CIF
+        - Harga
+          Penyerahan
+ 32. - Pos Tarif/HS
+       - Kode barang
+       - Uraian barang secara lengkap, merk, tipe,
+         ukuran, spesifikasi lain
+       - Fasilitas Impor
+       - Surat Keputusan/Dokumen Lainnya
+ 31.
+ No.
+23. Uang Muka
+0.00
+24. Diskon
+25. Dasar Pengenaan Pajak
+:
+:
+:
+2,574.00
+0.00
+:
+283.14
+:
+0.00
+- PPN Pajak (12%)
+- PPNBM Pajak
+PEMBERITAHUAN IMPOR BARANG DARI TEMPAT PENIMBUNAN BERIKAT
+BC 2.5
+21. Nilai CIF
+4,274.37
+Rp
+22. Harga Penyerahan
+:
+:
+2,574.00
+26. Nomor, Ukuran dan Tipe Peti Kemas
+27. Jumlah, Jenis dan Merek Kemasan
+Tanggal
+:
+Nomor Pendaftaran
+:
+D. DIISI OLEH BEA DAN CUKAI
+:
+:
+Nomor Pengajuan
+A. Jenis TPB
+Kantor Pabean
+1. Kawasan Berikat   2. Gudang Berikat   3. TPPB   4. TBB   5. TLB   6. KDUB
+7. Lainnya
+1
+Halaman ke-1 dari
+:
+061000
+1
+KPPBC TMP C TEGAL
+000025TRA38420260417000001
+29. Berat Kotor (Kg)   :
+30. Berat Bersih (Kg) :
+180.0000
+144.0000
+19. Valuta
+USD
+US DOLLAR
+20. NDPBM
+17,067.00
+Pembayaran
+E. UNTUK
+3. Kantor Pabean
+1
+1. Bank
+2. Pos
+Tanggal :
+No.
+Nama Lengkap
+:
+GENERAL MANAGER
+Tempat, Tanggal
+:
+Tanda Tangan dan Stempel
+C. PENGESAHAN PENGUSAHA TPB
+Jabatan
+:
+Dengan ini saya menyatakan bertanggung jawab atas
+kebenaran hal-hal yang diberitahukan dalam pemberitahuan
+BUSARA SUTTHIRUT
+BATANG, 17-04-2026
+Nama/Stempel
+Nama/Stempel
+1,896,000.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+371,000.00
+0.00
+0.00
+2,410,000.00
+0.00
+0.00
+44.
+ BM
+45.
+ 37.
+43.
+Jenis Pungutan
+39.
+Dibayar
+(Rp)
+40.
+41.
+Dibebaskan
+(Rp)
+Ditanggung Pemerintah
+(Rp)
+Sudah Dilunasi
+(Rp)
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+42a.
+143,000.00
+0.00
+0.00
+0.00
+Wajib Bayar(Rp)
+ 38.  BMKITE
+0.00
+0.00
+0.00
+0.00
+ BMT
+ Cukai
+ PPN
+ PPN Lokal
+ PPnBM
+ PPh
+ TOTAL
+Rangkap ke -1 / 2 / 3 : Pengusaha TPB / KPPBC Pengawas / Penerima Barang
+1
+Dokumen :
+Pos Tarif/HS
+61099030
+:
+Kode Brg
+: -
+UNIFORM WORKER,
+Merk: -, Tipe: -, Ukuran: -, Lain-lain: -
+TIDAK RUSAK
+HASIL PRODUKSI
+Kategori :
+Kondisi :
+BM 25%    100% BYR
+PPH 7.5%    100% BYR
+PPN 12%    100% BYR
+450.0000
+10.0
+CT
+Berat Bersih:
+Sat.:
+PCE (PIECE)
+Kemasan
+KG
+144.0000
+Harga Penyerahan :
+Rp 2,574.00
+Kode Perhitungan :
+Harga Pemasukan
+758.32
+CIF (dalam USD):
+10 CARTON, -
+14. Invoice
+16. Kontrak
+18. Surat Keputusan
+/Dokumen Lainnya
+:
+17. Fasilitas Impor
+15. Packing List
+:
+:
+:
+:
+16-04-2026
+TSI/EXIM/IV/0002
+Tgl.
+16-04-2026
+TSI/EXIM/IV/0002
+Tgl.
+Tgl.
+Tgl.
+Tgl.
+:
+:
+5. API
+KAWASAN INDUSTRI TERPADU BATANG KAVLING H07B RT.000
+RW.000, KETANGGAN, GRINGSING, KABUPATEN BATANG, JAWA
+  B. DATA PEMBERITAHUAN
+1. NPWP
+:
+:
+:
+PENYELENGGARA/PENGUSAHA TPB
+3. Alamat
+4. No Izin TPB
+2. Nama
+- - -
+26.2.1.08.25.0017
+TRAX SUMBIRI INDO
+0624742029513000
+NITKU
+: 0624742029513000000000
+6. NPWP
+KAWASAN INDUSTRI TERPADU BATANG KAVLING NOMOR H07B
+000/000
+8. Alamat
+7. Nama
+PEMILIK BARANG
+:
+:
+:
+TRAX SUMBIRI INDO
+0624742029513000
+NITKU
+: 0624742029513000000000
+:
+:
+12. NIPER
+:
+13. API
+:
+10. Nama
+9. NPWP
+:
+PENERIMA BARANG
+11. Alamat
+KAWASAN INDUSTRI TERPADU BATANG KAVLING NOMOR H07B
+000/000
+0624742029513000
+TRAX SUMBIRI INDO
+- - -
+NITKU
+: 0624742029513000000000
+28. Jenis Sarana Pengangkut
+DARAT
+NON PENYERAHAN
+JENIS TRANSAKSI :
+
+LEMBAR LANJUTAN DOKUMEN PELENGKAP PABEAN
+PEMBERITAHUAN IMPOR BARANG DARI TEMPAT PENIMBUNAN BERIKAT
+BC 2.5
+Kantor Pabean
+:
+Nomor Pengajuan
+:
+Nomor Pendaftaran
+Tanggal
+000025TRA38420260417000001
+KPPBC TMP C TEGAL
+061000
+Jenis Dokumen
+No.
+Nomor Dokumen
+Tanggal Dokumen
+380 -  INVOICE
+TSI/EXIM/IV/0002
+1
+16-04-2026
+217 -  PACKING LIST
+TSI/EXIM/IV/0002
+2
+16-04-2026
+C. PENGESAHAN PENGUSAHA TPB
+Tempat, Tanggal
+:
+GENERAL MANAGER
+Nama Lengkap
+:
+Tanda Tangan dan Stempel Perusahaan :
+Jabatan
+:
+Dengan ini saya menyatakan bertanggung jawab atas kebenaran hal-hal yang diberitahukan dalam pemberitahuan pabean
+BUSARA SUTTHIRUT
+BATANG, 17-04-2026
+Rangkap ke -1 / 2 / 3: Pengusaha TPB / KPPBC Pengawas / Penerima Barang
+
+LEMBAR LAMPIRAN
+DATA PENGGUNAAN BARANG DAN/ATAU BAHAN IMPOR
+PEMBERITAHUAN IMPOR BARANG DARI TEMPAT PENIMBUNAN BERIKAT
+BC 2.5
+Kantor Pabean
+:
+Nomor Pengajuan
+:
+Nomor Pendaftaran
+:
+Tanggal :
+000025TRA38420260417000001
+KPPBC TMP C TEGAL
+061000
+(2)
+(6)
+(7)
+(1)
+(4)
+(5)
+(3)
+  Nilai
+  - CIF
+  - Harga
+    penyerahan (Rp)
+  - Kode Kantor
+  - No/Tgl Daftar BC 2.3,
+  BC 2.7, Lainnya *)
+  Nilai (Rp)
+  BM, BMT, Cukai,
+  PPN, PPnBM,
+  PPh 22
+  No. Urut
+  Dalam
+  - BC 2.3
+  - BC 2.7
+  - Lainnya *)
+- Pos tarif/ HS, uraian jumlah
+  dan jenis barang secara
+  lengkap, kode barang merk,
+  tipe, ukuran, dan spesifikasi
+  lain
+- Perijinan/Fasilitas
+  - Jumlah
+  - Satuan
+No. Urut
+Barang
+1.1
+90.0000
+YARD (0.9144 M)
+-
+-
+Harga Penyerahan :
+14,643,552.00
+146.30
+CIF :
+Seri barang ke-
+0
+BM (374535.32), PPH
+(71785.94),
+Dokumen :
+Pos Tarif/HS
+:
+60063290
+Merk: -, Tipe: -, Ukuran: -,
+Lain-lain: -
+:
+DK0023-P000Q
+Kode Brg
+100% POLYESTER KNITTING,
+Tgl.
+No.
+18-02-2026
+Kantor :
+KPPBC TMP A
+PURWAKARTA
+050800
+022699
+Dok. Asal BC 27
+1.1
+360.0000
+YARD (0.9144 M)
+-
+-
+Harga Penyerahan :
+56,300,020.00
+585.20
+CIF :
+Seri barang ke-
+1
+BM (1498141.26), PPH
+(287143.74),
+Dokumen :
+Pos Tarif/HS
+:
+60063290
+Merk: -, Tipe: -, Ukuran: -,
+Lain-lain: -
+:
+DK0023-P000Q
+Kode Brg
+100% POLYESTER KNITTING,
+Tgl.
+No.
+06-02-2026
+Kantor :
+KPPBC TMP A
+PURWAKARTA
+050800
+017295
+Dok. Asal BC 27
+1.3
+9.0000
+CONE
+-
+-
+Harga Penyerahan :
+208,908.00
+12.24
+CIF :
+Seri barang ke-
+2
+BM (10445), PPH
+(5483.63),
+Dokumen :
+Pos Tarif/HS
+:
+55081090
+Merk: -, Tipe: -, Ukuran: -,
+Lain-lain: -
+:
+F01H58GNZ999
+Kode Brg
+BENANG JAHIT TSP 50/2 WARNA
+5000M,
+Tgl.
+No.
+05-03-2026
+Kantor :
+KPPBC TMP A BEKASI
+050900
+138360
+Dok. Asal BC 27
+1.5
+10.0000
+CONE
+-
+-
+Harga Penyerahan :
+248,710.00
+14.58
+CIF :
+Seri barang ke-
+4
+BM (12441.84), PPH
+(6531.97),
+Dokumen :
+Pos Tarif/HS
+:
+55081090
+Merk: -, Tipe: -, Ukuran: -,
+Lain-lain: -
+:
+F01H58PM704A
+Kode Brg
+BENANG JAHIT TSP 50/2 WARNA
+5000M,
+Tgl.
+No.
+09-03-2026
+Kantor :
+KPPBC TMP A BEKASI
+050900
+144509
+Dok. Asal BC 27
+C. PENGESAHAN PENGUSAHA TPB
+Tempat, Tanggal
+:
+GENERAL MANAGER
+Nama Lengkap
+:
+Tanda Tangan dan Stempel Perusahaan :
+Jabatan
+:
+Dengan ini saya menyatakan bertanggung jawab atas kebenaran hal-hal yang diberitahukan dalam pemberitahuan pabean ini.
+BUSARA SUTTHIRUT
+BATANG, 17-04-2026
+Rangkap ke -1 / 2 / 3: Pengusaha TPB / KPPBC Pengawas / Penerima Barang
+
+LEMBAR LAMPIRAN
+DATA PENGGUNAAN BARANG DAN/ATAU BAHAN ASAL TLDDP
+PEMBERITAHUAN IMPOR BARANG DARI TEMPAT PENIMBUNAN BERIKAT
+BC 2.5
+Kantor Pabean
+:
+Nomor Pengajuan
+:
+Nomor Pendaftaran
+:
+Tanggal :
+000025TRA38420260417000001
+KPPBC TMP C TEGAL
+061000
+  Nilai PPN (Rp)
+(6)
+  Nilai (Rp)
+  - Harga
+    perolehan
+  - Harga
+    penyerahan
+(2)
+(3)
+  No. Urut
+  Dalam
+  - BC 4.0
+  - BC 2.7
+  - Lainnya *)
+- Pos tarif/ HS, uraian jumlah
+  dan jenis barang secara
+  lengkap, kode barang merk,
+  tipe, ukuran, dan spesifikasi
+  lain
+- Perijinan/Fasilitas
+(4)
+No. Urut
+Barang
+(1)
+- Kode Kantor
+- No/Tgl Daftar
+BC 4.0, BC 2.7, Lainnya *)
+  - Jumlah
+  - Satuan
+(5)
+(7)
+1.1
+Tgl.
+No.
+05-03-2026
+Kantor :
+KPPBC TMP C TEGAL
+061000
+000560
+Dok. Asal BC 613
+Seri barang ke-
+1
+BUTTON-7684,
+VLMBI001
+Kode Brg
+Dokumen :
+96062100
+:
+:
+Merk: -, Tipe: -, Ukuran: -,
+Lain-lain: -
+Pos Tarif/HS
+142990.85
+Harga Penyerahan :
+1,299,916.80
+0.00
+Harga Perolehan :
+14,976.0000
+-
+PIECE
+-
+C. PENGESAHAN PENGUSAHA TPB
+Tempat, Tanggal
+:
+GENERAL MANAGER
+Nama Lengkap
+:
+Tanda Tangan dan Stempel Perusahaan :
+Jabatan
+:
+Dengan ini saya menyatakan bertanggung jawab atas kebenaran hal-hal yang diberitahukan dalam pemberitahuan pabean ini.
+BUSARA SUTTHIRUT
+BATANG, 17-04-2026
+Rangkap ke -1 / 2 / 3: Pengusaha TPB / KPPBC Pengawas / Penerima Barang
+

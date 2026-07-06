@@ -1,0 +1,6 @@
+{
+  "versionCode": 21,
+  "versionName": "1.1.1",
+  "apkUrl": "http://192.168.14.10:8083/trax-eco/TraxEco_v1.1.1.apk",
+  "releaseNotes": "Bản cập nhật Smart Launcher: Tự động phát hiện mạng và chuyển đổi luồng nội bộ LAN / public 4G thông minh."
+}

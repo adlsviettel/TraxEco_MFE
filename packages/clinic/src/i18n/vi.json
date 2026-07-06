@@ -1,0 +1,48 @@
+{
+  "clinic": {
+    "nav": {
+      "dispense": "Phát thuốc",
+      "warehouse": "Kho thuốc",
+      "bed": "Giường bệnh",
+      "earlyLeaving": "Về sớm",
+      "insurance": "Bảo hiểm XH",
+      "maternity": "Thai sản",
+      "report": "Báo cáo",
+      "masterData": "Danh mục"
+    },
+    "pages": {
+      "dispense": {
+        "title": "Phát thuốc cho nhân viên",
+        "description": "Chức năng tìm kiếm nhân viên, chọn bệnh, nhóm thuốc, và cấp phát thuốc."
+      },
+      "warehouse": {
+        "title": "Quản lý kho thuốc",
+        "description": "Quản lý nhập kho và điều chuyển thuốc xuống phân xưởng."
+      },
+      "bed": {
+        "title": "Quản lý giường bệnh",
+        "description": "Theo dõi trạng thái giường bệnh và lịch sử bệnh nhân nằm giường."
+      },
+      "earlyLeaving": {
+        "title": "Theo dõi công nhân về sớm",
+        "description": "Theo dõi và lưu thông tin về sớm của người lao động vì lý do sức khỏe."
+      },
+      "insurance": {
+        "title": "Bảo hiểm Xã hội & Tai nạn",
+        "description": "Quản lý thông tin chế độ ốm đau, thai sản, tai nạn lao động."
+      },
+      "maternity": {
+        "title": "Theo dõi thai sản",
+        "description": "Đăng ký và theo dõi thai sản, tính toán ngày nghỉ và các chế độ liên quan."
+      },
+      "report": {
+        "title": "Báo cáo tổng hợp",
+        "description": "Xuất các báo cáo liên quan đến cấp phát thuốc, tồn kho và giường bệnh."
+      },
+      "masterData": {
+        "title": "Quản lý danh mục",
+        "description": "Quản lý danh mục Thuốc, Nhóm thuốc, Nhà cung cấp và Loại bệnh."
+      }
+    }
+  }
+}

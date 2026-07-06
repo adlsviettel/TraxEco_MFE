@@ -1,0 +1,18 @@
+const fs = require('fs');
+let content = fs.readFileSync('D:/TSI/TestClaudeCode/TraxEco/src/apps/RD_MATERIAL/components/GenericItemList.tsx', 'utf-8');
+content = content.replace(/Xoá dữ liệu/g, 'Delete Data');
+content = content.replace(/Bạn có chắc chắn muốn xoá item này không\? Thao tác này không thể hoàn tác\./g, 'Are you sure you want to delete this item? This action cannot be undone.');
+content = content.replace(/Filter Nâng cao/g, 'Advanced Filter');
+content = content.replace(/Mã code\.\.\./g, 'Item Code...');
+content = content.replace(/Tên NCC\.\.\./g, 'Supplier...');
+content = content.replace(/Màu\.\.\./g, 'Color...');
+content = content.replace(/Quốc gia\/Vùng\.\.\./g, 'Origin...');
+content = content.replace(/Location lưu kho \(Location\)/g, 'Location');
+content = content.replace(/Khu vực\/Kệ\.\.\./g, 'Aisle/Rack...');
+content = content.replace(/Tên NV\.\.\./g, 'Holder Name...');
+content = content.replace(/Delete hết/g, 'Clear All');
+content = content.split('Nhấn "LOAD DATA" để xem danh sách').join('Click "LOAD DATA" to view the list');
+content = content.replace(/Sửa/g, 'Edit');
+content = content.replace(/Xoá/g, 'Delete');
+content = content.replace(/Hoàn toàn không gọi API lại nếu đã có data từ bộ nhớ/g, 'Do not call API again if data is already in memory');
+fs.writeFileSync('D:/TSI/TestClaudeCode/TraxEco/src/apps/RD_MATERIAL/components/GenericItemList.tsx', content);

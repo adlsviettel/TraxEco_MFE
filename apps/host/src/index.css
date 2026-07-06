@@ -1,0 +1,466 @@
+:root {
+  font-family: 'Be Vietnam Pro', 'Inter', Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  overscroll-behavior-y: none;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  min-width: 320px;
+  overflow: hidden;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Glassmorphism Utilities */
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.dark .glass {
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Custom Scrollbar for better aesthetics */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #475569;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+/* Style MUI DataGrid header background and filler elements uniformly */
+.MuiDataGrid-root {
+  --header-bg: #ffffff;
+  --DataGrid-t-header-background-base: var(--header-bg) !important;
+  --DataGrid-containerBackground: var(--header-bg) !important;
+}
+
+.MuiDataGrid-root .MuiDataGrid-columnHeaders,
+.MuiDataGrid-root .MuiDataGrid-container--top,
+.MuiDataGrid-root .MuiDataGrid-container--top [role="row"],
+.MuiDataGrid-root .MuiDataGrid-filler,
+.MuiDataGrid-root .MuiDataGrid-scrollbarFiller,
+.MuiDataGrid-root .MuiDataGrid-scrollbarFiller--header,
+.MuiDataGrid-root .MuiDataGrid-scrollbarFillerHeader,
+.MuiDataGrid-root .MuiDataGrid-columnHeader--filled,
+.MuiDataGrid-root .MuiDataGrid-columnHeader--filler {
+  background-color: var(--header-bg) !important;
+  background: var(--header-bg) !important;
+}
+
+.MuiDataGrid-root .MuiDataGrid-scrollbar {
+  background-color: transparent !important;
+  background: transparent !important;
+}
+
+/* Custom Scrollbar for MUI DataGrid (fixes thick white scrollbar track on Windows) */
+.MuiDataGrid-root *::-webkit-scrollbar {
+  width: 8px !important;
+  height: 8px !important;
+}
+
+.MuiDataGrid-root *::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+.MuiDataGrid-root *::-webkit-scrollbar-thumb {
+  background: #cbd5e1 !important;
+  border-radius: 4px !important;
+}
+
+.MuiDataGrid-root *::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8 !important;
+}
+
+/* Animations */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up {
+  animation: slideInUp 0.4s ease-out forwards;
+}
+
+@keyframes pulse-success {
+  0% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+  }
+}
+
+.scan-success {
+  animation: pulse-success 1s ease-out;
+  border-color: #22c55e !important;
+}
+
+@keyframes shake-error {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.scan-error {
+  animation: shake-error 0.5s ease-in-out;
+  border-color: #ef4444 !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE / MULTI-DEVICE SCALING
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── PDA / Small mobile (≤ 480px) ── */
+@media (max-width: 480px) {
+  html {
+    font-size: 12px;
+  }
+
+  #root {
+    height: 100%;
+  }
+
+  .MuiPaper-root {
+    border-radius: 6px !important;
+  }
+
+  .MuiToolbar-root {
+    padding-left: 4px !important;
+    padding-right: 4px !important;
+    min-height: 40px !important;
+  }
+
+  .MuiButton-root {
+    font-size: 0.75rem !important;
+    padding: 3px 8px !important;
+    min-height: 30px !important;
+  }
+
+  .MuiTypography-h4,
+  .MuiTypography-h5 {
+    font-size: 1rem !important;
+  }
+
+  .MuiTypography-h6 {
+    font-size: 0.85rem !important;
+  }
+
+  .MuiTableCell-root {
+    padding: 4px 6px !important;
+    font-size: 0.72rem !important;
+  }
+
+  .MuiTableCell-head {
+    font-size: 0.7rem !important;
+  }
+
+  .MuiTextField-root {
+    font-size: 0.8rem !important;
+  }
+
+  .MuiChip-root {
+    height: 22px !important;
+    font-size: 0.68rem !important;
+  }
+
+  .MuiAccordionSummary-root {
+    min-height: 36px !important;
+    padding: 0 6px !important;
+  }
+
+  .MuiDialog-paper {
+    margin: 4px !important;
+    max-height: calc(100dvh - 8px) !important;
+    width: calc(100vw - 8px) !important;
+  }
+
+  .MuiSnackbar-root {
+    bottom: 4px !important;
+    left: 4px !important;
+    right: 4px !important;
+  }
+  
+  .MuiSelect-select {
+    padding: 6px 8px !important;
+    font-size: 0.8rem !important;
+  }
+
+  .MuiInputBase-input {
+    padding: 6px 8px !important;
+    font-size: 0.8rem !important;
+  }
+}
+
+/* ── Mobile (481px – 600px) ── */
+@media (min-width: 481px) and (max-width: 600px) {
+  html {
+    font-size: 13px;
+  }
+
+  #root {
+    min-height: 100dvh;
+  }
+
+  .MuiPaper-root {
+    border-radius: 8px !important;
+  }
+
+  .MuiToolbar-root {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+    min-height: 44px !important;
+  }
+
+  .MuiButton-root {
+    font-size: 0.8rem !important;
+    padding: 4px 12px !important;
+    min-height: 34px !important;
+  }
+
+  .MuiTypography-h4,
+  .MuiTypography-h5 {
+    font-size: 1.1rem !important;
+  }
+
+  .MuiTypography-h6 {
+    font-size: 0.95rem !important;
+  }
+
+  .MuiTableCell-root {
+    padding: 6px 8px !important;
+    font-size: 0.78rem !important;
+  }
+
+  .MuiTableCell-head {
+    font-size: 0.75rem !important;
+  }
+
+  .MuiTextField-root {
+    font-size: 0.85rem !important;
+  }
+
+  .MuiChip-root {
+    height: 24px !important;
+    font-size: 0.72rem !important;
+  }
+
+  .MuiAccordionSummary-root {
+    min-height: 40px !important;
+    padding: 0 8px !important;
+  }
+
+  .MuiDialog-paper {
+    margin: 8px !important;
+    max-height: calc(100dvh - 16px) !important;
+    width: calc(100vw - 16px) !important;
+  }
+
+  .MuiSnackbar-root {
+    bottom: 8px !important;
+    left: 8px !important;
+    right: 8px !important;
+  }
+}
+
+/* ── Tablet (601px – 960px) ── */
+@media (min-width: 601px) and (max-width: 960px) {
+  html {
+    font-size: 14px;
+  }
+
+  .MuiButton-root {
+    font-size: 0.85rem !important;
+  }
+
+  .MuiTableCell-root {
+    padding: 8px 10px !important;
+    font-size: 0.82rem !important;
+  }
+
+  .MuiTypography-h4,
+  .MuiTypography-h5 {
+    font-size: 1.25rem !important;
+  }
+}
+
+/* ── Large desktop (1600px – 1920px) ── */
+@media (min-width: 1600px) and (max-width: 1919px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+/* ── Full HD / TV / Android Box (≥ 1920px) ── 
+   At TV distance, elements appear much larger.
+   We scale DOWN so content fits on screen with less scroll. */
+@media (min-width: 1920px) {
+  html {
+    font-size: 14px;
+  }
+
+  .MuiPaper-root {
+    border-radius: 8px !important;
+  }
+
+  .MuiToolbar-root {
+    min-height: 48px !important;
+  }
+
+  .MuiButton-root {
+    font-size: 0.82rem !important;
+    padding: 6px 16px !important;
+  }
+
+  .MuiTypography-h4 {
+    font-size: 1.4rem !important;
+  }
+
+  .MuiTypography-h5 {
+    font-size: 1.2rem !important;
+  }
+
+  .MuiTypography-h6 {
+    font-size: 1rem !important;
+  }
+
+  .MuiTableCell-root {
+    padding: 6px 10px !important;
+    font-size: 0.82rem !important;
+  }
+
+  .MuiTableCell-head {
+    font-size: 0.8rem !important;
+  }
+}
+
+/* ── 4K TV / Ultra-wide (≥ 2560px) ── */
+@media (min-width: 2560px) {
+  html {
+    font-size: 13px;
+  }
+
+  .MuiButton-root {
+    font-size: 0.8rem !important;
+    min-height: 36px !important;
+  }
+
+  .MuiTypography-h4 {
+    font-size: 1.3rem !important;
+  }
+
+  .MuiTypography-h5 {
+    font-size: 1.1rem !important;
+  }
+
+  .MuiTypography-h6 {
+    font-size: 0.9rem !important;
+  }
+
+  .MuiTableCell-root {
+    padding: 5px 8px !important;
+    font-size: 0.78rem !important;
+  }
+}
+
+/* ── Touch device optimizations ── */
+@media (hover: none) and (pointer: coarse) {
+  .MuiButton-root {
+    min-height: 40px !important;
+  }
+
+  .MuiIconButton-root {
+    padding: 10px !important;
+  }
+
+  .MuiCheckbox-root {
+    padding: 10px !important;
+  }
+
+  .MuiTableRow-root {
+    min-height: 44px;
+  }
+
+  * {
+    touch-action: manipulation;
+  }
+}
+
+
+
+/* ── Global table scroll — always allow scroll in data tables ── */
+.MuiTableContainer-root {
+  overflow: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+
+
+
+/* ── Print — hide non-essential UI ── */
+@media print {
+  .MuiAppBar-root,
+  .MuiToolbar-root,
+  .MuiSnackbar-root,
+  .MuiBottomNavigation-root {
+    display: none !important;
+  }
+}

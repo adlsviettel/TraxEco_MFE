@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>TCC Template Request - User Guide (EN)</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 20mm;
+        }
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            color: #1e293b;
+            line-height: 1.65;
+            font-size: 15.5px;
+            background-color: #ffffff;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        
+        /* Cover Page Styling */
+        .cover-page {
+            text-align: center;
+            height: 960px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            page-break-after: always;
+            box-sizing: border-box;
+            background: radial-gradient(circle at 10% 20%, rgba(240, 253, 244, 0.4) 0%, rgba(255, 255, 255, 1) 90%);
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 80px 40px;
+            margin: -10px;
+            position: relative;
+            overflow: hidden;
+        }
+        .cover-page > div {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+        
+        .cover-logo {
+            height: 230px;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 2;
+        }
+        .cover-title {
+            font-size: 28px;
+            color: #15803d;
+            font-weight: bold;
+            margin-top: 60px;
+            margin-bottom: 16px;
+            line-height: 1.25;
+            position: relative;
+            z-index: 2;
+        }
+        .cover-subtitle {
+            font-size: 21px;
+            color: #334155;
+            font-weight: normal;
+            margin-bottom: 80px;
+            position: relative;
+            z-index: 2;
+        }
+        .cover-divider {
+            width: 140px;
+            height: 4px;
+            background: linear-gradient(90deg, #16a34a 0%, #15803d 100%);
+            margin: 0 auto 50px auto;
+            border-radius: 2px;
+            position: relative;
+            z-index: 2;
+        }
+        .cover-meta {
+            font-size: 14.5px;
+            color: #475569;
+            line-height: 1.8;
+            margin-top: 280px;
+            border-top: 1px solid #cbd5e1;
+            padding-top: 30px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* Table of Contents (TOC) Styling */
+        .toc-page-wrapper {
+            height: 900px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+            width: 100%;
+        }
+        .toc-container {
+            width: 100%;
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 20px 40px;
+            background-color: transparent;
+            border: none;
+            box-shadow: none;
+            page-break-inside: avoid;
+        }
+        .toc-container h2 {
+            text-align: center;
+            color: #15803d;
+            font-size: 24px;
+            margin-bottom: 8px;
+            font-weight: bold;
+            page-break-before: avoid;
+        }
+        .toc-line {
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, #16a34a 0%, #15803d 100%);
+            margin: 0 auto 36px auto;
+            border-radius: 2px;
+        }
+        .toc-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .toc-list li {
+            margin-bottom: 16px;
+            font-size: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            color: #1e293b;
+        }
+        .toc-list li a {
+            color: #1e293b;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .toc-list li:not(.toc-subitem)::after {
+            content: '';
+            flex-grow: 1;
+            border-bottom: 1.5px dotted #94a3b8;
+            margin: 0 12px;
+            position: relative;
+            top: -4px;
+        }
+        .toc-list .toc-subitem {
+            margin-left: 24px;
+            margin-top: -6px;
+            margin-bottom: 12px;
+            font-size: 14.5px;
+            display: block;
+        }
+        .toc-list .toc-subitem a {
+            color: #475569;
+            font-weight: normal;
+        }
+        .toc-page {
+            font-weight: bold;
+            color: #475569;
+            min-width: 60px;
+            text-align: right;
+        }
+        
+        /* Headings */
+        h1 {
+            color: #0f172a;
+            font-size: 21px;
+            margin-top: 48px;
+            margin-bottom: 24px;
+            font-weight: bold;
+            position: relative;
+            page-break-inside: avoid;
+        }
+        h1::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #16a34a 0%, #15803d 100%);
+            border-radius: 2px;
+            margin-top: 8px;
+        }
+        h2 {
+            color: #15803d;
+            font-size: 18px;
+            margin-top: 36px;
+            margin-bottom: 18px;
+            font-weight: bold;
+            page-break-inside: avoid;
+        }
+        h3 {
+            color: #166534;
+            font-size: 16px;
+            margin-top: 28px;
+            margin-bottom: 12px;
+            font-weight: bold;
+            page-break-inside: avoid;
+        }
+        
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 28px 0;
+            font-size: 14.5px;
+            box-shadow: 0 2px 8 rgba(0,0,0,0.01);
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid #cbd5e1;
+            page-break-inside: avoid;
+        }
+        th {
+            background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+            color: white;
+            font-weight: bold;
+            text-align: left;
+            padding: 12px 14px;
+            border: 1px solid rgba(0,0,0,0.03);
+            font-size: 14.5px;
+        }
+        td {
+            padding: 11px 14px;
+            border: 1px solid #cbd5e1;
+            color: #334155;
+            line-height: 1.5;
+        }
+        tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+        
+        /* Lists */
+        ul, ol {
+            margin-bottom: 20px;
+            padding-left: 24px;
+        }
+        li {
+            margin-bottom: 8px;
+            color: #334155;
+        }
+        
+        /* Code blocks */
+        code {
+            font-family: 'Consolas', 'Courier New', monospace;
+            background-color: #f1f5f9;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-size: 13.5px;
+            color: #0f172a;
+            font-weight: bold;
+        }
+        pre {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 16px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 24px 0;
+            page-break-inside: avoid;
+        }
+        pre code {
+            background-color: transparent;
+            padding: 0;
+            color: #334155;
+            font-weight: normal;
+        }
+        
+        /* Divider */
+        hr {
+            border: 0;
+            height: 1px;
+            background: linear-gradient(90deg, rgba(203, 213, 225, 0.2) 0%, rgba(203, 213, 225, 1) 50%, rgba(203, 213, 225, 0.2) 100%);
+            margin: 36px 0;
+        }
+        
+        /* Image alignment cards */
+        .image-container {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+        
+        /* Page break class */
+        .page-break {
+            page-break-before: always;
+            break-before: page;
+        }
+    </style>
+</head>
+<body>
+    <!-- COVER PAGE -->
+    <div class="cover-page">
+        <div>
+            <img src="user_guide_images/logo.png" alt="Logo" class="cover-logo" />
+            <div class="cover-title">USER GUIDE</div>
+            <div class="cover-subtitle">Pattern Development Request Management System<br>(TCC Template Request)</div>
+            <div class="cover-divider"></div>
+        </div>
+        <div class="cover-meta">
+            
+            <strong>TRAXECO GROUP — TCC TEMPLATE DIVISION</strong><br>
+            Portal & Step-by-step Operational Procedures<br>
+            Version: 1.4.0 | Updated: 2026-06-20
+        
+        </div>
+    </div>
+    
+    <!-- MAIN CONTENT -->
+    <div class="toc-page-wrapper">
+  <div class="toc-container" style="page-break-inside: avoid;">
+    <h2>TABLE OF CONTENTS</h2>
+    <div class="toc-line"></div>
+    <ul class="toc-list">
+      <li>
+        <a href="#1-general-business-process">1. General Business Process</a>
+        <span class="toc-page">Page 3</span>
+      </li>
+      <li>
+        <a href="#2-tasks-for-requestors">2. Tasks for Requestors</a>
+        <span class="toc-page">Page 3</span>
+      </li>
+      <li class="toc-subitem">
+        <a href="#task-21-register-a-new-pattern-request-create-new">• Register a New Pattern Request (Create New)</a>
+      </li>
+      <li class="toc-subitem">
+        <a href="#task-22-track-progress--update-material-sent-date">• Track Progress & Update Material Sent Date</a>
+      </li>
+      <li>
+        <a href="#3-tasks-for-tcc-technical-department-adminpattern-maker">3. Tasks for TCC Technical Department (Admin/Pattern Maker)</a>
+        <span class="toc-page">Page 5</span>
+      </li>
+      <li class="toc-subitem">
+        <a href="#task-31-update-progress--assign-pattern-maker">• Update Progress & Assign Pattern Maker</a>
+      </li>
+      <li class="toc-subitem">
+        <a href="#task-32-release-finished-patterns-release">• Release Finished Patterns (Release)</a>
+      </li>
+      <li>
+        <a href="#4-performance-monitoring-and-analytics-dashboard">4. Performance Monitoring and Analytics (Dashboard)</a>
+        <span class="toc-page">Page 6</span>
+      </li>
+      <li>
+        <a href="#5-advanced-features--help">5. Advanced Features & Help</a>
+        <span class="toc-page">Page 8</span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="page-break"></div>
+
+<h2>1. General Business Process</h2>
+<p>The system manages the state of each pattern development request according to the following workflow:</p>
+<div style="page-break-inside: avoid; text-align: center; margin: 32px 0;">
+<svg width="100%" height="240" viewBox="0 0 800 240" style="display: block; margin: 0 auto; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.02);">
+<defs>
+<!-- Shadow Filter for Nodes -->
+<filter id="node-shadow" x="-10%" y="-10%" width="120%" height="120%">
+<feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.05" />
+</filter>
+
+<!-- Markers for arrows -->
+<marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M 0 0 L 10 5 L 0 10 z" fill="#475569" />
+</marker>
+<marker id="red-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M 0 0 L 10 5 L 0 10 z" fill="#dc2626" />
+</marker>
+<marker id="blue-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M 0 0 L 10 5 L 0 10 z" fill="#2563eb" />
+</marker>
+</defs>
+
+<!-- Node 1: NEW REQUEST -->
+<rect x="15" y="45" width="110" height="52" rx="6" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" filter="url(#node-shadow)" />
+<text x="70" y="68" font-family="'Times New Roman', Times, serif" font-size="11.5" font-weight="bold" fill="#334155" text-anchor="middle">NEW REQUEST</text>
+<text x="70" y="83" font-family="'Times New Roman', Times, serif" font-size="10" fill="#94a3b8" text-anchor="middle">(Not Started)</text>
+
+<!-- Connection 1 -> 2 -->
+<path d="M 125 71 L 157 71" stroke="#475569" stroke-width="1.5" fill="none" marker-end="url(#arrow)" />
+
+<!-- Node 2: RECEIVE MATERIAL -->
+<rect x="165" y="45" width="110" height="52" rx="6" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5" filter="url(#node-shadow)" />
+<text x="220" y="68" font-family="'Times New Roman', Times, serif" font-size="11.5" font-weight="bold" fill="#1e40af" text-anchor="middle">RECEIVE MATERIAL</text>
+<text x="220" y="83" font-family="'Times New Roman', Times, serif" font-size="10" fill="#3b82f6" text-anchor="middle">(In Progress)</text>
+
+<!-- Connection 2 -> 3 -->
+<path d="M 275 71 L 307 71" stroke="#2563eb" stroke-width="1.5" fill="none" marker-end="url(#blue-arrow)" />
+
+<!-- Node 3: PATTERN DESIGN -->
+<rect x="315" y="45" width="110" height="52" rx="6" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5" filter="url(#node-shadow)" />
+<text x="370" y="68" font-family="'Times New Roman', Times, serif" font-size="11.5" font-weight="bold" fill="#1e40af" text-anchor="middle">PATTERN DESIGN</text>
+<text x="370" y="83" font-family="'Times New Roman', Times, serif" font-size="10" fill="#3b82f6" text-anchor="middle">(In Progress)</text>
+
+<!-- Connection 3 -> 4 -->
+<path d="M 425 71 L 457 71" stroke="#2563eb" stroke-width="1.5" fill="none" marker-end="url(#blue-arrow)" />
+
+<!-- Node 4: FINISHED -->
+<rect x="465" y="45" width="110" height="52" rx="6" fill="#f0fdf4" stroke="#10b981" stroke-width="1.5" filter="url(#node-shadow)" />
+<text x="520" y="68" font-family="'Times New Roman', Times, serif" font-size="11.5" font-weight="bold" fill="#065f46" text-anchor="middle">FINISHED</text>
+<text x="520" y="83" font-family="'Times New Roman', Times, serif" font-size="10" fill="#10b981" text-anchor="middle">(Finished)</text>
+
+<!-- Connection 4 -> 5 -->
+<path d="M 575 71 L 607 71" stroke="#10b981" stroke-width="1.5" fill="none" marker-end="url(#arrow)" />
+
+<!-- Node 5: RELEASE TO FACTORY -->
+<rect x="615" y="45" width="115" height="52" rx="6" fill="#f0fdf4" stroke="#15803d" stroke-width="2" filter="url(#node-shadow)" />
+<text x="672.5" y="68" font-family="'Times New Roman', Times, serif" font-size="11.5" font-weight="bold" fill="#14532d" text-anchor="middle">RELEASE TO FACTORY</text>
+<text x="672.5" y="83" font-family="'Times New Roman', Times, serif" font-size="10" fill="#15803d" text-anchor="middle">(Released)</text>
+
+<!-- Node 6 (Remake) -->
+<rect x="315" y="150" width="110" height="52" rx="6" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5" filter="url(#node-shadow)" />
+<text x="370" y="173" font-family="'Times New Roman', Times, serif" font-size="11.5" font-weight="bold" fill="#991b1b" text-anchor="middle">REMAKE PATTERN</text>
+<text x="370" y="188" font-family="'Times New Roman', Times, serif" font-size="10" fill="#ef4444" text-anchor="middle">(Remake)</text>
+
+<!-- Connection 3 -> 6 (Down) -->
+<path d="M 370 97 L 370 142" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="3" fill="none" marker-end="url(#red-arrow)" />
+<text x="378" y="123" font-family="'Times New Roman', Times, serif" font-size="9.5" font-weight="bold" fill="#ef4444">Error / Remake</text>
+
+<!-- Connection 6 -> 3 (Up Left Return Loop) -->
+<path d="M 315 176 C 275 176, 275 71, 307 71" stroke="#ef4444" stroke-width="1.5" fill="none" marker-end="url(#red-arrow)" />
+<text x="242" y="130" font-family="'Times New Roman', Times, serif" font-size="9.5" font-weight="bold" fill="#ef4444">Redesign</text>
+</svg>
+<p style="font-size: 12px; font-family: 'Times New Roman', Times, serif; color: #64748b; margin-top: 6px; font-style: italic;">Diagram 1.1: State lifecycle workflow of a pattern development request</p>
+</div>
+
+<h2>2. Tasks for Requestors</h2>
+<h3>Task 2.1: Register a New Pattern Request (Create New)</h3>
+<p>To send a new pattern development request to the TCC technical department, follow these steps:</p>
+<div style="display: flex; align-items: flex-start; gap: 16px; margin: 18px 0; padding: 4px 6px; border-radius: 4px;"><div style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; flex-shrink: 0; box-shadow: 0 3px 6px rgba(22, 163, 74, 0.2);">1</div><div style="flex: 1; font-size: 15px; color: #1e293b; line-height: 1.6; padding-top: 2px;"><strong style="color: #0f172a; font-weight: bold; font-size: 15.5px;">Access the Request Page</strong>: From the left navigation menu, click <strong>Template Request</strong>.</div></div>
+<p><img src="user_guide_images/en/step_nav_tracking.png" style="max-width: 300px; width: 100%; display: block; margin-top: 8px; border: 1px solid #cbd5e1; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);" /></p>
+<div style="display: flex; align-items: flex-start; gap: 16px; margin: 18px 0; padding: 4px 6px; border-radius: 4px;"><div style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; flex-shrink: 0; box-shadow: 0 3px 6px rgba(22, 163, 74, 0.2);">2</div><div style="flex: 1; font-size: 15px; color: #1e293b; line-height: 1.6; padding-top: 2px;"><strong style="color: #0f172a; font-weight: bold; font-size: 15.5px;">Open the Registration Form</strong>: Click <strong>Add New</strong> at the top right of the screen. The registration form drawer will slide in from the right.</div></div>
+<p><img src="user_guide_images/en/step_add_btn.png" style="max-width: 600px; width: 100%; width: 100%; width: 100%; display: block; margin-top: 8px; border: 1px solid #cbd5e1; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);" /></p>
+<div style="display: flex; align-items: flex-start; gap: 16px; margin: 18px 0; padding: 4px 6px; border-radius: 4px;"><div style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; flex-shrink: 0; box-shadow: 0 3px 6px rgba(22, 163, 74, 0.2);">3</div><div style="flex: 1; font-size: 15px; color: #1e293b; line-height: 1.6; padding-top: 2px;"><strong style="color: #0f172a; font-weight: bold; font-size: 15.5px;">Select Customer & Enter General Info</strong>:</div></div>
+<ul>
+<li>Select <strong>Customer</strong> from the dropdown suggestions:<br />
+     <img src="user_guide_images/en/step_customer_input.png" style="max-width: 600px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+<li>Enter <strong>Season</strong> information (e.g., <em>SS26</em>, <em>FW26</em>):<br />
+     <img src="user_guide_images/en/step_season_input.png" style="max-width: 600px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+<li>Enter <strong>Style No</strong> exactly as specified in the style tech pack:<br />
+     <img src="user_guide_images/en/step_style_input.png" style="max-width: 600px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+<li>Enter <strong>Product Type</strong> (e.g., <em>Jacket</em>, <em>Pants</em>):<br />
+     <img src="user_guide_images/en/step_product_type_input.png" style="max-width: 600px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+</ul>
+<div style="display: flex; align-items: flex-start; gap: 16px; margin: 18px 0; padding: 4px 6px; border-radius: 4px;"><div style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; flex-shrink: 0; box-shadow: 0 3px 6px rgba(22, 163, 74, 0.2);">4</div><div style="flex: 1; font-size: 15px; color: #1e293b; line-height: 1.6; padding-top: 2px;"><strong style="color: #0f172a; font-weight: bold; font-size: 15.5px;">Enter Technical Details</strong>:</div></div>
+<ul>
+<li>Select <strong>Sample Stage</strong> (e.g., <em>01 - 1st Proto</em>, <em>07 - Size Set</em>):<br />
+     <img src="user_guide_images/en/step_sample_stage_input.png" style="max-width: 600px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+<li>Select the target <strong>Factory</strong> for sample manufacturing:<br />
+     <img src="user_guide_images/en/step_factory_input.png" style="max-width: 600px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+<li>Select the date materials are sent using the datepicker at <strong>Material Sent Date</strong>:<br />
+     <img src="user_guide_images/en/step_material_sent_datepicker.png" style="max-width: 600px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+<li>Select the process complexity at <strong>Process Type</strong>:<br />
+     <img src="user_guide_images/en/step_process_type_select.png" style="max-width: 600px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+</ul>
+<div style="display: flex; align-items: flex-start; gap: 16px; margin: 18px 0; padding: 4px 6px; border-radius: 4px;"><div style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; flex-shrink: 0; box-shadow: 0 3px 6px rgba(22, 163, 74, 0.2);">5</div><div style="flex: 1; font-size: 15px; color: #1e293b; line-height: 1.6; padding-top: 2px;"><strong style="color: #0f172a; font-weight: bold; font-size: 15.5px;">Configure Machine & Size parameters</strong>:</div></div>
+<ul>
+<li>Enter a detailed <strong>Operation Description</strong>:<br />
+     <img src="user_guide_images/en/step_operation_desc_textarea.png" style="max-width: 600px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+<li>Fill in the <strong>Machine Type</strong> to be used:<br />
+     <img src="user_guide_images/en/step_machine_type_input.png" style="max-width: 600px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+<li>Fill in the <strong>Machine Dimension</strong>:<br />
+     <img src="user_guide_images/en/step_machine_dimension_input.png" style="max-width: 600px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+<li>Fill in the <strong>Sizes Required</strong> (e.g., <em>S, M, L</em>):<br />
+     <img src="user_guide_images/en/step_sizes_required_input.png" style="max-width: 600px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+<li>Enter the <strong>Line Quantity</strong> (number of pattern pieces requested):<br />
+     <img src="user_guide_images/en/step_line_quantity_input.png" style="max-width: 600px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+<li>Select the requested <strong>Expected Delivery Date</strong>:<br />
+     <img src="user_guide_images/en/step_expected_delivery_datepicker.png" style="max-width: 600px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+</ul>
+<div style="display: flex; align-items: flex-start; gap: 16px; margin: 18px 0; padding: 4px 6px; border-radius: 4px;"><div style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; flex-shrink: 0; box-shadow: 0 3px 6px rgba(22, 163, 74, 0.2);">6</div><div style="flex: 1; font-size: 15px; color: #1e293b; line-height: 1.6; padding-top: 2px;"><strong style="color: #0f172a; font-weight: bold; font-size: 15.5px;">Handle Urgent Requests (Priority)</strong>:</div></div>
+<ul>
+<li>If the request is urgent, set <strong>Is Priority</strong> to Yes:<br />
+     <img src="user_guide_images/en/step_is_priority_select.png" style="max-width: 600px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+<li>Once set to Yes, it is mandatory to specify a clear <strong>Priority Reason</strong> in the input field that appears below:<br />
+     <img src="user_guide_images/en/step_priority_reason_input.png" style="max-width: 600px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+</ul>
+<div style="display: flex; align-items: flex-start; gap: 16px; margin: 18px 0; padding: 4px 6px; border-radius: 4px;"><div style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; flex-shrink: 0; box-shadow: 0 3px 6px rgba(22, 163, 74, 0.2);">7</div><div style="flex: 1; font-size: 15px; color: #1e293b; line-height: 1.6; padding-top: 2px;"><strong style="color: #0f172a; font-weight: bold; font-size: 15.5px;">Submit Request</strong>: Click <strong>Submit</strong> at the bottom of the drawer. The request will appear instantly on the tracking grid.</div></div>
+<p><img src="user_guide_images/en/step_submit_btn.png" style="max-width: 400px; width: 100%; width: 100%; display: block; margin-top: 8px; border: 1px solid #cbd5e1; border-radius: 6px;" /></p>
+<hr />
+<h3>Task 2.2: Track Progress &amp; Update Material Sent Date</h3>
+<div style="display: flex; align-items: flex-start; gap: 16px; margin: 18px 0; padding: 4px 6px; border-radius: 4px;"><div style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; flex-shrink: 0; box-shadow: 0 3px 6px rgba(22, 163, 74, 0.2);">1</div><div style="flex: 1; font-size: 15px; color: #1e293b; line-height: 1.6; padding-top: 2px;"><strong style="color: #0f172a; font-weight: bold; font-size: 15.5px;">Search for Style No</strong>: Enter the customer name in the quick search bar, or use the filter buttons to narrow down the tracking list:</div></div>
+<p><img src="user_guide_images/en/step_filter_bar.png" style="max-width: 900px; width: 100%; display: block; margin-top: 8px; border: 1px solid #cbd5e1; border-radius: 6px;" />
+   * Click <strong>Filter</strong> or <strong>Load Data</strong> to retrieve and filter requests:<br />
+     <div style="display: flex; gap: 12px; margin-top: 8px; margin-bottom: 8px;">
+       <img src="user_guide_images/en/step_filter_btn.png" style="max-width: 400px; width: 100%; width: 100%; border: 1px solid #cbd5e1; border-radius: 6px;" />
+       <img src="user_guide_images/en/step_load_data_btn.png" style="max-width: 400px; width: 100%; width: 100%; border: 1px solid #cbd5e1; border-radius: 6px;" />
+     </div>
+   * Click the <strong>Filter</strong> button to slide open the <strong>Advanced Filter</strong> panel on the right side of the screen for multi-criteria filtering:<br />
+     <img src="user_guide_images/en/step_filter_drawer.png" style="max-width: 600px; width: 100%; width: 100%; display: block; margin-top: 8px; border: 1px solid #cbd5e1; border-radius: 6px;" /></p>
+<div style="display: flex; align-items: flex-start; gap: 16px; margin: 18px 0; padding: 4px 6px; border-radius: 4px;"><div style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; flex-shrink: 0; box-shadow: 0 3px 6px rgba(22, 163, 74, 0.2);">2</div><div style="flex: 1; font-size: 15px; color: #1e293b; line-height: 1.6; padding-top: 2px;"><strong style="color: #0f172a; font-weight: bold; font-size: 15.5px;">Monitor Request Status</strong>: Track the <strong>Status</strong> column on the grid to inspect progress made by the TCC technical team:</div></div>
+<p><img src="user_guide_images/en/step_status_chip.png" style="max-width: 600px; width: 100%; width: 100%; width: 100%; display: block; margin-top: 8px; border: 1px solid #cbd5e1; border-radius: 6px;" /></p>
+<div style="display: flex; align-items: flex-start; gap: 16px; margin: 18px 0; padding: 4px 6px; border-radius: 4px;"><div style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; flex-shrink: 0; box-shadow: 0 3px 6px rgba(22, 163, 74, 0.2);">3</div><div style="flex: 1; font-size: 15px; color: #1e293b; line-height: 1.6; padding-top: 2px;"><strong style="color: #0f172a; font-weight: bold; font-size: 15.5px;">Quick Edit Material Sent Date</strong>:</div></div>
+<ul>
+<li>Hover over the row you want to update and double-click or click the edit pencil icon in the <strong>Material Sent Date</strong> column cell:<br />
+     <img src="user_guide_images/en/step_inline_edit_trigger.png" style="max-width: 500px; width: 100%; width: 100%; display: block; margin-top: 8px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+<li>A datepicker dialog will pop up. Choose the correct sent date and click Save to apply changes directly on the grid:<br />
+     <img src="user_guide_images/en/step_inline_edit_datepicker.png" style="max-width: 500px; width: 100%; display: block; margin-top: 8px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+</ul>
+<div style="border-left: 5px solid #1d4ed8; background-color: #eff6ff; padding: 16px 20px; margin: 24px 0; border-radius: 6px; font-size: 14.5px; color: #1e293b; box-shadow: 0 2px 8px rgba(0,0,0,0.02); page-break-inside: avoid;">
+<span style="color: #1d4ed8; font-weight: bold; font-size: 13.5px; letter-spacing: 0.2px; text-transform: uppercase; display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+<span style="font-size: 15px;">ℹ️</span> GUIDELINE INFO
+</span>
+The inline quick-edit functionality for Material Sent Date is only available if your user account is authorized with editing permissions.
+</div>
+
+<div class="page-break"></div>
+
+<h2>3. Tasks for TCC Technical Department (Admin/Pattern Maker)</h2>
+<h3>Task 3.1: Update Progress &amp; Assign Pattern Maker</h3>
+<p>Upon receiving sample materials or assigning a technician to create the pattern, follow these steps:</p>
+<div style="display: flex; align-items: flex-start; gap: 16px; margin: 18px 0; padding: 4px 6px; border-radius: 4px;"><div style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; flex-shrink: 0; box-shadow: 0 3px 6px rgba(22, 163, 74, 0.2);">1</div><div style="flex: 1; font-size: 15px; color: #1e293b; line-height: 1.6; padding-top: 2px;"><strong style="color: #0f172a; font-weight: bold; font-size: 15.5px;">Access the Master Data Page</strong>: From the left navigation menu, click <strong>Master Data</strong>.</div></div>
+<p><img src="user_guide_images/en/step_nav_admin.png" style="max-width: 300px; width: 100%; display: block; margin-top: 8px; border: 1px solid #cbd5e1; border-radius: 6px;" /></p>
+<div style="display: flex; align-items: flex-start; gap: 16px; margin: 18px 0; padding: 4px 6px; border-radius: 4px;"><div style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; flex-shrink: 0; box-shadow: 0 3px 6px rgba(22, 163, 74, 0.2);">2</div><div style="flex: 1; font-size: 15px; color: #1e293b; line-height: 1.6; padding-top: 2px;"><strong style="color: #0f172a; font-weight: bold; font-size: 15.5px;">Open the Detail View Drawer</strong>: Double-click the request row on the grid. The detail view drawer will slide in from the right. The left panel shows the original request information submitted by requestors in read-only format:</div></div>
+<p><img src="user_guide_images/en/step_admin_details.png" style="max-width: 750px; width: 100%; display: block; margin-top: 8px; border: 1px solid #cbd5e1; border-radius: 6px;" /></p>
+<div style="display: flex; align-items: flex-start; gap: 16px; margin: 18px 0; padding: 4px 6px; border-radius: 4px;"><div style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; flex-shrink: 0; box-shadow: 0 3px 6px rgba(22, 163, 74, 0.2);">3</div><div style="flex: 1; font-size: 15px; color: #1e293b; line-height: 1.6; padding-top: 2px;"><strong style="color: #0f172a; font-weight: bold; font-size: 15.5px;">Update Material Receipt Info</strong>:</div></div>
+<ul>
+<li>Select the <strong>Material Received Date</strong> using the calendar picker tool:<br />
+     <img src="user_guide_images/en/step_material_received_datepicker.png" style="max-width: 600px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+<li>Select the technician assigned to design the pattern in the <strong>Developer Name</strong> field:<br />
+     <img src="user_guide_images/en/step_developer_name_input.png" style="max-width: 600px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+</ul>
+<div style="display: flex; align-items: flex-start; gap: 16px; margin: 18px 0; padding: 4px 6px; border-radius: 4px;"><div style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; flex-shrink: 0; box-shadow: 0 3px 6px rgba(22, 163, 74, 0.2);">4</div><div style="flex: 1; font-size: 15px; color: #1e293b; line-height: 1.6; padding-top: 2px;"><strong style="color: #0f172a; font-weight: bold; font-size: 15.5px;">Update Status & Working Dates</strong>:</div></div>
+<ul>
+<li>When beginning the design process: Change <strong>Status</strong> to <strong>Work in Progress</strong>:<br />
+     <img src="user_guide_images/en/step_status_select.png" style="max-width: 600px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" />
+     Also select the actual <strong>Start Date</strong>:<br />
+     <img src="user_guide_images/en/step_start_datepicker.png" style="max-width: 600px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+<li>When pattern design is complete: Change status to <strong>Finished</strong> and select the actual <strong>Finished Date</strong>:<br />
+     <img src="user_guide_images/en/step_finished_datepicker.png" style="max-width: 600px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" />
+     It is also mandatory to enter the number of designed pattern pieces in the <strong>Template Qty</strong> field:<br />
+     <img src="user_guide_images/en/step_template_qty_input.png" style="max-width: 600px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+</ul>
+<div style="display: flex; align-items: flex-start; gap: 16px; margin: 18px 0; padding: 4px 6px; border-radius: 4px;"><div style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; flex-shrink: 0; box-shadow: 0 3px 6px rgba(22, 163, 74, 0.2);">5</div><div style="flex: 1; font-size: 15px; color: #1e293b; line-height: 1.6; padding-top: 2px;"><strong style="color: #0f172a; font-weight: bold; font-size: 15.5px;">Log Delay or Remake Reasons</strong>:</div></div>
+<ul>
+<li>If the actual finished date is past the requested expected delivery date, it is mandatory to specify or choose a reason in the <strong>Delay/Remake Reason</strong> field:<br />
+     <img src="user_guide_images/en/step_delay_remake_reason_input.png" style="max-width: 600px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+<li>Log any extra information or remarks in the <strong>Remarks</strong> field:<br />
+     <img src="user_guide_images/en/step_remarks_input.png" style="max-width: 600px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+</ul>
+<div style="display: flex; align-items: flex-start; gap: 16px; margin: 18px 0; padding: 4px 6px; border-radius: 4px;"><div style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; flex-shrink: 0; box-shadow: 0 3px 6px rgba(22, 163, 74, 0.2);">6</div><div style="flex: 1; font-size: 15px; color: #1e293b; line-height: 1.6; padding-top: 2px;"><strong style="color: #0f172a; font-weight: bold; font-size: 15.5px;">Save Progress</strong>: Click <strong>Save</strong> at the bottom of the form.</div></div>
+<p><img src="user_guide_images/en/step_save_btn.png" style="max-width: 400px; width: 100%; width: 100%; display: block; margin-top: 8px; border: 1px solid #cbd5e1; border-radius: 6px;" />
+   * The system will automatically compute and display the <strong>Last Updated By</strong> and <strong>Last Updated At</strong> audit logs at the bottom left corner of the drawer to record edits:<br />
+     <img src="user_guide_images/en/step_audit_log_info.png" style="max-width: 600px; width: 100%; display: block; margin-top: 8px; border: 1px solid #cbd5e1; border-radius: 6px;" /></p>
+<hr />
+<h3>Task 3.2: Release Finished Patterns (Release)</h3>
+<p>When pattern drawings have been audited and passed technical checks, and the pattern is handed over to the factory workshops for bulk production:</p>
+<div style="display: flex; align-items: flex-start; gap: 16px; margin: 18px 0; padding: 4px 6px; border-radius: 4px;"><div style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; flex-shrink: 0; box-shadow: 0 3px 6px rgba(22, 163, 74, 0.2);">1</div><div style="flex: 1; font-size: 15px; color: #1e293b; line-height: 1.6; padding-top: 2px;"><strong style="color: #0f172a; font-weight: bold; font-size: 15.5px;">Open the Detail Drawer</strong>of the request which must be in <strong>Finished</strong> status.</div></div>
+<div style="display: flex; align-items: flex-start; gap: 16px; margin: 18px 0; padding: 4px 6px; border-radius: 4px;"><div style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; flex-shrink: 0; box-shadow: 0 3px 6px rgba(22, 163, 74, 0.2);">2</div><div style="flex: 1; font-size: 15px; color: #1e293b; line-height: 1.6; padding-top: 2px;"><strong style="color: #0f172a; font-weight: bold; font-size: 15.5px;">Trigger Pattern Release</strong>: Click <strong>Release</strong> at the bottom right corner of the update form:</div></div>
+<p><img src="user_guide_images/en/step_release_btn.png" style="max-width: 600px; width: 100%; width: 100%; width: 100%; display: block; margin-top: 8px; border: 1px solid #cbd5e1; border-radius: 6px;" /></p>
+<div style="display: flex; align-items: flex-start; gap: 16px; margin: 18px 0; padding: 4px 6px; border-radius: 4px;"><div style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; flex-shrink: 0; box-shadow: 0 3px 6px rgba(22, 163, 74, 0.2);">3</div><div style="flex: 1; font-size: 15px; color: #1e293b; line-height: 1.6; padding-top: 2px;"><strong style="color: #0f172a; font-weight: bold; font-size: 15.5px;">Confirm Data Lock</strong>: The system will automatically record the release time in the <strong>Released Date</strong> field and update the request status to <strong>Released</strong>. At this point, the update form will be completely locked (read-only) to protect data integrity.</div></div>
+<p><img src="user_guide_images/en/step_released_date_input.png" style="max-width: 600px; width: 100%; display: block; margin-top: 8px; border: 1px solid #cbd5e1; border-radius: 6px;" /></p>
+<div style="border-left: 5px solid #b91c1c; background-color: #fef2f2; padding: 16px 20px; margin: 24px 0; border-radius: 6px; font-size: 14.5px; color: #1e293b; box-shadow: 0 2px 8px rgba(0,0,0,0.02); page-break-inside: avoid;">
+<span style="color: #b91c1c; font-weight: bold; font-size: 13.5px; letter-spacing: 0.2px; text-transform: uppercase; display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+<span style="font-size: 15px;">⚠️</span> IMPORTANT NOTE
+</span>
+Once the <strong>Release</strong> action is executed, the request record is locked permanently. No further modifications are allowed to ensure statistic and tracking reports remain strictly accurate.
+</div>
+
+<div class="page-break"></div>
+
+<h2>4. Performance Monitoring and Analytics (Dashboard)</h2>
+<p>The <strong>Dashboard</strong> page helps managers monitor working efficiency and request processing speeds across the pattern development division in real-time.</p>
+<div style="display: flex; align-items: flex-start; gap: 16px; margin: 18px 0; padding: 4px 6px; border-radius: 4px;"><div style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; flex-shrink: 0; box-shadow: 0 3px 6px rgba(22, 163, 74, 0.2);">1</div><div style="flex: 1; font-size: 15px; color: #1e293b; line-height: 1.6; padding-top: 2px;"><strong style="color: #0f172a; font-weight: bold; font-size: 15.5px;">Review 8 Performance KPI Cards</strong>: Monitor high-level metrics including total registered requests (Total Input), total finished requests (Total Output), requests currently in process (In Process) or not started (Not Started), patterns flagged for remake due to errors (Remake), the on-time completion percentage (Completion Rate), the average working days required per request (Avg Working Day), and total patterns delivered to workshops (Total Delivery):</div></div>
+<p><img src="user_guide_images/en/step_kpi_card.png" style="max-width: 400px; width: 100%; display: block; margin-top: 8px; border: 1px solid #cbd5e1; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);" /></p>
+<div style="display: flex; align-items: flex-start; gap: 16px; margin: 18px 0; padding: 4px 6px; border-radius: 4px;"><div style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; flex-shrink: 0; box-shadow: 0 3px 6px rgba(22, 163, 74, 0.2);">2</div><div style="flex: 1; font-size: 15px; color: #1e293b; line-height: 1.6; padding-top: 2px;"><strong style="color: #0f172a; font-weight: bold; font-size: 15.5px;">Analyze 6 Activity Charts</strong>:</div></div>
+<ul>
+<li><strong>Monthly Input</strong> (Distribution of registered requests per month):<br />
+     <img src="user_guide_images/en/step_chart_monthly_input.png" style="max-width: 600px; width: 100%; display: block; margin-top: 8px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+<li><strong>Customer distribution</strong> (Breakdown of request distribution across different brands):<br />
+     <img src="user_guide_images/en/step_chart_customer_distribution.png" style="max-width: 600px; width: 100%; display: block; margin-top: 8px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+<li>The dashboard features 6 dynamically aligned charts reflecting real-time database modifications:
+     <div class="image-container" style="text-align: center; margin: 24px 0; page-break-inside: avoid;">
+       <img src="user_guide_images/en/gui_dashboard.png" alt="Statistics Dashboard Page Layout" style="width: 100%; max-width: 800px; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.06);" />
+       <p style="font-size: 12px; color: #64748b; margin-top: 8px; font-style: italic;">Figure 4.1: High-end charts and KPI dashboards representing pattern maker productivity</p>
+     </div></li>
+</ul>
+<hr />
+<h2>5. Advanced Features &amp; Help</h2>
+<ul>
+<li><strong>Real-time Synchronization</strong>: Powered by a robust WebSocket server, any progress updates made by technicians are pushed immediately to all active requestor tracking grids and management dashboards without requiring manual page reloads (F5).</li>
+<li><strong>Transparent Audit History</strong>: Every request record tracks audit info showing the last user who updated the record and the exact modification timestamp for verification.</li>
+<li><strong>Account Info &amp; Access Menu</strong>: Users can check security roles, permissions, or execute logout by clicking on their avatar in the top right header:<br />
+<br />
+<div class="image-container" style="text-align: center; margin: 24px 0; page-break-inside: avoid;">
+     <img src="user_guide_images/en/gui_account_menu.png" alt="User Profile Dropdown" style="width: 45%; max-width: 500px; width: 100%; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.06);" />
+     <p style="font-size: 12px; color: #64748b; margin-top: 8px; font-style: italic;">Figure 5.1: Account dropdown menu showing logged employee code and permissions</p>
+   </div>
+</li>
+</ul>
+<hr />
+<div style="border-left: 5px solid #15803d; background-color: #ecfdf5; padding: 16px 20px; margin: 24px 0; border-radius: 6px; font-size: 14.5px; color: #1e293b; box-shadow: 0 2px 8px rgba(0,0,0,0.02); page-break-inside: avoid;">
+<span style="color: #15803d; font-weight: bold; font-size: 13.5px; letter-spacing: 0.2px; text-transform: uppercase; display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+<span style="font-size: 15px;">💡</span> HELPFUL TIP
+</span>
+<strong>Operational Shortcuts:</strong> * Instead of clicking the editing icon, double-click any row on the grid list to quickly open its detailed info panel or admin progress drawer. * Export the request list instantly to an Excel-compatible spreadsheet (CSV) by clicking the <strong>Export</strong> button at the top left of the grid.
+</div>
+</body>
+</html>

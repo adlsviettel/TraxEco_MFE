@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>TCC Template Request - User Guide (VI)</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 20mm;
+        }
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            color: #1e293b;
+            line-height: 1.65;
+            font-size: 15.5px;
+            background-color: #ffffff;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        
+        /* Cover Page Styling */
+        .cover-page {
+            text-align: center;
+            height: 960px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            page-break-after: always;
+            box-sizing: border-box;
+            background: radial-gradient(circle at 10% 20%, rgba(240, 253, 244, 0.4) 0%, rgba(255, 255, 255, 1) 90%);
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 80px 40px;
+            margin: -10px;
+            position: relative;
+            overflow: hidden;
+        }
+        .cover-page > div {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+        
+        .cover-logo {
+            height: 230px;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 2;
+        }
+        .cover-title {
+            font-size: 28px;
+            color: #15803d;
+            font-weight: bold;
+            margin-top: 60px;
+            margin-bottom: 16px;
+            line-height: 1.25;
+            position: relative;
+            z-index: 2;
+        }
+        .cover-subtitle {
+            font-size: 21px;
+            color: #334155;
+            font-weight: normal;
+            margin-bottom: 80px;
+            position: relative;
+            z-index: 2;
+        }
+        .cover-divider {
+            width: 140px;
+            height: 4px;
+            background: linear-gradient(90deg, #16a34a 0%, #15803d 100%);
+            margin: 0 auto 50px auto;
+            border-radius: 2px;
+            position: relative;
+            z-index: 2;
+        }
+        .cover-meta {
+            font-size: 14.5px;
+            color: #475569;
+            line-height: 1.8;
+            margin-top: 280px;
+            border-top: 1px solid #cbd5e1;
+            padding-top: 30px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* Table of Contents (TOC) Styling */
+        .toc-page-wrapper {
+            height: 900px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+            width: 100%;
+        }
+        .toc-container {
+            width: 100%;
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 20px 40px;
+            background-color: transparent;
+            border: none;
+            box-shadow: none;
+            page-break-inside: avoid;
+        }
+        .toc-container h2 {
+            text-align: center;
+            color: #15803d;
+            font-size: 24px;
+            margin-bottom: 8px;
+            font-weight: bold;
+            page-break-before: avoid;
+        }
+        .toc-line {
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, #16a34a 0%, #15803d 100%);
+            margin: 0 auto 36px auto;
+            border-radius: 2px;
+        }
+        .toc-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .toc-list li {
+            margin-bottom: 16px;
+            font-size: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            color: #1e293b;
+        }
+        .toc-list li a {
+            color: #1e293b;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .toc-list li:not(.toc-subitem)::after {
+            content: '';
+            flex-grow: 1;
+            border-bottom: 1.5px dotted #94a3b8;
+            margin: 0 12px;
+            position: relative;
+            top: -4px;
+        }
+        .toc-list .toc-subitem {
+            margin-left: 24px;
+            margin-top: -6px;
+            margin-bottom: 12px;
+            font-size: 14.5px;
+            display: block;
+        }
+        .toc-list .toc-subitem a {
+            color: #475569;
+            font-weight: normal;
+        }
+        .toc-page {
+            font-weight: bold;
+            color: #475569;
+            min-width: 60px;
+            text-align: right;
+        }
+        
+        /* Headings */
+        h1 {
+            color: #0f172a;
+            font-size: 21px;
+            margin-top: 48px;
+            margin-bottom: 24px;
+            font-weight: bold;
+            position: relative;
+            page-break-inside: avoid;
+        }
+        h1::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #16a34a 0%, #15803d 100%);
+            border-radius: 2px;
+            margin-top: 8px;
+        }
+        h2 {
+            color: #15803d;
+            font-size: 18px;
+            margin-top: 36px;
+            margin-bottom: 18px;
+            font-weight: bold;
+            page-break-inside: avoid;
+        }
+        h3 {
+            color: #166534;
+            font-size: 16px;
+            margin-top: 28px;
+            margin-bottom: 12px;
+            font-weight: bold;
+            page-break-inside: avoid;
+        }
+        
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 28px 0;
+            font-size: 14.5px;
+            box-shadow: 0 2px 8 rgba(0,0,0,0.01);
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid #cbd5e1;
+            page-break-inside: avoid;
+        }
+        th {
+            background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+            color: white;
+            font-weight: bold;
+            text-align: left;
+            padding: 12px 14px;
+            border: 1px solid rgba(0,0,0,0.03);
+            font-size: 14.5px;
+        }
+        td {
+            padding: 11px 14px;
+            border: 1px solid #cbd5e1;
+            color: #334155;
+            line-height: 1.5;
+        }
+        tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+        
+        /* Lists */
+        ul, ol {
+            margin-bottom: 20px;
+            padding-left: 24px;
+        }
+        li {
+            margin-bottom: 8px;
+            color: #334155;
+        }
+        
+        /* Code blocks */
+        code {
+            font-family: 'Consolas', 'Courier New', monospace;
+            background-color: #f1f5f9;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-size: 13.5px;
+            color: #0f172a;
+            font-weight: bold;
+        }
+        pre {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 16px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 24px 0;
+            page-break-inside: avoid;
+        }
+        pre code {
+            background-color: transparent;
+            padding: 0;
+            color: #334155;
+            font-weight: normal;
+        }
+        
+        /* Divider */
+        hr {
+            border: 0;
+            height: 1px;
+            background: linear-gradient(90deg, rgba(203, 213, 225, 0.2) 0%, rgba(203, 213, 225, 1) 50%, rgba(203, 213, 225, 0.2) 100%);
+            margin: 36px 0;
+        }
+        
+        /* Image alignment cards */
+        .image-container {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+        
+        /* Page break class */
+        .page-break {
+            page-break-before: always;
+            break-before: page;
+        }
+    </style>
+</head>
+<body>
+    <!-- COVER PAGE -->
+    <div class="cover-page">
+        <div>
+            <img src="user_guide_images/logo.png" alt="Logo" class="cover-logo" />
+            <div class="cover-title">TÀI LIỆU HƯỚNG DẪN SỬ DỤNG<br>(USER GUIDE)</div>
+            <div class="cover-subtitle">Hệ thống Quản lý Yêu cầu Phát triển Rập<br>(TCC Template Request)</div>
+            <div class="cover-divider"></div>
+        </div>
+        <div class="cover-meta">
+            
+            <strong>TRAXECO GROUP — TCC TEMPLATE DIVISION</strong><br>
+            Cổng thông tin & Quy trình vận hành chi tiết step-by-step<br>
+            Phiên bản: 1.4.0 | Ngày cập nhật: 2026-06-20
+        
+        </div>
+    </div>
+    
+    <!-- MAIN CONTENT -->
+    <div class="toc-page-wrapper">
+  <div class="toc-container" style="page-break-inside: avoid;">
+    <h2>MỤC LỤC</h2>
+    <div class="toc-line"></div>
+    <ul class="toc-list">
+      <li>
+        <a href="#1-quy-trình-nghiệp-vụ-tổng-quan">1. Quy trình nghiệp vụ tổng quan</a>
+        <span class="toc-page">Trang 3</span>
+      </li>
+      <li>
+        <a href="#2-tác-vụ-dành-cho-người-đăng-ký-requestor">2. Tác vụ dành cho Người đăng ký (Requestor)</a>
+        <span class="toc-page">Trang 3</span>
+      </li>
+      <li class="toc-subitem">
+        <a href="#tác-vụ-21-đăng-ký-yêu-cầu-rập-mới-tạo-mới">• Đăng ký yêu cầu rập mới (Tạo mới)</a>
+      </li>
+      <li class="toc-subitem">
+        <a href="#tác-vụ-22-tra-cứu-tiến-độ--cập-nhật-ngày-gửi-vật-tư">• Tra cứu tiến độ & Cập nhật ngày gửi vật tư</a>
+      </li>
+      <li>
+        <a href="#3-tác-vụ-dành-cho-bộ-phận-kỹ-thuật-tcc-admindeveloper">3. Tác vụ dành cho Kỹ thuật TCC (Admin/Pattern Maker)</a>
+        <span class="toc-page">Trang 5</span>
+      </li>
+      <li class="toc-subitem">
+        <a href="#tác-vụ-31-cập-nhật-tiến-độ--gán-nhân-viên-thiết-kế-rập-pattern-maker">• Cập nhật tiến độ & Gán nhân viên thiết kế rập</a>
+      </li>
+      <li class="toc-subitem">
+        <a href="#tác-vụ-32-phát-hành-rập-thành-phẩm-release">• Phát hành rập thành phẩm (Release)</a>
+      </li>
+      <li>
+        <a href="#4-theo-dõi-báo-cáo-và-phân-tích-năng-suất-dashboard">4. Theo dõi báo cáo và phân tích năng suất (Dashboard)</a>
+        <span class="toc-page">Trang 6</span>
+      </li>
+      <li>
+        <a href="#5-các-tính-năng-nâng-cao-trợ-giúp">5. Các tính năng nâng cao & Trợ giúp</a>
+        <span class="toc-page">Trang 8</span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="page-break"></div>
+
+<h2>1. Quy trình nghiệp vụ tổng quan</h2>
+<p>Hệ thống quản lý trạng thái của mỗi yêu cầu phát triển rập theo sơ đồ sau:</p>
+<div style="page-break-inside: avoid; text-align: center; margin: 32px 0;">
+<svg width="100%" height="240" viewBox="0 0 800 240" style="display: block; margin: 0 auto; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.02);">
+<defs>
+<!-- Shadow Filter for Nodes -->
+<filter id="node-shadow" x="-10%" y="-10%" width="120%" height="120%">
+<feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.05" />
+</filter>
+
+<!-- Markers for arrows -->
+<marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M 0 0 L 10 5 L 0 10 z" fill="#475569" />
+</marker>
+<marker id="red-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M 0 0 L 10 5 L 0 10 z" fill="#dc2626" />
+</marker>
+<marker id="blue-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M 0 0 L 10 5 L 0 10 z" fill="#2563eb" />
+</marker>
+</defs>
+
+<!-- Node 1: ĐĂNG KÝ MỚI -->
+<rect x="15" y="45" width="110" height="52" rx="6" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" filter="url(#node-shadow)" />
+<text x="70" y="68" font-family="'Times New Roman', Times, serif" font-size="11.5" font-weight="bold" fill="#334155" text-anchor="middle">ĐĂNG KÝ MỚI</text>
+<text x="70" y="83" font-family="'Times New Roman', Times, serif" font-size="10" fill="#94a3b8" text-anchor="middle">(Not Started)</text>
+
+<!-- Connection 1 -> 2 -->
+<path d="M 125 71 L 157 71" stroke="#475569" stroke-width="1.5" fill="none" marker-end="url(#arrow)" />
+
+<!-- Node 2: NHẬN VẬT TƯ -->
+<rect x="165" y="45" width="110" height="52" rx="6" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5" filter="url(#node-shadow)" />
+<text x="220" y="68" font-family="'Times New Roman', Times, serif" font-size="11.5" font-weight="bold" fill="#1e40af" text-anchor="middle">NHẬN VẬT TƯ</text>
+<text x="220" y="83" font-family="'Times New Roman', Times, serif" font-size="10" fill="#3b82f6" text-anchor="middle">(In Progress)</text>
+
+<!-- Connection 2 -> 3 -->
+<path d="M 275 71 L 307 71" stroke="#2563eb" stroke-width="1.5" fill="none" marker-end="url(#blue-arrow)" />
+
+<!-- Node 3: THIẾT KẾ RẬP -->
+<rect x="315" y="45" width="110" height="52" rx="6" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5" filter="url(#node-shadow)" />
+<text x="370" y="68" font-family="'Times New Roman', Times, serif" font-size="11.5" font-weight="bold" fill="#1e40af" text-anchor="middle">THIẾT KẾ RẬP</text>
+<text x="370" y="83" font-family="'Times New Roman', Times, serif" font-size="10" fill="#3b82f6" text-anchor="middle">(In Progress)</text>
+
+<!-- Connection 3 -> 4 -->
+<path d="M 425 71 L 457 71" stroke="#2563eb" stroke-width="1.5" fill="none" marker-end="url(#blue-arrow)" />
+
+<!-- Node 4: HOÀN THÀNH -->
+<rect x="465" y="45" width="110" height="52" rx="6" fill="#f0fdf4" stroke="#10b981" stroke-width="1.5" filter="url(#node-shadow)" />
+<text x="520" y="68" font-family="'Times New Roman', Times, serif" font-size="11.5" font-weight="bold" fill="#065f46" text-anchor="middle">HOÀN THÀNH</text>
+<text x="520" y="83" font-family="'Times New Roman', Times, serif" font-size="10" fill="#10b981" text-anchor="middle">(Finished)</text>
+
+<!-- Connection 4 -> 5 -->
+<path d="M 575 71 L 607 71" stroke="#10b981" stroke-width="1.5" fill="none" marker-end="url(#arrow)" />
+
+<!-- Node 5: BÀN GIAO XƯỞNG -->
+<rect x="615" y="45" width="115" height="52" rx="6" fill="#f0fdf4" stroke="#15803d" stroke-width="2" filter="url(#node-shadow)" />
+<text x="672.5" y="68" font-family="'Times New Roman', Times, serif" font-size="11.5" font-weight="bold" fill="#14532d" text-anchor="middle">BÀN GIAO XƯỞNG</text>
+<text x="672.5" y="83" font-family="'Times New Roman', Times, serif" font-size="10" fill="#15803d" text-anchor="middle">(Released)</text>
+
+<!-- Node 6 (Remake) -->
+<rect x="315" y="150" width="110" height="52" rx="6" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5" filter="url(#node-shadow)" />
+<text x="370" y="173" font-family="'Times New Roman', Times, serif" font-size="11.5" font-weight="bold" fill="#991b1b" text-anchor="middle">LÀM LẠI RẬP</text>
+<text x="370" y="188" font-family="'Times New Roman', Times, serif" font-size="10" fill="#ef4444" text-anchor="middle">(Remake)</text>
+
+<!-- Connection 3 -> 6 (Down) -->
+<path d="M 370 97 L 370 142" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="3" fill="none" marker-end="url(#red-arrow)" />
+<text x="378" y="123" font-family="'Times New Roman', Times, serif" font-size="9.5" font-weight="bold" fill="#ef4444">Lỗi / Làm lại</text>
+
+<!-- Connection 6 -> 3 (Up Left Return Loop) -->
+<path d="M 315 176 C 275 176, 275 71, 307 71" stroke="#ef4444" stroke-width="1.5" fill="none" marker-end="url(#red-arrow)" />
+<text x="242" y="130" font-family="'Times New Roman', Times, serif" font-size="9.5" font-weight="bold" fill="#ef4444">Thiết kế lại</text>
+</svg>
+<p style="font-size: 12px; font-family: 'Times New Roman', Times, serif; color: #64748b; margin-top: 6px; font-style: italic;">Sơ đồ 1.1: Quy trình vòng đời trạng thái của một yêu cầu phát triển rập</p>
+</div>
+
+<h2>2. Tác vụ dành cho Người đăng ký (Requestor)</h2>
+<h3>Tác vụ 2.1: Đăng ký yêu cầu rập mới (Tạo mới)</h3>
+<p>Để gửi một yêu cầu làm rập mới đến bộ phận kỹ thuật TCC, hãy thực hiện theo các bước sau:</p>
+<div style="display: flex; align-items: flex-start; gap: 16px; margin: 18px 0; padding: 4px 6px; border-radius: 4px;"><div style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; flex-shrink: 0; box-shadow: 0 3px 6px rgba(22, 163, 74, 0.2);">1</div><div style="flex: 1; font-size: 15px; color: #1e293b; line-height: 1.6; padding-top: 2px;"><strong style="color: #0f172a; font-weight: bold; font-size: 15.5px;">Truy cập trang Tra cứu</strong>: Từ danh mục tính năng bên trái, nhấp chọn mục <strong>Yêu Cầu Rập</strong> (Template Request).</div></div>
+<p><img src="user_guide_images/vi/step_nav_tracking.png" style="max-width: 300px; width: 100%; display: block; margin-top: 8px; border: 1px solid #cbd5e1; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);" /></p>
+<div style="display: flex; align-items: flex-start; gap: 16px; margin: 18px 0; padding: 4px 6px; border-radius: 4px;"><div style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; flex-shrink: 0; box-shadow: 0 3px 6px rgba(22, 163, 74, 0.2);">2</div><div style="flex: 1; font-size: 15px; color: #1e293b; line-height: 1.6; padding-top: 2px;"><strong style="color: #0f172a; font-weight: bold; font-size: 15.5px;">Mở khung đăng ký</strong>: Nhấn nút <strong>Thêm yêu cầu mới</strong> ở góc phía trên bên phải màn hình. Khung nhập liệu đăng ký sẽ hiển thị ở phía bên phải.</div></div>
+<p><img src="user_guide_images/vi/step_add_btn.png" style="max-width: 600px; width: 100%; width: 100%; width: 100%; display: block; margin-top: 8px; border: 1px solid #cbd5e1; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);" /></p>
+<div style="display: flex; align-items: flex-start; gap: 16px; margin: 18px 0; padding: 4px 6px; border-radius: 4px;"><div style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; flex-shrink: 0; box-shadow: 0 3px 6px rgba(22, 163, 74, 0.2);">3</div><div style="flex: 1; font-size: 15px; color: #1e293b; line-height: 1.6; padding-top: 2px;"><strong style="color: #0f172a; font-weight: bold; font-size: 15.5px;">Chọn Khách hàng & nhập thông tin chung</strong>:</div></div>
+<ul>
+<li>Chọn <strong>Khách hàng</strong> từ danh sách gợi ý sẵn:<br />
+     <img src="user_guide_images/vi/step_customer_input.png" style="max-width: 500px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+<li>Điền thông tin <strong>Mùa (Season)</strong> (ví dụ: <em>SS26</em>, <em>FW26</em>):<br />
+     <img src="user_guide_images/vi/step_season_input.png" style="max-width: 500px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+<li>Nhập <strong>Mã hàng (Style No)</strong> chính xác theo tài liệu kỹ thuật của đơn hàng:<br />
+     <img src="user_guide_images/vi/step_style_input.png" style="max-width: 500px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+<li>Nhập <strong>Loại sản phẩm (Product Type)</strong> (ví dụ: <em>Jacket</em>, <em>Pants</em>):<br />
+     <img src="user_guide_images/vi/step_product_type_input.png" style="max-width: 500px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+</ul>
+<div style="display: flex; align-items: flex-start; gap: 16px; margin: 18px 0; padding: 4px 6px; border-radius: 4px;"><div style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; flex-shrink: 0; box-shadow: 0 3px 6px rgba(22, 163, 74, 0.2);">4</div><div style="flex: 1; font-size: 15px; color: #1e293b; line-height: 1.6; padding-top: 2px;"><strong style="color: #0f172a; font-weight: bold; font-size: 15.5px;">Nhập chi tiết kỹ thuật sản xuất</strong>:</div></div>
+<ul>
+<li>Chọn <strong>Giai đoạn mẫu</strong> (ví dụ: <em>01 - 1st Proto</em>, <em>07 - Size Set</em>):<br />
+     <img src="user_guide_images/vi/step_sample_stage_input.png" style="max-width: 500px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+<li>Chọn <strong>Nhà máy</strong> chịu trách nhiệm sản xuất mẫu:<br />
+     <img src="user_guide_images/vi/step_factory_input.png" style="max-width: 500px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+<li>Chọn ngày gửi mẫu bằng công cụ chọn ngày tại ô <strong>Ngày gửi vật tư (Material Sent Date)</strong>:<br />
+     <img src="user_guide_images/vi/step_material_sent_datepicker.png" style="max-width: 500px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+<li>Chọn độ phức tạp của quy trình tại ô <strong>Quy trình đơn giản/ phức tạp</strong>:<br />
+     <img src="user_guide_images/vi/step_process_type_select.png" style="max-width: 500px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+</ul>
+<div style="display: flex; align-items: flex-start; gap: 16px; margin: 18px 0; padding: 4px 6px; border-radius: 4px;"><div style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; flex-shrink: 0; box-shadow: 0 3px 6px rgba(22, 163, 74, 0.2);">5</div><div style="flex: 1; font-size: 15px; color: #1e293b; line-height: 1.6; padding-top: 2px;"><strong style="color: #0f172a; font-weight: bold; font-size: 15.5px;">Cấu hình thông số máy & Kích thước</strong>:</div></div>
+<ul>
+<li>Nhập <strong>Mô tả hoạt động</strong> chi tiết:<br />
+     <img src="user_guide_images/vi/step_operation_desc_textarea.png" style="max-width: 600px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+<li>Điền <strong>Loại máy sử dụng</strong>:<br />
+     <img src="user_guide_images/vi/step_machine_type_input.png" style="max-width: 500px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+<li>Điền <strong>Kích thước máy</strong>:<br />
+     <img src="user_guide_images/vi/step_machine_dimension_input.png" style="max-width: 500px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+<li>Điền <strong>Size mẫu</strong> yêu cầu (ví dụ: <em>S, M, L</em>):<br />
+     <img src="user_guide_images/vi/step_sizes_required_input.png" style="max-width: 500px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+<li>Nhập <strong>Số lượng rập yêu cầu</strong>:<br />
+     <img src="user_guide_images/vi/step_line_quantity_input.png" style="max-width: 500px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+<li>Chọn <strong>Ngày dự kiến hoàn thành</strong> mong muốn:<br />
+     <img src="user_guide_images/vi/step_expected_delivery_datepicker.png" style="max-width: 500px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+</ul>
+<div style="display: flex; align-items: flex-start; gap: 16px; margin: 18px 0; padding: 4px 6px; border-radius: 4px;"><div style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; flex-shrink: 0; box-shadow: 0 3px 6px rgba(22, 163, 74, 0.2);">6</div><div style="flex: 1; font-size: 15px; color: #1e293b; line-height: 1.6; padding-top: 2px;"><strong style="color: #0f172a; font-weight: bold; font-size: 15.5px;">Xử lý yêu cầu làm gấp (Ưu tiên)</strong>:</div></div>
+<ul>
+<li>Nếu yêu cầu cần làm gấp, chọn <strong>Yêu cầu ưu tiên</strong> thành Có (Yes):<br />
+     <img src="user_guide_images/vi/step_is_priority_select.png" style="max-width: 500px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+<li>Khi chọn Có, bắt buộc phải điền rõ <strong>Lý do ưu tiên</strong> vào khung nhập liệu xuất hiện phía dưới:<br />
+     <img src="user_guide_images/vi/step_priority_reason_input.png" style="max-width: 500px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+</ul>
+<div style="display: flex; align-items: flex-start; gap: 16px; margin: 18px 0; padding: 4px 6px; border-radius: 4px;"><div style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; flex-shrink: 0; box-shadow: 0 3px 6px rgba(22, 163, 74, 0.2);">7</div><div style="flex: 1; font-size: 15px; color: #1e293b; line-height: 1.6; padding-top: 2px;"><strong style="color: #0f172a; font-weight: bold; font-size: 15.5px;">Gửi yêu cầu</strong>: Nhấn nút <strong>Gửi</strong> ở cuối khung. Yêu cầu mới sẽ hiển thị lập tức trên bảng danh sách.</div></div>
+<p><img src="user_guide_images/vi/step_submit_btn.png" style="max-width: 400px; width: 100%; width: 100%; display: block; margin-top: 8px; border: 1px solid #cbd5e1; border-radius: 6px;" /></p>
+<hr />
+<h3>Tác vụ 2.2: Tra cứu tiến độ &amp; Cập nhật ngày gửi vật tư</h3>
+<div style="display: flex; align-items: flex-start; gap: 16px; margin: 18px 0; padding: 4px 6px; border-radius: 4px;"><div style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; flex-shrink: 0; box-shadow: 0 3px 6px rgba(22, 163, 74, 0.2);">1</div><div style="flex: 1; font-size: 15px; color: #1e293b; line-height: 1.6; padding-top: 2px;"><strong style="color: #0f172a; font-weight: bold; font-size: 15.5px;">Tìm kiếm mã hàng</strong>: Nhập tên khách hàng vào ô tìm kiếm nhanh, hoặc sử dụng các nút bộ lọc để khoanh vùng dữ liệu:</div></div>
+<p><img src="user_guide_images/vi/step_filter_bar.png" style="max-width: 750px; width: 100%; display: block; margin-top: 8px; border: 1px solid #cbd5e1; border-radius: 6px;" />
+   * Sử dụng nút <strong>Bộ lọc</strong> và <strong>Tải dữ liệu</strong> để lọc thông tin nhanh chóng:<br />
+     <div style="display: flex; gap: 12px; margin-top: 8px; margin-bottom: 8px;">
+       <img src="user_guide_images/vi/step_filter_btn.png" style="max-width: 400px; width: 100%; width: 100%; border: 1px solid #cbd5e1; border-radius: 6px;" />
+       <img src="user_guide_images/vi/step_load_data_btn.png" style="max-width: 400px; width: 100%; width: 100%; border: 1px solid #cbd5e1; border-radius: 6px;" />
+     </div>
+   * Nhấp chọn nút <strong>Bộ lọc</strong> để mở ngăn chứa <strong>Bộ lọc nâng cao</strong> bên phải màn hình khi cần lọc chi tiết theo nhiều tiêu chí:<br />
+     <img src="user_guide_images/vi/step_filter_drawer.png" style="max-width: 600px; width: 100%; width: 100%; display: block; margin-top: 8px; border: 1px solid #cbd5e1; border-radius: 6px;" /></p>
+<div style="display: flex; align-items: flex-start; gap: 16px; margin: 18px 0; padding: 4px 6px; border-radius: 4px;"><div style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; flex-shrink: 0; box-shadow: 0 3px 6px rgba(22, 163, 74, 0.2);">2</div><div style="flex: 1; font-size: 15px; color: #1e293b; line-height: 1.6; padding-top: 2px;"><strong style="color: #0f172a; font-weight: bold; font-size: 15.5px;">Kiểm tra trạng thái</strong>: Theo dõi cột <strong>Trạng thái (Status)</strong> trên bảng theo dõi để kiểm tra tiến trình thực hiện của bộ phận kỹ thuật:</div></div>
+<p><img src="user_guide_images/vi/step_status_chip.png" style="max-width: 600px; width: 100%; width: 100%; width: 100%; display: block; margin-top: 8px; border: 1px solid #cbd5e1; border-radius: 6px;" /></p>
+<div style="display: flex; align-items: flex-start; gap: 16px; margin: 18px 0; padding: 4px 6px; border-radius: 4px;"><div style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; flex-shrink: 0; box-shadow: 0 3px 6px rgba(22, 163, 74, 0.2);">3</div><div style="flex: 1; font-size: 15px; color: #1e293b; line-height: 1.6; padding-top: 2px;"><strong style="color: #0f172a; font-weight: bold; font-size: 15.5px;">Sửa nhanh Ngày gửi vật tư</strong>:</div></div>
+<ul>
+<li>Di chuyển con trỏ chuột đến dòng mã hàng cần cập nhật, nhấp đúp hoặc nhấp vào biểu tượng chỉnh sửa hình bút chì tại ô <strong>Ngày gửi vật tư</strong>:<br />
+     <img src="user_guide_images/vi/step_inline_edit_trigger.png" style="max-width: 500px; width: 100%; width: 100%; display: block; margin-top: 8px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+<li>Hộp thoại lịch sẽ xuất hiện để bạn chọn ngày gửi vật tư mới. Sau khi chọn, nhấn Lưu để hoàn thành cập nhật trực tiếp trên bảng:<br />
+     <img src="user_guide_images/vi/step_inline_edit_datepicker.png" style="max-width: 500px; width: 100%; display: block; margin-top: 8px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+</ul>
+<div style="border-left: 5px solid #1d4ed8; background-color: #eff6ff; padding: 16px 20px; margin: 24px 0; border-radius: 6px; font-size: 14.5px; color: #1e293b; box-shadow: 0 2px 8px rgba(0,0,0,0.02); page-break-inside: avoid;">
+<span style="color: #1d4ed8; font-weight: bold; font-size: 13.5px; letter-spacing: 0.2px; text-transform: uppercase; display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+<span style="font-size: 15px;">ℹ️</span> THÔNG TIN HƯỚNG DẪN
+</span>
+Tính năng sửa nhanh Ngày gửi vật tư trên bảng theo dõi chỉ khả dụng khi tài khoản đăng nhập của bạn được cấp quyền chỉnh sửa tương ứng.
+</div>
+
+<div class="page-break"></div>
+
+<h2>3. Tác vụ dành cho Bộ phận Kỹ thuật TCC (Admin/Pattern Maker)</h2>
+<h3>Tác vụ 3.1: Cập nhật tiến độ &amp; Gán nhân viên thiết kế rập</h3>
+<p>Khi nhận được vật tư mẫu hoặc phân công nhân viên chịu trách nhiệm vẽ rập thiết kế, hãy làm theo các bước sau:</p>
+<div style="display: flex; align-items: flex-start; gap: 16px; margin: 18px 0; padding: 4px 6px; border-radius: 4px;"><div style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; flex-shrink: 0; box-shadow: 0 3px 6px rgba(22, 163, 74, 0.2);">1</div><div style="flex: 1; font-size: 15px; color: #1e293b; line-height: 1.6; padding-top: 2px;"><strong style="color: #0f172a; font-weight: bold; font-size: 15.5px;">Truy cập trang Quản lý</strong>: Từ danh mục tính năng bên trái, chọn mục <strong>Dữ Liệu Gốc</strong> (Master Data).</div></div>
+<p><img src="user_guide_images/vi/step_nav_admin.png" style="max-width: 300px; width: 100%; display: block; margin-top: 8px; border: 1px solid #cbd5e1; border-radius: 6px;" /></p>
+<div style="display: flex; align-items: flex-start; gap: 16px; margin: 18px 0; padding: 4px 6px; border-radius: 4px;"><div style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; flex-shrink: 0; box-shadow: 0 3px 6px rgba(22, 163, 74, 0.2);">2</div><div style="flex: 1; font-size: 15px; color: #1e293b; line-height: 1.6; padding-top: 2px;"><strong style="color: #0f172a; font-weight: bold; font-size: 15.5px;">Mở khung thông tin chi tiết</strong>: Nhấp đúp vào dòng yêu cầu cần cập nhật tiến độ trên bảng danh sách. Ngăn thông tin chi tiết sẽ hiển thị ở phía bên phải. Phần bên trái là các thông tin ban đầu do người đăng ký gửi lên ở dạng chỉ đọc để đối chiếu:</div></div>
+<p><img src="user_guide_images/vi/step_admin_details.png" style="max-width: 750px; width: 100%; display: block; margin-top: 8px; border: 1px solid #cbd5e1; border-radius: 6px;" /></p>
+<div style="display: flex; align-items: flex-start; gap: 16px; margin: 18px 0; padding: 4px 6px; border-radius: 4px;"><div style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; flex-shrink: 0; box-shadow: 0 3px 6px rgba(22, 163, 74, 0.2);">3</div><div style="flex: 1; font-size: 15px; color: #1e293b; line-height: 1.6; padding-top: 2px;"><strong style="color: #0f172a; font-weight: bold; font-size: 15.5px;">Cập nhật thông tin tiếp nhận vật tư</strong>:</div></div>
+<ul>
+<li>Nhấp chọn ô <strong>Ngày nhận vật tư thực tế</strong> (Material Received Date) bằng công cụ chọn ngày:<br />
+     <img src="user_guide_images/vi/step_material_received_datepicker.png" style="max-width: 500px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+<li>Chọn tên kỹ thuật viên chịu trách nhiệm thiết kế rập mẫu tại ô <strong>Nhân viên thiết kế</strong> (Developer Name):<br />
+     <img src="user_guide_images/vi/step_developer_name_input.png" style="max-width: 500px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+</ul>
+<div style="display: flex; align-items: flex-start; gap: 16px; margin: 18px 0; padding: 4px 6px; border-radius: 4px;"><div style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; flex-shrink: 0; box-shadow: 0 3px 6px rgba(22, 163, 74, 0.2);">4</div><div style="flex: 1; font-size: 15px; color: #1e293b; line-height: 1.6; padding-top: 2px;"><strong style="color: #0f172a; font-weight: bold; font-size: 15.5px;">Cập nhật Trạng thái & Ngày thực hiện thực tế</strong>:</div></div>
+<ul>
+<li>Khi bắt đầu triển khai vẽ rập: Chuyển trạng thái sang <strong>Work in Progress</strong> tại ô Trạng thái (Status):<br />
+     <img src="user_guide_images/vi/step_status_select.png" style="max-width: 500px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" />
+     Đồng thời chọn <strong>Ngày bắt đầu</strong> thực tế:<br />
+     <img src="user_guide_images/vi/step_start_datepicker.png" style="max-width: 500px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+<li>Khi thiết kế xong bản vẽ rập: Chọn trạng thái <strong>Finished</strong> và cập nhật <strong>Ngày kết thúc</strong> thực tế:<br />
+     <img src="user_guide_images/vi/step_finished_datepicker.png" style="max-width: 500px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" />
+     Đồng thời bắt buộc phải nhập số lượng chi tiết thiết kế vào ô <strong>Số lượng rập</strong> (Template Qty):<br />
+     <img src="user_guide_images/vi/step_template_qty_input.png" style="max-width: 500px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+</ul>
+<div style="display: flex; align-items: flex-start; gap: 16px; margin: 18px 0; padding: 4px 6px; border-radius: 4px;"><div style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; flex-shrink: 0; box-shadow: 0 3px 6px rgba(22, 163, 74, 0.2);">5</div><div style="flex: 1; font-size: 15px; color: #1e293b; line-height: 1.6; padding-top: 2px;"><strong style="color: #0f172a; font-weight: bold; font-size: 15.5px;">Ghi nhận lý do trễ tiến độ hoặc làm lại</strong>:</div></div>
+<ul>
+<li>Nếu thời gian hoàn thành thực tế bị muộn so với yêu cầu ban đầu, bắt buộc phải chọn hoặc điền thông tin vào ô <strong>Lý do trễ/Lý do làm lại</strong>:<br />
+     <img src="user_guide_images/vi/step_delay_remake_reason_input.png" style="max-width: 600px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+<li>Ghi nhận thêm thông tin bổ sung tại ô <strong>Ghi chú</strong>:<br />
+     <img src="user_guide_images/vi/step_remarks_input.png" style="max-width: 600px; width: 100%; display: block; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+</ul>
+<div style="display: flex; align-items: flex-start; gap: 16px; margin: 18px 0; padding: 4px 6px; border-radius: 4px;"><div style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; flex-shrink: 0; box-shadow: 0 3px 6px rgba(22, 163, 74, 0.2);">6</div><div style="flex: 1; font-size: 15px; color: #1e293b; line-height: 1.6; padding-top: 2px;"><strong style="color: #0f172a; font-weight: bold; font-size: 15.5px;">Lưu tiến độ</strong>: Nhấn nút <strong>Lưu</strong> ở cuối khung thông tin.</div></div>
+<p><img src="user_guide_images/vi/step_save_btn.png" style="max-width: 400px; width: 100%; width: 100%; display: block; margin-top: 8px; border: 1px solid #cbd5e1; border-radius: 6px;" />
+   * Hệ thống sẽ tự động cập nhật và hiển thị thông tin <strong>Người cập nhật cuối</strong> cùng <strong>Thời gian cập nhật cuối</strong> ở góc dưới cùng bên trái của khung chi tiết yêu cầu để theo dõi lịch sử chỉnh sửa:<br />
+     <img src="user_guide_images/vi/step_audit_log_info.png" style="max-width: 600px; width: 100%; display: block; margin-top: 8px; border: 1px solid #cbd5e1; border-radius: 6px;" /></p>
+<hr />
+<h3>Tác vụ 3.2: Phát hành rập thành phẩm (Release)</h3>
+<p>Khi bản vẽ thiết kế rập đã được kiểm tra đạt yêu cầu kỹ thuật và tiến hành bàn giao thực tế xuống nhà xưởng để sản xuất đại trà:</p>
+<div style="display: flex; align-items: flex-start; gap: 16px; margin: 18px 0; padding: 4px 6px; border-radius: 4px;"><div style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; flex-shrink: 0; box-shadow: 0 3px 6px rgba(22, 163, 74, 0.2);">1</div><div style="flex: 1; font-size: 15px; color: #1e293b; line-height: 1.6; padding-top: 2px;"><strong style="color: #0f172a; font-weight: bold; font-size: 15.5px;">Mở khung chi tiết</strong>của dòng yêu cầu rập đang ở trạng thái <strong>Finished</strong>.</div></div>
+<div style="display: flex; align-items: flex-start; gap: 16px; margin: 18px 0; padding: 4px 6px; border-radius: 4px;"><div style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; flex-shrink: 0; box-shadow: 0 3px 6px rgba(22, 163, 74, 0.2);">2</div><div style="flex: 1; font-size: 15px; color: #1e293b; line-height: 1.6; padding-top: 2px;"><strong style="color: #0f172a; font-weight: bold; font-size: 15.5px;">Kích hoạt phát hành rập</strong>: Nhấp chọn nút <strong>Release</strong> ở góc dưới bên phải khung cập nhật thông tin:</div></div>
+<p><img src="user_guide_images/vi/step_release_btn.png" style="max-width: 600px; width: 100%; width: 100%; width: 100%; display: block; margin-top: 8px; border: 1px solid #cbd5e1; border-radius: 6px;" /></p>
+<div style="display: flex; align-items: flex-start; gap: 16px; margin: 18px 0; padding: 4px 6px; border-radius: 4px;"><div style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; flex-shrink: 0; box-shadow: 0 3px 6px rgba(22, 163, 74, 0.2);">3</div><div style="flex: 1; font-size: 15px; color: #1e293b; line-height: 1.6; padding-top: 2px;"><strong style="color: #0f172a; font-weight: bold; font-size: 15.5px;">Xác nhận khóa thông tin</strong>: Hệ thống sẽ ghi nhận thời điểm phát hành vào ô <strong>Ngày phát hành</strong> (Released Date) và chuyển trạng thái yêu cầu sang <strong>Released</strong>. Đồng thời, toàn bộ biểu mẫu cập nhật sẽ bị khóa (chuyển sang chỉ đọc) để bảo vệ tính chính xác của dữ liệu sản xuất.</div></div>
+<p><img src="user_guide_images/vi/step_released_date_input.png" style="max-width: 500px; width: 100%; display: block; margin-top: 8px; border: 1px solid #cbd5e1; border-radius: 6px;" /></p>
+<div style="border-left: 5px solid #b91c1c; background-color: #fef2f2; padding: 16px 20px; margin: 24px 0; border-radius: 6px; font-size: 14.5px; color: #1e293b; box-shadow: 0 2px 8px rgba(0,0,0,0.02); page-break-inside: avoid;">
+<span style="color: #b91c1c; font-weight: bold; font-size: 13.5px; letter-spacing: 0.2px; text-transform: uppercase; display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+<span style="font-size: 15px;">⚠️</span> LƯU Ý QUAN TRỌNG
+</span>
+Sau khi đã nhấn nút <strong>Release</strong> phát hành rập, toàn bộ dữ liệu của yêu cầu đó sẽ bị khóa hoàn toàn. Không ai có quyền chỉnh sửa thêm để phục vụ mục tiêu thống kê chính xác.
+</div>
+
+<div class="page-break"></div>
+
+<h2>4. Theo dõi báo cáo và phân tích năng suất (Dashboard)</h2>
+<p>Màn hình <strong>Thống Kê</strong> giúp người quản lý theo dõi nhanh hiệu năng làm việc và tiến độ tổng quan của bộ phận phát triển rập.</p>
+<div style="display: flex; align-items: flex-start; gap: 16px; margin: 18px 0; padding: 4px 6px; border-radius: 4px;"><div style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; flex-shrink: 0; box-shadow: 0 3px 6px rgba(22, 163, 74, 0.2);">1</div><div style="flex: 1; font-size: 15px; color: #1e293b; line-height: 1.6; padding-top: 2px;"><strong style="color: #0f172a; font-weight: bold; font-size: 15.5px;">Xem 8 Thẻ chỉ số năng suất (KPIs)</strong>: Theo dõi trực tiếp các chỉ số như tổng yêu cầu đăng ký (Total Input), tổng yêu cầu hoàn thành (Total Output), các yêu cầu đang thực hiện (In Process) hoặc chưa bắt đầu (Not Started), lượng rập bị lỗi cần sửa đổi (Remake), tỉ lệ hoàn thành đúng hạn (Completion Rate), số ngày phát triển trung bình (Avg Working Day) và tổng sản lượng bàn giao thực tế xuống nhà xưởng (Total Delivery):</div></div>
+<p><img src="user_guide_images/vi/step_kpi_card.png" style="max-width: 400px; width: 100%; display: block; margin-top: 8px; border: 1px solid #cbd5e1; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);" /></p>
+<div style="display: flex; align-items: flex-start; gap: 16px; margin: 18px 0; padding: 4px 6px; border-radius: 4px;"><div style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; flex-shrink: 0; box-shadow: 0 3px 6px rgba(22, 163, 74, 0.2);">2</div><div style="flex: 1; font-size: 15px; color: #1e293b; line-height: 1.6; padding-top: 2px;"><strong style="color: #0f172a; font-weight: bold; font-size: 15.5px;">Phân tích 6 biểu đồ hoạt động</strong>:</div></div>
+<ul>
+<li><strong>Monthly Input</strong> (Lượng yêu cầu theo từng tháng):<br />
+     <img src="user_guide_images/vi/step_chart_monthly_input.png" style="max-width: 600px; width: 100%; display: block; margin-top: 8px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+<li><strong>Customer distribution</strong> (Cơ cấu tỉ lệ yêu cầu theo khách hàng thương hiệu):<br />
+     <img src="user_guide_images/vi/step_chart_customer_distribution.png" style="max-width: 600px; width: 100%; display: block; margin-top: 8px; border: 1px solid #cbd5e1; border-radius: 6px;" /></li>
+<li>Xem đầy đủ giao diện trang thống kê với lưới bố cục 6 biểu đồ đồng bộ số liệu tự động theo thời gian thực:
+     <div class="image-container" style="text-align: center; margin: 24px 0; page-break-inside: avoid;">
+       <img src="user_guide_images/vi/gui_dashboard.png" alt="Màn Hình Dashboard Thống Kê" style="width: 100%; max-width: 800px; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.06);" />
+       <p style="font-size: 12px; color: #64748b; margin-top: 8px; font-style: italic;">Hình 4.1: Giao diện biểu đồ phân tích hiệu suất năng suất trên trang Thống Kê</p>
+     </div></li>
+</ul>
+<hr />
+<h2>5. Các tính năng nâng cao &amp; Trợ giúp</h2>
+<ul>
+<li><strong>Hệ thống tự động đồng bộ dữ liệu thời gian thực</strong>: Nhờ công nghệ đồng bộ ngầm, bất kỳ thông tin nào được cập nhật từ kỹ thuật viên vẽ rập sẽ hiển thị ngay tức thì trên bảng tra cứu tiến độ của người đăng ký và các báo cáo thống kê của quản lý mà không cần tải lại trang (F5).</li>
+<li><strong>Lịch sử cập nhật minh bạch</strong>: Mọi lượt chỉnh sửa tiến độ đều tự động ghi nhận mã nhân viên cập nhật cuối cùng và thời gian thực thi tại chân trang chi tiết yêu cầu để làm căn cứ hậu kiểm.</li>
+<li><strong>Thông tin tài khoản đăng nhập</strong>: Người dùng có thể kiểm tra vai trò, quyền hạn của mình hoặc thực hiện Đăng xuất bằng cách nhấp chọn Avatar tài khoản ở góc trên bên phải màn hình:<br />
+<br />
+<div class="image-container" style="text-align: center; margin: 24px 0; page-break-inside: avoid;">
+     <img src="user_guide_images/vi/gui_account_menu.png" alt="Menu Tài Khoản Đăng Nhập" style="width: 45%; max-width: 500px; width: 100%; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.06);" />
+     <p style="font-size: 12px; color: #64748b; margin-top: 8px; font-style: italic;">Hình 5.1: Menu tài khoản hiển thị chi tiết mã nhân viên và vai trò bảo mật</p>
+   </div>
+</li>
+</ul>
+<hr />
+<div style="border-left: 5px solid #15803d; background-color: #ecfdf5; padding: 16px 20px; margin: 24px 0; border-radius: 6px; font-size: 14.5px; color: #1e293b; box-shadow: 0 2px 8px rgba(0,0,0,0.02); page-break-inside: avoid;">
+<span style="color: #15803d; font-weight: bold; font-size: 13.5px; letter-spacing: 0.2px; text-transform: uppercase; display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+<span style="font-size: 15px;">💡</span> MẸO HỮU ÍCH
+</span>
+<strong>Mẹo thao tác nhanh (Quick Shortcuts):</strong> * Thay vì nhấp vào biểu tượng chỉnh sửa hình bút chì, bạn có thể nhấp đúp trực tiếp vào bất kỳ dòng dữ liệu nào trên bảng danh sách để mở nhanh khung chi tiết yêu cầu tương ứng. * Bạn có thể xuất nhanh báo cáo danh sách yêu cầu rập đang hiển thị ra tệp dữ liệu Excel (CSV) bằng cách nhấp vào nút <strong>Export</strong> ở đầu bảng.
+</div>
+</body>
+</html>

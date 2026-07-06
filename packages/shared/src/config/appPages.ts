@@ -1,0 +1,92 @@
+export interface PageDef {
+  code: string;
+  label: string;
+  appCode: string;
+}
+
+export const EXTRA_PAGES: PageDef[] = [
+  // QCFB_WH
+  { code: 'qcfb-dashboard', label: 'Dashboard', appCode: 'QCFB_WH' },
+  { code: 'qcfb-fabric-inspection', label: 'Fabric Inspection', appCode: 'QCFB_WH' },
+  { code: 'qcfb-inspection-history', label: 'Inspection History', appCode: 'QCFB_WH' },
+  { code: 'qcfb-daily-report', label: 'Daily Report', appCode: 'QCFB_WH' },
+  { code: 'qcfb-packing-list-summary', label: 'Packing List Summary', appCode: 'QCFB_WH' },
+  { code: 'qcfb-report-pass-fail', label: 'Report Pass/Fail', appCode: 'QCFB_WH' },
+  { code: 'qcfb-report-defect', label: 'Report Defect', appCode: 'QCFB_WH' },
+  // FABRIC_WH
+  { code: 'fb_dashboard', label: 'Fabric Dashboard', appCode: 'FABRIC_WH' },
+  { code: 'fb_pklist', label: 'Packing List', appCode: 'FABRIC_WH' },
+  { code: 'fb_upload_pklist', label: 'Upload PKList', appCode: 'FABRIC_WH' },
+  { code: 'fb_print_qr', label: 'Print QR Code', appCode: 'FABRIC_WH' },
+  { code: 'fb_putaway', label: 'Putaway / Location', appCode: 'FABRIC_WH' },
+  { code: 'fb_inventory', label: 'Inventory', appCode: 'FABRIC_WH' },
+  { code: 'fb_issue', label: 'Issue Fabric', appCode: 'FABRIC_WH' },
+  { code: 'fb_relax', label: 'Xả Vải', appCode: 'FABRIC_WH' },
+  { code: 'fb_relax_report', label: 'Báo Cáo Xả Vải', appCode: 'FABRIC_WH' },
+  { code: 'fb_report', label: 'Issue Report', appCode: 'FABRIC_WH' },
+  { code: 'fb_tracking', label: 'Tracking Logs', appCode: 'FABRIC_WH' },
+  { code: 'fb_admin', label: 'Admin', appCode: 'FABRIC_WH' },
+  { code: 'qcfb-admin', label: 'Admin', appCode: 'QCFB_WH' },
+  // FGS_WH
+  { code: 'scan', label: 'Quét Thùng', appCode: 'FGS_WH' },
+  { code: 'history', label: 'Lịch Sử', appCode: 'FGS_WH' },
+  { code: 'planload', label: 'Plan Load', appCode: 'FGS_WH' },
+  { code: 'packingplan', label: 'Packing Plan', appCode: 'FGS_WH' },
+  { code: 'finalinspection', label: 'Final Inspection', appCode: 'FGS_WH' },
+  { code: 'updatelocation', label: 'Cập Nhật Vị Trí', appCode: 'FGS_WH' },
+  { code: 'warehousemap', label: 'Bản Đồ Kho', appCode: 'FGS_WH' },
+  { code: 'labelconfig', label: 'Cấu Hình In', appCode: 'FGS_WH' },
+  { code: 'cartonship', label: 'Carton Ship', appCode: 'FGS_WH' },
+  { code: 'admin', label: 'Admin', appCode: 'FGS_WH' },
+  // F2S_DELIVERY
+  { code: 'dashboard', label: 'Dashboard', appCode: 'F2S_DELIVERY' },
+  { code: 'deliver', label: 'Deliver', appCode: 'F2S_DELIVERY' },
+  { code: 'history', label: 'History', appCode: 'F2S_DELIVERY' },
+  { code: 'report', label: 'Report', appCode: 'F2S_DELIVERY' },
+  { code: 'receive', label: 'Nhận hàng kho', appCode: 'F2S_DELIVERY' },
+  { code: 'po_status', label: 'PO Packing Status', appCode: 'F2S_DELIVERY' },
+  { code: 'f2s_admin', label: 'Admin', appCode: 'F2S_DELIVERY' },
+  // IT_INVENTORY
+  { code: 'it_dashboard', label: 'Dashboard', appCode: 'IT_INVENTORY' },
+  { code: 'it_master_data', label: 'Master Data', appCode: 'IT_INVENTORY' },
+  { code: 'it_inbound', label: 'Inbound (Nhập Kho)', appCode: 'IT_INVENTORY' },
+  { code: 'it_outbound', label: 'Outbound (Xuất Kho)', appCode: 'IT_INVENTORY' },
+  { code: 'it_stock_opname', label: 'Stock Opname', appCode: 'IT_INVENTORY' },
+  { code: 'it_adjustment', label: 'Adjustment', appCode: 'IT_INVENTORY' },
+  { code: 'it_insw_mapping', label: 'INSW Mapping', appCode: 'IT_INVENTORY' },
+  { code: 'it_insw_push', label: 'INSW Push', appCode: 'IT_INVENTORY' },
+  { code: 'it_logs', label: 'Logs (Nhật Ký)', appCode: 'IT_INVENTORY' },
+  { code: 'it_settings', label: 'Settings (Cài Đặt)', appCode: 'IT_INVENTORY' },
+  { code: 'it_account', label: 'Account (Tài Khoản)', appCode: 'IT_INVENTORY' },
+  { code: 'it_admin', label: 'Admin', appCode: 'IT_INVENTORY' },
+  // RD_MATERIAL
+  { code: 'rd_dashboard', label: 'Bảng Điều Khiển', appCode: 'RD_MATERIAL' },
+  { code: 'rd_fabric', label: 'Vải (Hanger)', appCode: 'RD_MATERIAL' },
+  { code: 'rd_accessory', label: 'Phụ Liệu', appCode: 'RD_MATERIAL' },
+  { code: 'rd_yardage', label: 'Yardage', appCode: 'RD_MATERIAL' },
+  { code: 'rd_product', label: 'Product', appCode: 'RD_MATERIAL' },
+  { code: 'rd_color', label: 'Color', appCode: 'RD_MATERIAL' },
+  { code: 'rd_trim', label: 'Trim', appCode: 'RD_MATERIAL' },
+  { code: 'rd_pattern', label: 'Pattern', appCode: 'RD_MATERIAL' },
+  { code: 'rd_concept', label: 'Concept Design', appCode: 'RD_MATERIAL' },
+  { code: 'rd_catalog', label: 'Thư Viện Ảnh', appCode: 'RD_MATERIAL' },
+  { code: 'rd_archive', label: 'Lưu Trữ', appCode: 'RD_MATERIAL' },
+  { code: 'rd_scan', label: 'Scan Mã Vạch', appCode: 'RD_MATERIAL' },
+  { code: 'rd_admin', label: 'Admin', appCode: 'RD_MATERIAL' },
+  // TCC_TEMPLATE
+  { code: 'tcc_tracking', label: 'Template Request Form', appCode: 'TCC_TEMPLATE' },
+  { code: 'tcc_admin_status', label: 'Master Data', appCode: 'TCC_TEMPLATE' },
+  { code: 'tcc_dashboard', label: 'Dashboard', appCode: 'TCC_TEMPLATE' },
+  { code: 'tcc_settings', label: 'Settings (Cài Đặt)', appCode: 'TCC_TEMPLATE' },
+  { code: 'tcc_admin', label: 'Admin', appCode: 'TCC_TEMPLATE' },
+  // CLINIC
+  { code: 'clinic_dispense', label: 'Phát thuốc', appCode: 'CLINIC' },
+  { code: 'clinic_warehouse', label: 'Kho thuốc', appCode: 'CLINIC' },
+  { code: 'clinic_bed', label: 'Giường bệnh', appCode: 'CLINIC' },
+  { code: 'clinic_early_leaving', label: 'Về sớm', appCode: 'CLINIC' },
+  { code: 'clinic_insurance', label: 'Bảo hiểm', appCode: 'CLINIC' },
+  { code: 'clinic_maternity', label: 'Thai sản', appCode: 'CLINIC' },
+  { code: 'clinic_report', label: 'Báo cáo', appCode: 'CLINIC' },
+  { code: 'clinic_master_data', label: 'Danh mục', appCode: 'CLINIC' },
+  { code: 'clinic_admin', label: 'Admin', appCode: 'CLINIC' }
+];

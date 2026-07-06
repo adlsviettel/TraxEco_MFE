@@ -1,0 +1,50 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /trax-eco/
+
+  # Proxy WebSocket requests to Backend (192.168.14.10:8100)
+  RewriteCond %{HTTP:Upgrade} =websocket [NC]
+  RewriteRule ^ws-qc(.*)$ ws://192.168.14.10:8100/ws-qc$1 [P,L]
+
+  # Proxy API requests to Backend (192.168.14.10:8100)
+  RewriteRule ^api/(.*)$ http://192.168.14.10:8100/api/$1 [P,L]
+
+  # Existing SPA routing
+  RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /trax-eco/index.html [L]
+</IfModule>
+
+# Anti-cache for SW and HTML
+<IfModule mod_headers.c>
+  <FilesMatch "\.(html|js)$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+  <FilesMatch "sw\.js$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
+  </FilesMatch>
+  <FilesMatch "index\.html$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
+  </FilesMatch>
+
+  <FilesMatch "\.json$">
+    Header set Access-Control-Allow-Origin "*"
+    Header set Access-Control-Allow-Methods "GET, POST, OPTIONS"
+    Header set Access-Control-Allow-Headers "Origin, X-Requested-With, Content-Type, Accept"
+  </FilesMatch>
+</IfModule>
+
+<IfModule mod_mime.c>
+  AddType application/vnd.android.package-archive .apk
+  AddType application/javascript .mjs
+</IfModule>
+
+<FilesMatch "\.apk$">
+  ForceType application/vnd.android.package-archive
+  Header set Content-Disposition "attachment; filename=trax-eco.apk"
+</FilesMatch>

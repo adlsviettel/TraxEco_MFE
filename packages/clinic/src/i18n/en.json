@@ -1,0 +1,48 @@
+{
+  "clinic": {
+    "nav": {
+      "dispense": "Dispense Medicine",
+      "warehouse": "Medicine Warehouse",
+      "bed": "Hospital Beds",
+      "earlyLeaving": "Early Leaving",
+      "insurance": "Social Insurance",
+      "maternity": "Maternity Tracking",
+      "report": "Reports",
+      "masterData": "Master Data"
+    },
+    "pages": {
+      "dispense": {
+        "title": "Dispense Medicine to Employee",
+        "description": "Search employee, select disease, medicine group, and dispense medicine."
+      },
+      "warehouse": {
+        "title": "Medicine Warehouse Management",
+        "description": "Manage import to warehouse and transfer medicine to factories."
+      },
+      "bed": {
+        "title": "Hospital Bed Management",
+        "description": "Track hospital bed statuses and patient admission history."
+      },
+      "earlyLeaving": {
+        "title": "Track Early Leaving Workers",
+        "description": "Track and record early leaving of workers due to health reasons."
+      },
+      "insurance": {
+        "title": "Social & Accident Insurance",
+        "description": "Manage information on sickness benefits, maternity, and labor accidents."
+      },
+      "maternity": {
+        "title": "Maternity Tracking",
+        "description": "Register and track maternity, calculate leave dates and related benefits."
+      },
+      "report": {
+        "title": "Clinic Reports",
+        "description": "Export reports related to medicine dispensing, stock balances, and hospital beds."
+      },
+      "masterData": {
+        "title": "Master Data Management",
+        "description": "Manage categories of Medicines, Medicine Groups, Suppliers, and Diseases."
+      }
+    }
+  }
+}

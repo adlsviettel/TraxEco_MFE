@@ -1,0 +1,7359 @@
+--- Page 1 ---
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI 
+IT INVENTORY - KEK 
+Lembaga National Single Window (LNSW) 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+--- Page 2 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman i 
+ 
+Daftar Isi 
+ 
+DAFTAR ISI .................................................................................................................................................. I 
+I. SEJARAH VERSI DOKUMEN ...................................................................................................................... II 
+II. PEDOMAN INTEGRASI APLIKASI .............................................................................................................. 1 
+1. SALDO AWAL ....................................................................................................................................................... 2 
+2. SALDO AWAL FINAL .............................................................................................................................................. 4 
+3. PEMASUKAN ........................................................................................................................................................ 4 
+4. PENGELUARAN ..................................................................................................................................................... 7 
+5. STOCK OPNAME ................................................................................................................................................... 9 
+6. ADJUSTMENT ..................................................................................................................................................... 12 
+8. CLEANSING DATA PERCOBAAN .............................................................................................................................. 14 
+9.UPDATE DOKUMEN BARANG .......................................................................................................................... 15 
+10.GET PEMASUKAN .............................................................................................................................................. 16 
+11.GET PENGELUARAN ...................................................................................................................................... 18 
+12.GET ADJUSTMENT ......................................................................................................................................... 21 
+13.GET STOCK OPNAME..................................................................................................................................... 23 
+III. DATA REFERENSI  ................................................................................................................................ 26 
+1. JENIS TRANSAKSI ................................................................................................................................................ 26 
+2. KATEGORI BARANG ............................................................................................................................................. 26 
+3. DOKUMEN PABEAN ............................................................................................................................................. 26 
+4. DOKUMEN PERPINDAHAN  ................................................................................................................................... 27 
+5. DATA SATUAN  ................................................................................................................................................... 27 
+6. KODE KEGIATAN  ................................................................................................................................................ 27 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+--- Page 3 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman ii 
+ 
+I. 
+SEJARAH VERSI DOKUMEN 
+Version# 
+Implemented By 
+RevisionDate 
+Version Summary 
+1.0 
+ 
+ 
+Dokumen Awal 
+1.1 
+ 
+ 
+ 
+1.2 
+Perancangan dan 
+Evaluasi Sistem 
+Informasi 
+31 Maret 2023 
+1. 
+Penyesuaian elemen data dan Json payload pada service Saldo Awal, 
+Pemasukan, Pengeluaran, Stock Opname, Adjustment  
+2. 
+Penambahan alamat service Production untuk Data Dummy 
+3. 
+Penyesuaian nomenklatur XML menjadi Json 
+4. 
+Penambahan bab sejarah versi dokumen 
+5. 
+Penambahan Data Referensi  
+- 
+Kategori Barang 
+- 
+Dokumen Pabean 
+- 
+Dokumen Perpindahan 
+- 
+Data Satuan 
+1.3 
+Perancangan dan 
+Evaluasi Sistem 
+Informasi 
+7 Juni 2023 
+1. 
+Penyesuaian API Saldo Awal 
+2. 
+Penyesuaian API Pemasukan  
+3. 
+Penyesuaian API Pengeluaran 
+4. 
+Penyesuaian API Stock Opname 
+5. 
+Penyesuaian API Adjustment  
+6. 
+Penambahan API Saldo Awal Final 
+7. 
+Penambahan API Cleansing Data Percobaan 
+8. 
+Update referensi Kategori Barang kode 9 : Barang sparepart dihilangkan 
+1.4 
+Perancangan dan 
+Evaluasi Sistem 
+Informasi 
+02 Februari 2024 
+1. 
+Penambahan Service Dokumen Barang 
+- 
+Parameter idTransaksi : update dok barang untuk seluruh barang 
+(bisa lebih dari 1 barang) 
+- 
+Parameter idBrgTransaksi : update dok barang per barang 
+- 
+Parameter request body sama, perlu memilih salah satu jenis 
+perubahan (update data put) 
+2. 
+Menghilangkan subchapter II.9 Koneksi  
+1.5 
+Perancangan dan 
+Evaluasi Sistem 
+Informasi 
+06 Desember 2024 
+1. Penambahan Service  
+    - Update Dokumen Barang 
+    - Get Pemasukan 
+    - Get Pengeluaran 
+    - Get Adjustment 
+    - Get Stok Opname 
+1.6 
+Perancangan dan 
+Evaluasi Sistem 
+Informasi 
+20 Februari 2025 
+1. Penyesuaian nama path pada semua API 
+2. Penyesuaian menambahakan key pada semua API 
+3. Penyesuaian penghapusan payload pada semua API 
+4. Menambahkan di halaman history perubahan 
+
+--- Page 4 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 1 
+ 
+II. 
+PEDOMAN INTEGRASI APLIKASI 
+IT INVENTORY 
+ 
+Gambar 1 IT Inventory 
+Pada proses Integrasi System to System terdapat langkah-langkah sebagai berikut: 
+1. Aplikasi Pelaku Usaha mengirimkan data transaksi barang ke service integrasi; 
+2. Service Integrasi memvalidasi  kepemilikan data transaksi barang dengan data 
+registrasi di IT Inventory berdasarkan NPWP pada database INSW Gen2; 
+3. Service Integrasi menyimpan data transaksi barang ke database INSW Gen2; 
+4. Service Integrasi menyimpan log history di database INSW Gen2; 
+5. Service integrasi mengirimkan data response kepada Aplikasi Pelaku Usaha. 
+ 
+ 
+ 
+
+--- Page 5 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 2 
+ 
+1. 
+Saldo Awal (Data Percobaan dan Data Real) 
+Method Type 
+POST 
+Description 
+Digunakan untuk membuat data saldo awal barang di awal 
+periode pencatatan. 
+Authorization 
+API-Key 
+Value 
+x-insw-key 
+RqT40lH7Hy202uUybBLkFhtNnfAvxrlp 
+x-unique-key 
+Unique key data percobaan di dapatkan pada dashboard 
+sidebar. 
+Unique key data real di dapatkan ketika pendaftaran. 
+Request Body 
+Element Data 
+Type 
+Mandatory(M) 
+/ Opsional(O) 
+Description 
+data 
+ 
+Array of Object 
+M 
+ 
+no_kegiatan 
+ 
+String 
+O 
+Nomor Berita 
+Acara/Laporan 
+tgl_kegiatan 
+ 
+Date (YYYY-
+MM-DD / DD-
+MM-YYYY) 
+O 
+Tanggal Berita 
+Acara/Laporan 
+barangSaldo 
+ 
+Array of Object 
+M 
+ 
+ 
+kd_kategori_barang 
+String 
+M 
+Kode Kategori Barang 
+ 
+kd_barang 
+String 
+M 
+Kode Barang Perusahaan 
+ 
+uraian_barang 
+String 
+O 
+Uraian atas Barang 
+ 
+jumlah 
+Numeric (18.4) 
+M 
+Jumlah Barang 
+*Wajib diisi dengan angka 0 jika 
+tidak ada nilai 
+ 
+satuan 
+String 
+M 
+Kode Satuan Barang 
+ 
+nilai 
+Numeric (18,4) 
+O 
+Harga Total Barang (dalam 
+Rupiah) 
+*Wajib diisi dengan angka 0 jika 
+tidak ada nilai 
+ 
+tanggal_declare 
+Date (YYYY-
+MM-DD / DD-
+MM-YYYY) 
+M 
+Waktu upload dan/atau 
+input data di sistem pelaku 
+usaha  
+Sample Json  
+Endpoint Dummy Data : https://api.insw.go.id/api-prod/inventory/temp/saldoAwal 
+Endpoint Real Data : https://api.insw.go.id/api-prod/inventory/saldoAwal 
+ 
+Request Body : 
+{ 
+    "data": { 
+        "no_kegiatan": "001/SAL/2025", 
+        "tgl_kegiatan": "30-06-2023 14:32:10.234", 
+        "barangSaldo": [ 
+            { 
+                "kd_kategori_barang": "1", 
+                "kd_barang": "barang1", 
+                "uraian_barang": "Uraian barang 1", 
+                "jumlah": 100000, 
+                "satuan": "KGM", 
+
+--- Page 6 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 3 
+ 
+                "nilai": 100000, 
+                "tanggal_declare": "05-06-2023 14:32:10.134" 
+            }] 
+    } 
+} 
+ 
+Return Response: 
+{ 
+    "code": "01", 
+    "status": true, 
+    "message": "Success", 
+    "data": { 
+        "postHeader": { 
+            "idHeader": "73f5f522-1dcd-4116-bb0e-a9baeb64960b", 
+            "npwp": "413413659513000", 
+            "nib": "1251000240234", 
+            "namaPerusahaan": "FX Rudy Mulyono", 
+            "nipRekam": "2625545", 
+            "kdStatus": "000", 
+            "waktuRekam": "2022-09-28T02:20:20.564Z", 
+            "nipUbah": null, 
+            "waktuUbah": null, 
+            "nomorSkep": null, 
+            "tanggalSkep": null, 
+            "idDokumen": null, 
+            "jenisAkses": "1", 
+            "uniqueKey": "337c45fb18a6502306892ec4d3dbe593c627ae7ea7e1e9357cd6f0a0a9d91c93", 
+            "urStatus": "Belum Final" 
+        }, 
+        "postBarang": [ 
+            { 
+                "idBarang": "86f8b2af-3f36-4ca0-a74d-4f42a952dbbb", 
+                "idHeader": "73f5f522-1dcd-4116-bb0e-a9baeb64960b", 
+                "kdBarang": "barang1", 
+                "uraianBarang": "Uraian barang 1", 
+                "jumlah": "100000.0000", 
+                "saldoAwal": "0.0000", 
+                "saldoAkhir": "0.0000", 
+                "saldoFisik": "0.0000", 
+                "selisih": "0.0000", 
+                "kdSatuan": "KGM", 
+                "kdKategoriBarang": "1", 
+                "nilai": "100000.0000", 
+                "noKegiatan": "001/SAL/2025", 
+                "tanggalKegiatan": "2023-06-30T07:23:04.234Z", 
+                "waktuRekam": "2025-02-20T02:52:12.521Z", 
+                "tanggalDeclare": "2023-06-05T07:13:04.134Z" 
+            } 
+        ] 
+    } 
+} 
+
+--- Page 7 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 4 
+ 
+2. 
+Saldo Awal Final (Data Percobaan) 
+Method Type 
+PUT 
+Description 
+Digunakan untuk mengunci saldo awal yang telah ditetapkan sebagai 
+acuan final. 
+Authorization 
+API-Key 
+Value 
+x-insw-key 
+RqT40lH7Hy202uUybBLkFhtNnfAvxrlp 
+x-unique-key 
+Unique key data percobaan di dapatkan pada dashboard sidebar. 
+Return Respond 
+Field 
+Cardin
+ality 
+Mandat
+ory/Con
+ditional 
+Type 
+Definition 
+Description 
+ 
+message 
+1-1 
+M 
+String 
+an..100 
+Keterangan message 
+Data berhasil diproses = Data 
+berhasil 
+Silahkan masukkan Data Saldo 
+Awal terlebih dahulu = Perlu 
+input data saldo Awal 
+Data tidak ditemukan = No 
+NPWP tidak ditemukan 
+Data sudah terfinalisasi = Data 
+sudah pernah di finalisasi 
+Sample Payload 
+Endpoint Dummy Data : https://api.insw.go.id/api-prod/inventory/temp/registrasi 
+ 
+ 
+Return Response: 
+{ 
+    "code": "01", 
+    "status": true, 
+    "message": "Success", 
+    "data": { 
+        "message": "Data berhasil diproses." 
+    } 
+} 
+3. 
+Pemasukan (Data Percobaan dan Data Real) 
+Method Type 
+POST 
+Description 
+Digunakan untuk mencatat data barang masuk ke dalam 
+sistem. 
+Authorization 
+API-Key 
+Value 
+x-insw-key 
+RqT40lH7Hy202uUybBLkFhtNnfAvxrlp 
+x-unique-key 
+Unique key data percobaan di dapatkan pada dashboard 
+sidebar. 
+Unique key data real di dapatkan ketika pendaftaran. 
+Request Body 
+
+--- Page 8 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 5 
+ 
+Element Data 
+Type 
+Mandatory(M) 
+/ Opsional(O) 
+Description 
+ 
+data 
+Array of Object 
+M 
+ 
+ 
+kdKegiatan 
+String 
+M 
+Kode Jenis Transaksi 
+30 : Transaksi Pemasukan 
+ 
+dokumenKegiatan 
+Array of Object 
+M 
+ 
+ 
+ 
+nomorDokKegiatan 
+String 
+M 
+Nomor Dokumen 
+Transaksi 
+ 
+ 
+tanggalKegiatan 
+Date (YYYY-
+MM-DD / DD-
+MM-YYYY) 
+M 
+Tanggal Dokumen 
+Transaksi 
+ 
+ 
+namaEntitas 
+String 
+O 
+Nama Entitas Pengirim 
+Transaksi 
+ 
+ 
+barangTransaksi 
+Array of Object 
+M 
+ 
+ 
+ 
+ 
+kdKategoriBarang 
+String 
+M 
+Kode Kategori Barang 
+ 
+ 
+ 
+kdBarang 
+String 
+M 
+Kode Barang Perusahaan 
+ 
+ 
+ 
+uraianBarang 
+String 
+O 
+Uraian atas Barang 
+ 
+ 
+ 
+jumlah 
+Numeric (18,4) 
+M 
+Jumlah Barang 
+*Wajib diisi dengan angka 0 jika 
+tidak ada nilai 
+ 
+ 
+ 
+kdSatuan 
+String 
+M 
+Kode Satuan Barang 
+ 
+ 
+ 
+nilai 
+Numeric (18,4) 
+O 
+Harga Total Barang 
+*Wajib diisi dengan angka 0 jika 
+tidak ada nilai  
+ 
+ 
+ 
+dokumen 
+ 
+Array of Object 
+O 
+*Jika tidak ada, wajib diisi 
+dengan [] 
+ 
+ 
+ 
+ 
+kodeDokumen 
+String 
+O 
+Kode Dokumen 
+ 
+ 
+ 
+ 
+nomorDokumen 
+String 
+O 
+Nomor Dokumen Pabean 
+ 
+ 
+ 
+ 
+tanggalDokumen 
+Date (YYYY-
+MM-DD / DD-
+MM-YYYY) 
+O 
+Tanggal Dokumen Pabean 
+Sample Json  
+Endpoint Dummy Data : https://api.insw.go.id/api-prod/inventory/temp/transaksi 
+Endpoint Real Data : https://api.insw.go.id/api-prod/inventory/transaksi 
+ 
+Request Body : 
+{ 
+    "data": [ 
+        { 
+            "kdKegiatan": "30", 
+            "dokumenKegiatan": [ 
+                { 
+                    "nomorDokKegiatan": "001/PEM/2025", 
+                    "tanggalKegiatan": "16-06-2025", 
+                    "namaEntitas": "Aulia", 
+                    "barangTransaksi": [ 
+                        { 
+                            "kdKategoriBarang": "2", 
+                            "kdBarang": "barang2", 
+                            "uraianBarang": "Uraian barang 2", 
+                            "jumlah": 40000, 
+                            "kdSatuan": "KGM", 
+
+--- Page 9 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 6 
+ 
+                            "nilai": 200000, 
+                            "dokumen": [ 
+                                { 
+                                    "kodeDokumen": "0407020", 
+                                    "nomorDokumen": "200/LDP-Masuk", 
+                                    "tanggalDokumen": "16-06-2023" 
+                                } 
+                            ] 
+                        } 
+                    ] 
+                } 
+            ] 
+        } 
+    ] 
+} 
+ 
+Return Response: 
+{ 
+    "code": "01", 
+    "status": true, 
+    "message": "Success", 
+    "data": { 
+        "resultDataTransaksi": [ 
+            { 
+                "idTransaksi": "80a851c1-6570-417e-8a08-b27bbe6edd89", 
+                "dokAsal": "1", 
+                "kdKegiatan": "30", 
+                "npwp": "413413659513000", 
+                "nib": "1251000240234", 
+                "nomorDokKegiatan": "001/PEM/2025", 
+                "tanggalKegiatan": "2025-06-15T17:00:00.000Z", 
+                "namaEntitas": "Aulia", 
+                "kdStatus": "001", 
+                "nipRekam": "1", 
+                "keterangan": null, 
+                "waktuRekam": "2025-02-20T03:27:29.272Z" 
+            } 
+        ], 
+        "resultBarangTransaksi": [ 
+            { 
+                "idBarangTransaksi": "4f4ad682-23d2-4cfd-8a9e-467abcdd4c3a", 
+                "idTransaksi": "80a851c1-6570-417e-8a08-b27bbe6edd89", 
+                "kdKategoriBarang": "2", 
+                "kdBarang": "barang2", 
+                "uraianBarang": "Uraian barang 2", 
+                "jumlah": "40000.0000", 
+                "kdSatuan": "KGM", 
+                "nilai": "200000.0000" 
+            } 
+        ], 
+        "resultDokPabean": [ 
+
+--- Page 10 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 7 
+ 
+            { 
+                "kdKategori": "04", 
+                "kdGa": "07", 
+                "kdDokumen": "020", 
+                "nomorDokumen": "200/LDP-Masuk", 
+                "tglDokumen": "2023-06-15T17:00:00.000Z", 
+                "flagJenisDokumen": false 
+            } 
+        ], 
+        "resultBarangDok": [ 
+            { 
+                "idBrgTransaksi": "4f4ad682-23d2-4cfd-8a9e-467abcdd4c3a", 
+                "idDokPabean": null 
+            } 
+        ] 
+    } 
+} 
+ 
+4. 
+Pengeluaran (Data Percobaan dan Data Real) 
+Method Type 
+POST 
+Description 
+Digunakan untuk mencatat data barang keluar dari sistem. 
+Authorization 
+API-Key 
+Value 
+x-insw-key 
+RqT40lH7Hy202uUybBLkFhtNnfAvxrlp 
+x-unique-key 
+Unique key data percobaan di dapatkan pada dashboard sidebar. 
+Unique key data real di dapatkan ketika pendaftaran. 
+Request Body 
+Element Data 
+Type 
+Mandatory(M) 
+/ Opsional(O) 
+Description 
+data 
+Array of Object 
+M 
+ 
+kdKegiatan 
+String 
+M 
+Kode Jenis Transaksi 
+31 : Transaksi Pengeluaran 
+dokumenKegiatan 
+Array of Object 
+M 
+ 
+ 
+nomorDokKegiatan 
+String 
+M 
+Nomor Dokumen Transaksi 
+ 
+tanggalKegiatan 
+Date (YYYY-MM-
+DD / DD-MM-
+YYYY) 
+M 
+Tanggal Dokumen Transaksi 
+ 
+namaEntitas 
+String 
+O 
+Nama Entitas Penerima 
+Transaksi 
+ 
+barangTransaksi 
+Array of Object 
+M 
+ 
+ 
+ 
+kdKategoriBarang 
+String 
+M 
+Kode Kategori Barang 
+ 
+ 
+kdBarang 
+String 
+M 
+Kode Barang Perusahaan 
+ 
+ 
+uraianBarang 
+String 
+O 
+Uraian atas Barang 
+ 
+ 
+jumlah 
+Numeric (18,4) 
+M 
+Jumlah Barang 
+*Wajib diisi dengan angka 0 jika 
+tidak ada nilai 
+ 
+ 
+kdSatuan 
+String 
+M 
+Kode Satuan Barang 
+ 
+ 
+nilai 
+Numeric (18,4) 
+O 
+Harga Total Barang 
+
+--- Page 11 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 8 
+ 
+*Wajib diisi dengan angka 0 jika 
+tidak ada nilai 
+ 
+ 
+dokumen 
+Array of Object 
+O 
+*Jika tidak ada, wajib diisi dengan [] 
+ 
+ 
+ 
+kodeDokumen 
+String 
+O 
+Kode Dokumen 
+ 
+ 
+ 
+nomorDokumen 
+String 
+O 
+Nomor Dokumen Pabean 
+ 
+ 
+ 
+tanggalDokumen 
+Date (YYYY-MM-
+DD / DD-MM-
+YYYY) 
+O 
+Tanggal Dokumen Pabean 
+Sample Json  
+Endpoint Dummy Data : https://api.insw.go.id/api-prod/inventory/temp/transaksi    
+Endpoint Real Data : https://api.insw.go.id/api-prod/inventory/transaksi  
+ 
+Request Body : 
+{ 
+    "data": [ 
+        { 
+            "kdKegiatan": "31", 
+            "dokumenKegiatan": [ 
+                { 
+                    "nomorDokKegiatan": "001/PEN/2025", 
+                    "tanggalKegiatan": "06-05-2023 14:32:10.134", 
+                    "namaEntitas": "Aulia", 
+                    "barangTransaksi": [ 
+                        { 
+                            "kdKategoriBarang": "2", 
+                            "kdBarang": "barang2", 
+                            "uraianBarang": "Uraian barang 2", 
+                            "jumlah": 40000, 
+                            "kdSatuan": "KGM", 
+                            "nilai": 200000, 
+                            "dokumen": [ 
+                                { 
+                                    "kodeDokumen": "0407631", 
+                                    "nomorDokumen": "200/LDP-Masuk", 
+                                    "tanggalDokumen": "05-06-2023" 
+                                }] 
+                        } 
+                    ] 
+                } 
+            ]} 
+    ] 
+} 
+ 
+Return Response: 
+{ 
+    "code": "01", 
+    "status": true, 
+    "message": "Success", 
+    "data": { 
+        "resultDataTransaksi": [ 
+            { 
+                "idTransaksi": "ee9a62a3-b940-4cf7-8aa8-12ad03fd0227", 
+
+--- Page 12 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 9 
+ 
+                "dokAsal": "1", 
+                "kdKegiatan": "31", 
+                "npwp": "413413659513000", 
+                "nib": "1251000240234", 
+                "nomorDokKegiatan": "01/PEN/2025", 
+                "tanggalKegiatan": "2023-05-06T07:13:04.134Z", 
+                "namaEntitas": "Aulia", 
+                "kdStatus": "001", 
+                "nipRekam": "1", 
+                "keterangan": null, 
+                "waktuRekam": "2025-02-20T03:29:41.294Z" 
+            }], 
+        "resultBarangTransaksi": [ 
+            { 
+                "idBarangTransaksi": "6cb22af4-7fbe-4ecf-a5a1-2120865bc951", 
+                "idTransaksi": "ee9a62a3-b940-4cf7-8aa8-12ad03fd0227", 
+                "kdKategoriBarang": "2", 
+                "kdBarang": "barang2", 
+                "uraianBarang": "Uraian barang 2", 
+                "jumlah": "40000.0000", 
+                "kdSatuan": "KGM", 
+                "nilai": "200000.0000" 
+            }], 
+        "resultDokPabean": [ 
+            { 
+                "kdKategori": "04", 
+                "kdGa": "07", 
+                "kdDokumen": "631", 
+                "nomorDokumen": "200/LDP-Masuk", 
+                "tglDokumen": "2023-06-04T17:00:00.000Z", 
+                "flagJenisDokumen": false 
+            }], 
+        "resultBarangDok": [ 
+            { 
+                "idBrgTransaksi": "6cb22af4-7fbe-4ecf-a5a1-2120865bc951", 
+                "idDokPabean": null 
+            }] 
+    } 
+} 
+ 
+5. 
+Stock Opname (Data Percobaan dan Data Real) 
+Method Type 
+POST 
+Description 
+Digunakan untuk mencatat hasil pengecekan fisik terhadap stok 
+barang guna memastikan kesesuaian dengan sistem. 
+Authorization 
+API-Key 
+Value 
+x-insw-key 
+RqT40lH7Hy202uUybBLkFhtNnfAvxrlp 
+x-unique-key 
+Unique key data percobaan di dapatkan pada dashboard sidebar. 
+
+--- Page 13 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 10 
+ 
+Unique key data real di dapatkan ketika pendaftaran. 
+Request Body 
+Element Data 
+Type 
+Mandatory(M) 
+/ Opsional(O) 
+Description 
+data 
+Array of Object 
+M 
+ 
+kdKegiatan 
+String 
+M 
+Kode Jenis Transaksi 
+32 : Transaksi Stock Opname 
+dokumenKegiatan 
+Array of Object 
+M 
+ 
+ 
+nomorDokKegiatan 
+String 
+M 
+Nomor Dokumen Transaksi 
+ 
+tanggalKegiatan 
+Date (YYYY-MM-
+DD / DD-MM-
+YYYY) 
+M 
+Tanggal Dokumen Transaksi 
+ 
+namaEntitas 
+String 
+O 
+Nama Entitas Transaksi 
+ 
+barangTransaksi 
+Array of Object 
+M 
+ 
+ 
+ 
+kdKategoriBarang 
+String 
+M 
+Kode Kategori Barang 
+ 
+ 
+kdBarang 
+String 
+M 
+Kode Barang Perusahaan 
+ 
+ 
+uraianBarang 
+String 
+O 
+Uraian atas Barang 
+ 
+ 
+jumlah 
+Numeric (18,4) 
+M 
+Jumlah Barang 
+*Wajib diisi dengan angka 0 jika 
+tidak ada nilai 
+ 
+ 
+kdSatuan 
+String 
+M 
+Kode Satuan Barang 
+ 
+ 
+nilai 
+Numeric (18,4) 
+O 
+Harga Total Barang 
+*Wajib diisi dengan angka 0 jika 
+tidak ada nilai 
+ 
+ 
+dokumen 
+Array of Object 
+O 
+*Jika tidak ada, wajib diisi dengan [] 
+ 
+ 
+ 
+kodeDokumen 
+String 
+O 
+Kode Dokumen 
+ 
+ 
+ 
+nomorDokumen 
+String 
+O 
+Nomor Dokumen Pabean 
+ 
+ 
+ 
+tanggalDokumen 
+Date (YYYY-MM-
+DD / DD-MM-
+YYYY) 
+O 
+Tanggal Dokumen Pabean 
+Sample Json  
+ 
+Endpoint Dummy Data : https://api.insw.go.id/api-prod/inventory/temp/transaksi 
+Endpoint Real Data : https://api.insw.go.id/api-prod/inventory/transaksi 
+ 
+Request Body : 
+{ 
+    "data": [ 
+        { 
+            "kdKegiatan": "32", 
+            "dokumenKegiatan": [ 
+                { 
+                    "nomorDokKegiatan": "001/STO/2025", 
+                    "tanggalKegiatan": "06-05-2023 14:32:10.134", 
+                    "namaEntitas": "Aulia", 
+                    "barangTransaksi": [ 
+                        { 
+                            "kdKategoriBarang": "1", 
+                            "kdBarang": "barang1", 
+                            "uraianBarang": "Uraian barang 1", 
+                            "jumlah": 20000, 
+
+--- Page 14 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 11 
+ 
+                            "kdSatuan": "KGM", 
+                            "nilai": 100000, 
+                            "dokumen": [ 
+                                { 
+                                    "kodeDokumen": "0407632", 
+                                    "nomorDokumen": "100/LDP-Masuk", 
+                                    "tanggalDokumen": "05-06-2023" 
+                                } 
+                            ] 
+                        } 
+                    ] 
+                } 
+            ] 
+        }] 
+} 
+ 
+Return Response: 
+{ 
+    "code": "01", 
+    "status": true, 
+    "message": "Success", 
+    "data": { 
+        "resultDataTransaksi": [ 
+            { 
+                "idTransaksi": "9fed2c9f-0ad4-46a2-868d-41882eaaaed1", 
+                "dokAsal": "1", 
+                "kdKegiatan": "32", 
+                "npwp": "413413659513000", 
+                "nib": "1251000240234", 
+                "nomorDokKegiatan": "01/STO/2025", 
+                "tanggalKegiatan": "2023-05-06T07:13:04.134Z", 
+                "namaEntitas": "Aulia", 
+                "kdStatus": "001", 
+                "nipRekam": "1", 
+                "keterangan": null, 
+                "waktuRekam": "2025-02-20T03:31:29.312Z" 
+            } 
+        ], 
+        "resultBarangTransaksi": [ 
+            { 
+                "idBarangTransaksi": "f388762b-c0cf-4257-8eb6-b4ad1250dd06", 
+                "idTransaksi": "9fed2c9f-0ad4-46a2-868d-41882eaaaed1", 
+                "kdKategoriBarang": "1", 
+                "kdBarang": "barang1", 
+                "uraianBarang": "Uraian barang 1", 
+                "jumlah": "20000.0000", 
+                "kdSatuan": "KGM", 
+                "nilai": "100000.0000" 
+            } 
+        ], 
+        "resultDokPabean": [ 
+
+--- Page 15 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 12 
+ 
+            { 
+                "kdKategori": "04", 
+                "kdGa": "07", 
+                "kdDokumen": "632", 
+                "nomorDokumen": "100/LDP-Masuk", 
+                "tglDokumen": "2023-06-04T17:00:00.000Z", 
+                "flagJenisDokumen": false 
+            } 
+        ], 
+        "resultBarangDok": [ 
+            { 
+                "idBrgTransaksi": "f388762b-c0cf-4257-8eb6-b4ad1250dd06", 
+                "idDokPabean": null 
+            } 
+        ] 
+    } 
+} 
+ 
+ 
+6. 
+Adjustment (Data Percobaan dan Data Real) 
+Method Type 
+POST 
+Description 
+Digunakan untuk mencatat hasil pengecekan fisik terhadap stok 
+barang guna memastikan kesesuaian dengan sistem. 
+Authorization 
+API-Key 
+Value 
+x-insw-key 
+RqT40lH7Hy202uUybBLkFhtNnfAvxrlp 
+x-unique-key 
+Unique key data percobaan di dapatkan pada dashboard sidebar. 
+Unique key data real di dapatkan ketika pendaftaran. 
+Request Body 
+Element Data 
+Type 
+Mandatory(M) 
+/ Opsional(O) 
+Description 
+data 
+Array of Object 
+M 
+ 
+kdKegiatan 
+String 
+M 
+Kode Jenis Transaksi 
+33 : Transaksi Adjusment 
+dokumenKegiatan 
+Array of Object 
+M 
+ 
+ 
+nomorDokKegiatan 
+String 
+M 
+Nomor Dokumen Transaksi 
+ 
+tanggalKegiatan 
+Date (YYYY-MM-
+DD / DD-MM-
+YYYY) 
+M 
+Tanggal Dokumen Transaksi 
+ 
+keterangan 
+String 
+O 
+Keterangan Dokumen 
+ 
+namaEntitas 
+String 
+O 
+Nama Entitas Transaksi 
+ 
+barangTransaksi 
+Array of Object 
+M 
+ 
+ 
+ 
+kdKategoriBarang 
+String 
+M 
+Kode Kategori Barang 
+ 
+ 
+kdBarang 
+String 
+M 
+Kode Barang Perusahaan 
+ 
+ 
+uraianBarang 
+String 
+O 
+Uraian atas Barang 
+ 
+ 
+jumlah 
+Numeric (18,4) 
+M 
+Jumlah Barang 
+*Wajib diisi dengan angka 0 jika 
+tidak ada nilai 
+
+--- Page 16 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 13 
+ 
+ 
+ 
+kdSatuan 
+String 
+M 
+Kode Satuan Barang 
+ 
+ 
+nilai 
+Numeric (18,4) 
+O 
+Harga Total Barang 
+*Wajib diisi dengan angka 0 jika 
+tidak ada nilai 
+ 
+ 
+dokumen 
+Array of Object 
+O 
+*Jika tidak ada, wajib diisi dengan [] 
+ 
+ 
+ 
+kodeDokumen 
+String 
+O 
+Kode Dokumen 
+ 
+ 
+ 
+nomorDokumen 
+String 
+O 
+Nomor Dokumen Pabean 
+ 
+ 
+ 
+tanggalDokumen 
+Date (YYYY-MM-
+DD / DD-MM-
+YYYY) 
+O 
+Tanggal Dokumen Pabean 
+Sample Payload 
+ 
+Endpoint Dummy Data : https://api.insw.go.id/api-prod/inventory/temp/transaksi 
+Endpoint Real Data : https://api.insw.go.id/api-prod/inventory/transaksi 
+ 
+Request Body : 
+{ 
+    "data": [ 
+        { 
+            "kdKegiatan": "33", 
+            "dokumenKegiatan": [ 
+                { 
+                    "nomorDokKegiatan": "001/ADJ/2025", 
+                    "tanggalKegiatan": "06-05-2023 14:32:10.134", 
+                    "keterangan": "Adjustmen bulanan",  
+                    "namaEntitas": "Aulia", 
+                    "barangTransaksi": [ 
+                        { 
+                            "kdKategoriBarang": "1", 
+                            "kdBarang": "barang1", 
+                            "uraianBarang": "Uraian barang 1", 
+                            "jumlah": -20000, 
+                            "kdSatuan": "KGM", 
+                            "nilai": 100000, 
+                            "dokumen": [] 
+                        }] 
+                }] 
+        } 
+    ] 
+} 
+ 
+Return Response: 
+{ 
+    "code": "01", 
+    "status": true, 
+    "message": "Success", 
+    "data": { 
+        "resultDataTransaksi": [ 
+            { 
+                "idTransaksi": "6b46cf84-887f-4baf-a132-b83dd220ffa7", 
+                "dokAsal": "1", 
+                "kdKegiatan": "33", 
+
+--- Page 17 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 14 
+ 
+                "npwp": "413413659513000", 
+                "nib": "1251000240234", 
+                "nomorDokKegiatan": "001/ADJ/2025", 
+                "tanggalKegiatan": "2023-05-06T07:13:04.134Z", 
+                "namaEntitas": "Aulia", 
+                "kdStatus": "001", 
+                "nipRekam": "1", 
+                "keterangan": "Adjustmen bulanan", 
+                "waktuRekam": "2025-02-20T03:32:58.325Z" 
+            } 
+        ], 
+        "resultBarangTransaksi": [ 
+            { 
+                "idBarangTransaksi": "e072fce1-86be-4f5e-8117-d5dedc90f568", 
+                "idTransaksi": "6b46cf84-887f-4baf-a132-b83dd220ffa7", 
+                "kdKategoriBarang": "1", 
+                "kdBarang": "barang1", 
+                "uraianBarang": "Uraian barang 1", 
+                "jumlah": "-20000.0000", 
+                "kdSatuan": "KGM", 
+                "nilai": "100000.0000" 
+            } 
+        ], 
+        "resultDokPabean": [], 
+        "resultBarangDok": [] 
+    } 
+} 
+ 
+7. 
+Cleansing Data (Data Percobaan) 
+Method Type 
+DELETE 
+Description 
+Digunakan untuk mengunci saldo awal yang telah ditetapkan sebagai 
+acuan final. 
+Authorization 
+API-Key 
+Value 
+x-insw-key 
+RqT40lH7Hy202uUybBLkFhtNnfAvxrlp 
+x-unique-key 
+Unique key data percobaan di dapatkan pada dashboard sidebar. 
+Request Parameters 
+Parameters 
+Cardin
+ality 
+Description 
+npwp 
+1-1 
+Nomor NPWP 
+Return Respond 
+Field 
+Cardin
+ality 
+Mandat
+ory/Con
+ditional 
+Type 
+Definitio
+n 
+Description 
+ 
+code 
+1-1 
+M 
+Number 
+n3 
+Kode Status (01, 02) 
+ 
+status 
+1-1 
+M 
+Boolean 
+an..5 
+True 
+False 
+
+--- Page 18 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 15 
+ 
+ 
+message 
+1-1 
+M 
+String 
+n3 
+Success 
+Error 
+ 
+data 
+ 
+1-1 
+M 
+String 
+an..100 
+Keterangan Status 
+01 : cleansing success  
+02 : Data atas npwp tersebut 
+tidak terdaftar 
+Sample Payload 
+Endpoint Dummy Data : https://api.insw.go.id/api-prod/inventory/temp/transaksi 
+ 
+Return Response: 
+{ 
+    "code": "01", 
+    "status": true, 
+    "message": "Success", 
+    "data": "cleansing success" 
+} 
+8. 
+Update Dokumen Barang (Data Percobaan dan Data Real) 
+ 
+Method Type 
+PUT  
+Description 
+Digunakan untuk memperbarui dokumen terkait data pemasukan atau 
+pengeluaran barang. 
+Authorization 
+API-Key 
+Value 
+x-insw-key 
+RqT40lH7Hy202uUybBLkFhtNnfAvxrlp 
+x-unique-key 
+Unique key data percobaan di dapatkan pada dashboard sidebar. 
+Unique key data real di dapatkan ketika pendaftaran. 
+Request Parameter  
+Parameters 
+Cardin
+ality 
+Description 
+idTransaksi 
+1-1 
+ 
+idBarangTransaksi 
+1-1 
+Update dokumen barang untuk satu dokumen barang. 
+Request Body 
+Parameters 
+Cardin
+ality 
+Description 
+npwp 
+1-1 
+Nomor NPWP 
+kodeDokumen 
+1-1 
+Kode Dokumen (Data Referensi III.3, III.4) 
+nomorDokumen 
+1-1 
+Nomor Dokumen 
+tanggalDokumen 
+1-1 
+Tanggal Dokumen 
+Return Respond 
+Field 
+Cardin
+ality 
+Mandat
+ory/Con
+ditional 
+Type 
+Definition 
+Description 
+ 
+code 
+1-1 
+M 
+Numbe
+r 
+n3 
+Kode Status (01, 02) 
+ 
+status 
+1-1 
+M 
+Boolea
+n 
+an..5 
+True 
+False 
+
+--- Page 19 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 16 
+ 
+ 
+message 
+1-1 
+M 
+String 
+n3 
+Success 
+Error 
+ 
+data 
+ 
+1-N 
+M 
+Array of 
+Object 
+ 
+ 
+ 
+ 
+idBrgTransaksi 
+1-1 
+M 
+String 
+an..20 
+ Identitas Barang Transaksi 
+ 
+ 
+idDokPabean 
+1-1 
+M 
+String 
+an..20 
+ Identitas Dokumen Pabean 
+ 
+ 
+id_barang_dok 
+1-1 
+M 
+String 
+an..20 
+ Identitas Barang Dokumen 
+Sample Payload 
+Put by idTransaksi 
+Endpoint Dummy Data : https://api.insw.go.id/api-prod/inventory/temp/transaksi/dokumen 
+Endpoint Real Data : https://api.insw.go.id/api-prod/inventory/transaksi/dokumen 
+ 
+Request Body : 
+{ 
+    "idTransaksi": "80a851c1-6570-417e-8a08-b27bbe6edd89",  
+    "idBarangTransaksi": "4f4ad682-23d2-4cfd-8a9e-467abcdd4c3a",  
+    "kodeDokumen": "0407020", 
+    "nomorDokumen": "001/PEM/2025", 
+    "tanggalDokumen": "16-06-2023" 
+} 
+ 
+Return Response: 
+{ 
+    "code": "01", 
+    "status": true, 
+    "message": "Success", 
+    "data": [ 
+        { 
+            "idBrgTransaksi": "4f4ad682-23d2-4cfd-8a9e-467abcdd4c3a", 
+            "idDokPabean": null 
+        } 
+    ] 
+} 
+9. 
+Get Pemasukan (Data Percobaan dan Data Real) 
+Method Type 
+POST 
+Description 
+Digunakan untuk mengambil data barang yang telah dicatat sebagai 
+pemasukan. 
+Authorization 
+API-Key 
+Value 
+x-insw-key 
+RqT40lH7Hy202uUybBLkFhtNnfAvxrlp 
+x-unique-key 
+Unique key data percobaan di dapatkan pada dashboard sidebar. 
+Unique key data real di dapatkan ketika pendaftaran. 
+Request Params 
+
+--- Page 20 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 17 
+ 
+Parameters 
+Cardin
+ality 
+Description 
+tglAwal 
+1-1 
+Tanggal Awal Dokumen yang akan dicari 
+tglAkhir 
+1-1 
+Tanggal Akhir Dokumen yang akan dicari 
+Return Respond 
+Field 
+Cardin
+ality 
+Mandat
+ory/Con
+ditional 
+Type 
+Definition 
+Description 
+ 
+code 
+1-1 
+M 
+Numbe
+r 
+n3 
+Kode Status (01, 02) 
+ 
+status 
+1-1 
+M 
+Boolea
+n 
+an..5 
+True 
+False 
+ 
+message 
+1-1 
+M 
+String 
+n3 
+Success 
+Error 
+ 
+data 
+ 
+1-N 
+M 
+Array of 
+Object 
+ 
+ 
+ 
+ 
+idTransaksi 
+1-1 
+M 
+String 
+an..20 
+ Identitas transaksi 
+ 
+ 
+kdKegiatan 
+1-1 
+M 
+String 
+an..20 
+ Kode kegiatan 
+ 
+ 
+nomorDokKegiatan 
+1-1 
+M 
+String 
+an..20 
+ Nomor Dokumen Kegiatan 
+ 
+ 
+tanggalKegiatan 
+1-1 
+M 
+Date 
+YY-MM-DD  Tanggal Kegiatan 
+ 
+ 
+namaEntitas 
+1-1 
+M 
+String 
+an..20 
+ Nama Entitas 
+ 
+ 
+barangTransaksi 
+1-N 
+M 
+Array of 
+Object 
+ 
+Relasi Transaksi 
+ 
+ 
+ 
+idBarangTransaksi 
+1-1 
+M 
+String 
+an..20 
+ Identitas Barang transaksi 
+ 
+ 
+ 
+kdKategoriBarang 
+1-1 
+M 
+String 
+an..20 
+ Kode kategori barang 
+ 
+ 
+ 
+kdBarang 
+1-1 
+M 
+String 
+an..20 
+ Kode barang  
+ 
+ 
+ 
+uraianBarang 
+1-1 
+M 
+String 
+an..50 
+ Keterangan Barang 
+ 
+ 
+ 
+jumlah 
+1-1 
+M 
+Numbe
+r 
+n..20 
+ Jumlah barang 
+ 
+ 
+ 
+kdSatuan 
+1-1 
+M 
+String 
+an..20 
+ Kode satuan barang 
+ 
+ 
+ 
+nilai 
+1-1 
+M 
+Numbe
+r 
+n..20 
+ Nilai dari barang 
+ 
+ 
+ 
+dokumen 
+1-N 
+M 
+Array of 
+Object 
+ 
+Relasi Dokumen 
+ 
+ 
+ 
+ 
+kodeDokumen 
+M 
+M 
+Numbe
+r 
+n..20 
+ Kode dokumen 
+ 
+ 
+ 
+ 
+nomorDokumen 
+M 
+M 
+String 
+an..20 
+ Nomor dokumen 
+ 
+ 
+ 
+ 
+tanggalDokumen 
+M 
+M 
+Date 
+YY-MM-DD  Waktu 
+Sample Payload 
+Endpoint Dummy Data : https://api.insw.go.id/api-
+prod/inventory/temp/transaksi/30/tglAwal=${tglAwal}&tglAkhir=${tglAkhir} 
+Endpoint Real Data : https://api.insw.go.id/api-
+prod/inventory/transaksi/30/tglAwal=${tglAwal}&tglAkhir=${tglAkhir} 
+ 
+Return Response: 
+{ 
+    "code": "01", 
+
+--- Page 21 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 18 
+ 
+    "status": true, 
+    "message": "Success", 
+    "data": [ 
+        { 
+            "idTransaksi": "80a851c1-6570-417e-8a08-b27bbe6edd89", 
+            "kdKegiatan": "30", 
+            "nomorDokKegiatan": "001/PEM/2025", 
+            "tanggalKegiatan": "2025-06-15T17:00:00.000Z", 
+            "namaEntitas": "Aulia", 
+            "barangTransaksi": [ 
+                { 
+                    "idBarangTransaksi": "4f4ad682-23d2-4cfd-8a9e-467abcdd4c3a", 
+                    "kdKategoriBarang": "2", 
+                    "kdBarang": "barang2", 
+                    "uraianBarang": "Uraian barang 2", 
+                    "jumlah": "40000.0000", 
+                    "kdSatuan": "KGM", 
+                    "nilai": "200000.0000", 
+                    "dokumen": [] 
+                } 
+            ] 
+        } 
+    ] 
+} 
+10. Get Pengeluaran (Data Percobaan dan Data Real) 
+Method Type 
+POST 
+Description 
+Digunakan untuk mengambil data barang yang telah dicatat sebagai 
+pengeluaran. 
+Authorization 
+API-Key 
+Value 
+x-insw-key 
+RqT40lH7Hy202uUybBLkFhtNnfAvxrlp 
+x-unique-key 
+Unique key data percobaan di dapatkan pada dashboard sidebar. 
+Unique key data real di dapatkan ketika pendaftaran. 
+Request Body 
+Parameters 
+Cardin
+ality 
+Description 
+tglAwal 
+1-1 
+Tanggal Awal Dokumen yang akan dicari 
+tglAkhir 
+1-1 
+Tanggal Akhir Dokumen yang akan dicari 
+Return Respond 
+Field 
+Cardin
+ality 
+Mandat
+ory/Con
+ditional 
+Type 
+Definition 
+Description 
+ 
+code 
+1-1 
+M 
+Numbe
+r 
+n3 
+Kode Status (01, 02) 
+ 
+status 
+1-1 
+M 
+Boolea
+n 
+an..5 
+True 
+False 
+
+--- Page 22 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 19 
+ 
+ 
+message 
+1-1 
+M 
+String 
+n3 
+Success 
+Error 
+ 
+data 
+ 
+1-N 
+M 
+Array of 
+Object 
+ 
+ 
+ 
+ 
+idTransaksi 
+1-1 
+M 
+String 
+an..20 
+ Identitas transaksi 
+ 
+ 
+kdKegiatan 
+1-1 
+M 
+String 
+an..20 
+ Kode kegiatan 
+ 
+ 
+nomorDokKegiatan 
+1-1 
+M 
+String 
+an..20 
+ Nomor Dokumen Kegiatan 
+ 
+ 
+tanggalKegiatan 
+1-1 
+M 
+Date 
+YY-MM-DD  Tanggal Kegiatan 
+ 
+ 
+namaEntitas 
+1-1 
+M 
+String 
+an..20 
+ Nama Entitas 
+ 
+ 
+barangTransaksi 
+1-N 
+M 
+Array of 
+Object 
+ 
+Relasi Transaksi 
+ 
+ 
+ 
+idBarangTransaksi 
+1-1 
+M 
+String 
+an..20 
+ Identitas Barang transaksi 
+ 
+ 
+ 
+kdKategoriBarang 
+1-1 
+M 
+String 
+an..20 
+ Kode kategori barang 
+ 
+ 
+ 
+kdBarang 
+1-1 
+M 
+String 
+an..20 
+ Kode barang  
+ 
+ 
+ 
+uraianBarang 
+1-1 
+M 
+String 
+an..50 
+ Keterangan Barang 
+ 
+ 
+ 
+jumlah 
+1-1 
+M 
+Numbe
+r 
+n..20 
+ Jumlah barang 
+ 
+ 
+ 
+kdSatuan 
+1-1 
+M 
+String 
+an..20 
+ Kode satuan barang 
+ 
+ 
+ 
+nilai 
+1-1 
+M 
+Numbe
+r 
+n..20 
+ Nilai dari barang 
+ 
+ 
+ 
+dokumen 
+1-N 
+M 
+Array of 
+Object 
+ 
+Relasi Dokumen 
+ 
+ 
+ 
+ 
+kodeDokumen 
+M 
+M 
+Numbe
+r 
+n..20 
+ Kode dokumen 
+ 
+ 
+ 
+ 
+nomorDokumen 
+M 
+M 
+String 
+an..20 
+ Nomor dokumen 
+ 
+ 
+ 
+ 
+tanggalDokumen 
+M 
+M 
+Date 
+YY-MM-DD  Waktu 
+Sample Payload 
+Endpoint Dummy Data : https://api.insw.go.id/api-
+prod/inventory/temp/transaksi/31/tglAwal=${tglAwal}&tglAkhir=${tglAkhir} 
+Endpoint Real Data : https://api.insw.go.id/api-
+prod/inventory/transaksi/31/tglAwal=${tglAwal}&tglAkhir=${tglAkhir} 
+ 
+Return Response:  
+{ 
+    "code": "01", 
+    "status": true, 
+    "message": "Success", 
+    "data": [ 
+        { 
+            "idTransaksi": "a0a62781-5f34-4857-84ca-a5bcf1f012aa", 
+            "kdKegiatan": "31", 
+            "nomorDokKegiatan": "001/PEN/2025", 
+            "tanggalKegiatan": "2023-05-06T07:13:04.134Z", 
+            "namaEntitas": "Aulia", 
+            "barangTransaksi": [ 
+                { 
+                    "idBarangTransaksi": "6cb22af4-7fbe-4ecf-a5a1-2120865bc951", 
+                    "kdKategoriBarang": "2", 
+
+--- Page 23 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 20 
+ 
+                    "kdBarang": "barang2", 
+                    "uraianBarang": "Uraian barang 2", 
+                    "jumlah": "40000.0000", 
+                    "kdSatuan": "KGM", 
+                    "nilai": "200000.0000", 
+                    "dokumen": [] 
+                }, 
+                { 
+                    "idBarangTransaksi": "8e17229a-68ef-4979-92f0-d93d21efea51", 
+                    "kdKategoriBarang": "1", 
+                    "kdBarang": "barang1", 
+                    "uraianBarang": "Uraian barang 1", 
+                    "jumlah": "20000.0000", 
+                    "kdSatuan": "KGM", 
+                    "nilai": "100000.0000", 
+                    "dokumen": [] 
+                }, 
+                { 
+                    "idBarangTransaksi": "3449bab0-9cbe-4cad-95a0-0110be958f45", 
+                    "kdKategoriBarang": "2", 
+                    "kdBarang": "barang2", 
+                    "uraianBarang": "Uraian barang 2", 
+                    "jumlah": "40000.0000", 
+                    "kdSatuan": "KGM", 
+                    "nilai": "200000.0000", 
+                    "dokumen": [] 
+                } 
+            ] 
+        }, 
+        { 
+            "idTransaksi": "ee9a62a3-b940-4cf7-8aa8-12ad03fd0227", 
+            "kdKegiatan": "31", 
+            "nomorDokKegiatan": "01/PEN/2025", 
+            "tanggalKegiatan": "2023-05-06T07:13:04.134Z", 
+            "namaEntitas": "Aulia", 
+            "barangTransaksi": [ 
+                { 
+                    "idBarangTransaksi": "6cb22af4-7fbe-4ecf-a5a1-2120865bc951", 
+                    "kdKategoriBarang": "2", 
+                    "kdBarang": "barang2", 
+                    "uraianBarang": "Uraian barang 2", 
+                    "jumlah": "40000.0000", 
+                    "kdSatuan": "KGM", 
+                    "nilai": "200000.0000", 
+                    "dokumen": [] 
+                }, 
+                { 
+                    "idBarangTransaksi": "8e17229a-68ef-4979-92f0-d93d21efea51", 
+                    "kdKategoriBarang": "1", 
+                    "kdBarang": "barang1", 
+                    "uraianBarang": "Uraian barang 1", 
+
+--- Page 24 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 21 
+ 
+                    "jumlah": "20000.0000", 
+                    "kdSatuan": "KGM", 
+                    "nilai": "100000.0000", 
+                    "dokumen": [] 
+                }, 
+                { 
+                    "idBarangTransaksi": "3449bab0-9cbe-4cad-95a0-0110be958f45", 
+                    "kdKategoriBarang": "2", 
+                    "kdBarang": "barang2", 
+                    "uraianBarang": "Uraian barang 2", 
+                    "jumlah": "40000.0000", 
+                    "kdSatuan": "KGM", 
+                    "nilai": "200000.0000", 
+                    "dokumen": [] 
+                }] 
+        }] 
+} 
+11. Get Adjusment (Data Percobaan dan Data Real) 
+ 
+Method Type 
+POST 
+Description 
+Digunakan untuk mengambil data penyesuaian stok barang. 
+Authorization 
+API-Key 
+Value 
+x-insw-key 
+RqT40lH7Hy202uUybBLkFhtNnfAvxrlp 
+x-unique-key 
+Unique key data percobaan di dapatkan pada dashboard sidebar. 
+Unique key data real di dapatkan ketika pendaftaran. 
+Request Body 
+Parameters 
+Cardin
+ality 
+Description 
+tglAwal 
+1-1 
+Tanggal Awal Dokumen yang akan dicari 
+tglAkhir 
+1-1 
+Tanggal Akhir Dokumen yang akan dicari 
+Return Respond 
+Field 
+Cardin
+ality 
+Mandat
+ory/Con
+ditional 
+Type 
+Definition 
+Description 
+ 
+code 
+1-1 
+M 
+Numbe
+r 
+n3 
+Kode Status (01, 02) 
+ 
+status 
+1-1 
+M 
+Boolea
+n 
+an..5 
+True 
+False 
+ 
+message 
+1-1 
+M 
+String 
+n3 
+Success 
+Error 
+ 
+data 
+ 
+1-N 
+M 
+Array of 
+Object 
+ 
+ 
+ 
+ 
+idTransaksi 
+1-1 
+M 
+String 
+an..20 
+ Identitas transaksi 
+ 
+ 
+kdKegiatan 
+1-1 
+M 
+String 
+an..20 
+ Kode kegiatan 
+ 
+ 
+nomorDokKegiatan 
+1-1 
+M 
+String 
+an..20 
+ Nomor Dokumen Kegiatan 
+
+--- Page 25 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 22 
+ 
+ 
+ 
+tanggalKegiatan 
+1-1 
+M 
+Date 
+YY-MM-DD  Tanggal Kegiatan 
+ 
+ 
+namaEntitas 
+1-1 
+M 
+String 
+an..20 
+ Nama Entitas 
+ 
+ 
+barangTransaksi 
+1-N 
+M 
+Array of 
+Object 
+ 
+Relasi Transaksi 
+ 
+ 
+ 
+idBarangTransaksi 
+1-1 
+M 
+String 
+an..20 
+ Identitas Barang transaksi 
+ 
+ 
+ 
+kdKategoriBarang 
+1-1 
+M 
+String 
+an..20 
+ Kode kategori barang 
+ 
+ 
+ 
+kdBarang 
+1-1 
+M 
+String 
+an..20 
+ Kode barang  
+ 
+ 
+ 
+uraianBarang 
+1-1 
+M 
+String 
+an..50 
+ Keterangan Barang 
+ 
+ 
+ 
+jumlah 
+1-1 
+M 
+Numbe
+r 
+n..20 
+ Jumlah barang 
+ 
+ 
+ 
+kdSatuan 
+1-1 
+M 
+String 
+an..20 
+ Kode satuan barang 
+ 
+ 
+ 
+nilai 
+1-1 
+M 
+Numbe
+r 
+n..20 
+ Nilai dari barang 
+ 
+ 
+ 
+dokumen 
+1-N 
+M 
+Array of 
+Object 
+ 
+Relasi Dokumen 
+ 
+ 
+ 
+ 
+kodeDokumen 
+M 
+M 
+Numbe
+r 
+n..20 
+ Kode dokumen 
+ 
+ 
+ 
+ 
+nomorDokumen 
+M 
+M 
+String 
+an..20 
+ Nomor dokumen 
+ 
+ 
+ 
+ 
+tanggalDokumen 
+M 
+M 
+Date 
+YY-MM-DD  Waktu 
+Sample Payload 
+Endpoint Dummy Data : https://api.insw.go.id/api-
+prod/inventory/temp/transaksi/33/tglAwal=${tglAwal}&tglAkhir=${tglAkhir} 
+Endpoint Real Data : https://api.insw.go.id/api-
+prod/inventory/transaksi/33/tglAwal=${tglAwal}&tglAkhir=${tglAkhir} 
+ 
+Return Response: 
+{ 
+    "code": "01", 
+    "status": true, 
+    "message": "Success", 
+    "data": [ 
+        { 
+            "idTransaksi": "6b46cf84-887f-4baf-a132-b83dd220ffa7", 
+            "kdKegiatan": "33", 
+            "nomorDokKegiatan": "001/ADJ/2025", 
+            "tanggalKegiatan": "2023-05-06T07:13:04.134Z", 
+            "namaEntitas": "Aulia", 
+            "barangTransaksi": [ 
+                { 
+                    "idBarangTransaksi": "e072fce1-86be-4f5e-8117-d5dedc90f568", 
+                    "kdKategoriBarang": "1", 
+                    "kdBarang": "barang1", 
+                    "uraianBarang": "Uraian barang 1", 
+                    "jumlah": "-20000.0000", 
+                    "kdSatuan": "KGM", 
+                    "nilai": "100000.0000", 
+                    "dokumen": [] 
+                }] 
+        }] 
+
+--- Page 26 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 23 
+ 
+} 
+12. Get Stock Opname (Data Percobaan dan Data Real) 
+ 
+Method Type 
+PUT by idTransaksi 
+PUT by idBarangTransaksi 
+Description 
+Digunakan untuk mengambil data penyesuaian stok barang. 
+Authorization 
+API-Key 
+Value 
+x-insw-key 
+RqT40lH7Hy202uUybBLkFhtNnfAvxrlp 
+x-unique-key 
+Unique key data percobaan di dapatkan pada dashboard sidebar. 
+Unique key data real di dapatkan ketika pendaftaran. 
+Request Body 
+Parameters 
+Cardin
+ality 
+Description 
+tglAwal 
+1-1 
+Tanggal Awal Dokumen yang akan dicari 
+tglAkhir 
+1-1 
+Tanggal Akhir Dokumen yang akan dicari 
+Return Respond 
+Field 
+Cardin
+ality 
+Mandat
+ory/Con
+ditional 
+Type 
+Definition 
+Description 
+ 
+code 
+1-1 
+M 
+Numbe
+r 
+n3 
+Kode Status (01, 02) 
+ 
+status 
+1-1 
+M 
+Boolea
+n 
+an..5 
+True 
+False 
+ 
+message 
+1-1 
+M 
+String 
+n3 
+Success 
+Error 
+ 
+data 
+ 
+1-N 
+M 
+Array of 
+Object 
+ 
+ 
+ 
+ 
+idTransaksi 
+1-1 
+M 
+String 
+an..20 
+ Identitas transaksi 
+ 
+ 
+kdKegiatan 
+1-1 
+M 
+String 
+an..20 
+ Kode kegiatan 
+ 
+ 
+nomorDokKegiatan 
+1-1 
+M 
+String 
+an..20 
+ Nomor Dokumen Kegiatan 
+ 
+ 
+tanggalKegiatan 
+1-1 
+M 
+Date 
+YY-MM-DD  Tanggal Kegiatan 
+ 
+ 
+namaEntitas 
+1-1 
+M 
+String 
+an..20 
+ Nama Entitas 
+ 
+ 
+barangTransaksi 
+1-N 
+M 
+Array of 
+Object 
+ 
+Relasi Transaksi 
+ 
+ 
+ 
+idBarangTransaksi 
+1-1 
+M 
+String 
+an..20 
+ Identitas Barang transaksi 
+ 
+ 
+ 
+kdKategoriBarang 
+1-1 
+M 
+String 
+an..20 
+ Kode kategori barang 
+ 
+ 
+ 
+kdBarang 
+1-1 
+M 
+String 
+an..20 
+ Kode barang  
+ 
+ 
+ 
+uraianBarang 
+1-1 
+M 
+String 
+an..50 
+ Keterangan Barang 
+ 
+ 
+ 
+jumlah 
+1-1 
+M 
+Numbe
+r 
+n..20 
+ Jumlah barang 
+ 
+ 
+ 
+kdSatuan 
+1-1 
+M 
+String 
+an..20 
+ Kode satuan barang 
+ 
+ 
+ 
+nilai 
+1-1 
+M 
+Numbe
+r 
+n..20 
+ Nilai dari barang 
+
+--- Page 27 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 24 
+ 
+ 
+ 
+ 
+dokumen 
+1-N 
+M 
+Array of 
+Object 
+ 
+Relasi Dokumen 
+ 
+ 
+ 
+ 
+kodeDokumen 
+M 
+M 
+Numbe
+r 
+n..20 
+ Kode dokumen 
+ 
+ 
+ 
+ 
+nomorDokumen 
+M 
+M 
+String 
+an..20 
+ Nomor dokumen 
+ 
+ 
+ 
+ 
+tanggalDokumen 
+M 
+M 
+Date 
+YY-MM-DD  Waktu 
+Sample Payload 
+Endpoint Dummy Data : https://api-.insw.go.id/api-
+prod/inventory/temp/transaksi/32/tglAwal=${tglAwal}&tglAkhir=${tglAkhir} 
+Endpoint Real Data : https://api.insw.go.id/api-
+prod/inventory/transaksi/32/tglAwal=${tglAwal}&tglAkhir=${tglAkhir} 
+ 
+ 
+Return Response : 
+{ 
+    "code": "01", 
+    "status": true, 
+    "message": "Success", 
+    "data": [ 
+        { 
+            "idTransaksi": "d52fbaad-225a-4c6e-a333-03d82253f9bb", 
+            "kdKegiatan": "32", 
+            "nomorDokKegiatan": "001/STO/2025", 
+            "tanggalKegiatan": "2023-05-06T07:13:04.134Z", 
+            "namaEntitas": "Aulia", 
+            "barangTransaksi": [ 
+                { 
+                    "idBarangTransaksi": "f388762b-c0cf-4257-8eb6-b4ad1250dd06", 
+                    "kdKategoriBarang": "1", 
+                    "kdBarang": "barang1", 
+                    "uraianBarang": "Uraian barang 1", 
+                    "jumlah": "20000.0000", 
+                    "kdSatuan": "KGM", 
+                    "nilai": "100000.0000", 
+                    "dokumen": [] 
+                }, 
+                { 
+                    "idBarangTransaksi": "8fe46dc5-5342-4641-ad42-395b0539bf15", 
+                    "kdKategoriBarang": "1", 
+                    "kdBarang": "barang1", 
+                    "uraianBarang": "Uraian barang 1", 
+                    "jumlah": "20000.0000", 
+                    "kdSatuan": "KGM", 
+                    "nilai": "100000.0000", 
+                    "dokumen": [] 
+                }, 
+                { 
+                    "idBarangTransaksi": "cd2bee6f-82b9-4e09-aa7d-9304f23b65a1", 
+                    "kdKategoriBarang": "2", 
+                    "kdBarang": "barang2", 
+                    "uraianBarang": "Uraian barang 2", 
+
+--- Page 28 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 25 
+ 
+                    "jumlah": "40000.0000", 
+                    "kdSatuan": "KGM", 
+                    "nilai": "200000.0000", 
+                    "dokumen": [] 
+                }] 
+        }, 
+        { 
+            "idTransaksi": "9fed2c9f-0ad4-46a2-868d-41882eaaaed1", 
+            "kdKegiatan": "32", 
+            "nomorDokKegiatan": "01/STO/2025", 
+            "tanggalKegiatan": "2023-05-06T07:13:04.134Z", 
+            "namaEntitas": "Aulia", 
+            "barangTransaksi": [ 
+                { 
+                    "idBarangTransaksi": "f388762b-c0cf-4257-8eb6-b4ad1250dd06", 
+                    "kdKategoriBarang": "1", 
+                    "kdBarang": "barang1", 
+                    "uraianBarang": "Uraian barang 1", 
+                    "jumlah": "20000.0000", 
+                    "kdSatuan": "KGM", 
+                    "nilai": "100000.0000", 
+                    "dokumen": [] 
+                }, 
+                { 
+                    "idBarangTransaksi": "8fe46dc5-5342-4641-ad42-395b0539bf15", 
+                    "kdKategoriBarang": "1", 
+                    "kdBarang": "barang1", 
+                    "uraianBarang": "Uraian barang 1", 
+                    "jumlah": "20000.0000", 
+                    "kdSatuan": "KGM", 
+                    "nilai": "100000.0000", 
+                    "dokumen": [] 
+                }, 
+                { 
+                    "idBarangTransaksi": "cd2bee6f-82b9-4e09-aa7d-9304f23b65a1", 
+                    "kdKategoriBarang": "2", 
+                    "kdBarang": "barang2", 
+                    "uraianBarang": "Uraian barang 2", 
+                    "jumlah": "40000.0000", 
+                    "kdSatuan": "KGM", 
+                    "nilai": "200000.0000", 
+                    "dokumen": [] 
+                }] 
+        }] 
+} 
+ 
+
+--- Page 29 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 26 
+ 
+III. 
+DATA REFERENSI 
+1. 
+Jenis Transaksi 
+Element Data 
+Referensi Jenis Transaksi 
+30 
+Pemasukkan 
+31 
+Pengeluaran 
+32 
+Stock Opname 
+33 
+Adjustment 
+ 
+2. 
+Kategori Barang 
+KODE 
+URAIAN 
+1 
+Bahan Baku 
+2 
+Bahan Penolong 
+3 
+Bahan Habis Pakai 
+4 
+Barang Dagangan 
+5 
+Mesin dan Peralatan 
+6 
+Barang dalam proses 
+7 
+Barang Jadi 
+8 
+Barang Reject & Scrap 
+ 
+3. 
+Dokumen Pabean 
+KODE 
+URAIAN 
+0407021 
+BC 2.1 
+0407024 
+BC 24 
+0407261 
+BC 2.6.1 
+0407262 
+BC 2.6.2 
+0407027 
+BC 2.7 
+0407032 
+BC 3.2 
+0407033 
+BC 3.3 
+0407034 
+BC 3.4 
+0407040 
+BC 4.0 
+0407041 
+BC 4.1 
+0407051 
+FTZ 01 
+0407020 
+BC 2.0 
+0407030 
+BC 3.0 
+0407016 
+BC 1.6 
+0407028 
+BC 2.8 
+0407025 
+BC 2.5 
+0407023 
+BC 2.3 
+
+--- Page 30 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 27 
+ 
+0407512 
+FTZ01 - Pengeluaran ke Luar Daerah Pabean 
+0407052 
+FTZ 02 
+0407521 
+FTZ02 - Pemasukan dari Kawasan Berikat, KEK, FTZ lain, atau Kawasan dengan 
+Fasilitas lainnya 
+0407522 
+FTZ02 - Pengeluaran ke Kawasan Berikat, KEK, FTZ lain, atau Kawasan dengan 
+Fasilitas lainnya 
+0407053 
+FTZ 03 
+0407531 
+FTZ03 - Pemasukan dari Tempat Lain dalam Daerah Pabean 
+0407612 
+KEK - Pemasukan Melalui Barang Kiriman 
+0407613 
+KEK - Pemasukan dari TLDDP 
+0407614 
+KEK - Pemasukan dari TLDDP Subkon 
+0407621 
+KEK - Pengeluaran ke KEK/TPB/FTZP 
+0407631 
+KEK - Pengeluaran ke LDP 
+0407633 
+KEK - Pengeluaran ke TLDDP Subkon 
+0407634 
+KEK - Pengeluaran ke TLDDP Ex 613 
+0407511 
+FTZ01 - Pemasukan dari Luar Daerah Pabean 
+0407513 
+FTZ01 - Pengeluaran ke Tempat Lain dalam Daerah Pabean 
+0407611 
+KEK - Pemasukan dari LDP 
+0407632 
+KEK - Pengeluaran ke TLDDP 
+ 
+4. 
+Dokumen Perpindahan 
+KODE 
+URAIAN 
+0407008 
+Free Movement 
+ 
+5. 
+Data Satuan 
+KODE 
+URAIAN 
+6 
+small spray 
+8 
+heat lot 
+10 
+group 
+11 
+outfit 
+13 
+ration 
+14 
+shot 
+15 
+stick 
+16 
+hundred fifteen kg drum 
+17 
+hundred lb drum 
+18 
+fiftyfive gallon (US) drum 
+19 
+tank truck 
+1A 
+car mile 
+1B 
+car count 
+1C 
+locomotive count 
+1D 
+caboose count 
+1E 
+empty car 
+1F 
+train mile 
+
+--- Page 31 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 28 
+ 
+1G 
+fuel usage gallon (US) 
+1H 
+caboose mile 
+1I 
+fixed rate 
+1J 
+ton mile 
+1K 
+locomotive mile 
+1L 
+total car count 
+1M 
+total car mile 
+1X 
+quarter mile 
+20 
+twenty foot container 
+21 
+forty foot container 
+22 
+decilitre per gram 
+23 
+gram per cubic centimetre 
+24 
+theoretical pound 
+25 
+gram per square centimetre 
+26 
+actual ton 
+27 
+theoretical ton 
+28 
+kilogram per square metre 
+29 
+pound per thousand square foot 
+2A 
+radian per second 
+2B 
+radian per second squared 
+2C 
+roentgen 
+2G 
+volt AC 
+2H 
+volt DC 
+2I 
+British thermal unit (international table) per hou 
+2J 
+cubic centimetre per second 
+2K 
+cubic foot per hour 
+2L 
+cubic foot per minute 
+2M 
+centimetre per second 
+2N 
+decibel 
+2P 
+kilobyte 
+2Q 
+kilobecquerel 
+2R 
+kilocurie 
+2U 
+megagram 
+2V 
+megagram per hour 
+2W 
+bin 
+2X 
+metre per minute 
+2Y 
+milliroentgen 
+2Z 
+millivolt 
+30 
+horse power day per air dry metric ton 
+31 
+catch weight 
+32 
+kilogram per air dry metric ton 
+33 
+kilopascal square metre per gram 
+34 
+kilopascal per millimetre 
+35 
+millilitre per square centimetre second 
+36 
+cubic foot per minute per square foot 
+
+--- Page 32 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 29 
+ 
+37 
+ounce per square foot 
+38 
+ounce per square foot per 0 
+3B 
+megajoule 
+3C 
+manmonth 
+3E 
+pound per pound of product 
+3G 
+pound per piece of product 
+3H 
+kilogram per kilogram of product 
+3I 
+kilogram per piece of product 
+40 
+millilitre per second 
+41 
+millilitre per minute 
+43 
+super bulk bag 
+44 
+fivehundred kg bulk bag 
+45 
+threehundred kg bulk bag 
+46 
+fifty lb bulk bag 
+47 
+fifty lb bag 
+48 
+bulk car load 
+4A 
+bobbin 
+4B 
+cap 
+4C 
+centistokes 
+4E 
+twenty pack 
+4G 
+microlitre 
+4H 
+micrometre (micron) 
+4K 
+milliampere 
+4L 
+megabyte 
+4M 
+milligram per hour 
+4N 
+megabecquerel 
+4O 
+microfarad 
+4P 
+newton per metre 
+4Q 
+ounce inch 
+4R 
+ounce foot 
+4T 
+picofarad 
+4U 
+pound per hour 
+4W 
+ton (US) per hour 
+4X 
+kilolitre per hour 
+53 
+theoretical kilogram 
+54 
+theoretical tonne 
+56 
+sitas 
+57 
+mesh 
+58 
+net kilogram 
+59 
+part per million 
+5A 
+barrel (US) per minute 
+5B 
+batch 
+5C 
+gallon(US) per thousand 
+5E 
+MMSCF/day 
+5F 
+pound per thousand 
+
+--- Page 33 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 30 
+ 
+5G 
+pump 
+5H 
+stage 
+5I 
+standard cubic foot 
+5J 
+hydraulic horse power 
+5K 
+count per minute 
+5P 
+seismic level 
+5Q 
+seismic line 
+60 
+percent weight 
+61 
+part per billion (US) 
+62 
+percent per 1000 hour 
+63 
+failure rate in time 
+64 
+pound per square inch 
+66 
+oersted 
+69 
+test specific scale 
+71 
+volt ampere per pound 
+72 
+watt per pound 
+73 
+ampere tum per centimetre 
+74 
+millipascal 
+76 
+gauss 
+77 
+milli-inch 
+78 
+kilogauss 
+80 
+pound per square inch absolute 
+81 
+henry 
+84 
+kilopound-force per square inch 
+85 
+foot pound-force 
+87 
+pound per cubic foot 
+89 
+poise 
+90 
+Saybold universal second 
+91 
+stokes 
+92 
+calorie per cubic centimetre 
+93 
+calorie per gram 
+94 
+curl unit 
+95 
+twenty thousand gallon (US) tankcar 
+96 
+ten thousand gallon (US) tankcar 
+97 
+ten kg drum 
+98 
+fifteen kg drum 
+A1 
+15 ೦C calorie 
+A10 
+ampere square metre per joule second 
+A11 
+angstrom 
+A12 
+astronomical unit 
+A13 
+attojoule 
+A14 
+barn 
+A15 
+barn per electronvolt 
+A16 
+barn per steradian electronvolt 
+A17 
+barn per steradian 
+
+--- Page 34 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 31 
+ 
+A18 
+becquerel per kilogram 
+A19 
+becquerel per cubic metre 
+A2 
+ampere per centimetre 
+5 
+Ganti 
+A20 
+British thermal unit (international table) per sec 
+A21 
+British thermal unit (international table) per pou 
+A22 
+British thermal unit (international table) per sec 
+A23 
+British thermal unit (international table) per hou 
+A24 
+candela per square metre 
+A25 
+cheval vapeur 
+A26 
+coulomb metre 
+A27 
+coulomb metre squared per volt 
+A28 
+coulomb per cubic centimetre 
+A29 
+coulomb per cubic metre 
+A3 
+ampere per millimetre 
+A30 
+coulomb per cubic millimetre 
+A31 
+coulomb per kilogram second 
+A32 
+coulomb per mole 
+A33 
+coulomb per square centimetre 
+A34 
+coulomb per square metre 
+A35 
+coulomb per square millimetre 
+A36 
+cubic centimetre per mole 
+A37 
+cubic decimetre per mole 
+A38 
+cubic metre per coulomb 
+A39 
+cubic metre per kilogram 
+A4 
+ampere per square centimetre 
+A40 
+cubic metre per mole 
+A41 
+ampere per square metre 
+A42 
+curie per kilogram 
+A43 
+deadweight tonnage 
+A44 
+decalitre 
+A45 
+decametre 
+A47 
+decitex 
+A48 
+degree Rankine 
+A49 
+denier 
+A5 
+ampere square metre 
+A50 
+dyne second per cubic centimetre 
+A51 
+dyne second per centimetre 
+A52 
+dyne second per centimetre to the fifth power 
+A53 
+electronvolt 
+A54 
+electronvolt per metre 
+A55 
+electronvolt square metre 
+A56 
+electronvolt square metre per kilogram 
+A57 
+erg 
+A58 
+erg per centimetre 
+
+--- Page 35 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 32 
+ 
+A59 
+8-part cloud cover 
+A6 
+ampere per square metre kelvin squared 
+A60 
+erg per cubic centimetre 
+A61 
+erg per gram 
+A62 
+erg per gram second 
+A63 
+erg per second 
+A64 
+erg per second square centimetre 
+A65 
+erg per square centimetre second 
+A66 
+erg square centimetre 
+A67 
+erg square centimetre per gram 
+A68 
+exajoule 
+A69 
+farad per metre 
+A7 
+ampere per square millimetre 
+A70 
+femtojoule 
+A71 
+femtometre 
+A73 
+foot per second squared 
+A74 
+foot pound-force per second 
+A75 
+freight ton 
+A76 
+gal 
+A77 
+Gaussian CGS unit of displacement 
+A78 
+Gaussian CGS unit of electric current 
+A79 
+Gaussian CGS unit of electric charge 
+A8 
+ampere second 
+A80 
+Gaussian CGS unit of electric field strength 
+A81 
+Gaussian CGS unit of electric polarization 
+A82 
+Gaussian CGS unit of electric potential 
+A83 
+Gaussian CGS unit of magnetization 
+A84 
+gigacoulomb per cubic metre 
+A85 
+gigaelectronvolt 
+A86 
+gigahertz 
+A87 
+gigaohm 
+A88 
+gigaohm metre 
+A89 
+gigapascal 
+A9 
+rate 
+A90 
+gigawatt 
+A91 
+gon 
+A93 
+gram per cubic metre 
+A94 
+gram per mole 
+A95 
+gray 
+A96 
+gray per second 
+A97 
+hectopascal 
+A98 
+henry per metre 
+A99 
+bit 
+AA 
+ball 
+AB 
+bulk pack 
+
+--- Page 36 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 33 
+ 
+ACR 
+Acre (4840 yd2) 
+ACT 
+activity 
+AD 
+byte 
+AE 
+ampere per metre 
+AH 
+additional minute 
+AI 
+average minute per call 
+AJ 
+cop 
+AK 
+fathom 
+AL 
+access line 
+AM 
+ampoule 
+AMH 
+Ampere-hour  (3 
+AMP 
+Ampere 
+ANN 
+Year 
+AP 
+aluminium pound only 
+APZ 
+Ounce GB 
+AQ 
+anti-hemophilic factor (AHF) unit 
+AR 
+suppository 
+ARE 
+Are (100m2) 
+AS 
+assortment 
+ASM 
+alcoholic strength by mass 
+ASU 
+alcoholic strength by volume 
+ATM 
+Standard atmosphere (101325 Pa) 
+ATT 
+Technical atmosphere (98066 
+AV 
+Capsule 
+AW 
+Powder Filled Vial 
+AY 
+assembly 
+AZ 
+British thermal unit (international table) per pou 
+B0 
+Btu per cubic foot 
+B1 
+barrel (US) per day 
+B10 
+bit per second 
+B11 
+joule per kilogram kelvin 
+B12 
+joule per metre 
+B13 
+joule per square metre 
+B14 
+joule per metre to the fourth power 
+B15 
+joule per mole 
+B16 
+joule per mole kelvin 
+B17 
+credit 
+B18 
+joule second 
+B19 
+digit 
+B2 
+bunk 
+B20 
+joule square metre per kilogram 
+B21 
+kelvin per watt 
+B22 
+kiloampere 
+B23 
+kiloampere per square metre 
+B24 
+kiloampere per metre 
+
+--- Page 37 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 34 
+ 
+B25 
+kilobecquerel per kilogram 
+B26 
+kilocoulomb 
+B27 
+kilocoulomb per cubic metre 
+B28 
+kilocoulomb per square metre 
+B29 
+kiloelectronvolt 
+B3 
+batting pound 
+B30 
+gibibit 
+B31 
+kilogram metre per second 
+B32 
+kilogram metre squared 
+B33 
+kilogram metre squared per second 
+B34 
+kilogram per cubic decimetre 
+B35 
+kilogram per litre 
+B36 
+calorie (thermochemical) per gram 
+B37 
+kilogram-force 
+B38 
+kilogram-force metre 
+B39 
+kilogram-force metre per second 
+B4 
+barrel 
+B40 
+kilogram-force per square metre 
+B41 
+kilojoule per kelvin 
+B42 
+kilojoule per kilogram 
+B43 
+kilojoule per kilogram kelvin 
+B44 
+kilojoule per mole 
+B45 
+kilomole 
+B46 
+kilomole per cubic metre 
+B47 
+kilonewton 
+B48 
+kilonewton metre 
+B49 
+kiloohm 
+B5 
+billet 
+B50 
+kiloohm metre 
+B51 
+kilopond 
+B52 
+kilosecond 
+B53 
+kilosiemens 
+B54 
+kilosiemens per metre 
+B55 
+kilovolt per metre 
+B56 
+kiloweber per metre 
+B57 
+light year 
+B58 
+litre per mole 
+B59 
+lumen hour 
+B6 
+bun 
+B60 
+lumen per square metre 
+B61 
+lumen per watt 
+B62 
+lumen second 
+B63 
+lux hour 
+B64 
+lux second 
+B65 
+maxwell 
+
+--- Page 38 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 35 
+ 
+B66 
+megaampere per square metre 
+B67 
+megabecquerel per kilogram 
+B68 
+gigabit 
+B69 
+megacoulomb per cubic metre 
+B7 
+cycle 
+B70 
+megacoulomb per square metre 
+B71 
+megaelectronvolt 
+B72 
+megagram per cubic metre 
+B73 
+meganewton 
+B74 
+meganewton metre 
+B75 
+megaohm 
+B76 
+megaohm metre 
+B77 
+megasiemens per metre 
+B78 
+megavolt 
+B79 
+megavolt per metre 
+B8 
+joule per cubic metre 
+B80 
+gigabit per second 
+B81 
+reciprocal metre squared reciprocal second 
+B82 
+inch per linear foot 
+B83 
+metre to the fourth power 
+B84 
+microampere 
+B85 
+microbar 
+B86 
+microcoulomb 
+B87 
+microcoulomb per cubic metre 
+B88 
+microcoulomb per square metre 
+B89 
+microfarad per metre 
+B9 
+batt 
+B90 
+microhenry 
+B91 
+microhenry per metre 
+B92 
+micronewton 
+B93 
+micronewton metre 
+B94 
+microohm 
+B95 
+microohm metre 
+B96 
+micropascal 
+B97 
+microradian 
+B98 
+microsecond 
+B99 
+microsiemens 
+BAR 
+Bar 
+BB 
+base box 
+BD 
+board 
+BE 
+bundle 
+BFT 
+board foot 
+BG 
+bag 
+BH 
+brush 
+BHP 
+brake horse power 
+
+--- Page 39 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 36 
+ 
+BIL 
+Billion 
+BJ 
+bucket 
+BK 
+basket 
+BL 
+bale 
+BLD 
+Dry barrel (115 
+BLL 
+Barrel (petroleum) (458 
+BO 
+bottle 
+BP 
+hundred board foot 
+BQL 
+Becquerel 
+BR 
+bar [unit of packaging] 
+BT 
+bolt 
+BTU 
+British thermal unit (international table) 
+BUA 
+Bushel (35 
+BUI 
+Bushel (36 
+BW 
+base weight 
+BX 
+box 
+BZ 
+million BTUs 
+C0 
+call 
+C1 
+composite product pound (total weight) 
+C10 
+millifarad 
+C11 
+milligal 
+C12 
+milligram per metre 
+C13 
+milligray 
+C14 
+millihenry 
+C15 
+millijoule 
+C16 
+millimetre per second 
+C17 
+millimetre squared per second 
+C18 
+millimole 
+C19 
+mole per kilogram 
+C2 
+carset 
+C20 
+millinewton 
+C21 
+kibibit 
+C22 
+millinewton per metre 
+C23 
+milliohm metre 
+C24 
+millipascal second 
+C25 
+milliradian 
+C26 
+millisecond 
+C27 
+millisiemens 
+C28 
+millisievert 
+C29 
+millitesla 
+C3 
+microvolt per metre 
+C30 
+millivolt per metre 
+C31 
+milliwatt 
+C32 
+milliwatt per square metre 
+C33 
+milliweber 
+
+--- Page 40 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 37 
+ 
+C34 
+mole 
+C35 
+mole per cubic decimetre 
+C36 
+mole per cubic metre 
+C37 
+kilobit 
+C38 
+mole per litre 
+C39 
+nanoampere 
+C4 
+carload 
+C40 
+nanocoulomb 
+C41 
+nanofarad 
+C42 
+nanofarad per metre 
+C43 
+nanohenry 
+C44 
+nanohenry per metre 
+C45 
+nanometre 
+C46 
+nanoohm metre 
+C47 
+nanosecond 
+C48 
+nanotesla 
+C49 
+nanowatt 
+C5 
+cost 
+C50 
+neper 
+C51 
+neper per second 
+C52 
+picometre 
+C53 
+newton metre second 
+C54 
+newton metre squared kilogram squared 
+C55 
+newton per square metre 
+C56 
+newton per square millimetre 
+C57 
+newton second 
+C58 
+newton second per metre 
+C59 
+octave 
+C6 
+cell 
+C60 
+ohm centimetre 
+C61 
+ohm metre 
+C62 
+one 
+C63 
+parsec 
+C64 
+pascal per kelvin 
+C65 
+pascal second 
+C66 
+pascal second per cubic metre 
+C67 
+pascal second per metre 
+C68 
+petajoule 
+C69 
+phon 
+C7 
+centipoise 
+C70 
+picoampere 
+C71 
+picocoulomb 
+C72 
+picofarad per metre 
+C73 
+picohenry 
+C74 
+kilobit per second 
+
+--- Page 41 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 38 
+ 
+C75 
+picowatt 
+C76 
+picowatt per square metre 
+C77 
+pound gage 
+C78 
+pound-force 
+C79 
+kilovolt ampere hour 
+C8 
+millicoulomb per kilogram 
+C80 
+rad 
+C81 
+radian 
+C82 
+radian square metre per mole 
+C83 
+radian square metre per kilogram 
+C84 
+radian per metre 
+C85 
+reciprocal angstrom 
+C86 
+reciprocal cubic metre 
+C87 
+reciprocal cubic metre per second 
+C88 
+reciprocal electron volt per cubic metre 
+C89 
+reciprocal henry 
+C9 
+coil group 
+C90 
+reciprocal joule per cubic metre 
+C91 
+reciprocal kelvin or kelvin to the power minus one 
+C92 
+reciprocal metre 
+C93 
+reciprocal square metre 
+C94 
+reciprocal minute 
+C95 
+reciprocal mole 
+C96 
+reciprocal pascal or pascal to the power minus one 
+C97 
+reciprocal second 
+C98 
+reciprocal second per cubic metre 
+C99 
+reciprocal second per metre squared 
+CA 
+can 
+CCT 
+Carrying capacity in metric tonnes 
+CDL 
+Candela 
+CEL 
+Degree celcius 
+CEN 
+Hundred 
+CG 
+card 
+CGM 
+centigram 
+CH 
+container 
+CJ 
+cone 
+CK 
+connector 
+CKG 
+Coulomb per kilogram 
+CL 
+coil 
+CLF 
+hundred leave 
+CLT 
+Centilitre 
+CMK 
+Square centimetre 
+CMQ 
+Cubic centimetre 
+CMT 
+Centimetre 
+CNP 
+Hundred packs 
+
+--- Page 42 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 39 
+ 
+CNT 
+Cental GB (45 
+CO 
+carboy 
+COU 
+Coulomb 
+CQ 
+cartridge 
+CR 
+crate 
+CS 
+case 
+CT 
+carton 
+CTG 
+content gram 
+CTM 
+Metric carat (200 mg = 2.10-4 kg) 
+CTN 
+content ton (metric) 
+CU 
+cup 
+CUR 
+Curie 
+CV 
+cover 
+CWA 
+Hundredweight 
+CWI 
+Long/ hundredweight GB (50 
+CY 
+cylinder 
+CZ 
+combo 
+D03 
+kilowatt hour per hour 
+D04 
+lot  [unit of weight] 
+D1 
+reciprocal second per steradian 
+D10 
+siemens per metre 
+D11 
+mebibit 
+D12 
+siemens square metre per mole 
+D13 
+sievert 
+D14 
+thousand linear yard 
+D15 
+sone 
+D16 
+square centimetre per erg 
+D17 
+square centimetre per steradian erg 
+D18 
+metre kelvin 
+D19 
+square metre kelvin per watt 
+D2 
+reciprocal second per steradian metre squared 
+D20 
+square metre per joule 
+D21 
+square metre per kilogram 
+D22 
+square metre per mole 
+D23 
+pen gram (protein) 
+D24 
+square metre per steradian 
+D25 
+square metre per steradian joule 
+D26 
+square metre per volt second 
+D27 
+steradian 
+D28 
+syphon 
+D29 
+terahertz 
+D30 
+terajoule 
+D31 
+terawatt 
+D32 
+terawatt hour 
+D33 
+tesla 
+
+--- Page 43 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 40 
+ 
+D34 
+tex 
+D35 
+calorie (thermochemical) 
+D36 
+megabit 
+D37 
+calorie (thermochemical) per gram kelvin 
+D38 
+calorie (thermochemical) per second centimetre kel 
+D39 
+calorie (thermochemical) per second square centime 
+D40 
+thousand litre 
+D41 
+tonne per cubic metre 
+D42 
+tropical year 
+D43 
+unified atomic mass unit 
+D44 
+var 
+D45 
+volt squared per kelvin squared 
+D46 
+volt - ampere 
+D47 
+volt per centimetre 
+D48 
+volt per kelvin 
+D49 
+millivolt per kelvin 
+D5 
+kilogram per square centimetre 
+D50 
+volt per metre 
+D51 
+volt per millimetre 
+D52 
+watt per kelvin 
+D53 
+watt per metre kelvin 
+D54 
+watt per square metre 
+D55 
+watt per square metre kelvin 
+D56 
+watt per square metre kelvin to the fourth power 
+D57 
+watt per steradian 
+D58 
+watt per steradian square metre 
+D59 
+weber per metre 
+D6 
+roentgen per second 
+D60 
+weber per millimetre 
+D61 
+minute [unit of angle] 
+D62 
+second [unit of angle] 
+D63 
+book 
+D64 
+block 
+D65 
+round 
+D66 
+cassette 
+D67 
+dollar per hour 
+D68 
+number of words 
+D69 
+inch to the fourth power 
+D7 
+sandwich 
+D70 
+International Table (IT) calorie 
+D71 
+International Table (IT) calorie per second centim 
+D72 
+International Table (IT) calorie per second square 
+D73 
+joule square metre 
+D74 
+kilogram per mole 
+D75 
+calorie (international table) per gram 
+
+--- Page 44 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 41 
+ 
+D76 
+calorie (international table) per gram kelvin 
+D77 
+megacoulomb 
+D78 
+megajoule per second 
+D79 
+beam 
+D8 
+draize score 
+D80 
+microwatt 
+D81 
+microtesla 
+D82 
+microvolt 
+D83 
+millinewton metre 
+D85 
+microwatt per square metre 
+D86 
+millicoulomb 
+D87 
+millimole per kilogram 
+D88 
+millicoulomb per cubic metre 
+D89 
+millicoulomb per square metre 
+D9 
+dyne per square centimetre 
+D90 
+cubic metre (net) 
+D91 
+rem 
+D92 
+band 
+D93 
+second per cubic metre 
+D94 
+second per cubic metre radian 
+D95 
+joule per gram 
+D96 
+pound gross 
+D97 
+pallet/unit load 
+D98 
+mass pound 
+D99 
+sleeve 
+DAA 
+Decare 
+DAD 
+Ten day 
+DAY 
+Day 
+DB 
+dry pound 
+DBC 
+Decade (ten years) 
+DC 
+disk (disc) 
+DD 
+degree [unit of angle] 
+DE 
+deal 
+DEC 
+decade 
+DG 
+decigram 
+DI 
+dispenser 
+DJ 
+decagram 
+DLT 
+decilitre 
+DMA 
+cubic decametre 
+DMK 
+Square decimetre 
+DMO 
+standard kilolitre 
+DMQ 
+Cubic decimetre 
+DMT 
+Decimetre 
+DN 
+decinewton metre 
+DPC 
+dozen piece 
+
+--- Page 45 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 42 
+ 
+DPR 
+Dozen pairs 
+DPT 
+Displecement tonnege 
+DQ 
+data record 
+DR 
+drum 
+DRA 
+Dram US (3 
+DRI 
+Dram GB (1 
+DRL 
+Dozen rolls 
+DRM 
+Drachm 
+DS 
+display 
+DT 
+dry ton 
+DTN 
+Centner 
+DU 
+dyne 
+DWT 
+Pennyweight GB 
+DX 
+dyne per centimetre 
+DY 
+directory book 
+DZN 
+Dozen 
+DZP 
+Dozen packs 
+E01 
+newton per square centimetre 
+E07 
+megawatt hour per hour 
+E08 
+megawatt per hertz 
+E09 
+milliampere hour 
+E10 
+degree day 
+E11 
+gigacalorie 
+E12 
+mille 
+E14 
+kilocalorie (international table) 
+E15 
+kilocalorie (thermochemical) per hour 
+E16 
+million Btu(IT) per hour 
+E17 
+cubic foot per second 
+E18 
+tonne per hour 
+E19 
+ping 
+E2 
+belt 
+E20 
+megabit per second 
+E21 
+shares 
+E22 
+TEU 
+E23 
+tyre 
+E25 
+active unit 
+E27 
+dose 
+E28 
+air dry ton 
+E3 
+trailer 
+E30 
+strand 
+E31 
+square metre per litre 
+E32 
+litre per hour 
+E33 
+foot per thousand 
+E34 
+gigabyte 
+E35 
+terabyte 
+
+--- Page 46 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 43 
+ 
+E36 
+petabyte 
+E37 
+pixel 
+E38 
+megapixel 
+E39 
+dots per inch 
+E4 
+gross kilogram 
+E40 
+part per hundred thousand 
+E41 
+kilogram-force per square millimetre 
+E42 
+kilogram-force per square centimetre 
+E43 
+joule per square centimetre 
+E44 
+kilogram-force metre per square centimetre 
+E45 
+milliohm 
+E46 
+kilowatt hour per cubic metre 
+E47 
+kilowatt hour per kelvin 
+E48 
+service unit 
+E49 
+working day 
+E5 
+metric long ton 
+E50 
+accounting unit 
+E51 
+job 
+E52 
+run foot 
+E53 
+test 
+E54 
+trip 
+E55 
+use 
+E56 
+well 
+E57 
+zone 
+E58 
+exabit per second 
+E59 
+exbibyte 
+E60 
+pebibyte 
+E61 
+tebibyte 
+E62 
+gibibyte 
+E63 
+mebibyte 
+E64 
+kibibyte 
+E65 
+exbibit per metre 
+E66 
+exbibit per square metre 
+E67 
+exbibit per cubic metre 
+E68 
+gigabyte per second 
+E69 
+gibibit per metre 
+E70 
+gibibit per square metre 
+E71 
+gibibit per cubic metre 
+E72 
+kibibit per metre 
+E73 
+kibibit per square metre 
+E74 
+kibibit per cubic metre 
+E75 
+mebibit per metre 
+E76 
+mebibit per square metre 
+E77 
+mebibit per cubic metre 
+E78 
+petabit 
+
+--- Page 47 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 44 
+ 
+E79 
+petabit per second 
+E80 
+pebibit per metre 
+E81 
+pebibit per square metre 
+E82 
+pebibit per cubic metre 
+E83 
+terabit 
+E84 
+terabit per second 
+E85 
+tebibit per metre 
+E86 
+tebibit per cubic metre 
+E87 
+tebibit per square metre 
+E88 
+bit per metre 
+E89 
+bit per square metre 
+E90 
+reciprocal centimetre 
+E91 
+reciprocal day 
+E92 
+cubic decimetre per hour 
+E93 
+kilogram per hour 
+E94 
+kilomole per second 
+E95 
+mole per second 
+E96 
+degree per second 
+E97 
+millimetre per degree Celcius metre 
+E98 
+degree celsius per kelvin 
+E99 
+hektopascal per bar 
+EA 
+each 
+EB 
+electronic mail box 
+EC 
+each per month 
+EP 
+eleven pack 
+EQ 
+equivalent gallon 
+EV 
+envelope 
+F01 
+bit per cubic metre 
+F02 
+kelvin per kelvin 
+F03 
+kilopascal per bar 
+F04 
+millibar per bar 
+F05 
+megapascal per bar 
+F06 
+poise per bar 
+F07 
+pascal per bar 
+F08 
+milliampere per inch 
+F1 
+thousand cubic foot per day 
+F10 
+kelvin per hour 
+F11 
+kelvin per minute 
+F12 
+kelvin per second 
+F13 
+slug 
+F14 
+gram per kelvin 
+F15 
+kilogram per kelvin 
+F16 
+milligram per kelvin 
+F17 
+pound-force per foot 
+F18 
+kilogram square centimetre 
+
+--- Page 48 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 45 
+ 
+F19 
+kilogram square millimetre 
+F20 
+pound inch squared 
+F21 
+pound-force inch 
+F22 
+pound-force foot per ampere 
+F23 
+gram per cubic decimetre 
+F24 
+kilogram per kilomol 
+F25 
+gram per hertz 
+F26 
+gram per day 
+F27 
+gram per hour 
+F28 
+gram per minute 
+F29 
+gram per second 
+F30 
+kilogram per day 
+F31 
+kilogram per minute 
+F32 
+milligram per day 
+F33 
+milligram per minute 
+F34 
+milligram per second 
+F35 
+gram per day kelvin 
+F36 
+gram per hour kelvin 
+F37 
+gram per minute kelvin 
+F38 
+gram per second kelvin 
+F39 
+kilogram per day kelvin 
+F40 
+kilogram per hour kelvin 
+F41 
+kilogram per minute kelvin 
+F42 
+kilogram per second kelvin 
+F43 
+milligram per day kelvin 
+F44 
+milligram per hour kelvin 
+F45 
+milligram per minute kelvin 
+F46 
+milligram per second kelvin 
+F47 
+newton per millimetre 
+F48 
+pound-force per inch 
+F49 
+rod [unit of distance] 
+F50 
+micrometre per kelvin 
+F51 
+centimetre per kelvin 
+F52 
+metre per kelvin 
+F53 
+millimetre per kelvin 
+F54 
+milliohm per metre 
+F55 
+ohm per mile 
+F56 
+ohm per kilometre 
+F57 
+milliampere per pound-force per square inch 
+F58 
+reciprocal bar 
+F59 
+milliampere per bar 
+F60 
+degree Celsius per bar 
+F61 
+kelvin per bar 
+F62 
+gram per day bar 
+F63 
+gram per hour bar 
+
+--- Page 49 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 46 
+ 
+F64 
+gram per minute bar 
+F65 
+gram per second bar 
+F66 
+kilogram per day bar 
+F67 
+kilogram per hour bar 
+F68 
+kilogram per minute bar 
+F69 
+kilogram per second bar 
+F70 
+milligram per day bar 
+F71 
+milligram per hour bar 
+F72 
+milligram per minute bar 
+F73 
+milligram per second bar 
+F74 
+gram per bar 
+F75 
+milligram per bar 
+F76 
+milliampere per millimetre 
+F77 
+pascal second per kelvin 
+F78 
+inch of water 
+F79 
+inch of mercury 
+F80 
+water horse power 
+F81 
+bar per kelvin 
+F82 
+hektopascal per kelvin 
+F83 
+kilopascal per kelvin 
+F84 
+millibar per kelvin 
+F85 
+megapascal per kelvin 
+F86 
+poise per kelvin 
+F87 
+volt per litre minute 
+F88 
+newton centimetre 
+F89 
+newton metre per degree 
+F9 
+fibre per cubic centimetre of air 
+F90 
+newton metre per ampere 
+F91 
+bar litre per second 
+F92 
+bar cubic metre per second 
+F93 
+hektopascal litre per second 
+F94 
+hektopascal cubic metre per second 
+F95 
+millibar litre per second 
+F96 
+millibar cubic metre per second 
+F97 
+megapascal litre per second 
+F98 
+megapascal cubic metre per second 
+F99 
+pascal litre per second 
+FAH 
+degree Fahrenheit 
+FAR 
+farad 
+FB 
+field 
+FBM 
+fibre metre 
+FC 
+thousand cubic foot 
+FD 
+million particle per cubic foot 
+FE 
+track foot 
+FF 
+hundred cubic metre 
+
+--- Page 50 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 47 
+ 
+FG 
+transdermal patch 
+FH 
+micromole 
+FIT 
+failures in time 
+FL 
+flake ton 
+FM 
+million cubic foot 
+FOT 
+Foot (0.3048 m) 
+FP 
+pound per square foot 
+FR 
+foot per minute 
+FS 
+foot per second 
+FTK 
+Square foot 
+FTQ 
+Cubic foot 
+G01 
+pascal cubic metre per second 
+G04 
+centimetre per bar 
+G05 
+metre per bar 
+G06 
+millimetre per bar 
+G08 
+square inch per second 
+G09 
+square metre per second kelvin 
+G10 
+stokes per kelvin 
+G11 
+gram per cubic centimetre bar 
+G12 
+gram per cubic decimetre bar 
+G13 
+gram per litre bar 
+G14 
+gram per cubic metre bar 
+G15 
+gram per millilitre bar 
+G16 
+kilogram per cubic centimetre bar 
+G17 
+kilogram per litre bar 
+G18 
+kilogram per cubic metre bar 
+G19 
+newton metre per kilogram 
+G2 
+US gallon per minute 
+G20 
+pound-force foot per pound 
+G21 
+cup [unit of volume] 
+G23 
+peck 
+G24 
+tablespoon (US) 
+G25 
+teaspoon (US) 
+G26 
+stere 
+G27 
+cubic centimetre per kelvin 
+G28 
+litre per kelvin 
+G29 
+cubic metre per kelvin 
+G3 
+Imperial gallon per minute 
+G30 
+millilitre per kelvin 
+G31 
+kilogram per cubic centimetre 
+G32 
+ounce (avoirdupois) per cubic yard 
+G33 
+gram per cubic centimetre kelvin 
+G34 
+gram per cubic decimetre kelvin 
+G35 
+gram per litre kelvin 
+G36 
+gram per cubic metre kelvin 
+
+--- Page 51 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 48 
+ 
+G37 
+gram per millilitre kelvin 
+G38 
+kilogram per cubic centimetre kelvin 
+G39 
+kilogram per litre kelvin 
+G40 
+kilogram per cubic metre kelvin 
+G41 
+square metre per second bar 
+G42 
+microsiemens per centimetre 
+G43 
+microsiemens per metre 
+G44 
+nanosiemens per centimetre 
+G45 
+nanosiemens per metre 
+G46 
+stokes per bar 
+G47 
+cubic centimetre per day 
+G48 
+cubic centimetre per hour 
+G49 
+cubic centimetre per minute 
+G50 
+gallon (US) per hour 
+G51 
+litre per second 
+G52 
+cubic metre per day 
+G53 
+cubic metre per minute 
+G54 
+millilitre per day 
+G55 
+millilitre per hour 
+G56 
+cubic inch per hour 
+G57 
+cubic inch per minute 
+G58 
+cubic inch per second 
+G59 
+milliampere per litre minute 
+G60 
+volt per bar 
+G61 
+cubic centimetre per day kelvin 
+G62 
+cubic centimetre per hour kelvin 
+G63 
+cubic centimetre per minute kelvin 
+G64 
+cubic centimetre per second kelvin 
+G65 
+litre per day kelvin 
+G66 
+litre per hour kelvin 
+G67 
+litre per minute kelvin 
+G68 
+litre per second kelvin 
+G69 
+cubic metre per day kelvin 
+G7 
+microfiche sheet 
+G70 
+cubic metre per hour kelvin 
+G71 
+cubic metre per minute kelvin 
+G72 
+cubic metre per second kelvin 
+G73 
+millilitre per day kelvin 
+G74 
+millilitre per hour kelvin 
+G75 
+millilitre per minute kelvin 
+G76 
+millilitre per second kelvin 
+G77 
+millimetre to the fourth power 
+G78 
+cubic centimetre per day bar 
+G79 
+cubic centimetre per hour bar 
+G80 
+cubic centimetre per minute bar 
+
+--- Page 52 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 49 
+ 
+G81 
+cubic centimetre per second bar 
+G82 
+litre per day bar 
+G83 
+litre per hour bar 
+G84 
+litre per minute bar 
+G85 
+litre per second bar 
+G86 
+cubic metre per day bar 
+G87 
+cubic metre per hour bar 
+G88 
+cubic metre per minute bar 
+G89 
+cubic metre per second bar 
+G90 
+millilitre per day bar 
+G91 
+millilitre per hour bar 
+G92 
+millilitre per minute bar 
+G93 
+millilitre per second bar 
+G94 
+cubic centimetre per bar 
+G95 
+litre per bar 
+G96 
+cubic metre per bar 
+G97 
+millilitre per bar 
+G98 
+microhenry per kiloohm 
+G99 
+microhenry per ohm 
+GB 
+gallon (US) per day 
+GBQ 
+Gigabecquerel 
+GC 
+gram per 100 gram 
+GD 
+gross barrel 
+GDW 
+gram 
+GE 
+pound per gallon (US) 
+GF 
+gram per metre (gram per 100 centimetres) 
+GFI 
+gram of fissile isotope 
+GGR 
+Great gross (12 gross) 
+GH 
+half gallon (US) 
+GIA 
+Gill (11 
+GIC 
+gram 
+GII 
+Gill (0 
+GIP 
+gram 
+GJ 
+gram per millilitre 
+GK 
+gram per kilogram 
+GL 
+gram per litre 
+GLD 
+Dry gallon (4 
+GLI 
+Gallon (4 
+GLL 
+Liquid gallon (3 
+GM 
+gram per square metre 
+GN 
+gross gallon 
+GO 
+milligram per square metre 
+GP 
+milligram per cubic metre 
+GQ 
+microgram per cubic metre 
+GRM 
+Gram 
+
+--- Page 53 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 50 
+ 
+GRN 
+Grain GB 
+GRO 
+Gross 
+GRT 
+Gross (register) ton 
+GT 
+gross ton 
+GV 
+gigajoule 
+GW 
+gallon per thousand cubic foot 
+GWH 
+Gigawatt-hour (1 million KW/h) 
+GY 
+gross yard 
+GZ 
+gage system 
+H03 
+henry per kiloohm 
+H04 
+henry per ohm 
+H05 
+millihenry per kiloohm 
+H06 
+millihenry per ohm 
+H07 
+pascal second per bar 
+H08 
+microbecquerel 
+H09 
+reciprocal year 
+H1 
+half page ೦ electronic 
+H10 
+reciprocal hour 
+H11 
+reciprocal month 
+H12 
+degree Celsius per hour 
+H13 
+degree Celsius per minute 
+H14 
+degree Celsius per second 
+H15 
+square centimetre per gram 
+H16 
+square decametre 
+H18 
+square hectometre 
+H19 
+cubic hectometre 
+H2 
+half litre 
+H20 
+cubic kilometre 
+H21 
+blank 
+H22 
+volt square inch per pound-force 
+H23 
+volt per inch 
+H24 
+volt per microsecond 
+H25 
+percent per kelvin 
+H26 
+ohm per metre 
+H27 
+degree per metre 
+H28 
+microfarad per kilometre 
+H29 
+microgram per litre 
+H30 
+square micrometre 
+H31 
+ampere per kilogram 
+H32 
+ampere squared second 
+H33 
+farad per kilometre 
+H34 
+hertz metre 
+H35 
+kelvin metre per watt 
+H36 
+megaohm per kilometre 
+H37 
+megaohm per metre 
+
+--- Page 54 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 51 
+ 
+H38 
+megaampere 
+H39 
+megahertz kilometre 
+H40 
+newton per ampere 
+H41 
+newton metre watt to the power minus 0 
+H42 
+pascal per metre 
+H43 
+siemens per centimetre 
+H44 
+teraohm 
+H45 
+volt second per metre 
+H46 
+volt per second 
+H47 
+watt per cubic metre 
+H48 
+attofarad 
+H49 
+centimetre per hour 
+H50 
+reciprocal cubic centimetre 
+H51 
+decibel per kilometre 
+H52 
+decibel per metre 
+H53 
+kilogram per bar 
+H54 
+kilogram per cubic decimetre kelvin 
+H55 
+kilogram per cubic decimetre bar 
+H56 
+kilogram per square metre second 
+H57 
+inch per two pi radiant 
+H58 
+metre per volt second 
+H59 
+square metre per newton 
+H60 
+cubic metre per cubic metre 
+H61 
+millisiemens per centimetre 
+H62 
+millivolt per minute 
+H63 
+milligram per square centimetre 
+H64 
+milligram per gram 
+H65 
+millilitre per cubic metre 
+H66 
+millimetre per year 
+H67 
+millimetre per hour 
+H68 
+millimole per gram 
+H69 
+picopascal per kilometre 
+H70 
+picosecond 
+H71 
+percent per month 
+H72 
+percent per hectobar 
+H73 
+percent per decakelvin 
+H74 
+watt per metre 
+H75 
+decapascal 
+H76 
+gram per millimetre 
+H77 
+module width 
+H78 
+conventional centimetre of water 
+H79 
+French gauge 
+H80 
+rack unit 
+H81 
+millimetre per minute 
+H82 
+big point 
+
+--- Page 55 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 52 
+ 
+H83 
+litre per kilogram 
+H84 
+gram millimetre 
+H85 
+reciprocal week 
+H87 
+piece 
+H88 
+megaohm kilometre 
+H89 
+percent per ohm 
+H90 
+percent per degree 
+H91 
+percent per ten thousand 
+H92 
+percent per one hundred thousand 
+H93 
+percent per hundred 
+H94 
+percent per thousand 
+H95 
+percent per volt 
+H96 
+percent per bar 
+H98 
+percent per inch 
+H99 
+percent per metre 
+HA 
+hank 
+HAR 
+Hectare 
+HBA 
+Hectobar 
+HBX 
+hundred boxes 
+HC 
+hundred count 
+HD 
+half dozen 
+HDW 
+hundred kilogram 
+HE 
+hundredth of a carat 
+HF 
+hundred foot 
+HGM 
+Hectogram 
+HH 
+hundred cubic foot 
+HI 
+hundred sheet 
+HIU 
+Hundred intenational units 
+HJ 
+metric horse power 
+HK 
+hundred kilogram 
+HKM 
+hundred kilogram 
+HL 
+hundred foot (linear) 
+HLT 
+Hectolitre 
+HM 
+mile per hour 
+HMQ 
+Million cubic metres 
+HMT 
+Hectometre 
+HN 
+conventional millimetre of mercury 
+HO 
+hundred troy ounce 
+HP 
+conventional millimetre of water 
+HPA 
+Hectolitre of pure alcohol 
+HS 
+hundred square foot 
+HT 
+half hour 
+HTZ 
+Hertz 
+HUR 
+Hour 
+HY 
+hundred yard 
+
+--- Page 56 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 53 
+ 
+IA 
+inch pound (pound inch) 
+IC 
+count per inch 
+IE 
+person 
+IF 
+inches of water 
+II 
+column inch 
+IL 
+inch per minute 
+IM 
+impression 
+INH 
+Inch (2.54 mm) 
+INK 
+Square inch 
+INQ 
+Cubic inch 
+IP 
+insurance policy 
+ISD 
+international sugar degree 
+IT 
+count per centimetre 
+IU 
+inch per second 
+IV 
+inch per second squared 
+J10 
+percent per millimetre 
+J12 
+per mille per psi 
+J13 
+degree API 
+J14 
+degree Baume (origin scale) 
+J15 
+degree Baume (US heavy) 
+J16 
+degree Baume (US light) 
+J17 
+degree Balling 
+J18 
+degree Brix 
+J19 
+degree Fahrenheit hour square foot per British the 
+J2 
+joule per kilogram 
+J20 
+degree Fahrenheit per kelvin 
+J21 
+degree Fahrenheit per bar 
+J22 
+degree Fahrenheit hour square foot per British the 
+J23 
+degree Fahrenheit per hour 
+J24 
+degree Fahrenheit per minute 
+J25 
+degree Fahrenheit per second 
+J26 
+reciprocal degree Fahrenheit 
+J27 
+degree Oechsle 
+J28 
+degree Rankine per hour 
+J29 
+degree Rankine per minute 
+J30 
+degree Rankine per second 
+J31 
+degree Twaddell 
+J32 
+micropoise 
+J33 
+microgram per kilogram 
+J34 
+microgram per cubic metre kelvin 
+J35 
+microgram per cubic metre bar 
+J36 
+microlitre per litre 
+J38 
+baud 
+J39 
+British thermal unit (mean) 
+J40 
+British thermal unit (international table) foot pe 
+
+--- Page 57 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 54 
+ 
+J41 
+British thermal unit (international table) inch pe 
+J42 
+British thermal unit (international table) inch pe 
+J43 
+British thermal unit (international table) per pou 
+J44 
+British thermal unit (international table) per min 
+J45 
+British thermal unit (international table) per sec 
+J46 
+British thermal unit (thermochemical) foot per hou 
+J47 
+British thermal unit (thermochemical) per hour 
+J48 
+British thermal unit (thermochemical) inch per hou 
+J49 
+British thermal unit (thermochemical) inch per sec 
+J50 
+British thermal unit (thermochemical) per pound de 
+J51 
+British thermal unit (thermochemical) per minute 
+J52 
+British thermal unit (thermochemical) per second 
+J53 
+coulomb square metre per kilogram 
+J54 
+megabaud 
+J55 
+watt second 
+J56 
+bar per bar 
+J57 
+barrel (UK petroleum) 
+J58 
+barrel (UK petroleum) per minute 
+J59 
+barrel (UK petroleum) per day 
+J60 
+barrel (UK petroleum) per hour 
+J61 
+barrel (UK petroleum) per second 
+J62 
+barrel (US petroleum) per hour 
+J63 
+barrel (US petroleum) per second 
+J64 
+bushel (UK) per day 
+J65 
+bushel (UK) per hour 
+J66 
+bushel (UK) per minute 
+J67 
+bushel (UK) per second 
+J68 
+bushel (US dry) per day 
+J69 
+bushel (US dry) per hour 
+J70 
+bushel (US dry) per minute 
+J71 
+bushel (US dry) per second 
+J72 
+centinewton metre 
+J73 
+centipoise per kelvin 
+J74 
+centipoise per bar 
+J75 
+calorie (mean) 
+J76 
+calorie (international table) per gram degree Cels 
+J78 
+calorie (thermochemical) per centimetre second deg 
+J79 
+calorie (thermochemical) per gram degree Celsius 
+J81 
+calorie (thermochemical) per minute 
+J82 
+calorie (thermochemical) per second 
+J83 
+clo 
+J84 
+centimetre per second kelvin 
+J85 
+centimetre per second bar 
+J87 
+cubic centimetre per cubic metre 
+J89 
+centimetre of mercury 
+
+--- Page 58 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 55 
+ 
+J90 
+cubic decimetre per day 
+J91 
+cubic decimetre per cubic metre 
+J92 
+cubic decimetre per minute 
+J93 
+cubic decimetre per second 
+J94 
+dyne centimetre 
+J95 
+ounce (UK fluid) per day 
+J96 
+ounce (UK fluid) per hour 
+J97 
+ounce (UK fluid) per minute 
+J98 
+ounce (UK fluid) per second 
+J99 
+ounce (US fluid) per day 
+JB 
+jumbo 
+JE 
+joule per kelvin 
+JG 
+jug 
+JK 
+megajoule per kilogram 
+JM 
+megajoule per cubic metre 
+JNT 
+pipeline joint 
+JO 
+joint 
+JOU 
+Joule 
+JPS 
+hundred metre 
+JR 
+jar 
+JWL 
+number of jewels 
+K1 
+kilowatt demand 
+K10 
+ounce (US fluid) per hour 
+K11 
+ounce (US fluid) per minute 
+K12 
+ounce (US fluid) per second 
+K13 
+foot per degree Fahrenheit 
+K14 
+foot per hour 
+K15 
+foot pound-force per hour 
+K16 
+foot pound-force per minute 
+K17 
+foot per psi 
+K18 
+foot per second degree Fahrenheit 
+K19 
+foot per second psi 
+K2 
+kilovolt ampere reactive demand 
+K20 
+reciprocal cubic foot 
+K21 
+cubic foot per degree Fahrenheit 
+K22 
+cubic foot per day 
+K23 
+cubic foot per psi 
+K24 
+foot of water 
+K25 
+foot of mercury 
+K26 
+gallon (UK) per day 
+K27 
+gallon (UK) per hour 
+K28 
+gallon (UK) per second 
+K3 
+kilovolt ampere reactive hour 
+K30 
+gallon (US liquid) per second 
+K31 
+gram-force per square centimetre 
+
+--- Page 59 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 56 
+ 
+K32 
+gill (UK) per day 
+K33 
+gill (UK) per hour 
+K34 
+gill (UK) per minute 
+K35 
+gill (UK) per second 
+K36 
+gill (US) per day 
+K37 
+gill (US) per hour 
+K38 
+gill (US) per minute 
+K39 
+gill (US) per second 
+K40 
+standard acceleration of free fall 
+K41 
+grain per gallon (US) 
+K42 
+horsepower (boiler) 
+K43 
+horsepower (electric) 
+K45 
+inch per degree Fahrenheit 
+K46 
+inch per psi 
+K47 
+inch per second degree Fahrenheit 
+K48 
+inch per second psi 
+K49 
+reciprocal cubic inch 
+K5 
+kilovolt ampere (reactive) 
+K50 
+kilobaud 
+K51 
+kilocalorie (mean) 
+K52 
+kilocalorie (international table) per hour metre d 
+K53 
+kilocalorie (thermochemical) 
+K54 
+kilocalorie (thermochemical) per minute 
+K55 
+kilocalorie (thermochemical) per second 
+K58 
+kilomole per hour 
+K59 
+kilomole per cubic metre kelvin 
+K6 
+Kilolitre 
+K60 
+kilomole per cubic metre bar 
+K61 
+kilomole per minute 
+K62 
+litre per litre 
+K63 
+reciprocal litre 
+K64 
+pound (avoirdupois) per degree Fahrenheit 
+K65 
+pound (avoirdupois) square foot 
+K66 
+pound (avoirdupois) per day 
+K67 
+pound per foot hour 
+K68 
+pound per foot second 
+K69 
+pound (avoirdupois) per cubic foot degree Fahrenhe 
+K70 
+pound (avoirdupois) per cubic foot psi 
+K71 
+pound (avoirdupois) per gallon (UK) 
+K73 
+pound (avoirdupois) per hour degree Fahrenheit 
+K74 
+pound (avoirdupois) per hour psi 
+K75 
+pound (avoirdupois) per cubic inch degree Fahrenhe 
+K76 
+pound (avoirdupois) per cubic inch psi 
+K77 
+pound (avoirdupois) per psi 
+K78 
+pound (avoirdupois) per minute 
+
+--- Page 60 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 57 
+ 
+K79 
+pound (avoirdupois) per minute degree Fahrenheit 
+K80 
+pound (avoirdupois) per minute psi 
+K81 
+pound (avoirdupois) per second 
+K82 
+pound (avoirdupois) per second degree Fahrenheit 
+K83 
+pound (avoirdupois) per second psi 
+K84 
+pound per cubic yard 
+K85 
+pound-force per square foot 
+K86 
+pound-force per square inch degree Fahrenheit 
+K87 
+psi cubic inch per second 
+K88 
+psi litre per second 
+K89 
+psi cubic metre per second 
+K90 
+psi cubic yard per second 
+K91 
+pound-force second per square foot 
+K92 
+pound-force second per square inch 
+K93 
+reciprocal psi 
+K94 
+quart (UK liquid) per day 
+K95 
+quart (UK liquid) per hour 
+K96 
+quart (UK liquid) per minute 
+K97 
+quart (UK liquid) per second 
+K98 
+quart (US liquid) per day 
+K99 
+quart (US liquid) per hour 
+KA 
+cake 
+KAT 
+katal 
+KB 
+kilocharacter 
+KBA 
+Kilobar 
+KCC 
+kilogram of choline chloride 
+KD 
+kilogram decimal 
+KDW 
+kilogram drained net weight 
+KEL 
+Kelvin 
+KF 
+kilopacket 
+KG 
+keg 
+KGM 
+Kilogram 
+KGS 
+kilogram per second 
+KHY 
+kilogram of hydrogen peroxide 
+KHZ 
+kilohertz 
+KI 
+kilogram per millimetre width 
+KIC 
+kilogram 
+KIP 
+kilogram 
+KJ 
+kilosegment 
+KJO 
+Kilojoule 
+KL 
+kilogram per metre 
+KLK 
+lactic dry material percentage 
+KMA 
+kilogram of methylamine 
+KMH 
+Kilometre per hour 
+KMK 
+Square kilometre 
+
+--- Page 61 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 58 
+ 
+KMQ 
+Kilogram per cubic meter 
+KMT 
+Kilometre 
+KNI 
+Kilogram of nitrogen 
+KNS 
+Kilogram of named substance 
+KNT 
+Knot ( 1 n mile oer hour 
+KO 
+milliequivalence caustic potash per gram of produc 
+KPA 
+kilopascal 
+KPH 
+Kilogram of potassium hydroxide (caustic potasn) 
+KPO 
+Kilogram of potassium oxide 
+KPP 
+Kgm of phosphorus pentoxide(phosphoric anhydride 
+KR 
+kiloroentgen 
+KS 
+thousand pound per square inch 
+KSD 
+Kilogram of substance 90 per cent dry 
+KSH 
+Kilogram of sodium hydyoxide  (caustic soda) 
+KT 
+kit 
+KTM 
+kilometre 
+KTN 
+Kilotonne 
+KUR 
+Kilogram of uranium 
+KVA 
+Kilovolt - ampere 
+KVR 
+kilovar 
+KVT 
+kilovolt 
+KW 
+kilogram per millimetre 
+KWH 
+Kilowatt-hour 
+KWO 
+kilogram of tungsten trioxide 
+KWT 
+Kilowatt 
+KX 
+millilitre per kilogram 
+L10 
+quart (US liquid) per minute 
+L11 
+quart (US liquid) per second 
+L12 
+metre per second kelvin 
+L13 
+metre per second bar 
+L14 
+square metre hour degree Celsius per kilocalorie ( 
+L15 
+millipascal second per kelvin 
+L16 
+millipascal second per bar 
+L17 
+milligram per cubic metre kelvin 
+L18 
+milligram per cubic metre bar 
+L19 
+millilitre per litre 
+L2 
+litre per minute 
+L20 
+reciprocal cubic millimetre 
+L21 
+cubic millimetre per cubic metre 
+L23 
+mole per hour 
+L24 
+mole per kilogram kelvin 
+L25 
+mole per kilogram bar 
+L26 
+mole per litre kelvin 
+L27 
+mole per litre bar 
+L28 
+mole per cubic metre kelvin 
+
+--- Page 62 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 59 
+ 
+L29 
+mole per cubic metre bar 
+L30 
+mole per minute 
+L31 
+milliroentgen aequivalent men 
+L32 
+nanogram per kilogram 
+L33 
+ounce (avoirdupois) per day 
+L34 
+ounce (avoirdupois) per hour 
+L35 
+ounce (avoirdupois) per minute 
+L36 
+ounce (avoirdupois) per second 
+L37 
+ounce (avoirdupois) per gallon (UK) 
+L38 
+ounce (avoirdupois) per gallon (US) 
+L39 
+ounce (avoirdupois) per cubic inch 
+L40 
+ounce (avoirdupois)-force 
+L41 
+ounce (avoirdupois)-force inch 
+L42 
+pikosiemens per metre 
+L43 
+peck (UK) 
+L44 
+peck (UK) per day 
+L45 
+peck (UK) per hour 
+L46 
+peck (UK) per minute 
+L47 
+peck (UK) per second 
+L48 
+peck (US dry) per day 
+L49 
+peck (US dry) per hour 
+L50 
+peck (US dry) per minute 
+L51 
+peck (US dry) per second 
+L52 
+psi per psi 
+L53 
+pint (UK) per day 
+L54 
+pint (UK) per hour 
+L55 
+pint (UK) per minute 
+L56 
+pint (UK) per second 
+L57 
+pint (US liquid) per day 
+L58 
+pint (US liquid) per hour 
+L59 
+pint (US liquid) per minute 
+L60 
+pint (US liquid) per second 
+L61 
+pint (US dry) 
+L62 
+quart (US dry) 
+L63 
+slug per day 
+L64 
+slug per foot second 
+L65 
+slug per cubic foot 
+L66 
+slug per hour 
+L67 
+slug per minute 
+L68 
+slug per second 
+L69 
+tonne per kelvin 
+L70 
+tonne per bar 
+L71 
+tonne per day 
+L72 
+tonne per day kelvin 
+L73 
+tonne per day bar 
+
+--- Page 63 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 60 
+ 
+L74 
+tonne per hour kelvin 
+L75 
+tonne per hour bar 
+L76 
+tonne per cubic metre kelvin 
+L77 
+tonne per cubic metre bar 
+L78 
+tonne per minute 
+L79 
+tonne per minute kelvin 
+L80 
+tonne per minute bar 
+L81 
+tonne per second 
+L82 
+tonne per second kelvin 
+L83 
+tonne per second bar 
+L84 
+ton (UK shipping) 
+L85 
+ton long per day 
+L86 
+ton (US shipping) 
+L87 
+ton short per degree Fahrenheit 
+L88 
+ton short per day 
+L89 
+ton short per hour degree Fahrenheit 
+L90 
+ton short per hour psi 
+L91 
+ton short per psi 
+L92 
+ton (UK long) per cubic yard 
+L93 
+ton (US short) per cubic yard 
+L94 
+ton-force (US short) 
+L95 
+common year 
+L96 
+sidereal year 
+L98 
+yard per degree Fahrenheit 
+L99 
+yard per psi 
+LA 
+pound per cubic inch 
+LAC 
+lactose excess percentage 
+LBR 
+Pound GB 
+LBT 
+Troy pound 
+LC 
+linear centimetre 
+LD 
+litre per day 
+LE 
+lite 
+LEF 
+leaf 
+LF 
+linear foot 
+LH 
+labour hour 
+LI 
+linear inch 
+LJ 
+large spray 
+LK 
+link 
+LM 
+linear metre 
+LN 
+length 
+LNT 
+Long ton GB 
+LO 
+lot  [unit of procurement] 
+LP 
+liquid pound 
+LPA 
+Litre of pure alcohol 
+LR 
+layer 
+
+--- Page 64 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 61 
+ 
+LS 
+lump sum 
+LTN 
+ton (UK) or long ton (US) 
+LTR 
+Litre ( 1 dm3 ) 
+LUB 
+metric ton 
+LUM 
+Lumen 
+LUX 
+lux 
+LX 
+linear yard per pound 
+LY 
+linear yard 
+M0 
+magnetic tape 
+M1 
+milligram per litre 
+M10 
+reciprocal cubic yard 
+M11 
+cubic yard per degree Fahrenheit 
+M12 
+cubic yard per day 
+M13 
+cubic yard per hour 
+M14 
+cubic yard per psi 
+M15 
+cubic yard per minute 
+M16 
+cubic yard per second 
+M17 
+kilohertz metre 
+M18 
+gigahertz metre 
+M19 
+Beaufort 
+M20 
+reciprocal megakelvin or megakelvin to the power m 
+M21 
+reciprocal kilovolt - ampere hour 
+M22 
+millilitre per square centimetre minute 
+M23 
+newton per centimetre 
+M24 
+ohm kilometre 
+M25 
+percent per degree Celsius 
+M26 
+gigaohm per metre 
+M27 
+megahertz metre 
+M29 
+kilogram per kilogram 
+M30 
+reciprocal volt - ampere second 
+M31 
+kilogram per kilometre 
+M32 
+pascal second per litre 
+M33 
+millimole per litre 
+M34 
+newton metre per square metre 
+M35 
+millivolt - ampere 
+M36 
+30-day month 
+M37 
+actual/360 
+M4 
+monetary value 
+M5 
+microcurie 
+M7 
+micro-inch 
+M9 
+million Btu per 1000 cubic foot 
+MA 
+machine per unit 
+MAH 
+megavolt ampere reactive hour 
+MAL 
+Megalitre 
+MAM 
+Megametre 
+
+--- Page 65 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 62 
+ 
+MAR 
+megavolt ampere reactive 
+MAW 
+Megawatt 
+MBE 
+thousand standard brick equivalent 
+MBF 
+thousand board foot 
+MBR 
+millibar 
+MC 
+microgram 
+MCU 
+millicurie 
+MD 
+air dry metric ton 
+MF 
+milligram per square foot per side 
+MGM 
+Milligram 
+MHZ 
+megahertz 
+MID 
+Thousand 
+MIK 
+Square mile 
+MIL 
+thousand 
+MIN 
+Minute 
+MIO 
+Million 
+MIU 
+Million international units 
+MK 
+milligram per square inch 
+MLD 
+Billion US 
+MLT 
+Millilitre 
+MMK 
+Square millimetre 
+MMQ 
+Cubic millimetre 
+MMT 
+Millimetre 
+MND 
+kilogram 
+MON 
+Month 
+MPA 
+megapascal 
+MQ 
+thousand metre 
+MQH 
+cubic metre per hour 
+MQS 
+cubic metre per second 
+MSK 
+Metre per second squared 
+MT 
+mat 
+MTK 
+Square metre 
+MTQ 
+Cubic metre 
+MTR 
+Metre 
+MTS 
+metre per second 
+MV 
+number of mults 
+MVA 
+Megavolt -  ampere (1000 KVA) 
+MWH 
+Megawatt-hour (1000 KW/h) 
+N1 
+pen calorie 
+N2 
+number of lines 
+N3 
+print point 
+NA 
+milligram per kilogram 
+NAR 
+Number of articles 
+NB 
+barge 
+NBB 
+Number bobbins 
+
+--- Page 66 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 63 
+ 
+NC 
+car 
+NCL 
+number of cells 
+ND 
+net barrel 
+NE 
+net litre 
+NEW 
+Newton 
+NF 
+message 
+NG 
+net gallon (us) 
+NH 
+message hour 
+NI 
+net imperial gallon 
+NIL 
+nil 
+NIU 
+Number of international units 
+NJ 
+number of screens 
+NL 
+load 
+NMB 
+Number 
+NMI 
+Nautical mile (1852 m) 
+NMP 
+Number of packs 
+NN 
+train 
+NPL 
+Number of parcels 
+NPR 
+number of pairs 
+NPT 
+Number of parts 
+NQ 
+mho 
+NR 
+micromho 
+NRL 
+Number of rolls 
+NT 
+net ton 
+NTT 
+Net (regirter) ton 
+NU 
+newton metre 
+NV 
+vehicle 
+NX 
+part per thousand 
+NY 
+pound per air dry metric ton 
+OA 
+panel 
+ODE 
+ozone depletion equivalent 
+OHM 
+Ohm 
+ON 
+ounce per square yard 
+ONZ 
+Ounce GB 
+OP 
+two pack 
+OT 
+overtime hour 
+OZ 
+ounce av 
+OZA 
+Fluid ounce (29 
+OZI 
+Fluid ounce (29 
+P0 
+page - electronic 
+P1 
+percent 
+P2 
+pound per foot 
+P3 
+three pack 
+P4 
+four pack 
+P5 
+five pack 
+
+--- Page 67 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 64 
+ 
+P6 
+six pack 
+P7 
+seven pack 
+P8 
+eight pack 
+P9 
+nine pack 
+PA 
+packet 
+PAL 
+Pascal 
+PB 
+pair inch 
+PCE 
+Piece 
+PD 
+pad 
+PE 
+pound equivalent 
+PF 
+pallet (lift) 
+PFL 
+proof litre 
+PG 
+plate 
+PGL 
+Proof gallon 
+PI 
+pitch 
+PK 
+pack 
+PL 
+pail 
+PLA 
+degree Plato 
+PM 
+pound percentage 
+PN 
+pound net 
+PO 
+pound per inch of length 
+PQ 
+page per inch 
+PR 
+pair 
+PS 
+pound-force per square inch 
+PT 
+pint (US) 
+PTD 
+Dry pint (0.55061 dm3) 
+PTI 
+Pint (0 
+PTL 
+Liquid Pint (0 
+PU 
+tray / tray pack 
+PV 
+half pint (US) 
+PW 
+pound per inch of width 
+PY 
+peck dry (US) 
+PZ 
+peck dry (UK) 
+Q3 
+meal 
+QA 
+page - facsimile 
+QAN 
+Quarter (of a year) 
+QB 
+page - hardcopy 
+QD 
+quarter dozen 
+QH 
+quarter hour 
+QK 
+quarter kilogram 
+QR 
+quire 
+QT 
+quart (US) 
+QTD 
+Dry quart (1 
+QTI 
+Quart (1 
+QTL 
+Liquid quart (0 
+
+--- Page 68 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 65 
+ 
+QTR 
+Quarter GB (12 
+R1 
+pica 
+R4 
+calorie 
+R9 
+thousand cubic metre 
+RA 
+rack 
+RD 
+rod 
+RG 
+ring 
+RH 
+running or operating hour 
+RK 
+roll metric measure 
+RL 
+reel 
+RM 
+ream 
+RN 
+ream metric measure 
+RO 
+roll 
+RP 
+pound per ream 
+RPM 
+Revolution per minute 
+RPS 
+Revolution per second 
+RS 
+reset 
+RT 
+revenue ton mile 
+RU 
+run 
+S3 
+square foot per second 
+S4 
+square metre per second 
+S5 
+sixty fourths of an inch 
+S6 
+session 
+S7 
+storage unit 
+S8 
+standard advertising unit 
+SA 
+sack 
+SAN 
+Half year (six Months) 
+SCO 
+Score 
+SCR 
+Scruple GP 
+SD 
+solid pound 
+SE 
+section 
+SEC 
+Second 
+SET 
+Set 
+SG 
+segment 
+SHT 
+Shipping ton 
+SIE 
+Siemens 
+SK 
+split tank truck 
+SL 
+slipsheet 
+SMI 
+Statute mile (1609.344 m) 
+SN 
+square rod 
+SO 
+spool 
+SP 
+shelf package 
+SQ 
+square 
+SQR 
+square 
+SR 
+Strip 
+
+--- Page 69 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 66 
+ 
+SS 
+sheet metric measure 
+SST 
+Short standard  (7200 matches ) 
+ST 
+sheet 
+STI 
+Stone GB (6 
+STK 
+stick 
+STL 
+standard litre 
+STN 
+Short ton GB 
+SV 
+skid 
+SW 
+skein 
+SX 
+shipment 
+T0 
+telecommunication line in service 
+T1 
+thousand pound gross 
+T3 
+thousand piece 
+T4 
+thousand bag 
+T5 
+thousand casing 
+T6 
+thousand gallon (US) 
+T7 
+thousand impression 
+T8 
+thousand linear inch 
+TA 
+tenth cubic foot 
+TAH 
+Thousand ampere-hour 
+TC 
+truckload 
+TD 
+therm 
+TE 
+tote 
+TF 
+ten square yard 
+TI 
+thousand square inch 
+TIC 
+metric ton 
+TIP 
+metric ton 
+TJ 
+thousand square centimetre 
+TK 
+tank 
+TL 
+thousand foot (linear) 
+TMS 
+kilogram of imported meat 
+TN 
+tin 
+TNE 
+Metric ton (1000 kg) 
+TP 
+ten pack 
+TPR 
+Ten pairs 
+TQ 
+thousand foot 
+TQD 
+thousand cubic metres per day 
+TR 
+ten square foot 
+TRL 
+Trillion Eur 
+TS 
+thousand square foot 
+TSD 
+Tonne of subtance 90 per cent dry 
+TSH 
+Ton of steam per hour 
+TT 
+thousand linear metre 
+TU 
+tube 
+TV 
+thousand kilogram 
+
+--- Page 70 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 67 
+ 
+TW 
+thousand sheet 
+TY 
+tank 
+U1 
+treatment 
+U2 
+Tablet 
+UA 
+torr 
+UB 
+telecommunication line in service average 
+UC 
+telecommunication port 
+UD 
+tenth minute 
+UE 
+tenth hour 
+UF 
+usage per telecommunication line average 
+UH 
+ten thousand yard 
+UM 
+million unit 
+VA 
+volt - ampere per kilogram 
+VI 
+vial 
+VLT 
+Volt 
+VP 
+percent volume 
+VQ 
+bulk 
+VS 
+visit 
+W2 
+wet kilo 
+W4 
+two week 
+WA 
+watt per kilogram 
+WB 
+wet pound 
+WCD 
+Cord (3 
+WE 
+wet ton 
+WEB 
+Weber 
+WEE 
+Week 
+WG 
+wine gallon 
+WH 
+wheel 
+WHR 
+Watt-hour 
+WI 
+weight per square inch 
+WM 
+working month 
+WR 
+wrap 
+WSD 
+Standard 
+WTT 
+Watt 
+WW 
+millilitre of water 
+X1 
+Gunter's chain 
+YDK 
+Square yard 
+YDQ 
+Cubic yard 
+YL 
+hundred linear yard 
+YRD 
+Yard (0.9144 m) 
+YT 
+ten yard 
+Z1 
+lift van 
+Z2 
+chest 
+Z3 
+cask 
+Z4 
+hogshead 
+
+--- Page 71 ---
+PEDOMAN INTEGRASI APLIKASI 
+ 
+ 
+ 
+ 
+ 
+PEDOMAN INTEGRASI APLIKASI  
+IT INVENTORY - Kawasan Ekonomi Khusus 
+Sistem Indonesia Nasional Single Window (SINSW)  
+Lembaga National Single Window (LNSW) 
+Halaman 68 
+ 
+Z5 
+lug 
+Z6 
+conference point 
+Z8 
+newspage agate line 
+ZP 
+page 
+ZZ 
+mutually defined 
+ 
+6. 
+Kode Kegiatan 
+KODE 
+URAIAN 
+30 
+Incoming Goods 
+31 
+Outgoing Goods 
+32 
+Stock Opname Goods 
+33 
+Adjusment Goods 
+ 
+
