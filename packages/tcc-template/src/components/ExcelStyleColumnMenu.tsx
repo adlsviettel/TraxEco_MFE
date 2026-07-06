@@ -22,6 +22,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import SortByAlphaIcon from '@mui/icons-material/SortByAlpha';
 import FilterAltOffIcon from '@mui/icons-material/FilterAltOff';
 import { columnFilterStore } from './ColumnFilterContext';
+import { format } from 'date-fns';
 
 export default function ExcelStyleColumnMenu(props: GridColumnMenuProps) {
   const { hideMenu, colDef } = props;
@@ -49,6 +50,11 @@ export default function ExcelStyleColumnMenu(props: GridColumnMenuProps) {
       } catch { /* fallback */ }
     }
     const val = row[field];
+    if (val && (field.toLowerCase().includes('date') || field.endsWith('At'))) {
+      try {
+        return format(new Date(val), 'dd/MM/yyyy');
+      } catch { /* fallback */ }
+    }
     return (val !== undefined && val !== null && val !== '') ? String(val) : '(Blanks)';
   };
 

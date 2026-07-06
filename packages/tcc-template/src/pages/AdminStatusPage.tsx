@@ -569,6 +569,11 @@ export default function AdminStatusPage() {
           val = row.releasedDate ? 'Released' : (row.status || 'Not Started');
         } else {
           val = (row as any)[field];
+          if (val && (field.toLowerCase().includes('date') || field.endsWith('At'))) {
+            try {
+              val = format(new Date(val), 'dd/MM/yyyy');
+            } catch { /* fallback */ }
+          }
         }
         val = (val !== undefined && val !== null && val !== '') ? String(val) : '(Blanks)';
         return allowedValues.includes(val);
