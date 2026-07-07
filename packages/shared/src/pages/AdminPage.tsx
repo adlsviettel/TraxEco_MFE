@@ -24,9 +24,9 @@ import { authFetch } from '../services/apiInterceptor';
 import { PERMISSION_PRESETS } from '../config/permissionPresets';
 import { EXTRA_PAGES } from '../config/appPages';
 
-const ACTIONS = ['canView', 'canAdd', 'canEdit', 'canDelete', 'canExport', 'canBypassCheck', 'bypassQC', 'bypassRelax', 'bypassLabTest', 'bypassSunrise'] as const;
+const ACTIONS = ['canView', 'canAdd', 'canEdit', 'canDelete', 'canExport', 'canCancel', 'canBypassCheck', 'bypassQC', 'bypassRelax', 'bypassLabTest', 'bypassSunrise'] as const;
 const ACTION_LABELS: Record<string, string> = {
-  canView: '👁 View', canAdd: '➕ Add', canEdit: '✏️ Edit', canDelete: '🗑 Del', canExport: '📥 Exp', canBypassCheck: '🔓 Bypass All',
+  canView: '👁 View', canAdd: '➕ Add', canEdit: '✏️ Edit', canDelete: '🗑 Del', canExport: '📥 Exp', canCancel: '🚫 Cancel', canBypassCheck: '🔓 Bypass All',
   bypassQC: '🔓 QC', bypassRelax: '🔓 Relax', bypassLabTest: '🔓 Lab', bypassSunrise: '🔓 Sunrise',
 };
 // Pages that support the Bypass permission (skip QC/Lab/Relax checks)
@@ -44,7 +44,7 @@ const ROUTE_TO_APP: Record<string, string> = {
 
 interface PendingChange {
   employeeCode: string; pageCode: string;
-  canView: boolean; canAdd: boolean; canEdit: boolean; canDelete: boolean; canExport: boolean; canBypassCheck: boolean;
+  canView: boolean; canAdd: boolean; canEdit: boolean; canDelete: boolean; canExport: boolean; canCancel?: boolean; canBypassCheck: boolean;
   bypassQC: boolean; bypassRelax: boolean; bypassLabTest: boolean; bypassSunrise: boolean;
 }
 
@@ -57,6 +57,7 @@ const PermissionRow = memo(({ pg, user, pendingChange, themeColor, onToggle }: a
     canView: perm?.canView ?? false, canAdd: perm?.canAdd ?? false,
     canEdit: perm?.canEdit ?? false, canDelete: perm?.canDelete ?? false,
     canExport: perm?.canExport ?? false,
+    canCancel: perm?.canCancel ?? false,
     canBypassCheck: perm?.canBypassCheck ?? false,
     bypassQC: perm?.bypassQC ?? false,
     bypassRelax: perm?.bypassRelax ?? false,
@@ -69,11 +70,22 @@ const PermissionRow = memo(({ pg, user, pendingChange, themeColor, onToggle }: a
     <TableRow sx={{ 
       backgroundColor: hasChange ? '#fefce8' : 'transparent',
       '&:hover': { backgroundColor: '#f8fafc' },
+      '&:hover .sticky-col': { backgroundColor: '#f8fafc' },
       transition: 'all 0.2s'
     }}>
-      <TableCell sx={{ fontWeight: 700, borderBottom: '1px solid #f1f5f9', color: '#334155', fontSize: '0.9rem' }}>{pg.label}</TableCell>
+      <TableCell className="sticky-col" sx={{ 
+        position: 'sticky',
+        left: 0,
+        zIndex: 1,
+        backgroundColor: hasChange ? '#fefce8' : '#fff',
+        fontWeight: 700, 
+        borderBottom: '1px solid #f1f5f9', 
+        color: '#334155', 
+        fontSize: '0.9rem',
+        boxShadow: '2px 0 5px -2px rgba(0,0,0,0.05)'
+      }}>{pg.label}</TableCell>
       {ACTIONS.map(a => {
-        if (a.toLowerCase().includes('bypass')) {
+        if (a.startsWith('bypass')) {
           if (!BYPASS_PAGES.has(pg.code)) {
             return <TableCell key={a} align="center" sx={{ py: 0.5, borderBottom: '1px solid #f1f5f9' }} />;
           }
@@ -84,8 +96,8 @@ const PermissionRow = memo(({ pg, user, pendingChange, themeColor, onToggle }: a
         return (
           <TableCell key={a} align="center" sx={{ py: 0.5, borderBottom: '1px solid #f1f5f9' }}>
             <Checkbox size="small" checked={!!state[a]}
-              onChange={() => onToggle(user, pg.code, a, state)}
-              sx={{ p: 0.5, color: '#cbd5e1', '&.Mui-checked': { color: a === 'canBypassCheck' ? '#f97316' : themeColor, '& .MuiSvgIcon-root': { transform: 'scale(1.1)', transition: 'all 0.2s' } } }} />
+               onChange={() => onToggle(user, pg.code, a, state)}
+               sx={{ p: 0.5, color: '#cbd5e1', '&.Mui-checked': { color: a === 'canBypassCheck' ? '#f97316' : themeColor, '& .MuiSvgIcon-root': { transform: 'scale(1.1)', transition: 'all 0.2s' } } }} />
           </TableCell>
         );
       })}
@@ -100,6 +112,7 @@ const MobilePermissionRow = memo(({ pg, user, pendingChange, themeColor, onToggl
     canView: perm?.canView ?? false, canAdd: perm?.canAdd ?? false,
     canEdit: perm?.canEdit ?? false, canDelete: perm?.canDelete ?? false,
     canExport: perm?.canExport ?? false,
+    canCancel: perm?.canCancel ?? false,
     canBypassCheck: perm?.canBypassCheck ?? false,
     bypassQC: perm?.bypassQC ?? false,
     bypassRelax: perm?.bypassRelax ?? false,
@@ -122,13 +135,13 @@ const MobilePermissionRow = memo(({ pg, user, pendingChange, themeColor, onToggl
       </Typography>
       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.75 }}>
         {ACTIONS.map(a => {
-          if (a.toLowerCase().includes('bypass')) {
+          if (a.startsWith('bypass')) {
             if (!BYPASS_PAGES.has(pg.code)) return null;
             if (pg.code === 'fb_relax' && a !== 'bypassSunrise') return null;
           }
           
           const isSelected = !!state[a];
-          const isBypass = a.toLowerCase().includes('bypass');
+          const isBypass = a.startsWith('bypass');
           
           return (
             <Chip
@@ -430,6 +443,7 @@ export default function AdminPage() {
       canView: existing?.canView ?? false, canAdd: existing?.canAdd ?? false,
       canEdit: existing?.canEdit ?? false, canDelete: existing?.canDelete ?? false,
       canExport: existing?.canExport ?? false,
+      canCancel: existing?.canCancel ?? false,
       canBypassCheck: existing?.canBypassCheck ?? false,
       bypassQC: existing?.bypassQC ?? false,
       bypassRelax: existing?.bypassRelax ?? false,
@@ -442,7 +456,7 @@ export default function AdminPage() {
     const key = `${user.employeeCode}:${pageCode}`;
     const updated = { ...current, [action]: !current[action] };
     if (action === 'canView' && !updated.canView) {
-      updated.canAdd = false; updated.canEdit = false; updated.canDelete = false; updated.canExport = false; updated.canBypassCheck = false;
+      updated.canAdd = false; updated.canEdit = false; updated.canDelete = false; updated.canExport = false; updated.canCancel = false; updated.canBypassCheck = false;
       updated.bypassQC = false; updated.bypassRelax = false; updated.bypassLabTest = false; updated.bypassSunrise = false;
     }
     if (action !== 'canView' && updated[action]) updated.canView = true;
@@ -456,7 +470,7 @@ export default function AdminPage() {
       const key = `${user.employeeCode}:${pg.code}`;
       next.set(key, {
         employeeCode: user.employeeCode, pageCode: pg.code,
-        canView: enable, canAdd: enable, canEdit: enable, canDelete: enable, canExport: enable, canBypassCheck: enable,
+        canView: enable, canAdd: enable, canEdit: enable, canDelete: enable, canExport: enable, canCancel: enable, canBypassCheck: enable,
         bypassQC: enable, bypassRelax: enable, bypassLabTest: enable, bypassSunrise: enable,
       });
     }
@@ -482,6 +496,7 @@ export default function AdminPage() {
           canEdit: presetPage.canEdit ?? false,
           canDelete: presetPage.canDelete ?? false,
           canExport: presetPage.canExport ?? false,
+          canCancel: presetPage.canCancel ?? false,
           canBypassCheck: presetPage.canBypassCheck ?? false,
           bypassQC: presetPage.bypassQC ?? false,
           bypassRelax: presetPage.bypassRelax ?? false,
@@ -498,6 +513,7 @@ export default function AdminPage() {
           canEdit: false,
           canDelete: false,
           canExport: false,
+          canCancel: false,
           canBypassCheck: false,
           bypassQC: false,
           bypassRelax: false,
@@ -514,7 +530,7 @@ export default function AdminPage() {
     setSaving(true);
     try {
       for (const change of pendingChanges.values()) {
-        const hasAny = change.canView || change.canAdd || change.canEdit || change.canDelete || change.canExport || change.canBypassCheck || change.bypassQC || change.bypassRelax || change.bypassLabTest || change.bypassSunrise;
+        const hasAny = change.canView || change.canAdd || change.canEdit || change.canDelete || change.canExport || change.canCancel || change.canBypassCheck || change.bypassQC || change.bypassRelax || change.bypassLabTest || change.bypassSunrise;
         if (hasAny) await permissionService.grantPermission(change);
         else await permissionService.revokePermission(change.employeeCode, change.pageCode);
       }
@@ -711,33 +727,33 @@ export default function AdminPage() {
 
   // ─── RENDER ───
   return (
-    <Box sx={{ p: { xs: 1.5, md: 3 }, flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)', gap: { xs: 1, md: 2 } }}>
+    <Box sx={{ p: { xs: 1, md: 1.5 }, flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)', gap: { xs: 0.5, md: 1 } }}>
       {/* Header & Toolbar Card */}
       {isMobile ? (
         <Paper elevation={0} sx={{ 
-          p: 1.5, borderRadius: '12px', border: '1px solid rgba(255,255,255,1)', 
+          p: 1, borderRadius: '10px', border: '1px solid rgba(255,255,255,1)', 
           background: 'rgba(255,255,255,0.7)', backdropFilter: 'blur(20px)',
-          boxShadow: '0 4px 20px rgba(0,0,0,0.02)',
-          display: 'flex', flexDirection: 'column', gap: 1.25
+          boxShadow: '0 2px 10px rgba(0,0,0,0.01)',
+          display: 'flex', flexDirection: 'column', gap: 1
         }}>
           {/* Top Row: Title & Chip */}
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
               {location.pathname === '/admin' && (
                 <IconButton size="small" onClick={() => nav('/')}
-                  sx={{ border: '1px solid #cbd5e1', borderRadius: 2, color: themeColors.main, p: 0.5 }}>
+                  sx={{ border: '1px solid #cbd5e1', borderRadius: 1.5, color: themeColors.main, p: 0.25 }}>
                   <ChevronLeftIcon fontSize="small" />
                 </IconButton>
               )}
-              <Typography variant="body1" sx={{ display: 'flex', alignItems: 'center', gap: 1, fontWeight: 800, color: themeColors.dark, letterSpacing: '-0.3px', fontSize: 16 }}>
-                <AdminIcon sx={{ fontSize: 24, p: 0.25, borderRadius: 1.5, background: themeColors.light, color: themeColors.main }} /> 
+              <Typography variant="body1" sx={{ display: 'flex', alignItems: 'center', gap: 0.75, fontWeight: 800, color: themeColors.dark, letterSpacing: '-0.3px', fontSize: 14 }}>
+                <AdminIcon sx={{ fontSize: 20, p: 0.2, borderRadius: 1, background: themeColors.light, color: themeColors.main }} /> 
                 {t('admin.title', 'Permission Management')}
               </Typography>
             </Box>
             <Chip 
               label={`${Array.isArray(users) ? users.length : 0} ${t('admin.users', 'users')}`} 
               size="small" 
-              sx={{ fontWeight: 800, height: 22, fontSize: 11, backgroundColor: '#fff', color: themeColors.main, border: '1px solid rgba(0,0,0,0.05)' }} 
+              sx={{ fontWeight: 800, height: 18, fontSize: 10, backgroundColor: '#fff', color: themeColors.main, border: '1px solid rgba(0,0,0,0.05)' }} 
             />
           </Box>
 
@@ -745,13 +761,13 @@ export default function AdminPage() {
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, width: '100%' }}>
             <TextField size="small" placeholder={t('admin.searchPlaceholder')}
               value={search} onChange={e => setSearch(e.target.value)}
-              InputProps={{ startAdornment: <InputAdornment position="start"><SearchIcon sx={{ fontSize: 18, color: '#94a3b8' }} /></InputAdornment> }}
+              InputProps={{ startAdornment: <InputAdornment position="start"><SearchIcon sx={{ fontSize: 16, color: '#94a3b8' }} /></InputAdornment> }}
               sx={{ 
                 flex: 1,
                 '& .MuiOutlinedInput-root': { 
-                  borderRadius: 6, backgroundColor: '#fff',
-                  height: 36,
-                  fontSize: 13,
+                  borderRadius: 5, backgroundColor: '#fff',
+                  height: 32,
+                  fontSize: 12,
                   '& fieldset': { borderColor: '#e2e8f0' }
                 } 
               }}
@@ -761,32 +777,32 @@ export default function AdminPage() {
             {(isSuperAdmin || myRoleLevel <= 1) && (
               <Tooltip title={t('admin.userTracking', 'User Tracking')}>
                 <IconButton onClick={() => nav('/tracking')} size="small"
-                  sx={{ bgcolor: '#fff', border: '1px solid #e2e8f0', p: 0.75, borderRadius: 2, color: '#475569', '&:hover': { bgcolor: '#eff6ff', color: themeColors.main } }}>
-                  <TrackingIcon sx={{ fontSize: 18 }} />
+                  sx={{ bgcolor: '#fff', border: '1px solid #e2e8f0', p: 0.5, borderRadius: 1.5, color: '#475569', '&:hover': { bgcolor: '#eff6ff', color: themeColors.main } }}>
+                  <TrackingIcon sx={{ fontSize: 16 }} />
                 </IconButton>
               </Tooltip>
             )}
             
             <Tooltip title={t('admin.createAccount')}>
               <IconButton onClick={() => setCreateOpen(true)} size="small"
-                sx={{ bgcolor: themeColors.main, color: '#fff', p: 0.75, borderRadius: 2, '&:hover': { bgcolor: themeColors.dark } }}>
-                <PersonAddIcon sx={{ fontSize: 18 }} />
+                sx={{ bgcolor: themeColors.main, color: '#fff', p: 0.5, borderRadius: 1.5, '&:hover': { bgcolor: themeColors.dark } }}>
+                <PersonAddIcon sx={{ fontSize: 16 }} />
               </IconButton>
             </Tooltip>
             
             {(isSuperAdmin || myRoleLevel <= 1) && (
               <Tooltip title={t('admin.bulkSetup', 'Bulk Setup')}>
                 <IconButton onClick={() => { setBulkOpen(true); setBulkStep(1); setBulkSelectedUsers([]); }} size="small"
-                  sx={{ background: `linear-gradient(135deg, ${themeColors.main} 0%, ${themeColors.dark} 100%)`, color: '#fff', p: 0.75, borderRadius: 2, '&:hover': { background: `linear-gradient(135deg, ${themeColors.dark} 0%, ${themeColors.main} 100%)` } }}>
-                  <GroupAddIcon sx={{ fontSize: 18 }} />
+                  sx={{ background: `linear-gradient(135deg, ${themeColors.main} 0%, ${themeColors.dark} 100%)`, color: '#fff', p: 0.5, borderRadius: 1.5, '&:hover': { background: `linear-gradient(135deg, ${themeColors.dark} 0%, ${themeColors.main} 100%)` } }}>
+                  <GroupAddIcon sx={{ fontSize: 16 }} />
                 </IconButton>
               </Tooltip>
             )}
 
             <Tooltip title={t('admin.reloadTooltip')}>
               <IconButton onClick={fetchUsers} disabled={loading} size="small"
-                sx={{ bgcolor: '#fff', border: '1px solid #e2e8f0', p: 0.75, borderRadius: 2, color: '#64748b', '&:hover': { bgcolor: '#f8fafc' } }}>
-                <RefreshIcon sx={{ fontSize: 18 }} />
+                sx={{ bgcolor: '#fff', border: '1px solid #e2e8f0', p: 0.5, borderRadius: 1.5, color: '#64748b', '&:hover': { bgcolor: '#f8fafc' } }}>
+                <RefreshIcon sx={{ fontSize: 16 }} />
               </IconButton>
             </Tooltip>
           </Box>
@@ -796,65 +812,66 @@ export default function AdminPage() {
         <>
           {/* Header */}
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 1 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               {location.pathname === '/admin' && (
                 <Button variant="outlined" size="small" onClick={() => nav('/')}
-                  sx={{ minWidth: 'auto', borderRadius: 2, borderColor: themeColors.main, color: themeColors.main, '&:hover': { background: themeColors.light } }}>
+                  sx={{ minWidth: 'auto', borderRadius: 1.5, borderColor: themeColors.main, color: themeColors.main, py: 0.25, '&:hover': { background: themeColors.light } }}>
                   ← {t('admin.home')}
                 </Button>
               )}
-              <Typography variant="h5" sx={{ display: 'flex', alignItems: 'center', gap: 1.5, fontWeight: 800, color: themeColors.dark, letterSpacing: '-0.5px' }}>
-                <AdminIcon sx={{ fontSize: 32, p: 0.5, borderRadius: 2, background: themeColors.light, color: themeColors.main }} /> 
+              <Typography sx={{ display: 'flex', alignItems: 'center', gap: 1, fontWeight: 800, color: themeColors.dark, letterSpacing: '-0.3px', fontSize: 18 }}>
+                <AdminIcon sx={{ fontSize: 24, p: 0.3, borderRadius: 1.5, background: themeColors.light, color: themeColors.main }} /> 
                 {t('admin.title', 'Permission Management')}
               </Typography>
             </Box>
             <Box sx={{ display: 'flex', gap: 1 }}>
-              <Chip label={`${Array.isArray(users) ? users.length : 0} ${t('admin.users', 'users')}`} sx={{ fontWeight: 700, backgroundColor: '#fff', color: themeColors.main, boxShadow: '0 2px 8px rgba(0,0,0,0.04)', border: '1px solid rgba(0,0,0,0.05)' }} />
+              <Chip label={`${Array.isArray(users) ? users.length : 0} ${t('admin.users', 'users')}`} sx={{ height: 24, fontWeight: 700, backgroundColor: '#fff', color: themeColors.main, boxShadow: '0 2px 8px rgba(0,0,0,0.04)', border: '1px solid rgba(0,0,0,0.05)' }} />
             </Box>
           </Box>
 
           {/* Toolbar */}
           <Paper elevation={0} sx={{ 
-            p: 2, borderRadius: 3, border: '1px solid rgba(255,255,255,1)', 
+            p: 1, borderRadius: 2, border: '1px solid rgba(255,255,255,1)', 
             background: 'rgba(255,255,255,0.7)', backdropFilter: 'blur(20px)',
-            boxShadow: '0 4px 20px rgba(0,0,0,0.02)'
+            boxShadow: '0 2px 10px rgba(0,0,0,0.01)'
           }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, width: '100%' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, width: '100%' }}>
               <TextField size="small" placeholder={t('admin.searchPlaceholder')}
                 value={search} onChange={e => setSearch(e.target.value)}
-                InputProps={{ startAdornment: <InputAdornment position="start"><SearchIcon sx={{ fontSize: 20, color: '#94a3b8' }} /></InputAdornment> }}
+                InputProps={{ startAdornment: <InputAdornment position="start"><SearchIcon sx={{ fontSize: 18, color: '#94a3b8' }} /></InputAdornment> }}
                 sx={{ 
-                  minWidth: 280, 
+                  minWidth: 260, 
                   '& .MuiOutlinedInput-root': { 
-                    borderRadius: 8, backgroundColor: '#fff',
+                    borderRadius: 6, backgroundColor: '#fff',
+                    height: 32, fontSize: 13,
                     transition: 'all 0.3s ease',
                     '& fieldset': { borderColor: '#e2e8f0' },
                     '&:hover fieldset': { borderColor: '#cbd5e1' },
                     '&.Mui-focused fieldset': { borderColor: themeColors.main, borderWidth: '2px' },
-                    '&.Mui-focused': { boxShadow: `0 0 0 4px ${themeColors.light}` }
+                    '&.Mui-focused': { boxShadow: `0 0 0 3px ${themeColors.light}` }
                   } 
                 }}
               />
               <Box sx={{ flexGrow: 1 }} />
               {(isSuperAdmin || myRoleLevel <= 1) && (
-                <Button variant="outlined" startIcon={<TrackingIcon />} onClick={() => nav('/tracking')}
-                  sx={{ borderRadius: 8, fontWeight: 700, px: 2.5, borderColor: '#cbd5e1', color: '#475569', transition: 'all 0.2s', '&:hover': { borderColor: '#1565c0', color: '#1565c0', backgroundColor: '#eff6ff', transform: 'translateY(-1px)' } }}>
+                <Button variant="outlined" size="small" startIcon={<TrackingIcon />} onClick={() => nav('/tracking')}
+                  sx={{ borderRadius: 6, height: 32, fontSize: 12, fontWeight: 700, px: 2, borderColor: '#cbd5e1', color: '#475569', transition: 'all 0.2s', '&:hover': { borderColor: '#1565c0', color: '#1565c0', backgroundColor: '#eff6ff', transform: 'translateY(-1px)' } }}>
                   {t('admin.userTracking', 'User Tracking')}
                 </Button>
               )}
-              <Button variant="contained" disableElevation startIcon={<PersonAddIcon />} onClick={() => setCreateOpen(true)}
-                sx={{ borderRadius: 8, fontWeight: 700, px: 3, backgroundColor: themeColors.main, color: '#fff', transition: 'all 0.2s', '&:hover': { backgroundColor: themeColors.dark, transform: 'translateY(-1px)', boxShadow: `0 6px 16px ${themeColors.light}` } }}>
+              <Button variant="contained" size="small" disableElevation startIcon={<PersonAddIcon />} onClick={() => setCreateOpen(true)}
+                sx={{ borderRadius: 6, height: 32, fontSize: 12, fontWeight: 700, px: 2, backgroundColor: themeColors.main, color: '#fff', transition: 'all 0.2s', '&:hover': { backgroundColor: themeColors.dark, transform: 'translateY(-1px)', boxShadow: `0 4px 10px ${themeColors.light}` } }}>
                 {t('admin.createAccount')}
               </Button>
               {(isSuperAdmin || myRoleLevel <= 1) && (
-                <Button variant="contained" disableElevation startIcon={<GroupAddIcon />} onClick={() => { setBulkOpen(true); setBulkStep(1); setBulkSelectedUsers([]); }}
-                  sx={{ borderRadius: 8, fontWeight: 800, px: 3, background: `linear-gradient(135deg, ${themeColors.main} 0%, ${themeColors.dark} 100%)`, color: '#fff', transition: 'all 0.2s', '&:hover': { background: `linear-gradient(135deg, ${themeColors.dark} 0%, ${themeColors.main} 100%)`, transform: 'translateY(-1px)', boxShadow: `0 6px 16px ${themeColors.light}` } }}>
+                <Button variant="contained" size="small" disableElevation startIcon={<GroupAddIcon />} onClick={() => { setBulkOpen(true); setBulkStep(1); setBulkSelectedUsers([]); }}
+                  sx={{ borderRadius: 6, height: 32, fontSize: 12, fontWeight: 800, px: 2, background: `linear-gradient(135deg, ${themeColors.main} 0%, ${themeColors.dark} 100%)`, color: '#fff', transition: 'all 0.2s', '&:hover': { background: `linear-gradient(135deg, ${themeColors.dark} 0%, ${themeColors.main} 100%)`, transform: 'translateY(-1px)', boxShadow: `0 4px 10px ${themeColors.light}` } }}>
                   {t('admin.bulkSetup', 'Bulk Setup')}
                 </Button>
               )}
               <Tooltip title={t('admin.reloadTooltip')}>
-                <IconButton onClick={fetchUsers} disabled={loading} sx={{ background: '#fff', border: '1px solid #e2e8f0', '&:hover': { background: '#f8fafc' } }}>
-                  <RefreshIcon sx={{ color: '#64748b' }} />
+                <IconButton size="small" onClick={fetchUsers} disabled={loading} sx={{ width: 32, height: 32, background: '#fff', border: '1px solid #e2e8f0', '&:hover': { background: '#f8fafc' } }}>
+                  <RefreshIcon sx={{ fontSize: 18, color: '#64748b' }} />
                 </IconButton>
               </Tooltip>
             </Box>
@@ -862,23 +879,23 @@ export default function AdminPage() {
         </>
       )}
 
-      {error && <Alert severity="error" sx={{ borderRadius: 2, border: '1px solid #fecaca' }}>{error}</Alert>}
+      {error && <Alert severity="error" sx={{ borderRadius: 2, border: '1px solid #fecaca', py: 0.5 }}>{error}</Alert>}
 
       {/* F2S_DELIVERY Specific Settings */}
       {(currentAppCode === 'F2S_DELIVERY' || currentAppCode === 'F2S') && isSuperAdmin && (
         <Accordion elevation={0}
           sx={{ 
-            mt: { xs: 0.5, md: 2 }, border: '1px solid rgba(255,255,255,1)', borderRadius: '16px !important', 
+            mt: { xs: 0.25, md: 0.75 }, border: '1px solid rgba(255,255,255,1)', borderRadius: '12px !important', 
             background: 'rgba(255,255,255,0.7)', backdropFilter: 'blur(20px)',
-            boxShadow: '0 4px 20px rgba(0,0,0,0.02)', '&:before': { display: 'none' } 
+            boxShadow: '0 2px 10px rgba(0,0,0,0.01)', '&:before': { display: 'none' } 
           }}>
           <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: themeColors.main }} />}
-            sx={{ px: 3, '& .MuiAccordionSummary-content': { alignItems: 'center', gap: 1.5 } }}>
-            <AdminIcon sx={{ color: themeColors.main }} />
-            <Typography variant="subtitle1" sx={{ fontWeight: 800, color: themeColors.main }}>{t('admin.f2sConfigTitle')}</Typography>
+            sx={{ px: 2, minHeight: 36, height: 36, '& .MuiAccordionSummary-content': { alignItems: 'center', gap: 1 } }}>
+            <AdminIcon sx={{ fontSize: 18, color: themeColors.main }} />
+            <Typography variant="body2" sx={{ fontWeight: 800, color: themeColors.main }}>{t('admin.f2sConfigTitle')}</Typography>
           </AccordionSummary>
-          <AccordionDetails sx={{ px: 3, pb: 3, pt: 0 }}>
-            <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'center', flexWrap: 'wrap' }}>
+          <AccordionDetails sx={{ px: 2, pb: 1.5, pt: 0 }}>
+            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', flexWrap: 'wrap' }}>
               <TextField 
                 size="small" 
                 label={t('admin.f2sEditableColsLabel')} 
@@ -887,7 +904,7 @@ export default function AdminPage() {
                 onChange={e => setF2sEditableCols(e.target.value)} 
                 sx={{ flex: 1, minWidth: 300, '& .MuiOutlinedInput-root': { borderRadius: 2, bgcolor: '#fff' } }}
               />
-              <Button variant="contained" onClick={handleSaveF2SEditableCols} disableElevation
+              <Button variant="contained" size="small" onClick={handleSaveF2SEditableCols} disableElevation
                 sx={{ px: 2, fontWeight: 800, borderRadius: 2, bgcolor: themeColors.main, '&:hover': { bgcolor: themeColors.dark } }}>
                 {t('admin.f2sSaveConfig')}
               </Button>
@@ -900,16 +917,16 @@ export default function AdminPage() {
       {isSuperAdmin && (
         <Accordion elevation={0}
           sx={{ 
-            mt: { xs: 0.5, md: 2 }, border: '1px solid rgba(255,255,255,1)', borderRadius: '16px !important', 
+            mt: { xs: 0.25, md: 0.75 }, border: '1px solid rgba(255,255,255,1)', borderRadius: '12px !important', 
             background: 'rgba(255,255,255,0.7)', backdropFilter: 'blur(20px)',
-            boxShadow: '0 4px 20px rgba(0,0,0,0.02)', '&:before': { display: 'none' } 
+            boxShadow: '0 2px 10px rgba(0,0,0,0.01)', '&:before': { display: 'none' } 
           }}>
           <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: themeColors.main }} />}
-            sx={{ px: 3, '& .MuiAccordionSummary-content': { alignItems: 'center', gap: 1.5 } }}>
-            <AppsIcon sx={{ color: themeColors.main }} />
-            <Typography variant="subtitle1" sx={{ fontWeight: 800, color: themeColors.main }}>{t('admin.appManagement')}</Typography>
+            sx={{ px: 2, minHeight: 36, height: 36, '& .MuiAccordionSummary-content': { alignItems: 'center', gap: 1 } }}>
+            <AppsIcon sx={{ fontSize: 18, color: themeColors.main }} />
+            <Typography variant="body2" sx={{ fontWeight: 800, color: themeColors.main }}>{t('admin.appManagement')}</Typography>
           </AccordionSummary>
-          <AccordionDetails sx={{ px: 3, pb: 3, pt: 0 }}>
+          <AccordionDetails sx={{ px: 2, pb: 1.5, pt: 0 }}>
             <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'center', flexWrap: 'wrap' }}>
               {apps.map(app => (
                 <Chip key={app.appCode} label={`${app.appCode} — ${app.appName}`}
@@ -1083,8 +1100,8 @@ export default function AdminPage() {
               <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
                 {/* Profile Card Header */}
                 <Box sx={{ 
-                  p: { xs: 2, md: 3 }, borderBottom: '1px solid #f1f5f9', background: '#fff', 
-                  display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' 
+                  p: { xs: 1.5, md: 1.75 }, borderBottom: '1px solid #f1f5f9', background: '#fff', 
+                  display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap' 
                 }}>
                   {isMobile && (
                     <Button
@@ -1092,21 +1109,21 @@ export default function AdminPage() {
                       variant="text"
                       startIcon={<ChevronLeftIcon />}
                       onClick={() => setActiveTab('list')}
-                      sx={{ width: '100%', justifyContent: 'flex-start', mb: 1, fontWeight: 800, color: themeColors.main, textTransform: 'none' }}
+                      sx={{ width: '100%', justifyContent: 'flex-start', mb: 0.5, fontWeight: 800, color: themeColors.main, textTransform: 'none' }}
                     >
                       {t('admin.backToUserList', 'Quay lại danh sách')}
                     </Button>
                   )}
                   <Box sx={{
-                    width: 56, height: 56, borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    width: 44, height: 44, borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center',
                     background: selectedUser.isAdmin ? 'linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%)' : `linear-gradient(135deg, ${themeColors.main} 0%, ${themeColors.dark} 100%)`, 
-                    color: '#fff', fontWeight: 800, fontSize: 22, boxShadow: `0 8px 16px ${themeColors.light}`
+                    color: '#fff', fontWeight: 800, fontSize: 18, boxShadow: `0 4px 10px ${themeColors.light}`
                   }}>
                     {(selectedUser.employeeName || selectedUser.employeeCode)[0]?.toUpperCase()}
                   </Box>
                   <Box sx={{ flex: 1, minWidth: 200 }}>
-                    <Typography variant="h5" sx={{ fontWeight: 800, color: '#0f172a', letterSpacing: '-0.5px' }}>{selectedUser.employeeName || selectedUser.employeeCode}</Typography>
-                    <Typography variant="body2" sx={{ color: '#64748b', fontWeight: 600, mt: 0.5 }}>
+                    <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#0f172a', letterSpacing: '-0.3px', lineHeight: 1.2 }}>{selectedUser.employeeName || selectedUser.employeeCode}</Typography>
+                    <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 600, display: 'block', mt: 0.25 }}>
                        {selectedUser.employeeCode} <span style={{ color: '#cbd5e1', margin: '0 4px' }}>|</span> {selectedUser.roleLabel} <span style={{ color: '#cbd5e1', margin: '0 4px' }}>|</span> {selectedUser.factory || 'No Factory'} / {selectedUser.dept || 'No Dept'}
                     </Typography>
                   </Box>
@@ -1271,9 +1288,33 @@ export default function AdminPage() {
                             <Table size="small" sx={{ minWidth: 600 }} stickyHeader>
                               <TableHead>
                                 <TableRow>
-                                  <TableCell sx={{ fontWeight: 800, backgroundColor: '#f1f5f9', color: '#64748b', textTransform: 'uppercase', fontSize: 11, letterSpacing: '0.5px', borderBottom: 'none' }}>{t('admin.page')}</TableCell>
+                                  <TableCell sx={{ 
+                                    position: 'sticky',
+                                    left: 0,
+                                    top: 0,
+                                    zIndex: 3,
+                                    fontWeight: 800, 
+                                    backgroundColor: '#f1f5f9', 
+                                    color: '#64748b', 
+                                    textTransform: 'uppercase', 
+                                    fontSize: 11, 
+                                    letterSpacing: '0.5px', 
+                                    borderBottom: 'none',
+                                    boxShadow: '2px 2px 5px -2px rgba(0,0,0,0.1)'
+                                  }}>{t('admin.page')}</TableCell>
                                   {ACTIONS.map(a => (
-                                    <TableCell key={a} align="center" sx={{ fontWeight: 800, backgroundColor: '#f1f5f9', color: '#64748b', textTransform: 'uppercase', fontSize: 11, letterSpacing: '0.5px', borderBottom: 'none' }}>
+                                    <TableCell key={a} align="center" sx={{ 
+                                      position: 'sticky',
+                                      top: 0,
+                                      zIndex: 2,
+                                      fontWeight: 800, 
+                                      backgroundColor: '#f1f5f9', 
+                                      color: '#64748b', 
+                                      textTransform: 'uppercase', 
+                                      fontSize: 11, 
+                                      letterSpacing: '0.5px', 
+                                      borderBottom: 'none' 
+                                    }}>
                                       {ACTION_LABELS[a]}
                                     </TableCell>
                                   ))}

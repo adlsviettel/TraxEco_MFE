@@ -68,6 +68,7 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import FilterAltOffIcon from '@mui/icons-material/FilterAltOff';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { tccService, type TccRequest, type RequestFilters } from '../services/tccService';
 import { format } from 'date-fns';
 import { authService, AppButton, AppTextField, AdvancedFilterDrawer } from '@traxeco/shared';
@@ -234,9 +235,195 @@ interface RequestDetailDialogProps {
 }
 
 function RequestDetailDialog({ open, onClose, request, getStatusLabel, getStatusStyle, formatDate, t, canEditTracking, setEditingRow, setNewDate }: RequestDetailDialogProps) {
+  // Local Snackbar State
+  const [localSnackbarOpen, setLocalSnackbarOpen] = useState(false);
+  const [localSnackbarMessage, setLocalSnackbarMessage] = useState('');
+  const [localSnackbarSeverity, setLocalSnackbarSeverity] = useState<'success' | 'info' | 'warning' | 'error'>('success');
+
+  const showToast = (message: string, severity: 'success' | 'info' | 'warning' | 'error' = 'success') => {
+    setLocalSnackbarMessage(message);
+    setLocalSnackbarSeverity(severity);
+    setLocalSnackbarOpen(true);
+  };
+
+  // Audit Logs State
+  const [auditLogs, setAuditLogs] = useState<any[]>([]);
+  const [logsLoading, setLogsLoading] = useState(false);
+  const [logsExpanded, setLogsExpanded] = useState(true);
+
+  // Comments State
+  const [comments, setComments] = useState<any[]>([]);
+  const [commentsLoading, setCommentsLoading] = useState(false);
+  const [newCommentText, setNewCommentText] = useState('');
+  const [commentsExpanded, setCommentsExpanded] = useState(true);
+  const [submittingComment, setSubmittingComment] = useState(false);
+
+  // Load Audit Logs and Comments when dialog opens and poll silently every 3s
+  // Safe arrays — never trust API response shape
+  const safeComments = Array.isArray(comments) ? comments : [];
+  const safeAuditLogs = Array.isArray(auditLogs) ? auditLogs : [];
+
+  // Helper to trigger native Windows Notification
+  const triggerWindowsNotification = (title: string, body: string) => {
+    if (!('Notification' in window)) return;
+    if (Notification.permission === 'granted') {
+      new Notification(title, {
+        body,
+        icon: '/favicon.ico' // Hoặc icon ứng dụng nếu có
+      });
+    }
+  };
+
+  const userInfo = authService.getUserInfo();
+  const isSuperOrAdmin = authService.isSuperAdmin() || authService.isAdmin();
+
+  useEffect(() => {
+    if (!open || !request) return;
+
+    // Request Windows notification permission immediately when opening dialog
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+
+    // Load initial data with loaders
+    setLogsLoading(true);
+    setCommentsLoading(true);
+    
+    tccService.getAuditLogs(request.requestId)
+      .then(data => setAuditLogs(Array.isArray(data) ? data : []))
+      .catch(() => setAuditLogs([]))
+      .finally(() => setLogsLoading(false));
+
+    tccService.getComments(request.requestId)
+      .then(data => setComments(Array.isArray(data) ? data : []))
+      .catch(() => setComments([]))
+      .finally(() => setCommentsLoading(false));
+
+    // Polling function for real-time updates every 3 seconds
+    const pollUpdatesSilently = () => {
+      tccService.getComments(request.requestId)
+        .then(data => {
+          if (Array.isArray(data)) {
+            setComments(prev => {
+              const prevIds = new Set(prev.map(c => c.id));
+              const newComment = data.find(c => !prevIds.has(c.id));
+              if (newComment) {
+                // If comment is from someone else, notify the user
+                const authorCodeLower = (newComment.authorCode || '').trim().toLowerCase();
+                const authorNameLower = (newComment.authorName || '').trim().toLowerCase();
+                const myCodeLower = (userInfo.employeeCode || '').trim().toLowerCase();
+                const myNameLower = (userInfo.employeeName || '').trim().toLowerCase();
+                const isMe = authorCodeLower === myCodeLower || authorNameLower === myNameLower;
+                
+                if (!isMe) {
+                  showToast(`💬 ${newComment.authorName}: ${newComment.content}`, 'info');
+                  // Trigger Windows desktop notification!
+                  triggerWindowsNotification(
+                    `💬 Bình luận mới tại #${request.requestId}`,
+                    `${newComment.authorName}: ${newComment.content}`
+                  );
+                }
+              }
+              return data;
+            });
+          }
+        })
+        .catch(() => {});
+
+      tccService.getAuditLogs(request.requestId)
+        .then(data => {
+          if (Array.isArray(data)) {
+            setAuditLogs(prev => {
+              if (prev.length > 0 && data.length > prev.length) {
+                showToast('📜 Nhật ký thay đổi đã được cập nhật!', 'info');
+                // Trigger Windows desktop notification!
+                const latestLog = data[data.length - 1];
+                triggerWindowsNotification(
+                  `📜 Cập nhật yêu cầu #${request.requestId}`,
+                  `${latestLog?.userName || 'Hệ thống'}: ${latestLog?.details || 'Có thay đổi mới'}`
+                );
+              }
+              return data;
+            });
+          }
+        })
+        .catch(() => {});
+    };
+
+    const interval = setInterval(pollUpdatesSilently, 3000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [open, request]);
+
   if (!request) return null;
 
   const displayStatus = request.releasedDate ? 'Released' : (request.status || 'Not Started');
+  const isCancelled = request.status === 'Cancelled';
+  const reqLower = (request.requesterName || '').trim().toLowerCase();
+  const codeLower = (userInfo.employeeCode || '').trim().toLowerCase();
+  const nameLower = (userInfo.employeeName || '').trim().toLowerCase();
+  const isMyRequest = reqLower === codeLower || reqLower === nameLower || reqLower.startsWith(codeLower + ' -');
+  const canEditThisRow = isSuperOrAdmin || (isMyRequest && canEditTracking);
+  const canEditMaterialSent = canEditThisRow && !isCancelled;
+
+  const handleSendComment = () => {
+    if (!newCommentText.trim() || !request) return;
+    setSubmittingComment(true);
+    tccService.addComment(request.requestId, newCommentText.trim())
+      .then((c) => {
+        setNewCommentText('');
+        setComments(prev => [...prev, c]);
+        showToast('Gửi ý kiến thành công!', 'success');
+      })
+      .catch((err) => {
+        console.error(err);
+        showToast('Lỗi khi gửi bình luận!', 'error');
+      })
+      .finally(() => setSubmittingComment(false));
+  };
+
+  const handleDeleteComment = (commentId: number) => {
+    tccService.deleteComment(commentId)
+      .then(() => {
+        setComments(prev => prev.filter(c => c.id !== commentId));
+        showToast('Đã xóa bình luận!', 'success');
+      })
+      .catch((err) => {
+        console.error(err);
+        showToast('Lỗi khi xóa bình luận!', 'error');
+      });
+  };
+
+  const handleTogglePin = (commentId: number, currentlyPinned: boolean) => {
+    tccService.togglePinComment(commentId, !currentlyPinned)
+      .then(() => {
+        setComments(prev => prev.map(c => c.id === commentId ? { ...c, isPinned: !currentlyPinned } : c)
+          .sort((a, b) => (b.isPinned ? 1 : 0) - (a.isPinned ? 1 : 0)));
+      })
+      .catch(console.error);
+  };
+
+  // Custom Progress Steps mapping
+  const steps = [
+    { label: 'Tạo yêu cầu', done: true, current: false },
+    { label: 'Đã gửi NVL', done: !!request.materialSentDate, current: false },
+    { label: 'Phòng mẫu nhận', done: !!request.materialReceivedDate || ['Work in Progress', 'Ready', 'Released', 'Completed'].includes(request.status), current: false },
+    { label: 'Đã xong rập', done: ['Ready', 'Released', 'Completed'].includes(request.status) || !!request.finishedDate, current: false },
+    { label: 'Đã bàn giao', done: ['Released', 'Completed'].includes(request.status) || !!request.releasedDate, current: false },
+  ];
+
+  let activeIndex = 0;
+  for (let i = 0; i < steps.length; i++) {
+    if (steps[i].done) {
+      activeIndex = i;
+    }
+  }
+
+  steps.forEach((s, idx) => {
+    s.current = (idx === activeIndex && displayStatus !== 'Released' && displayStatus !== 'Completed');
+  });
 
   const DetailItem = ({ label, value }: { label: string; value: React.ReactNode }) => (
     <Box>
@@ -260,8 +447,6 @@ function RequestDetailDialog({ open, onClose, request, getStatusLabel, getStatus
           borderRadius: '20px',
           bgcolor: '#f8fafc',
           p: 0,
-          overflow: 'hidden',
-          maxHeight: '90vh',
           m: 1.5,
           width: 'calc(100% - 24px)',
           boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04)'
@@ -293,7 +478,58 @@ function RequestDetailDialog({ open, onClose, request, getStatusLabel, getStatus
       </Box>
 
       {/* Structured Content Container */}
-      <DialogContent sx={{ p: 2, display: 'flex', flexDirection: 'column', gap: 2.2, overflowY: 'auto', maxHeight: 'calc(90vh - 70px)' }}>
+      <DialogContent sx={{ p: 2, display: 'flex', flexDirection: 'column', gap: 2.2 }}>
+        
+        {/* Progress Timeline Stepper */}
+        <Box sx={{ bgcolor: '#fff', borderRadius: '14px', p: 2.2, border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', gap: 1.5, boxShadow: '0 1px 3px rgba(0,0,0,0.01)' }}>
+          <Typography sx={{ fontSize: 11, fontWeight: 800, color: '#1b5e20', display: 'flex', alignItems: 'center', gap: 0.8, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            📍 Tiến độ yêu cầu (Timeline)
+          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'relative', mt: 1, px: 2 }}>
+            {/* Background Line */}
+            <Box sx={{ position: 'absolute', top: '15px', left: '8%', right: '8%', height: '3px', bgcolor: '#e2e8f0', zIndex: 1 }} />
+            
+            {/* Active Progress Line */}
+            <Box sx={{ 
+              position: 'absolute', 
+              top: '15px', 
+              left: '8%', 
+              width: `${(activeIndex / (steps.length - 1)) * 84}%`, 
+              height: '3px', 
+              bgcolor: '#2e7d32', 
+              zIndex: 2,
+              transition: 'width 0.3s ease'
+            }} />
+
+            {steps.map((step, idx) => (
+              <Box key={idx} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', zIndex: 3, width: '20%' }}>
+                <Box sx={{
+                  width: 32, height: 32,
+                  borderRadius: '50%',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontWeight: 700, fontSize: 13,
+                  transition: 'all 0.3s ease',
+                  bgcolor: step.done ? '#2e7d32' : '#f1f5f9',
+                  color: step.done ? '#fff' : '#94a3b8',
+                  border: step.current ? '3px solid #2563eb' : 'none',
+                  boxShadow: step.current ? '0 0 10px rgba(37, 99, 235, 0.5)' : 'none',
+                  animation: step.current ? 'pulse 2s infinite' : 'none',
+                  '@keyframes pulse': {
+                    '0%': { transform: 'scale(1)' },
+                    '50%': { transform: 'scale(1.08)' },
+                    '100%': { transform: 'scale(1)' }
+                  }
+                }}>
+                  {step.done ? '✓' : idx + 1}
+                </Box>
+                <Typography sx={{ fontSize: 9, fontWeight: 700, color: step.done ? '#334155' : '#94a3b8', mt: 1, textAlign: 'center', lineHeight: 1.2 }}>
+                  {step.label}
+                </Typography>
+              </Box>
+            ))}
+          </Box>
+        </Box>
+
         {/* Priority Warning Banner */}
         {request.isPriority && (
           <Box sx={{
@@ -348,26 +584,25 @@ function RequestDetailDialog({ open, onClose, request, getStatusLabel, getStatus
             <Grid size={{ xs: 6 }}>
               <Box 
                 onClick={() => {
-                  const isCancelled = request.status === 'Cancelled';
-                  if (canEditTracking && !isCancelled) {
+                  if (canEditMaterialSent) {
                     setEditingRow(request);
                     setNewDate(request.materialSentDate ? new Date(request.materialSentDate) : null);
                   }
                 }}
                 sx={{
-                  cursor: (canEditTracking && request.status !== 'Cancelled') ? 'pointer' : 'default',
+                  cursor: canEditMaterialSent ? 'pointer' : 'default',
                   borderRadius: '6px',
                   p: 0.5,
                   ml: -0.5,
                   transition: 'background-color 0.15s ease',
                   '&:hover': {
-                    bgcolor: (canEditTracking && request.status !== 'Cancelled') ? 'rgba(46,125,50,0.08)' : 'transparent',
+                    bgcolor: canEditMaterialSent ? 'rgba(46,125,50,0.08)' : 'transparent',
                   }
                 }}
               >
                 <Typography sx={{ color: '#64748b', fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', mb: 0.3, display: 'flex', alignItems: 'center', gap: 0.3 }}>
                   Material Sent
-                  {canEditTracking && request.status !== 'Cancelled' && (
+                  {canEditMaterialSent && (
                     <EditIcon sx={{ fontSize: 11, color: '#1b5e20' }} />
                   )}
                 </Typography>
@@ -391,7 +626,38 @@ function RequestDetailDialog({ open, onClose, request, getStatusLabel, getStatus
             🏷️ Extra Information
           </Typography>
           <Grid container spacing={2}>
-            <Grid size={{ xs: 12 }}><DetailItem label="Requester Code" value={request.requesterName} /></Grid>
+            <Grid size={{ xs: 6 }}><DetailItem label="Requester Code" value={request.requesterName} /></Grid>
+            <Grid size={{ xs: 6 }}><DetailItem label="Template Qty" value={request.templateQty !== null ? String(request.templateQty) : '—'} /></Grid>
+            <Grid size={{ xs: 6 }}><DetailItem label="Line Quantity" value={request.lineQuantity || '—'} /></Grid>
+            <Grid size={{ xs: 6 }}><DetailItem label="Sample Size" value={request.sizesRequired || '—'} /></Grid>
+            <Grid size={{ xs: 12 }}><DetailItem label="Operation Description" value={request.operationDescription || '—'} /></Grid>
+            
+            {request.delayRemakeReason && (
+              <Grid size={{ xs: 12 }}>
+                <Typography sx={{ color: '#d32f2f', fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', mb: 0.5 }}>
+                  Reason for Delay/Remake (TCC)
+                </Typography>
+                <Box sx={{ bgcolor: '#fff5f5', borderRadius: '10px', p: 1.5, borderLeft: '4px solid #ef4444', mt: 0.5 }}>
+                  <Typography sx={{ color: '#991b1b', fontSize: 13, lineHeight: 1.4, fontWeight: 600 }}>
+                    {request.delayRemakeReason}
+                  </Typography>
+                </Box>
+              </Grid>
+            )}
+
+            {request.comments && (
+              <Grid size={{ xs: 12 }}>
+                <Typography sx={{ color: '#0284c7', fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', mb: 0.5 }}>
+                  Comments (TCC)
+                </Typography>
+                <Box sx={{ bgcolor: '#f0f9ff', borderRadius: '10px', p: 1.5, borderLeft: '4px solid #0284c7', mt: 0.5 }}>
+                  <Typography sx={{ color: '#0369a1', fontSize: 13, lineHeight: 1.4, fontWeight: 600 }}>
+                    {request.comments}
+                  </Typography>
+                </Box>
+              </Grid>
+            )}
+
             <Grid size={{ xs: 12 }}>
               <Typography sx={{ color: '#64748b', fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', mb: 0.5 }}>
                 Remarks
@@ -404,7 +670,91 @@ function RequestDetailDialog({ open, onClose, request, getStatusLabel, getStatus
             </Grid>
           </Grid>
         </Box>
+
+        {/* Section 5: Comments */}
+        <Box sx={{ bgcolor: '#fff', borderRadius: '14px', border: '1px solid #e2e8f0', p: 2 }}>
+          <Typography sx={{ fontSize: 13, fontWeight: 800, color: '#1b5e20', mb: 1.5 }}>
+            {'💬 THẢO LUẬN & TRAO ĐỔI (' + safeComments.length + ')'}
+          </Typography>
+          
+          {commentsLoading ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', py: 2 }}>
+              <CircularProgress size={20} sx={{ color: '#1b5e20' }} />
+            </Box>
+          ) : safeComments.length === 0 ? (
+            <Typography sx={{ fontSize: 12, color: '#94a3b8', fontStyle: 'italic', textAlign: 'center', py: 1 }}>
+              Chưa có thảo luận nào
+            </Typography>
+          ) : (
+            <Box sx={{ maxHeight: 200, overflowY: 'auto', mb: 1 }}>
+              {safeComments.map((c: any, i: number) => (
+                <Box key={c?.id ?? i} sx={{ bgcolor: '#f1f5f9', borderRadius: '8px', p: 1, mb: 1, border: '1px solid #e2e8f0' }}>
+                  <Typography sx={{ fontSize: 10, fontWeight: 700, color: '#475569' }}>{c?.authorName || ''}</Typography>
+                  <Typography sx={{ fontSize: 12, color: '#1e293b' }}>{c?.content || ''}</Typography>
+                </Box>
+              ))}
+            </Box>
+          )}
+
+          <Box sx={{ display: 'flex', gap: 1, mt: 1 }}>
+            <TextField
+              size="small" fullWidth value={newCommentText}
+              onChange={(e) => setNewCommentText(e.target.value)}
+              placeholder="Nhập ý kiến..."
+              onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendComment(); } }}
+              disabled={submittingComment}
+              sx={{ '& .MuiInputBase-root': { borderRadius: '20px', fontSize: 12, bgcolor: '#fff' } }}
+            />
+            <Button variant="contained" onClick={handleSendComment}
+              disabled={!newCommentText.trim() || submittingComment}
+              sx={{ minWidth: 60, height: 36, borderRadius: '18px', bgcolor: '#1b5e20', '&:hover': { bgcolor: '#2e7d32' }, textTransform: 'none', fontSize: 12 }}
+            >
+              {submittingComment ? <CircularProgress size={16} color="inherit" /> : 'Gửi'}
+            </Button>
+          </Box>
+        </Box>
+
+        {/* Section 6: Audit Logs */}
+        <Box sx={{ bgcolor: '#fff', borderRadius: '14px', border: '1px solid #e2e8f0', p: 2, mb: 2 }}>
+          <Typography sx={{ fontSize: 13, fontWeight: 800, color: '#1b5e20', mb: 1.5 }}>
+            {'📜 NHẬT KÝ THAY ĐỔI (AUDIT LOGS)'}
+          </Typography>
+          
+          {logsLoading ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', py: 2 }}>
+              <CircularProgress size={20} sx={{ color: '#1b5e20' }} />
+            </Box>
+          ) : safeAuditLogs.length === 0 ? (
+            <Typography sx={{ fontSize: 12, color: '#94a3b8', fontStyle: 'italic', textAlign: 'center', py: 1 }}>
+              Chưa có lịch sử chỉnh sửa
+            </Typography>
+          ) : (
+            <Box sx={{ maxHeight: 200, overflowY: 'auto' }}>
+              {safeAuditLogs.map((log: any, i: number) => (
+                <Box key={i} sx={{ mb: 1.5, pl: 2, borderLeft: '3px solid #1b5e20' }}>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.3 }}>
+                    <Typography sx={{ fontSize: 11, fontWeight: 700, color: '#334155' }}>{log?.userName || ''}</Typography>
+                    <Typography sx={{ fontSize: 10, color: '#94a3b8' }}>{log?.createdAt ? new Date(log.createdAt).toLocaleString('vi-VN') : ''}</Typography>
+                  </Box>
+                  <Typography sx={{ fontSize: 12, color: '#475569' }}>{log?.details || ''}</Typography>
+                </Box>
+              ))}
+            </Box>
+          )}
+        </Box>
+
       </DialogContent>
+      
+      <Snackbar
+        open={localSnackbarOpen}
+        autoHideDuration={3000}
+        onClose={() => setLocalSnackbarOpen(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={() => setLocalSnackbarOpen(false)} severity={localSnackbarSeverity} variant="filled" sx={{ width: '100%', fontWeight: 600 }}>
+          {localSnackbarMessage}
+        </Alert>
+      </Snackbar>
     </Dialog>
   );
 }
@@ -737,25 +1087,56 @@ function MobileRequestList({
                 <Box sx={{ borderTop: '1px dashed #e2e8f0', pt: 1, display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 1 }}>
                   <Box 
                     onClick={(e) => {
-                      if (canEditTracking && !isCancelled) {
+                      const userInfo = authService.getUserInfo();
+                      const reqLower = (row.requesterName || '').trim().toLowerCase();
+                      const codeLower = userInfo.employeeCode.trim().toLowerCase();
+                      const nameLower = userInfo.employeeName.trim().toLowerCase();
+                      const isMyRequest = reqLower === codeLower || reqLower === nameLower || reqLower.startsWith(codeLower + ' -');
+                      const canEditThisRow = authService.isSuperAdmin() || authService.isAdmin() || (isMyRequest && canEditTracking);
+
+                      if (canEditThisRow && !isCancelled) {
                         e.stopPropagation();
                         setEditingRow(row);
                         setNewDate(row.materialSentDate ? new Date(row.materialSentDate) : null);
                       }
                     }}
                     sx={{ 
-                      cursor: (canEditTracking && !isCancelled) ? 'pointer' : 'default',
+                      cursor: (() => {
+                        const userInfo = authService.getUserInfo();
+                        const reqLower = (row.requesterName || '').trim().toLowerCase();
+                        const codeLower = userInfo.employeeCode.trim().toLowerCase();
+                        const nameLower = userInfo.employeeName.trim().toLowerCase();
+                        const isMyRequest = reqLower === codeLower || reqLower === nameLower || reqLower.startsWith(codeLower + ' -');
+                        const canEditThisRow = authService.isSuperAdmin() || authService.isAdmin() || (isMyRequest && canEditTracking);
+                        return (canEditThisRow && !isCancelled) ? 'pointer' : 'default';
+                      })(),
                       borderRadius: '6px',
                       p: 0.5,
                       ml: -0.5,
                       '&:hover': {
-                        bgcolor: (canEditTracking && !isCancelled) ? 'rgba(46,125,50,0.08)' : 'transparent',
+                        bgcolor: (() => {
+                          const userInfo = authService.getUserInfo();
+                          const reqLower = (row.requesterName || '').trim().toLowerCase();
+                          const codeLower = userInfo.employeeCode.trim().toLowerCase();
+                          const nameLower = userInfo.employeeName.trim().toLowerCase();
+                          const isMyRequest = reqLower === codeLower || reqLower === nameLower || reqLower.startsWith(codeLower + ' -');
+                          const canEditThisRow = authService.isSuperAdmin() || authService.isAdmin() || (isMyRequest && canEditTracking);
+                          return (canEditThisRow && !isCancelled) ? 'rgba(46,125,50,0.08)' : 'transparent';
+                        })(),
                       }
                     }}
                   >
                     <Typography sx={{ color: '#94a3b8', fontSize: 10, textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.06em', display: 'flex', alignItems: 'center', gap: 0.3 }}>
                       Mat. Sent
-                      {canEditTracking && !isCancelled && (
+                      {(() => {
+                        const userInfo = authService.getUserInfo();
+                        const reqLower = (row.requesterName || '').trim().toLowerCase();
+                        const codeLower = userInfo.employeeCode.trim().toLowerCase();
+                        const nameLower = userInfo.employeeName.trim().toLowerCase();
+                        const isMyRequest = reqLower === codeLower || reqLower === nameLower || reqLower.startsWith(codeLower + ' -');
+                        const canEditThisRow = authService.isSuperAdmin() || authService.isAdmin() || (isMyRequest && canEditTracking);
+                        return canEditThisRow && !isCancelled;
+                      })() && (
                         <EditIcon sx={{ fontSize: 11, color: '#2e7d32' }} />
                       )}
                     </Typography>
@@ -857,10 +1238,28 @@ export default function RequestorViewPage() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
+  const location = useLocation();
+  const navigate = useNavigate();
   const [requests, setRequests] = useState<TccRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedDetailId, setSelectedDetailId] = useState<string | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
+
+  // Auto open details drawer if requestId query param is in URL
+  useEffect(() => {
+    if (requests.length === 0) return;
+    const params = new URLSearchParams(location.search);
+    const reqIdParam = params.get('requestId');
+    if (reqIdParam) {
+      const exists = requests.some(r => r.requestId === reqIdParam);
+      if (exists) {
+        setSelectedDetailId(reqIdParam);
+        setDetailOpen(true);
+        // Clear the query parameter from browser address bar smoothly using navigate
+        navigate(location.pathname, { replace: true });
+      }
+    }
+  }, [requests, location.search, navigate]);
 
   // Lock parent main element scroll on mobile to keep headers/footers sticky
   useEffect(() => {
@@ -964,6 +1363,10 @@ export default function RequestorViewPage() {
 
   const canEditTracking = React.useMemo(() => {
     return authService.isSuperAdmin() || authService.isAdmin() || authService.hasAction('tcc_tracking', 'canEdit');
+  }, []);
+
+  const canCancelAll = React.useMemo(() => {
+    return authService.isSuperAdmin() || authService.isAdmin() || authService.hasAction('tcc_tracking', 'canCancel');
   }, []);
 
   const activeFiltersCount = (filters.factory ? 1 : 0) + (filters.season ? 1 : 0) + (filters.status ? 1 : 0);
@@ -1253,7 +1656,36 @@ export default function RequestorViewPage() {
   };
 
   const columns = React.useMemo<GridColDef[]>(() => [
-    { field: 'requestId', headerName: 'RequestID', width: 120 },
+    { 
+      field: 'requestId', 
+      headerName: 'RequestID', 
+      width: 120,
+      align: 'center',
+      headerAlign: 'center',
+      renderCell: (params: GridRenderCellParams) => (
+        <Box display="flex" justifyContent="center" alignItems="center" width="100%" height="100%">
+          <Typography 
+            onClick={() => {
+              setSelectedDetailId(params.row.requestId);
+              setDetailOpen(true);
+            }}
+            sx={{ 
+              color: '#1b5e20', 
+              fontWeight: 800, 
+              cursor: 'pointer', 
+              fontSize: '13px',
+              fontFamily: 'monospace',
+              '&:hover': { 
+                color: '#2e7d32',
+                textDecoration: 'underline'
+              }
+            }}
+          >
+            {params.value}
+          </Typography>
+        </Box>
+      )
+    },
     { 
       field: 'createdAt', 
       headerName: 'Request Creation Date ®', 
@@ -1270,24 +1702,34 @@ export default function RequestorViewPage() {
       field: 'materialSentDate',
       headerName: 'Material sent date ®',
       width: 180,
-      renderCell: (params: GridRenderCellParams) => (
-        <Box display="flex" alignItems="center" gap={0.5} justifyContent="space-between" width="100%">
-          <Typography variant="body2" sx={{ fontSize: 13 }}>
-            {params.value ? formatDate(params.value) : t('tcc.notSet')}
-          </Typography>
-          <IconButton
-            size="small"
-            disabled={!canEditTracking || params.row.status === 'Cancelled'}
-            onClick={() => {
-              setEditingRow(params.row as TccRequest);
-              setNewDate(params.value ? new Date(params.value) : null);
-            }}
-            sx={{ p: 0.5 }}
-          >
-            <EditIcon fontSize="small" sx={{ fontSize: 16 }} />
-          </IconButton>
-        </Box>
-      ),
+      renderCell: (params: GridRenderCellParams) => {
+        const isCancelled = params.row.status === 'Cancelled';
+        const userInfo = authService.getUserInfo();
+        const reqLower = (params.row.requesterName || '').trim().toLowerCase();
+        const codeLower = userInfo.employeeCode.trim().toLowerCase();
+        const nameLower = userInfo.employeeName.trim().toLowerCase();
+        const isMyRequest = reqLower === codeLower || reqLower === nameLower || reqLower.startsWith(codeLower + ' -');
+        const canEditThisRow = authService.isSuperAdmin() || authService.isAdmin() || (isMyRequest && canEditTracking);
+
+        return (
+          <Box display="flex" alignItems="center" gap={0.5} justifyContent="space-between" width="100%">
+            <Typography variant="body2" sx={{ fontSize: 13 }}>
+              {params.value ? formatDate(params.value) : t('tcc.notSet')}
+            </Typography>
+            <IconButton
+              size="small"
+              disabled={!canEditThisRow || isCancelled}
+              onClick={() => {
+                setEditingRow(params.row as TccRequest);
+                setNewDate(params.value ? new Date(params.value) : null);
+              }}
+              sx={{ p: 0.5 }}
+            >
+              <EditIcon fontSize="small" sx={{ fontSize: 16 }} />
+            </IconButton>
+          </Box>
+        );
+      },
     },
     { 
       field: 'processType', 
@@ -1443,33 +1885,43 @@ export default function RequestorViewPage() {
       sortable: false,
       renderCell: (params: GridRenderCellParams) => {
         const isNotStarted = (params.row.status || 'Not Started') === 'Not Started';
-        if (!isNotStarted) return null;
+        const userInfo = authService.getUserInfo();
+        const reqLower = (params.row.requesterName || '').trim().toLowerCase();
+        const codeLower = userInfo.employeeCode.trim().toLowerCase();
+        const nameLower = userInfo.employeeName.trim().toLowerCase();
+        const isMyRequest = reqLower === codeLower || reqLower === nameLower || reqLower.startsWith(codeLower + ' -');
+        const isSuperOrAdmin = authService.isSuperAdmin() || authService.isAdmin();
+        const hasDeletePermission = authService.hasAction('tcc_tracking', 'canDelete');
+        const canDeleteRow = isSuperOrAdmin || (isMyRequest && hasDeletePermission);
+        
         return (
           <Box display="flex" alignItems="center" justifyContent="center" gap={1} width="100%">
-            {/* Cancel Button (Visible to all users) */}
-            <Tooltip title={isNotStarted ? t('tcc.cancelRequest', 'Cancel Request') : t('tcc.cannotCancel')} arrow>
-              <span>
-                <IconButton
-                  size="small"
-                  color="warning"
-                  disabled={!isNotStarted}
-                  onClick={() => {
-                    setCancelConfirmRow(params.row as TccRequest);
-                  }}
-                  sx={{ 
-                    color: isNotStarted ? '#f59e0b' : 'text.disabled',
-                    '&:hover': {
-                      bgcolor: isNotStarted ? 'rgba(245, 158, 11, 0.08)' : 'transparent',
-                    }
-                  }}
-                >
-                  <CancelIcon fontSize="small" />
-                </IconButton>
-              </span>
-            </Tooltip>
+            {/* Cancel Button (Visible only to creator or admin/cancel permission) */}
+            {(canCancelAll || isMyRequest) && (
+              <Tooltip title={isNotStarted ? t('tcc.cancelRequest', 'Cancel Request') : t('tcc.cannotCancel')} arrow>
+                <span>
+                  <IconButton
+                    size="small"
+                    color="warning"
+                    disabled={!isNotStarted}
+                    onClick={() => {
+                      setCancelConfirmRow(params.row as TccRequest);
+                    }}
+                    sx={{ 
+                      color: isNotStarted ? '#f59e0b' : 'text.disabled',
+                      '&:hover': {
+                        bgcolor: isNotStarted ? 'rgba(245, 158, 11, 0.08)' : 'transparent',
+                      }
+                    }}
+                  >
+                    <CancelIcon fontSize="small" />
+                  </IconButton>
+                </span>
+              </Tooltip>
+            )}
 
-            {/* Delete Button (Only visible to Admin/SuperAdmin/Delete permission) */}
-            {canDeleteHard && (
+            {/* Delete Button (Only visible to Admin/SuperAdmin, or creator with delete permission) */}
+            {canDeleteRow && (
               <Tooltip title={isNotStarted ? t('tcc.delete', 'Delete') : t('tcc.cannotDelete')} arrow>
                 <span>
                   <IconButton
@@ -1495,7 +1947,7 @@ export default function RequestorViewPage() {
         );
       }
     }
-  ], [t, setEditingRow, setNewDate, setDeleteConfirmRow, setCancelConfirmRow, canDeleteHard, canEditTracking]);
+  ], [t, setEditingRow, setNewDate, setDeleteConfirmRow, setCancelConfirmRow, canDeleteHard, canEditTracking, canCancelAll]);
 
   const sortedColumns = React.useMemo<GridColDef[]>(() => {
     const orderedColumns = columnOrder && columnOrder.length > 0
@@ -1534,6 +1986,7 @@ export default function RequestorViewPage() {
           style={{
             display: 'flex',
             alignItems: 'center',
+            justifyContent: col.headerAlign === 'center' ? 'center' : 'flex-start',
             gap: '4px',
             width: '100%',
             height: '100%',
@@ -1849,7 +2302,7 @@ export default function RequestorViewPage() {
           setDetailOpen={setDetailOpen}
         />
       ) : (
-      <Paper elevation={0} sx={{ flex: 1, minHeight: 400, borderRadius: '8px', border: '1px solid #e1e3e4', boxShadow: '0px 4px 20px rgba(0,0,0,0.05)', bgcolor: '#ffffff', display: 'flex', flexDirection: 'column' }}>
+      <Paper elevation={0} sx={{ flex: 1, minHeight: 400, height: 'calc(100vh - 200px)', borderRadius: '8px', border: '1px solid #e1e3e4', boxShadow: '0px 4px 20px rgba(0,0,0,0.05)', bgcolor: '#ffffff', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
         <DataGrid
           apiRef={mainApiRef}
           rows={filteredRequests}
@@ -1858,6 +2311,10 @@ export default function RequestorViewPage() {
           getRowClassName={(params) => params.row.status === 'Cancelled' ? 'row-cancelled' : ''}
           loading={loading}
           disableRowSelectionOnClick
+          onRowDoubleClick={(params) => {
+            setSelectedDetailId(params.row.requestId);
+            setDetailOpen(true);
+          }}
           rowHeight={60}
           columnHeaderHeight={64}
           columnVisibilityModel={columnVisibilityModel}
@@ -1865,6 +2322,7 @@ export default function RequestorViewPage() {
           initialState={{ pagination: { paginationModel: { pageSize: 20 } } }}
           slots={{ footer: CustomFooter, columnMenu: ExcelStyleColumnMenu, filterPanel: CustomFilterPanel }}
           sx={{
+            height: '100%',
             border: 'none',
             '& .MuiDataGrid-columnHeaders, & .MuiDataGrid-filler, & .MuiDataGrid-scrollbarFiller, & .MuiDataGrid-columnHeader--filled': { backgroundColor: '#F9FAFA !important', borderBottom: '1px solid #e1e3e4 !important' },
             '& .MuiDataGrid-columnHeader': { bgcolor: '#F9FAFA', color: '#707975', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em' },
