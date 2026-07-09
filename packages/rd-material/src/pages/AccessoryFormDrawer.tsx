@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { rdItemApi } from '../services/rdMaterialApi';
 import type { Item } from '../types';
 import { useTranslation } from 'react-i18next';
-import { AppTextField } from '@traxeco/shared';
+import { AppTextField, authService } from '@traxeco/shared';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import { AiScanDialog } from '../components/AiScanDialog';
 

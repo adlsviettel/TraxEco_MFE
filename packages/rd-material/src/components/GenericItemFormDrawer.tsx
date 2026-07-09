@@ -10,6 +10,7 @@ import UploadFileIcon from '@mui/icons-material/UploadFile';
 import { rdItemApi } from '../services/rdMaterialApi';
 import type { Item, ItemType } from '../types';
 import { useTranslation } from 'react-i18next';
+import { authService } from '@traxeco/shared';
 
 export interface FormFieldDef {
   name: string;
