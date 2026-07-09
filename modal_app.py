@@ -21,10 +21,10 @@ image = (
 app = App("qwen-vision-api", image=image)
 
 # Cache model weights during build to prevent download overhead during startup
-model_id = "Qwen/Qwen2-VL-2B-Instruct"  # 2B is chosen for fast cold-starts and light VRAM footprint
+model_id = "Qwen/Qwen2-VL-7B-Instruct"  # 7B model is much more accurate for rotated/low-contrast text
 
 @app.cls(
-    gpu="T4",  # Cheap and efficient T4 GPU
+    gpu="A10G",  # Use A10G GPU for the 7B model
     max_containers=5,
     timeout=600
 )
@@ -45,7 +45,7 @@ class QwenModel:
         self.processor = AutoProcessor.from_pretrained(model_id)
         self.model = AutoModelForVision2Seq.from_pretrained(
             model_id, 
-            torch_dtype=torch.float16, 
+            torch_dtype=torch.bfloat16, 
             device_map="cuda"
         )
         print("Model loaded successfully!")
