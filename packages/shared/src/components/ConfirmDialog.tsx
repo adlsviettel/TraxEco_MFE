@@ -101,6 +101,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({ state, onClose }) => {
           {state.cancelText || 'Hủy'}
         </Button>
         <Button
+          data-testid="btn-confirm-dialog"
           onClick={() => { state.onConfirm?.(); onClose(); }}
           variant="contained"
           color={cfg.btnColor}

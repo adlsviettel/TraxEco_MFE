@@ -348,4 +348,43 @@ export const clinicApi = {
       throw new Error(err || "Xóa lô hàng điều chuyển thất bại");
     }
   },
+
+  // ─── API QUẢN LÝ GIƯỜNG BỆNH (CLINIC BEDS) ───
+  getBeds: async (): Promise<any[]> => {
+    const res = await authFetch(`${API_BASE}/beds`);
+    if (!res.ok) throw new Error("Không thể tải danh sách giường bệnh");
+    return await res.json();
+  },
+
+  admitPatient: async (bedId: number, data: { employeeId: string; fullName: string; sickness: string; factory: string }): Promise<void> => {
+    const res = await authFetch(`${API_BASE}/beds/${bedId}/admit`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+      const err = await res.text();
+      throw new Error(err || "Tiếp nhận bệnh nhân nằm giường thất bại");
+    }
+  },
+
+  dischargePatient: async (bedId: number): Promise<void> => {
+    const res = await authFetch(`${API_BASE}/beds/${bedId}/discharge`, {
+      method: "POST",
+    });
+    if (!res.ok) {
+      const err = await res.text();
+      throw new Error(err || "Cho xuất giường thất bại");
+    }
+  },
+
+  getBedHistory: async (factory?: string, fromDate?: string, toDate?: string): Promise<any[]> => {
+    let url = `${API_BASE}/beds/history?`;
+    if (factory && factory !== "Tất cả") url += `factory=${encodeURIComponent(factory)}&`;
+    if (fromDate) url += `fromDate=${encodeURIComponent(fromDate)}&`;
+    if (toDate) url += `toDate=${encodeURIComponent(toDate)}&`;
+    const res = await authFetch(url);
+    if (!res.ok) throw new Error("Không thể tải lịch sử nằm giường");
+    return await res.json();
+  },
 };

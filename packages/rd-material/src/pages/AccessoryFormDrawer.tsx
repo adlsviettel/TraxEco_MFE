@@ -83,6 +83,7 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
       loadOptions('unit', setUnitOpts);
       loadOptions('moq_unit', setMoqUnitOpts);
       loadOptions('accessoryCategory', setCategoryOpts);
+      optsLoaded.current = true;
     }
   }, [open]);
 
@@ -90,7 +91,7 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
     if (item) {
       setForm({
         ...item,
-        specification: item.accessory?.category || item.accessory?.specification,
+        specification: item.accessory?.specification,
         description: item.description,
         accessoryDescription: item.accessory?.description,
         size: item.accessory?.size,
@@ -190,18 +191,68 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
       setTimeout(() => setShakeFields({}), 500);
 
       const missingList: string[] = [];
-      if (isMissingCode) missingList.push('Mã hàng (Item Code) chưa nhập');
-      if (isMissingSpec) missingList.push('Phân loại (Category) chưa chọn');
-      if (isMissingQty) missingList.push('Số lượng (Qty) chưa nhập');
-      if (isMissingCurrency) missingList.push('Đơn vị tiền tệ (Curr) chưa chọn');
-      if (isMissingPriceUnit) missingList.push('Đơn vị tính (Unit) của đơn giá chưa chọn');
+      if (isMissingCode) missingList.push(t('rdMaterial.validation.missing_code', 'Mã hàng (Item Code) chưa nhập'));
+      if (isMissingSpec) missingList.push(t('rdMaterial.validation.missing_spec', 'Phân loại (Category) chưa chọn'));
+      if (isMissingQty) missingList.push(t('rdMaterial.validation.missing_qty', 'Số lượng (Qty) chưa nhập'));
+      if (isMissingCurrency) missingList.push(t('rdMaterial.validation.missing_currency', 'Đơn vị tiền tệ (Curr) chưa chọn'));
+      if (isMissingPriceUnit) missingList.push(t('rdMaterial.validation.missing_price_unit', 'Đơn vị tính (Unit) của đơn giá chưa chọn'));
 
-      const errorMsg = `Vui lòng kiểm tra: ${missingList.join(', ')}`;
+      const errorMsg = `${t('rdMaterial.validation.check_below', 'Vui lòng kiểm tra:')} ${missingList.join(', ')}`;
       return setSnackbar({ open: true, message: errorMsg, severity: 'error' });
     }
     
+    // Check duplicate code
+    const isDuplicate = await rdItemApi.checkDuplicateCode(form.itemCode || '', 'ACCESSORY', isEdit && item ? item.id : undefined);
+    if (isDuplicate) {
+      setShakeFields({ itemCode: true });
+      setTimeout(() => setShakeFields({}), 500);
+      itemCodeRef.current?.focus();
+      return setSnackbar({ 
+        open: true, 
+        message: t('rdMaterial.validation.duplicate_code', 'Mã hàng (Item Code) đã tồn tại trong hệ thống. Vui lòng nhập mã hàng khác để tiếp tục.'), 
+        severity: 'error' 
+      });
+    }
+
     setLoading(true);
     try {
+      // Detect price/cost changes and record history
+      let currentHistory: any[] = [];
+      try {
+        if (form.priceHistory) {
+          currentHistory = JSON.parse(form.priceHistory);
+        } else if (item && item.priceHistory) {
+          currentHistory = JSON.parse(item.priceHistory);
+        }
+      } catch (err) {
+        console.warn('Failed to parse price history', err);
+      }
+
+      const priceChanged = (item?.price !== toNum(form.price));
+      const currencyChanged = (item?.currency !== (form.currency || 'USD'));
+      const unitChanged = (item?.priceUnit !== (form.priceUnit || ''));
+      const moqMcqChanged = (item?.moqMcq !== (form.moqMcq || ''));
+      const moqMcqUnitChanged = (item?.moqMcqUnit !== (form.moqMcqUnit || ''));
+      const customerChanged = (item?.customer !== (form.customer || ''));
+
+      const hasCostChanged = priceChanged || currencyChanged || unitChanged || moqMcqChanged || moqMcqUnitChanged || customerChanged;
+
+      if (!isEdit || hasCostChanged) {
+        const userInfo = authService.getUserInfo();
+        const userName = userInfo?.employeeName || 'System';
+        const newEntry = {
+          price: toNum(form.price),
+          currency: form.currency || 'USD',
+          priceUnit: form.priceUnit || undefined,
+          moqMcq: form.moqMcq || undefined,
+          moqMcqUnit: form.moqMcqUnit || undefined,
+          customer: form.customer || undefined,
+          date: new Date().toISOString(),
+          user: userName
+        };
+        currentHistory.unshift(newEntry);
+      }
+
       // 1. Upload pending images
       let finalMainImageUrls = form.mainImage ? String(form.mainImage).split(',').filter(Boolean) : [];
       let finalStickerImageUrls = form.stickerImage ? String(form.stickerImage).split(',').filter(Boolean) : [];
@@ -245,6 +296,7 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
         moqMcqUnit: form.moqMcqUnit || undefined,
         mcqSurcharge: toNum(form.mcqSurcharge),
         moqSurcharge: toNum(form.moqSurcharge),
+        priceHistory: currentHistory.length > 0 ? JSON.stringify(currentHistory) : undefined,
       };
 
       let saved: Item;
@@ -414,7 +466,7 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
                               <IconButton size="small" sx={{ position: 'absolute', top: 4, right: 4, bgcolor: 'rgba(255,255,255,0.8)', p: 0.5, backdropFilter: 'blur(4px)', '&:hover': { bgcolor: '#ef4444', color: 'white' } }} onClick={(e) => { e.stopPropagation(); setPendingMainImages(prev => prev.filter((_, i) => i !== idx)); }}>
                                 <CloseIcon sx={{ fontSize: 16 }} />
                               </IconButton>
-                              <Box sx={{ position: 'absolute', bottom: 0, left: 0, right: 0, bgcolor: 'rgba(59, 165, 92, 0.8)', color: '#fff', fontSize: 10, textAlign: 'center', py: 0.5 }}>Chưa lưu</Box>
+                              <Box sx={{ position: 'absolute', bottom: 0, left: 0, right: 0, bgcolor: 'rgba(59, 165, 92, 0.8)', color: '#fff', fontSize: 10, textAlign: 'center', py: 0.5 }}>{t('rdMaterial.not_saved', 'Chưa lưu')}</Box>
                             </Box>
                           </Tooltip>
                         ))}
@@ -469,7 +521,7 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
                               <IconButton size="small" sx={{ position: 'absolute', top: 4, right: 4, bgcolor: 'rgba(255,255,255,0.8)', p: 0.5, backdropFilter: 'blur(4px)', '&:hover': { bgcolor: '#ef4444', color: 'white' } }} onClick={(e) => { e.stopPropagation(); setPendingStickerImages(prev => prev.filter((_, i) => i !== idx)); }}>
                                 <CloseIcon sx={{ fontSize: 16 }} />
                               </IconButton>
-                              <Box sx={{ position: 'absolute', bottom: 0, left: 0, right: 0, bgcolor: 'rgba(59, 165, 92, 0.8)', color: '#fff', fontSize: 10, textAlign: 'center', py: 0.5 }}>Chưa lưu</Box>
+                              <Box sx={{ position: 'absolute', bottom: 0, left: 0, right: 0, bgcolor: 'rgba(59, 165, 92, 0.8)', color: '#fff', fontSize: 10, textAlign: 'center', py: 0.5 }}>{t('rdMaterial.not_saved', 'Chưa lưu')}</Box>
                             </Box>
                           </Tooltip>
                         ))}

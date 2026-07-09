@@ -1,0 +1,74 @@
+{
+  "cookies": [],
+  "origins": [
+    {
+      "origin": "http://localhost:5173",
+      "localStorage": [
+        {
+          "name": "saved_username",
+          "value": "shin"
+        },
+        {
+          "name": "traxeco_deploy_v",
+          "value": "v_20260626030610_noconsole"
+        },
+        {
+          "name": "isAdmin",
+          "value": "true"
+        },
+        {
+          "name": "roleLabel",
+          "value": "SuperAdmin"
+        },
+        {
+          "name": "dept",
+          "value": "TAP"
+        },
+        {
+          "name": "factory",
+          "value": "CT"
+        },
+        {
+          "name": "i18nextLng",
+          "value": "vi"
+        },
+        {
+          "name": "token",
+          "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzaGluIiwiaWF0IjoxNzgzNDE0OTA5LCJleHAiOjE3ODM1MDEzMDl9.wDYTTeHI-a8UbFbkevRnhXgLD4ZUdfVU5vXI4u1mPlc"
+        },
+        {
+          "name": "isAuthenticated",
+          "value": "true"
+        },
+        {
+          "name": "roleLevel",
+          "value": "0"
+        },
+        {
+          "name": "mustChangePassword",
+          "value": "false"
+        },
+        {
+          "name": "employeeName",
+          "value": "Nguyễn Ngọc Khả Tú"
+        },
+        {
+          "name": "isSuperAdmin",
+          "value": "true"
+        },
+        {
+          "name": "section",
+          "value": "Coder"
+        },
+        {
+          "name": "permissions",
+          "value": "[]"
+        },
+        {
+          "name": "employeeCode",
+          "value": "shin"
+        }
+      ]
+    }
+  ]
+}

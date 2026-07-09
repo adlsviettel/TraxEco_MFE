@@ -205,14 +205,14 @@ export default function WarehousePage() {
         flexDirection: 'column',
         overflow: 'hidden',
         bgcolor: '#f4f6f8',
-        fontFamily: "'Outfit', 'Inter', system-ui, sans-serif",
+        fontFamily: "'Be Vietnam Pro', 'Inter', system-ui, sans-serif",
       }}
     >
       {/* ─── GOOGLE FONTS & STYLES ─── */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;750;800&family=Outfit:wght@500;600;700;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;750;800&family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap');
         .MuiTypography-root, .MuiButton-root, .MuiInputBase-root, .MuiTableCell-root, .MuiChip-root {
-          font-family: 'Inter', 'Outfit', sans-serif !important;
+          font-family: 'Inter', 'Be Vietnam Pro', sans-serif !important;
         }
       `}</style>
 
@@ -248,7 +248,7 @@ export default function WarehousePage() {
           <Box sx={{ p: 2.5, borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", bgcolor: "#f8fafc", flexShrink: 0 }}>
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
               <InventoryIcon sx={{ color: "#15803d", fontSize: 20 }} />
-              <Typography variant="subtitle1" sx={{ fontWeight: 800, color: "#0f172a", fontSize: 14.5, fontFamily: "'Outfit' !important", letterSpacing: "0.2px" }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 800, color: "#0f172a", fontSize: 14.5, fontFamily: "'Be Vietnam Pro' !important", letterSpacing: "0.2px" }}>
                 1. TỒN KHO TỔNG (MAIN WAREHOUSE)
               </Typography>
             </Box>
@@ -383,7 +383,7 @@ export default function WarehousePage() {
           <Box sx={{ p: 2.5, borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", bgcolor: "#f8fafc", flexShrink: 0 }}>
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
               <LocalShippingIcon sx={{ color: "#15803d", fontSize: 20 }} />
-              <Typography variant="subtitle1" sx={{ fontWeight: 800, color: "#0f172a", fontSize: 14.5, fontFamily: "'Outfit' !important", letterSpacing: "0.2px" }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 800, color: "#0f172a", fontSize: 14.5, fontFamily: "'Be Vietnam Pro' !important", letterSpacing: "0.2px" }}>
                 2. PHÂN CHIA XƯỞNG (FACTORIES)
               </Typography>
             </Box>
@@ -529,7 +529,7 @@ export default function WarehousePage() {
         }}
       >
         <Box sx={{ m: 0, p: 2.5, display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
-          <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#0f172a', fontFamily: "'Outfit' !important" }}>
+          <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#0f172a', fontFamily: "'Be Vietnam Pro' !important" }}>
             Nhập kho dược phẩm mới
           </Typography>
           <IconButton onClick={() => setIsImportModalOpen(false)} sx={{ color: '#64748b' }}>
@@ -556,7 +556,7 @@ export default function WarehousePage() {
         }}
       >
         <Box sx={{ m: 0, p: 2.5, display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
-          <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#0f172a', fontFamily: "'Outfit' !important" }}>
+          <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#0f172a', fontFamily: "'Be Vietnam Pro' !important" }}>
             Phân chia thuốc xuống phân xưởng
           </Typography>
           <IconButton onClick={() => setIsSendModalOpen(false)} sx={{ color: '#64748b' }}>

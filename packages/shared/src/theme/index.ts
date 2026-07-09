@@ -49,7 +49,7 @@ const tokens = {
 const baseTheme: ThemeOptions = {
   typography: {
     fontFamily:
-      '"Outfit", "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, sans-serif',
+      '"Inter", -apple-system, BlinkMacSystemFont, sans-serif',
     h1: {
       fontSize: "2.5rem",
       fontWeight: 700,

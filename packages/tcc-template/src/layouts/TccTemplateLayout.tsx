@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Search as SearchIcon,
@@ -14,12 +14,34 @@ import RequestorViewPage from '../pages/RequestorViewPage';
 import AdminStatusPage from '../pages/AdminStatusPage';
 import DashboardPage from '../pages/DashboardPage';
 import TccSettingsPage from '../pages/TccSettingsPage';
+import TccNotificationBell from '../components/TccNotificationBell';
 
 const BASE = '/tcc-template';
 
 export default function TccTemplateLayout() {
   const { t } = useTranslation();
   const roleLevel = Number(localStorage.getItem('roleLevel') || '99');
+
+  useEffect(() => {
+    if ('Notification' in window && Notification.permission === 'default') {
+      const requestPermissionSafe = (): Promise<NotificationPermission> => {
+        return new Promise((resolve) => {
+          try {
+            const permissionResult = Notification.requestPermission(resolve);
+            if (permissionResult && typeof permissionResult.then === 'function') {
+              permissionResult.then(resolve);
+            }
+          } catch (e) {
+            resolve(Notification.permission);
+          }
+        });
+      };
+      
+      requestPermissionSafe().then((permission) => {
+        console.log('Notification permission auto-request result:', permission);
+      });
+    }
+  }, []);
 
   const navItems = useMemo(() => [
     { text: t('tcc.nav.tracking', 'Template Request Form'), icon: <SearchIcon fontSize="small" />, path: `${BASE}/tracking`, pageCode: 'tcc_tracking' },
@@ -47,6 +69,7 @@ export default function TccTemplateLayout() {
       navItems={navItems}
       pages={pages}
       storageKey="tcc_layout_open"
+      headerExtra={<TccNotificationBell />}
       versionString="TCC v1.0.0"
       fallbackPath="/tcc-template/tracking"
       rootPath="/tcc-template"

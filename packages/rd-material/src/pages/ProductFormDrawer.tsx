@@ -278,16 +278,60 @@ const ProductFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSav
       setTimeout(() => setShakeFields({}), 500);
 
       const missingList: string[] = [];
-      if (isMissingCode) missingList.push('Mã hàng (Style Number) chưa nhập');
-      if (isMissingName) missingList.push('ERP Number chưa nhập');
-      if (isMissingQty) missingList.push('Số lượng (Qty) chưa nhập');
+      if (isMissingCode) missingList.push(t('rdMaterial.validation.missing_style_no', 'Mã hàng (Style Number) chưa nhập'));
+      if (isMissingName) missingList.push(t('rdMaterial.validation.missing_erp', 'ERP Number chưa nhập'));
+      if (isMissingQty) missingList.push(t('rdMaterial.validation.missing_qty', 'Số lượng (Qty) chưa nhập'));
 
-      const errorMsg = `Vui lòng kiểm tra: ${missingList.join(', ')}`;
+      const errorMsg = `${t('rdMaterial.validation.check_below', 'Vui lòng kiểm tra:')} ${missingList.join(', ')}`;
       return setSnackbar({ open: true, message: errorMsg, severity: 'error' });
+    }
+
+    // Check duplicate code
+    const isDuplicate = await rdItemApi.checkDuplicateCode(form.itemCode || '', 'PRODUCT', isEdit && item ? item.id : undefined);
+    if (isDuplicate) {
+      setShakeFields({ itemCode: true });
+      setTimeout(() => setShakeFields({}), 500);
+      itemCodeRef.current?.focus();
+      return setSnackbar({ 
+        open: true, 
+        message: t('rdMaterial.validation.duplicate_code', 'Mã hàng đã tồn tại trong hệ thống. Vui lòng nhập mã hàng khác để tiếp tục.'), 
+        severity: 'error' 
+      });
     }
     
     setLoading(true);
     try {
+      // Detect price/cost changes and record history
+      let currentHistory: any[] = [];
+      try {
+        if (form.priceHistory) {
+          currentHistory = JSON.parse(form.priceHistory);
+        } else if (item && item.priceHistory) {
+          currentHistory = JSON.parse(item.priceHistory);
+        }
+      } catch (err) {
+        console.warn('Failed to parse price history', err);
+      }
+
+      const priceChanged = (item?.product?.fobPrice !== toNum(form.fobPrice));
+      const currencyChanged = (item?.currency !== (form.currency || 'USD'));
+      const customerChanged = (item?.customer !== (form.customer || ''));
+
+      const hasCostChanged = priceChanged || currencyChanged || customerChanged;
+
+      if (!isEdit || hasCostChanged) {
+        const userInfo = authService.getUserInfo();
+        const userName = userInfo?.employeeName || 'System';
+        const newEntry = {
+          fobPrice: toNum(form.fobPrice),
+          currency: form.currency || 'USD',
+          customer: form.customer || undefined,
+          date: new Date().toISOString(),
+          user: userName
+        };
+        currentHistory.unshift(newEntry);
+      }
+
       // 1. Upload pending images
       let finalMainImageUrls = form.mainImage ? String(form.mainImage).split(',').filter(Boolean) : [];
       let finalStickerImageUrls = form.stickerImage ? String(form.stickerImage).split(',').filter(Boolean) : [];
@@ -327,9 +371,10 @@ const ProductFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSav
           patternMarker: form.patternMarker || undefined,
           allocation: form.allocation || undefined,
           mainComposition: JSON.stringify(bomList),
-          liningComposition: undefined,
-          fobPrice: toNum(form.fobPrice) || undefined,
-        }
+          liningComposition: form.liningComposition || undefined,
+          fobPrice: toNum(form.fobPrice),
+        },
+        priceHistory: currentHistory.length > 0 ? JSON.stringify(currentHistory) : undefined,
       };
 
       let saved: Item;

@@ -128,7 +128,7 @@ function BedCard({ bed, onAdmitClick, onDischargeClick }: { bed: Bed, onAdmitCli
             {bed.isOccupied ? <BedFullIcon fontSize="small" /> : <BedEmptyIcon fontSize="small" />}
           </Avatar>
           <Box sx={{ textAlign: 'right' }}>
-            <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#0f172a', fontSize: '0.9rem', fontFamily: "'Outfit', sans-serif !important" }}>
+            <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#0f172a', fontSize: '0.9rem', fontFamily: "'Be Vietnam Pro', sans-serif !important" }}>
               {bed.bedName}
             </Typography>
             <Typography 
@@ -139,7 +139,7 @@ function BedCard({ bed, onAdmitClick, onDischargeClick }: { bed: Bed, onAdmitCli
                 textTransform: 'uppercase',
                 letterSpacing: '0.5px',
                 fontSize: '10px',
-                fontFamily: "'Outfit', sans-serif !important"
+                fontFamily: "'Be Vietnam Pro', sans-serif !important"
               }}
             >
               {bed.isOccupied ? t('clinic.bed.status.full', 'ĐANG NẰM') : t('clinic.bed.status.empty', 'GIƯỜNG TRỐNG')}

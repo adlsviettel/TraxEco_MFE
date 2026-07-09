@@ -4,6 +4,7 @@ export interface PresetPermission {
   canEdit?: boolean;
   canDelete?: boolean;
   canExport?: boolean;
+  canCancel?: boolean;
   canBypassCheck?: boolean;
   bypassQC?: boolean;
   bypassRelax?: boolean;

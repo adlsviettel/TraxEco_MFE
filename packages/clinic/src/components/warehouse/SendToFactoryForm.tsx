@@ -115,8 +115,8 @@ export default function SendToFactoryForm({ warehouseStock, onSendToFactory }: S
       flexDirection: 'column', 
       height: '100%', 
       overflow: 'hidden',
-      fontFamily: "'Outfit', sans-serif !important",
-      '& *': { fontFamily: "'Outfit', sans-serif !important" }
+      fontFamily: "'Be Vietnam Pro', sans-serif !important",
+      '& *': { fontFamily: "'Be Vietnam Pro', sans-serif !important" }
     }}>
       <Grid container spacing={2.5} sx={{ height: '100%', minHeight: 0 }}>
         

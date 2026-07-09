@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -93,6 +93,8 @@ const INITIAL_HISTORY: BedHistory[] = [
 
 const FACTORIES = ['Tất cả', 'Xưởng F1', 'Xưởng F2', 'Xưởng F3', 'Xưởng CT'];
 
+import { clinicApi } from '../api/clinicApi';
+
 export default function BedManagementPage() {
   const { t } = useTranslation();
   const theme = useTheme();
@@ -103,8 +105,9 @@ export default function BedManagementPage() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(20);
 
-  const [beds, setBeds] = useState<Bed[]>(INITIAL_BEDS);
-  const [history, setHistory] = useState<BedHistory[]>(INITIAL_HISTORY);
+  const [beds, setBeds] = useState<Bed[]>([]);
+  const [history, setHistory] = useState<BedHistory[]>([]);
+  const [loading, setLoading] = useState(false);
   
   const [selectedBed, setSelectedBed] = useState<Bed | null>(null);
   const [isAdmitOpen, setIsAdmitOpen] = useState(false);
@@ -144,52 +147,56 @@ export default function BedManagementPage() {
   const [historyPage, setHistoryPage] = useState(0);
   const [historyRowsPerPage, setHistoryRowsPerPage] = useState(5);
 
-  const filteredHistory = React.useMemo(() => {
-    return history.filter(record => {
-      // Filter by factory
-      if (activeFactory !== 'Tất cả' && record.factory !== activeFactory) {
-        return false;
-      }
-      
-      // Filter by date
-      if (fromDate) {
-        const from = new Date(fromDate);
-        from.setHours(0, 0, 0, 0);
-        
-        // admitTime format e.g. "02/07/2026 09:00:00" or standard LocaleString
-        const parts = record.admitTime.split(' ');
-        if (parts.length > 0) {
-          const dateParts = parts[0].split('/');
-          if (dateParts.length === 3) {
-            const recordDate = new Date(`${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`);
-            if (recordDate < from) return false;
-          } else {
-            const parsed = new Date(record.admitTime);
-            if (!isNaN(parsed.getTime()) && parsed < from) return false;
-          }
-        }
-      }
-      
-      if (toDate) {
-        const to = new Date(toDate);
-        to.setHours(23, 59, 59, 999);
-        
-        const parts = record.admitTime.split(' ');
-        if (parts.length > 0) {
-          const dateParts = parts[0].split('/');
-          if (dateParts.length === 3) {
-            const recordDate = new Date(`${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`);
-            if (recordDate > to) return false;
-          } else {
-            const parsed = new Date(record.admitTime);
-            if (!isNaN(parsed.getTime()) && parsed > to) return false;
-          }
-        }
-      }
-      
-      return true;
-    });
-  }, [history, activeFactory, fromDate, toDate]);
+  // Tải danh sách giường từ API
+  const loadBeds = async () => {
+    try {
+      const res = await clinicApi.getBeds();
+      const mappedBeds: Bed[] = res.map(b => ({
+        idBed: b.id, // Sửa từ b.idBed sang b.id để khớp DTO
+        bedName: b.bedName,
+        isOccupied: b.isOccupied,
+        employeeId: b.employeeCode, // Sửa từ b.employeeId sang b.employeeCode
+        fullName: b.employeeName, // Sửa từ b.fullName sang b.employeeName
+        sickness: b.sickness,
+        admitTime: b.admitTime ? new Date(b.admitTime).toLocaleString('vi-VN') : undefined,
+        factory: b.factory ? `Xưởng ${b.factory}` : 'Chưa rõ'
+      }));
+      setBeds(mappedBeds);
+    } catch (e) {
+      console.error("Tải giường bệnh thất bại:", e);
+    }
+  };
+
+  // Tải lịch sử nằm giường từ API
+  const loadHistory = async () => {
+    try {
+      const facCode = activeFactory !== "Tất cả" ? activeFactory.replace("Xưởng ", "") : undefined;
+      const res = await clinicApi.getBedHistory(facCode, fromDate || undefined, toDate || undefined);
+      const mappedHistory: BedHistory[] = res.map(h => ({
+        id: h.id,
+        bedName: h.bedName,
+        employeeId: h.employeeId,
+        fullName: h.fullName,
+        sickness: h.sickness,
+        admitTime: h.admitTime ? new Date(h.admitTime).toLocaleString('vi-VN') : '',
+        dischargeTime: h.dischargeTime ? new Date(h.dischargeTime).toLocaleString('vi-VN') : '',
+        factory: h.factory ? `Xưởng ${h.factory}` : 'Chưa rõ'
+      }));
+      setHistory(mappedHistory);
+    } catch (e) {
+      console.error("Tải lịch sử giường bệnh thất bại:", e);
+    }
+  };
+
+  useEffect(() => {
+    loadBeds();
+  }, []);
+
+  useEffect(() => {
+    loadHistory();
+  }, [activeFactory, fromDate, toDate]);
+
+  const filteredHistory = history;
 
   const paginatedHistory = React.useMemo(() => {
     const startIndex = historyPage * historyRowsPerPage;
@@ -219,69 +226,43 @@ export default function BedManagementPage() {
     setIsDischargeOpen(true);
   };
 
-  const handleAdmitSave = (data: { employeeId: string; fullName: string; sickness: string }) => {
+  const handleAdmitSave = async (data: { employeeId: string; fullName: string; sickness: string }) => {
     if (!selectedBed) return;
-
-    const formattedTime = new Date().toLocaleString('vi-VN');
-
-    setBeds((prev) =>
-      prev.map((b) => {
-        if (b.idBed === selectedBed.idBed) {
-          return {
-            ...b,
-            isOccupied: true,
-            employeeId: data.employeeId,
-            fullName: data.fullName,
-            sickness: data.sickness,
-            admitTime: formattedTime
-          };
-        }
-        return b;
-      })
-    );
-
-    setIsAdmitOpen(false);
-    setSelectedBed(null);
-    showToast(t('clinic.bed.admitSuccess', 'Tiếp nhận bệnh nhân nằm giường thành công!'), 'success');
+    setLoading(true);
+    try {
+      const facCode = selectedBed.factory ? selectedBed.factory.replace("Xưởng ", "") : "MAIN";
+      await clinicApi.admitPatient(selectedBed.idBed, {
+        employeeId: data.employeeId,
+        fullName: data.fullName,
+        sickness: data.sickness,
+        factory: facCode
+      });
+      setIsAdmitOpen(false);
+      setSelectedBed(null);
+      showToast(t('clinic.bed.admitSuccess', 'Tiếp nhận bệnh nhân nằm giường thành công!'), 'success');
+      loadBeds();
+    } catch (e: any) {
+      showToast(e.message || "Tiếp nhận thất bại", "error");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleDischargeSave = () => {
+  const handleDischargeSave = async () => {
     if (!selectedBed) return;
-
-    const formattedDischargeTime = new Date().toLocaleString('vi-VN');
-
-    const historyEntry: BedHistory = {
-      id: history.length > 0 ? Math.max(...history.map(i => i.id)) + 1 : 1,
-      bedName: selectedBed.bedName,
-      employeeId: selectedBed.employeeId || '',
-      fullName: selectedBed.fullName || '',
-      sickness: selectedBed.sickness || '',
-      admitTime: selectedBed.admitTime || '',
-      dischargeTime: formattedDischargeTime,
-      factory: selectedBed.factory || 'Chưa rõ'
-    };
-
-    setHistory((prev) => [historyEntry, ...prev]);
-
-    setBeds((prev) =>
-      prev.map((b) => {
-        if (b.idBed === selectedBed.idBed) {
-          return {
-            ...b,
-            isOccupied: false,
-            employeeId: undefined,
-            fullName: undefined,
-            admitTime: undefined,
-            sickness: undefined
-          };
-        }
-        return b;
-      })
-    );
-
-    setIsDischargeOpen(false);
-    setSelectedBed(null);
-    showToast(t('clinic.bed.dischargeSuccess', 'Đã cho xuất giường và hoàn tất thủ tục.'), 'success');
+    setLoading(true);
+    try {
+      await clinicApi.dischargePatient(selectedBed.idBed);
+      setIsDischargeOpen(false);
+      setSelectedBed(null);
+      showToast(t('clinic.bed.dischargeSuccess', 'Đã cho xuất giường và hoàn tất thủ tục.'), 'success');
+      loadBeds();
+      loadHistory();
+    } catch (e: any) {
+      showToast(e.message || "Cho xuất giường thất bại", "error");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -300,7 +281,7 @@ export default function BedManagementPage() {
     }}>
       {/* ─── DYNAMICALLY IMPORT GOOGLE FONTS ─── */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap');
       `}</style>
 
       {/* Section 1: Dashboard Stats & Factory Tabs */}

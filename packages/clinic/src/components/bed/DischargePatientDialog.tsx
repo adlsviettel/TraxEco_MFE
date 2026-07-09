@@ -28,7 +28,7 @@ export default function DischargePatientDialog({ open, bed, onClose, onDischarge
       maxWidth="xs" 
       fullWidth
       sx={{
-        '& *': { fontFamily: "'Outfit', sans-serif !important" }
+        '& *': { fontFamily: "'Be Vietnam Pro', sans-serif !important" }
       }}
       PaperProps={{
         sx: { borderRadius: '12px' }

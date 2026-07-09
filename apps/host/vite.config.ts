@@ -10,6 +10,7 @@ export default defineConfig(({ mode }) => {
   return {
     envDir: path.resolve(__dirname, '../../'),
     resolve: {
+      dedupe: ['react', 'react-dom', 'react-router-dom', 'i18next', 'react-i18next', '@mui/material', '@mui/icons-material', '@emotion/react', '@emotion/styled', '@mui/x-date-pickers', '@mui/x-data-grid'],
       alias: {
         '@traxeco/shared': path.resolve(__dirname, '../../packages/shared/src'),
         '@traxeco/clinic': path.resolve(__dirname, '../../packages/clinic/src'),
@@ -27,7 +28,7 @@ export default defineConfig(({ mode }) => {
     plugins: [
       react(), 
       legacy({
-        targets: ['Android >= 4.4', 'Chrome >= 39', 'Safari >= 10', 'iOS >= 10'],
+        targets: ['Android >= 6.0', 'Chrome >= 64', 'Safari >= 12', 'iOS >= 12'],
         additionalLegacyPolyfills: ['regenerator-runtime/runtime'],
         renderLegacyChunks: true,
       }),
@@ -39,16 +40,13 @@ export default defineConfig(({ mode }) => {
         }
       },
       VitePWA({
+        strategies: 'injectManifest',
+        srcDir: 'src',
+        filename: 'sw.ts',
         registerType: 'autoUpdate',
         injectRegister: false,
-        workbox: {
-          maximumFileSizeToCacheInBytes: 50 * 1024 * 1024, // 50MB
-          // ── Force ngay lập tức lấy bản mới, không chờ tab cũ đóng ──
-          skipWaiting: true,
-          clientsClaim: true,
-          // Không cache file .html → luôn lấy từ server
-          navigateFallback: 'index.html',
-          navigateFallbackDenylist: [/^\/api/],
+        injectManifest: {
+          maximumFileSizeToCacheInBytes: 15 * 1024 * 1024, // 15MB
         },
         devOptions: {
           enabled: false,
@@ -71,18 +69,30 @@ export default defineConfig(({ mode }) => {
             {
               src: '/logo.png',
               sizes: '512x512',
+              type: 'image/png'
+            },
+            {
+              src: '/logo.png',
+              sizes: '512x512',
               type: 'image/png',
-              purpose: 'any maskable'
+              purpose: 'maskable'
             }
           ]
         }
       })
     ],
     build: {
-      target: 'es2015',
       outDir: 'dist',
       emptyOutDir: true,
       sourcemap: false,
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            vendor: ['react', 'react-dom', 'react-router-dom'],
+            mui: ['@mui/material', '@mui/icons-material', '@mui/x-data-grid', '@mui/x-date-pickers']
+          }
+        }
+      }
     },
     server: {
       host: '0.0.0.0',

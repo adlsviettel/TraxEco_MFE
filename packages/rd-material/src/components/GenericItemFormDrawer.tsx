@@ -199,20 +199,79 @@ const GenericItemFormDrawer: React.FC<Props> = ({ open, item, isCopy, itemType, 
       setTimeout(() => setShakeFields({}), 500);
 
       const missingList: string[] = [];
-      if (isMissingCode) missingList.push('Mã hàng (Item Code) chưa nhập');
-      if (isMissingName) missingList.push('Tên chưa nhập');
-      if (isMissingQty) missingList.push('Số lượng (Qty) chưa nhập');
+      if (isMissingCode) missingList.push(t('rdMaterial.validation.missing_code', 'Mã hàng (Item Code) chưa nhập'));
+      if (isMissingName) missingList.push(t('rdMaterial.validation.missing_name', 'Tên chưa nhập'));
+      if (isMissingQty) missingList.push(t('rdMaterial.validation.missing_qty', 'Số lượng (Qty) chưa nhập'));
 
-      const errorMsg = `Vui lòng kiểm tra: ${missingList.join(', ')}`;
+      const errorMsg = `${t('rdMaterial.validation.check_below', 'Vui lòng kiểm tra:')} ${missingList.join(', ')}`;
       return setSnackbar({ open: true, message: errorMsg, severity: 'error' });
+    }
+
+    if (formData.itemCode && formData.itemCode.trim() !== '') {
+      const isDuplicate = await rdItemApi.checkDuplicateCode(formData.itemCode, itemType, formData.id);
+      if (isDuplicate) {
+        setShakeFields({ itemCode: true });
+        setTimeout(() => setShakeFields({}), 500);
+        itemCodeRef.current?.focus();
+        return setSnackbar({ 
+          open: true, 
+          message: t('rdMaterial.validation.duplicate_code', 'Mã hàng đã tồn tại trong hệ thống. Vui lòng nhập mã hàng khác để tiếp tục.'), 
+          severity: 'error' 
+        });
+      }
     }
 
     setLoading(true);
     try {
+      // Detect price/cost changes and record history
+      let currentHistory: any[] = [];
+      try {
+        if (formData.priceHistory) {
+          currentHistory = JSON.parse(formData.priceHistory);
+        } else if (item && item.priceHistory) {
+          currentHistory = JSON.parse(item.priceHistory);
+        }
+      } catch (err) {
+        console.warn('Failed to parse price history', err);
+      }
+
+      const toNum = (v: unknown) => {
+        const n = Number(v);
+        return v === '' || v === undefined || v === null || isNaN(n) ? undefined : n;
+      };
+
+      const priceChanged = (item?.price !== toNum(formData.price));
+      const currencyChanged = (item?.currency !== (formData.currency || 'USD'));
+      const unitChanged = (item?.priceUnit !== (formData.priceUnit || ''));
+      const moqMcqChanged = (item?.moqMcq !== (formData.moqMcq || ''));
+      const moqMcqUnitChanged = (item?.moqMcqUnit !== (formData.moqMcqUnit || ''));
+
+      const hasCostChanged = priceChanged || currencyChanged || unitChanged || moqMcqChanged || moqMcqUnitChanged;
+
+      if (!formData.id || hasCostChanged) {
+        const userInfo = authService.getUserInfo();
+        const userName = userInfo?.employeeName || 'System';
+        const newEntry = {
+          price: toNum(formData.price),
+          currency: formData.currency || 'USD',
+          priceUnit: formData.priceUnit || undefined,
+          moqMcq: formData.moqMcq || undefined,
+          moqMcqUnit: formData.moqMcqUnit || undefined,
+          date: new Date().toISOString(),
+          user: userName
+        };
+        currentHistory.unshift(newEntry);
+      }
+      
+      const payload = {
+        ...formData,
+        priceHistory: currentHistory.length > 0 ? JSON.stringify(currentHistory) : undefined,
+      };
+
       if (formData.id) {
-        await rdItemApi.update(formData.id, formData);
+        await rdItemApi.update(formData.id, payload);
       } else {
-        await rdItemApi.create(formData);
+        await rdItemApi.create(payload);
       }
       setSnackbar({ open: true, message: t('rdMaterial.save_success', 'Saved successfully'), severity: 'success' });
       onSaved();
@@ -355,6 +414,7 @@ const GenericItemFormDrawer: React.FC<Props> = ({ open, item, isCopy, itemType, 
                                   <CloseIcon sx={{ fontSize: 16 }} />
                                 </IconButton>
                               )}
+                              {!formData.id && <Box sx={{ position: 'absolute', bottom: 0, left: 0, right: 0, bgcolor: 'rgba(59, 165, 92, 0.8)', color: '#fff', fontSize: 10, textAlign: 'center', py: 0.5 }}>{t('rdMaterial.not_saved', 'Chưa lưu')}</Box>}
                             </Box>
                           )}
                         </Box>

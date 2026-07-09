@@ -414,7 +414,7 @@ const FabricListPage: React.FC = () => {
           <TableCell key={colId} sx={{ py: 1.5, textAlign: 'right', pr: 3 }}>
             <Box className="action-buttons" sx={{ display: 'flex', gap: 0.5, justifyContent: 'flex-end' }}>
               {canEdit && (
-                <IconButton size="small" onClick={() => { setIsCopy(false); setEditItem(item); setDrawerOpen(true); }} sx={{ color: '#707975', '&:hover': { color: '#2e7d32', bgcolor: '#f3f4f5' } }}>
+                <IconButton data-testid={`rd-fabric-btn-edit-${item.itemCode}`} size="small" onClick={() => { setIsCopy(false); setEditItem(item); setDrawerOpen(true); }} sx={{ color: '#707975', '&:hover': { color: '#2e7d32', bgcolor: '#f3f4f5' } }}>
                   <EditIcon sx={{ fontSize: 18 }} />
                 </IconButton>
               )}
@@ -427,7 +427,7 @@ const FabricListPage: React.FC = () => {
                 <PrintIcon sx={{ fontSize: 18 }} />
               </IconButton>
               {canDelete && (
-                <IconButton size="small" onClick={() => handleDelete(item.id)} sx={{ color: '#707975', '&:hover': { color: '#ba1a1a', bgcolor: '#ffdad6' } }}>
+                <IconButton data-testid={`rd-fabric-btn-delete-${item.itemCode}`} size="small" onClick={() => handleDelete(item.id)} sx={{ color: '#707975', '&:hover': { color: '#ba1a1a', bgcolor: '#ffdad6' } }}>
                   <DeleteIcon sx={{ fontSize: 18 }} />
                 </IconButton>
               )}
@@ -521,6 +521,7 @@ const FabricListPage: React.FC = () => {
             <Box sx={{ display: 'flex', gap: 1, width: '100%', alignItems: 'center' }}>
               <AppTextField placeholder={t('rdMaterial.search_placeholder', 'Search by name, code...')}
                 value={keyword} debounceMs={400} onDebounceChange={setKeyword}
+                inputProps={{ 'data-testid': 'rd-fabric-search-input-mobile' }}
                 InputProps={{
                   startAdornment: <InputAdornment position="start"><SearchIcon sx={{ fontSize: 20, color: '#707975' }} /></InputAdornment>,
                   endAdornment: keyword ? (
@@ -551,6 +552,7 @@ const FabricListPage: React.FC = () => {
                 }} />
               </IconButton>
               <IconButton 
+                data-testid="rd-fabric-btn-filter-mobile"
                 onClick={() => setFilterOpen(true)}
                 sx={{ 
                   bgcolor: activeFiltersCount > 0 ? 'rgba(46,125,50,0.1)' : '#f1f5f9', 
@@ -614,6 +616,7 @@ const FabricListPage: React.FC = () => {
 
           {canAdd && !filterOpen && (
             <DraggableFab 
+              data-testid="rd-fabric-btn-add-mobile"
               color="primary" 
               onClick={() => React.startTransition(() => { setIsCopy(false); setEditItem(null); setDrawerOpen(true); })}
               initialBottom={80}
@@ -651,6 +654,7 @@ const FabricListPage: React.FC = () => {
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flex: { xs: '1 1 100%', sm: '0 1 auto' }, minWidth: 200 }}>
               <AppTextField placeholder={t('rdMaterial.search_placeholder', 'Search by name, code...')}
                 value={keyword} debounceMs={400} onDebounceChange={setKeyword}
+                inputProps={{ 'data-testid': 'rd-fabric-search-input' }}
                 InputProps={{
                   startAdornment: <InputAdornment position="start"><SearchIcon sx={{ fontSize: 20, color: '#707975' }} /></InputAdornment>,
                   endAdornment: keyword ? (
@@ -674,6 +678,7 @@ const FabricListPage: React.FC = () => {
             {/* Sub-group 2: Filter trigger */}
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'nowrap' }}>
               <AppButton variant="outlined" customVariant="secondary"
+                data-testid="rd-fabric-btn-filter"
                 onClick={() => setFilterOpen(true)}
                 startIcon={<FilterListIcon sx={{ fontSize: '20px !important' }} />}
                 sx={{ 
@@ -759,6 +764,7 @@ const FabricListPage: React.FC = () => {
 
             {canAdd && (
               <AppButton variant="contained" customVariant="primary"
+                data-testid="rd-fabric-btn-add"
                 startIcon={<AddIcon sx={{ fontSize: '20px !important' }} />}
                 onClick={() => React.startTransition(() => { setIsCopy(false); setEditItem(null); setDrawerOpen(true); })}
                 sx={{ height: 40 }}
@@ -864,7 +870,8 @@ const FabricListPage: React.FC = () => {
                     label: t('rdMaterial.edit', 'Edit'),
                     icon: <EditIcon fontSize="small" />,
                     color: '#f59e0b',
-                    onClick: () => { setIsCopy(false); setEditItem(item); setDrawerOpen(true); }
+                    onClick: () => { setIsCopy(false); setEditItem(item); setDrawerOpen(true); },
+                    props: { 'data-testid': `rd-fabric-btn-edit-${item.itemCode}` }
                   });
                 }
                 rightActions.push({
@@ -1193,7 +1200,7 @@ const FabricListPage: React.FC = () => {
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 3, pt: 0 }}>
           <Button onClick={() => setDeleteId(null)} sx={{ color: 'text.secondary', fontWeight: 600 }}>{t('rdMaterial.cancel', 'Cancel')}</Button>
-          <Button variant="contained" color="error" onClick={confirmDelete} disableElevation sx={{ fontWeight: 600 }}>{t('rdMaterial.delete', 'Delete')}</Button>
+          <Button data-testid="btn-confirm-dialog" variant="contained" color="error" onClick={confirmDelete} disableElevation sx={{ fontWeight: 600 }}>{t('rdMaterial.delete', 'Delete')}</Button>
         </DialogActions>
       </Dialog>
 

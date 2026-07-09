@@ -36,23 +36,31 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
 
 // Register Service Worker with error handling (graceful fail on self-signed SSL/unsecured origins)
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    if (import.meta.env.DEV) {
-      // In development, unregister any existing service workers to ensure HMR works perfectly
-      navigator.serviceWorker.getRegistrations().then(registrations => {
-        for (let registration of registrations) {
-          registration.unregister();
-        }
-      });
-    } else {
+  if (import.meta.env.DEV) {
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+      for (const registration of registrations) {
+        registration.unregister().then((success) => {
+          if (success) {
+            console.log('Successfully unregistered stale dev ServiceWorker');
+            window.location.reload();
+          }
+        });
+      }
+    });
+  } else {
+    window.addEventListener('load', () => {
       const baseUrl = import.meta.env.BASE_URL || '/';
-      navigator.serviceWorker.register(`${baseUrl}sw.js`, { scope: baseUrl })
+      const swUrl = `${baseUrl}sw.js`;
+      
+      navigator.serviceWorker.register(swUrl, {
+        scope: baseUrl
+      })
         .then((registration) => {
           console.log('ServiceWorker registered successfully with scope:', registration.scope);
         })
         .catch((error) => {
-          console.warn('ServiceWorker registration failed (expected on invalid/self-signed SSL):', error);
+          console.warn('ServiceWorker registration failed:', error);
         });
-    }
-  });
+    });
+  }
 }

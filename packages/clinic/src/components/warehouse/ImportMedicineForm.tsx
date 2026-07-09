@@ -226,8 +226,8 @@ export default function ImportMedicineForm({ onImport }: ImportMedicineFormProps
       flexDirection: 'column', 
       height: '100%', 
       overflow: 'hidden',
-      fontFamily: "'Outfit', sans-serif !important",
-      '& *': { fontFamily: "'Outfit', sans-serif !important" }
+      fontFamily: "'Be Vietnam Pro', sans-serif !important",
+      '& *': { fontFamily: "'Be Vietnam Pro', sans-serif !important" }
     }}>
       <Grid container spacing={2.5} sx={{ height: '100%', minHeight: 0 }}>
         
@@ -616,7 +616,7 @@ export default function ImportMedicineForm({ onImport }: ImportMedicineFormProps
         }}
       >
         <DialogTitle sx={{ m: 0, p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Typography variant="h6" sx={{ fontWeight: 800, color: '#0f172a', fontFamily: "'Outfit' !important" }}>
+          <Typography variant="h6" sx={{ fontWeight: 800, color: '#0f172a', fontFamily: "'Be Vietnam Pro' !important" }}>
             Tạo danh mục thuốc mới
           </Typography>
           <IconButton onClick={() => setOpenAddMed(false)} sx={{ color: '#94a3b8' }}>
@@ -704,7 +704,7 @@ export default function ImportMedicineForm({ onImport }: ImportMedicineFormProps
         }}
       >
         <DialogTitle sx={{ m: 0, p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Typography variant="h6" sx={{ fontWeight: 800, color: '#0f172a', fontFamily: "'Outfit' !important" }}>
+          <Typography variant="h6" sx={{ fontWeight: 800, color: '#0f172a', fontFamily: "'Be Vietnam Pro' !important" }}>
             Tạo nhà cung cấp mới
           </Typography>
           <IconButton onClick={() => setOpenAddSup(false)} sx={{ color: '#94a3b8' }}>

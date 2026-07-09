@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { AppButton, AppTextField, authService } from '@traxeco/shared';
 import {
   Box,
@@ -108,7 +108,14 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
 
 
       const userStr = localStorage.getItem('user');
-      const user = userStr ? JSON.parse(userStr) : null;
+      let user = null;
+      if (userStr) {
+        try {
+          user = JSON.parse(userStr);
+        } catch (e) {
+          console.error('Failed to parse user from localStorage', e);
+        }
+      }
       const loggedInName = user?.displayName || user?.name || '';
 
       if (sourceForm) {
@@ -192,7 +199,7 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
   useEffect(() => {
     if (form.factory && machineTemplates.length > 0) {
       const normalizedSelected = normalizeStr(form.factory);
-      const types = Array.from(new Set(machineTemplates.filter(t => normalizeStr(t.factory) === normalizedSelected).map(t => t.machineType)));
+      const types = Array.from(new Set(machineTemplates.filter(tpl => normalizeStr(tpl.factory) === normalizedSelected).map(tpl => tpl.machineType)));
       setAvailableMachineTypes(types);
       if (form.machineType && !types.includes(form.machineType)) {
         setForm(prev => ({ ...prev, machineType: '', machineDimension: '' }));
@@ -206,7 +213,7 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
   useEffect(() => {
     if (form.machineType && form.factory && machineTemplates.length > 0) {
       const normalizedSelected = normalizeStr(form.factory);
-      const dims = Array.from(new Set(machineTemplates.filter(t => normalizeStr(t.factory) === normalizedSelected && t.machineType === form.machineType).map(t => t.machineDimension)));
+      const dims = Array.from(new Set(machineTemplates.filter(tpl => normalizeStr(tpl.factory) === normalizedSelected && tpl.machineType === form.machineType).map(tpl => tpl.machineDimension)));
       setAvailableMachineDimensions(dims);
       if (form.machineDimension && !dims.includes(form.machineDimension)) {
         setForm(prev => ({ ...prev, machineDimension: '' }));
@@ -230,27 +237,63 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
     return currentDate;
   };
 
+  const prevFactoryRef = useRef(form.factory);
+  const prevProcessTypeRef = useRef(form.processType);
+  const lastOpenRef = useRef(open);
+
   useEffect(() => {
+    const justOpened = open && !lastOpenRef.current;
+    lastOpenRef.current = open;
+
+    if (justOpened) {
+      prevFactoryRef.current = form.factory;
+      prevProcessTypeRef.current = form.processType;
+    }
+
     if (!form.factory || !form.processType) {
       setMinDeliveryDate(null);
       return;
     }
     
     if (form.isPriority) {
-      setMinDeliveryDate(new Date());
+      const today = new Date();
+      setMinDeliveryDate(today);
+      const factoryChanged = !justOpened && form.factory !== prevFactoryRef.current;
+      const processTypeChanged = !justOpened && form.processType !== prevProcessTypeRef.current;
+      if (!form.expectedDeliveryDate || factoryChanged || processTypeChanged) {
+        setForm(prev => ({ ...prev, expectedDeliveryDate: today.toISOString() }));
+      }
+      prevFactoryRef.current = form.factory;
+      prevProcessTypeRef.current = form.processType;
       return;
     }
 
     const config = leadTimeConfigs.find(c => c.factoryName === form.factory && c.processType === form.processType);
     
-    let leadTime = config ? config.leadTimeDays : (form.processType === 'Light Process' ? 2 : 5);
+    let leadTime = 14; // Default to 14 days for Production factories
     
-    if (leadTime === null) {
-       setMinDeliveryDate(new Date());
+    if (config && config.leadTimeDays !== null) {
+      leadTime = config.leadTimeDays;
     } else {
-       setMinDeliveryDate(addWorkingDays(new Date(), leadTime));
+      const normalizedFactory = (form.factory || '').toLowerCase();
+      if (normalizedFactory.includes('sample') || normalizedFactory.includes('phòng mẫu') || normalizedFactory.includes('phong mau') || normalizedFactory.includes('room')) {
+        leadTime = form.processType === 'Light Process' ? 2 : 5;
+      }
     }
-  }, [form.factory, form.processType, form.isPriority, leadTimeConfigs]);
+    
+    const calculatedDate = addWorkingDays(new Date(), leadTime);
+    setMinDeliveryDate(calculatedDate);
+
+    const factoryChanged = !justOpened && form.factory !== prevFactoryRef.current;
+    const processTypeChanged = !justOpened && form.processType !== prevProcessTypeRef.current;
+
+    if (!form.expectedDeliveryDate || factoryChanged || processTypeChanged) {
+      setForm(prev => ({ ...prev, expectedDeliveryDate: calculatedDate.toISOString() }));
+    }
+
+    prevFactoryRef.current = form.factory;
+    prevProcessTypeRef.current = form.processType;
+  }, [form.factory, form.processType, form.isPriority, leadTimeConfigs, open]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

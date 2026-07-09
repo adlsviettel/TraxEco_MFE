@@ -213,12 +213,12 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
       setTimeout(() => setShakeFields({}), 500);
 
       const missingList: string[] = [];
-      if (isMissingCode) missingList.push('Mã hàng (Item Code) chưa nhập');
-      if (isMissingQty) missingList.push('Số lượng (Qty) chưa nhập');
-      if (isMissingCurrency) missingList.push('Đơn vị tiền tệ (Curr) chưa chọn');
-      if (isMissingPriceUnit) missingList.push('Đơn vị tính (Unit) của đơn giá chưa chọn');
+      if (isMissingCode) missingList.push(t('rdMaterial.validation.missing_code', 'Mã hàng (Item Code) chưa nhập'));
+      if (isMissingQty) missingList.push(t('rdMaterial.validation.missing_qty', 'Số lượng (Qty) chưa nhập'));
+      if (isMissingCurrency) missingList.push(t('rdMaterial.validation.missing_currency', 'Đơn vị tiền tệ (Curr) chưa chọn'));
+      if (isMissingPriceUnit) missingList.push(t('rdMaterial.validation.missing_price_unit', 'Đơn vị tính (Unit) của đơn giá chưa chọn'));
 
-      const errorMsg = `Vui lòng kiểm tra: ${missingList.join(', ')}`;
+      const errorMsg = `${t('rdMaterial.validation.check_below', 'Vui lòng kiểm tra:')} ${missingList.join(', ')}`;
       return setSnackbar({ open: true, message: errorMsg, severity: 'error' });
     }
 
@@ -231,7 +231,7 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
       itemCodeRef.current?.focus();
       return setSnackbar({ 
         open: true, 
-        message: 'Mã hàng (Item Code) đã tồn tại trong hệ thống. Vui lòng nhập mã hàng khác để tiếp tục.', 
+        message: t('rdMaterial.validation.duplicate_code', 'Mã hàng (Item Code) đã tồn tại trong hệ thống. Vui lòng nhập mã hàng khác để tiếp tục.'), 
         severity: 'error' 
       });
     }
@@ -505,7 +505,7 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
                               <IconButton size="small" sx={{ position: 'absolute', top: 4, right: 4, bgcolor: 'rgba(255,255,255,0.8)', p: 0.5, backdropFilter: 'blur(4px)', '&:hover': { bgcolor: '#ef4444', color: 'white' } }} onClick={(e) => { e.stopPropagation(); setPendingMainImages(prev => prev.filter((_, i) => i !== idx)); }}>
                                 <CloseIcon sx={{ fontSize: 16 }} />
                               </IconButton>
-                              <Box sx={{ position: 'absolute', bottom: 0, left: 0, right: 0, bgcolor: 'rgba(59, 165, 92, 0.8)', color: '#fff', fontSize: 10, textAlign: 'center', py: 0.5 }}>Chưa lưu</Box>
+                              <Box sx={{ position: 'absolute', bottom: 0, left: 0, right: 0, bgcolor: 'rgba(59, 165, 92, 0.8)', color: '#fff', fontSize: 10, textAlign: 'center', py: 0.5 }}>{t('rdMaterial.not_saved', 'Chưa lưu')}</Box>
                             </Box>
                           </Tooltip>
                         ))}
@@ -560,7 +560,7 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
                               <IconButton size="small" sx={{ position: 'absolute', top: 4, right: 4, bgcolor: 'rgba(255,255,255,0.8)', p: 0.5, backdropFilter: 'blur(4px)', '&:hover': { bgcolor: '#ef4444', color: 'white' } }} onClick={(e) => { e.stopPropagation(); setPendingStickerImages(prev => prev.filter((_, i) => i !== idx)); }}>
                                 <CloseIcon sx={{ fontSize: 16 }} />
                               </IconButton>
-                              <Box sx={{ position: 'absolute', bottom: 0, left: 0, right: 0, bgcolor: 'rgba(59, 165, 92, 0.8)', color: '#fff', fontSize: 10, textAlign: 'center', py: 0.5 }}>Chưa lưu</Box>
+                              <Box sx={{ position: 'absolute', bottom: 0, left: 0, right: 0, bgcolor: 'rgba(59, 165, 92, 0.8)', color: '#fff', fontSize: 10, textAlign: 'center', py: 0.5 }}>{t('rdMaterial.not_saved', 'Chưa lưu')}</Box>
                             </Box>
                           </Tooltip>
                         ))}
@@ -599,6 +599,7 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
                       variant="standard" 
                       required 
                       fullWidth 
+                      inputProps={{ 'data-testid': 'rd-fabric-form-itemCode' }}
                       value={form.itemCode ?? ''} 
                       onChange={(e) => {
                         set('itemCode', e.target.value);
@@ -647,7 +648,7 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
                       <Typography variant="subtitle2" sx={{ color: '#0f172a', textTransform: 'uppercase', letterSpacing: 1 }} fontWeight={800} mb={3}>{t('rdMaterial.specs_title', '2. Specification')}</Typography>
                       <Box display="grid" gridTemplateColumns={{ xs: '1fr', sm: '1fr 1fr' }} gap={2.5}>
                         <Autocomplete componentsProps={{ popper: { style: { zIndex: 10000 } } }} forcePopupIcon options={structureOpts} freeSolo size="small" value={(form as any).structure ?? ''} onChange={(_, val) => set('structure', val)} onInputChange={(_, val, reason) => { if (reason === 'input' || reason === 'clear') set('structure', val); }} renderInput={(params) => <TextField {...params} label={t('rdMaterial.structure', 'Structure')} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />} />
-                        <AppTextField label={t('rdMaterial.fabric_name', 'Fabric Name')} size="small" value={(form as any).fabricName ?? ''} debounceMs={200} onDebounceChange={(val) => set('fabricName', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
+                        <AppTextField label={t('rdMaterial.fabric_name', 'Fabric Name')} size="small" inputProps={{ 'data-testid': 'rd-fabric-form-fabricName' }} value={(form as any).fabricName ?? ''} debounceMs={200} onDebounceChange={(val) => set('fabricName', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
                         <AppTextField label={t('rdMaterial.composition', 'Composition')} size="small" value={(form as any).composition ?? ''} debounceMs={200} onDebounceChange={(val) => set('composition', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
                         <AppTextField label={t('rdMaterial.function', 'Function')} size="small" value={(form as any).function ?? ''} debounceMs={200} onDebounceChange={(val) => set('function', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
                         <AppTextField label={t('rdMaterial.weight_gsm', 'Weight (GSM)')} size="small" type="number" inputProps={{ min: 0 }} value={(form as any).weightGsm ?? ''} debounceMs={200} onDebounceChange={(val) => set('weightGsm', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
@@ -845,7 +846,7 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
                             }
                           }}
                           InputProps={{
-                            inputProps: { min: 0 }
+                            inputProps: { min: 0, 'data-testid': 'rd-fabric-form-quantity' }
                           }}
                           sx={{ 
                             '& input[type=number]': {
@@ -910,7 +911,7 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
         <Button onClick={onClose} variant="outlined" sx={{ borderRadius: 1, px: 3, fontWeight: 700, borderColor: '#cbd5e1', color: '#64748b', '&:hover': { borderColor: '#94a3b8', bgcolor: '#f8fafc' } }}>
           {t('rdMaterial.cancel', 'Cancel')}
         </Button>
-        <Button onClick={() => handleSave(false)} variant="contained" disabled={loading} sx={{ borderRadius: 1, px: 4, fontWeight: 700, bgcolor: '#2e7d32', '&:hover': { bgcolor: '#1b5e20' }, boxShadow: '0 4px 14px 0 rgba(46, 125, 50, 0.39)' }}>
+        <Button data-testid="rd-fabric-form-btn-save" onClick={() => handleSave(false)} variant="contained" disabled={loading} sx={{ borderRadius: 1, px: 4, fontWeight: 700, bgcolor: '#2e7d32', '&:hover': { bgcolor: '#1b5e20' }, boxShadow: '0 4px 14px 0 rgba(46, 125, 50, 0.39)' }}>
           {loading ? t('rdMaterial.print_loading', 'Loading...') : t('rdMaterial.save', 'Save')}
         </Button>
       </Box>

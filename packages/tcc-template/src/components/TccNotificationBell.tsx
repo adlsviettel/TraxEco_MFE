@@ -47,6 +47,32 @@ interface Notification {
   unread: boolean;
 }
 
+const parseTime = (dateStr: string | null | undefined): number => {
+  if (!dateStr) return 0;
+  
+  // Try direct parse (works for ISO, MM/DD/YYYY, etc.)
+  const time = new Date(dateStr).getTime();
+  if (!isNaN(time)) return time;
+  
+  // Fallback for DD/MM/YYYY or DD/MM/YYYY HH:mm:ss
+  const parts = dateStr.split(/[\\s/:-]+/);
+  if (parts.length >= 3 && parts[0].length <= 2) {
+    const day = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10) - 1;
+    let year = parseInt(parts[2], 10);
+    if (year < 100) year += 2000;
+    
+    const h = parts[3] ? parseInt(parts[3], 10) : 0;
+    const m = parts[4] ? parseInt(parts[4], 10) : 0;
+    const s = parts[5] ? parseInt(parts[5], 10) : 0;
+    
+    const fallbackTime = new Date(year, month, day, h, m, s).getTime();
+    if (!isNaN(fallbackTime)) return fallbackTime;
+  }
+  
+  return 0;
+};
+
 export default function TccNotificationBell() {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
@@ -121,9 +147,15 @@ export default function TccNotificationBell() {
 
     const interval = setInterval(fetchRequests, 60000);
 
+    const handleFocus = () => {
+      fetchRequests();
+    };
+    window.addEventListener('focus', handleFocus);
+
     return () => {
       clearInterval(interval);
       client.deactivate();
+      window.removeEventListener('focus', handleFocus);
     };
   }, [fetchRequests]);
 
@@ -146,31 +178,31 @@ export default function TccNotificationBell() {
         (req.requesterName || '').trim().toLowerCase() === userInfo.employeeName.trim().toLowerCase() ||
         (req.requesterName || '').trim().toLowerCase().startsWith(username + ' -');
 
-      const createdTime = new Date(req.createdAt).getTime();
+      const createdTime = parseTime(req.createdAt) || Date.now();
 
       // Case A: My request -> Notify me when others update status or material
       if (isMyReq) {
         // 1. Status Update
         if (req.status && req.status !== 'Not Started') {
-          const updateTime = req.updatedAt ? new Date(req.updatedAt).getTime() : createdTime;
+          const updateTime = req.updatedAt ? parseTime(req.updatedAt) : createdTime;
           const updatedByUser = (req.updatedBy || '').trim().toLowerCase();
           
           if (updateTime > sevenDaysAgo && updatedByUser !== username) {
             let icon = <AssignmentIcon sx={{ fontSize: 18, color: '#f59e0b' }} />;
             let iconBg = '#fffbeb';
-            let title = t('tcc.notification.statusTitle', 'Trạng thái: {{status}}', { status: req.status });
-            let detail = t('tcc.notification.statusDetail', 'Yêu cầu của bạn #{{id}} đã được chuyển sang trạng thái "{{status}}" bởi {{by}}.', { id: req.requestId, status: req.status, by: req.updatedBy || 'TCC' });
+            let title = t('tcc.notification.statusTitle', 'Status: {{status}}', { status: req.status });
+            let detail = t('tcc.notification.statusDetail', 'Your request #{{id}} has been changed to "{{status}}" by {{by}}.', { id: req.requestId, status: req.status, by: req.updatedBy || t('tcc.user', 'user') });
 
             if (req.status === 'Cancelled') {
               icon = <CancelIcon sx={{ fontSize: 18, color: '#ef4444' }} />;
               iconBg = '#fef2f2';
-              title = t('tcc.notification.cancelledTitle', 'Yêu cầu bị Hủy');
-              detail = t('tcc.notification.cancelledDetail', 'Yêu cầu của bạn #{{id}} đã bị hủy bởi {{by}}.', { id: req.requestId, by: req.updatedBy || 'người dùng' });
+              title = t('tcc.notification.cancelledTitle', 'Request Cancelled');
+              detail = t('tcc.notification.cancelledDetail', 'Your request #{{id}} has been cancelled by {{by}}.', { id: req.requestId, by: req.updatedBy || t('tcc.user', 'user') });
             } else if (req.status === 'Finished') {
               icon = <CheckIcon sx={{ fontSize: 18, color: '#22c55e' }} />;
               iconBg = '#f0fdf4';
-              title = t('tcc.notification.finishedTitle', 'Yêu cầu hoàn thành');
-              detail = t('tcc.notification.finishedDetail', 'Yêu cầu của bạn #{{id}} đã hoàn thành và sẵn sàng giao.', { id: req.requestId });
+              title = t('tcc.notification.finishedTitle', 'Request Finished');
+              detail = t('tcc.notification.finishedDetail', 'Your request #{{id}} is finished and ready to deliver.', { id: req.requestId });
             }
 
             const id = `status-${req.requestId}-${req.status}`;
@@ -189,7 +221,7 @@ export default function TccNotificationBell() {
 
         // 2. Material Sent
         if (req.materialSentDate) {
-          const sentTime = req.updatedAt ? new Date(req.updatedAt).getTime() : createdTime;
+          const sentTime = req.updatedAt ? parseTime(req.updatedAt) : createdTime;
           const updatedByUser = (req.updatedBy || '').trim().toLowerCase();
 
           if (sentTime > sevenDaysAgo && updatedByUser !== username) {
@@ -197,8 +229,8 @@ export default function TccNotificationBell() {
             items.push({
               id,
               requestId: req.requestId,
-              title: t('tcc.notification.materialTitle', 'Đã gửi nguyên vật liệu'),
-              detail: t('tcc.notification.materialDetail', 'Yêu cầu của bạn #{{id}} đã được xác nhận gửi nguyên vật liệu vào ngày {{date}}.', { id: req.requestId, date: req.materialSentDate }),
+              title: t('tcc.notification.materialTitle', 'Material Sent'),
+              detail: t('tcc.notification.materialDetail', 'Your request #{{id}} has been confirmed as material sent on {{date}}.', { id: req.requestId, date: req.materialSentDate }),
               timestamp: sentTime,
               icon: <ShippingIcon sx={{ fontSize: 18, color: '#8b5cf6' }} />,
               iconBg: '#f5f3ff',
@@ -215,8 +247,8 @@ export default function TccNotificationBell() {
           items.push({
             id,
             requestId: req.requestId,
-            title: t('tcc.notification.newTitle', 'Yêu cầu mới'),
-            detail: t('tcc.notification.newDetail', 'Yêu cầu mới #{{id}} đã được tạo bởi {{by}}.', { id: req.requestId, by: req.requesterName || 'người dùng' }),
+            title: t('tcc.notification.newTitle', 'New Request'),
+            detail: t('tcc.notification.newDetail', 'New request #{{id}} has been created by {{by}}.', { id: req.requestId, by: req.requesterName || t('tcc.user', 'user') }),
             timestamp: createdTime,
             icon: <AssignmentIcon sx={{ fontSize: 18, color: '#0284c7' }} />,
             iconBg: '#f0f9ff',
@@ -225,7 +257,7 @@ export default function TccNotificationBell() {
         }
 
         if (req.materialSentDate) {
-          const sentTime = req.updatedAt ? new Date(req.updatedAt).getTime() : createdTime;
+          const sentTime = req.updatedAt ? parseTime(req.updatedAt) : createdTime;
           const updatedByUser = (req.updatedBy || '').trim().toLowerCase();
 
           if (sentTime > sevenDaysAgo && updatedByUser !== username) {
@@ -233,8 +265,8 @@ export default function TccNotificationBell() {
             items.push({
               id,
               requestId: req.requestId,
-              title: t('tcc.notification.materialTitle', 'Đã gửi nguyên vật liệu'),
-              detail: t('tcc.notification.materialAdminDetail', 'Yêu cầu #{{id}} đã được xác nhận gửi nguyên vật liệu bởi {{by}}.', { id: req.requestId, by: req.requesterName || 'người dùng' }),
+              title: t('tcc.notification.materialTitle', 'Material Sent'),
+              detail: t('tcc.notification.materialAdminDetail', 'Request #{{id}} has been confirmed as material sent by {{by}}.', { id: req.requestId, by: req.requesterName || t('tcc.user', 'user') }),
               timestamp: sentTime,
               icon: <ShippingIcon sx={{ fontSize: 18, color: '#8b5cf6' }} />,
               iconBg: '#f5f3ff',
@@ -245,7 +277,7 @@ export default function TccNotificationBell() {
       }
       // 3. Comment / General Update Notification
       if (req.updatedAt) {
-        const updateTime = new Date(req.updatedAt).getTime();
+        const updateTime = parseTime(req.updatedAt);
         const updatedByUser = (req.updatedBy || '').trim().toLowerCase();
 
         if (updateTime > sevenDaysAgo && updatedByUser !== username) {
@@ -254,8 +286,8 @@ export default function TccNotificationBell() {
             items.push({
               id,
               requestId: req.requestId,
-              title: t('tcc.notification.commentTitle', 'Thảo luận & Cập nhật mới'),
-              detail: t('tcc.notification.commentDetail', 'Yêu cầu của bạn #{{id}} có bình luận hoặc chỉnh sửa mới bởi {{by}}.', { id: req.requestId, by: req.updatedBy || 'người dùng' }),
+              title: t('tcc.notification.commentTitle', 'Discussion & New Update'),
+              detail: t('tcc.notification.commentDetail', 'Your request #{{id}} has a new comment or edit by {{by}}.', { id: req.requestId, by: req.updatedBy || t('tcc.user', 'user') }),
               timestamp: updateTime,
               icon: <AssignmentIcon sx={{ fontSize: 18, color: '#10b981' }} />,
               iconBg: '#ecfdf5',
@@ -266,8 +298,8 @@ export default function TccNotificationBell() {
             items.push({
               id,
               requestId: req.requestId,
-              title: t('tcc.notification.commentAdminTitle', 'Cập nhật tại #{{id}}', { id: req.requestId }),
-              detail: t('tcc.notification.commentAdminDetail', 'Yêu cầu #{{id}} có hoạt động hoặc ý kiến mới từ {{by}}.', { id: req.requestId, by: req.updatedBy || 'người dùng' }),
+              title: t('tcc.notification.commentAdminTitle', 'Update on #{{id}}', { id: req.requestId }),
+              detail: t('tcc.notification.commentAdminDetail', 'Request #{{id}} has a new activity or comment from {{by}}.', { id: req.requestId, by: req.updatedBy || t('tcc.user', 'user') }),
               timestamp: updateTime,
               icon: <AssignmentIcon sx={{ fontSize: 18, color: '#10b981' }} />,
               iconBg: '#ecfdf5',
@@ -428,7 +460,7 @@ export default function TccNotificationBell() {
       if (currentLang === 'id') return 'Baru saja';
       if (currentLang === 'th') return 'เมื่อกี้';
       if (currentLang === 'km') return 'ទើបតែឥឡូវនេះ';
-      return 'Vừa xong';
+      return t('tcc.justNow', 'Just now');
     }
   };
 
@@ -480,7 +512,7 @@ export default function TccNotificationBell() {
         {/* Header */}
         <Box sx={{ p: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #f1f5f9' }}>
           <Typography sx={{ fontWeight: 800, fontSize: '0.95rem', color: '#1e293b' }}>
-            {t('tcc.notification.bellHeader', 'Thông báo TCC')}
+            {t('tcc.notification.bellHeader', 'TCC Notifications')}
           </Typography>
           {unreadCount > 0 && (
             <Button
@@ -496,7 +528,7 @@ export default function TccNotificationBell() {
                 '&:hover': { bgcolor: 'transparent', textDecoration: 'underline' }
               }}
             >
-              {t('tcc.notification.markAllRead', 'Đánh dấu đã đọc tất cả')}
+              {t('tcc.notification.markAllRead', 'Mark all as read')}
             </Button>
           )}
         </Box>
@@ -511,10 +543,10 @@ export default function TccNotificationBell() {
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', py: 8, px: 2, textAlign: 'center' }}>
               <EmptyIcon sx={{ fontSize: 40, color: '#94a3b8', mb: 1.5 }} />
               <Typography sx={{ fontSize: 13, fontWeight: 600, color: '#64748b' }}>
-                {t('tcc.notification.emptyTitle', 'Không có thông báo mới')}
+                {t('tcc.notification.emptyTitle', 'No new notifications')}
               </Typography>
               <Typography sx={{ fontSize: 11, color: '#94a3b8', mt: 0.5 }}>
-                {t('tcc.notification.emptyDesc', 'Các thông báo về trạng thái mẫu sẽ xuất hiện tại đây')}
+                {t('tcc.notification.emptyDesc', 'Pattern status notifications will appear here')}
               </Typography>
             </Box>
           ) : (

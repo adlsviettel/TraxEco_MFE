@@ -184,7 +184,7 @@ export default function ReportPage() {
     }}>
       {/* ─── DYNAMICALLY IMPORT GOOGLE FONTS ─── */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap');
         
         input[type="date"]::-webkit-calendar-picker-indicator {
           cursor: pointer;

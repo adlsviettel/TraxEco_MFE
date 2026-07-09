@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { 
   useGridApiContext 
 } from '@mui/x-data-grid';
@@ -25,6 +26,7 @@ import { columnFilterStore } from './ColumnFilterContext';
 import { format } from 'date-fns';
 
 export default function ExcelStyleColumnMenu(props: GridColumnMenuProps) {
+  const { t } = useTranslation();
   const { hideMenu, colDef } = props;
   const apiRef = useGridApiContext();
   
@@ -45,7 +47,7 @@ export default function ExcelStyleColumnMenu(props: GridColumnMenuProps) {
     if (colDefForField?.valueGetter) {
       try {
         const rawVal = row[field];
-        const computed = colDefForField.valueGetter(rawVal, row, colDefForField, apiRef);
+        const computed = (colDefForField.valueGetter as any)(rawVal, row, colDefForField, apiRef);
         return (computed !== undefined && computed !== null && computed !== '') ? String(computed) : '(Blanks)';
       } catch { /* fallback */ }
     }
@@ -121,8 +123,6 @@ export default function ExcelStyleColumnMenu(props: GridColumnMenuProps) {
       : selectedValues;
 
     const allSelected = uniqueValues.every(v => effectiveSelected.includes(v));
-    
-    console.log('[applyFilter]', colDef.field, 'selected:', effectiveSelected.length, '/', uniqueValues.length);
 
     if (allSelected && effectiveSelected.length === uniqueValues.length) {
       columnFilterStore.setColumnFilters(pageId, (prev: Record<string, string[]>) => {
@@ -165,16 +165,16 @@ export default function ExcelStyleColumnMenu(props: GridColumnMenuProps) {
       <List dense sx={{ p: 0 }}>
         <ListItemButton onClick={handleSortAsc} sx={{ py: 1 }}>
           <ListItemIcon sx={{ minWidth: 32 }}><SortByAlphaIcon fontSize="small" /></ListItemIcon>
-          <ListItemText primary="Sort A to Z" primaryTypographyProps={{ fontSize: 13 }} />
+          <ListItemText primary={t('tcc.sortAToZ', 'Sort A to Z')} primaryTypographyProps={{ fontSize: 13 }} />
         </ListItemButton>
         <ListItemButton onClick={handleSortDesc} sx={{ py: 1 }}>
           <ListItemIcon sx={{ minWidth: 32 }}><SortByAlphaIcon fontSize="small" sx={{ transform: 'scaleY(-1)' }} /></ListItemIcon>
-          <ListItemText primary="Sort Z to A" primaryTypographyProps={{ fontSize: 13 }} />
+          <ListItemText primary={t('tcc.sortZToA', 'Sort Z to A')} primaryTypographyProps={{ fontSize: 13 }} />
         </ListItemButton>
         <Divider />
         <ListItemButton onClick={handleClearFilter} disabled={!hasFilter} sx={{ py: 1 }}>
           <ListItemIcon sx={{ minWidth: 32 }}><FilterAltOffIcon fontSize="small" /></ListItemIcon>
-          <ListItemText primary={`Clear Filter`} primaryTypographyProps={{ fontSize: 13 }} />
+          <ListItemText primary={t('tcc.clearFilter', 'Clear Filter')} primaryTypographyProps={{ fontSize: 13 }} />
         </ListItemButton>
       </List>
       
@@ -183,7 +183,7 @@ export default function ExcelStyleColumnMenu(props: GridColumnMenuProps) {
       <Box sx={{ p: 1 }}>
         <TextField
           size="small"
-          placeholder="Search"
+          placeholder={t('tcc.search', 'Search')}
           fullWidth
           value={searchTerm}
           onChange={e => setSearchTerm(e.target.value)}
@@ -212,7 +212,7 @@ export default function ExcelStyleColumnMenu(props: GridColumnMenuProps) {
                   sx={{ p: 0.5 }}
                 />
               </ListItemIcon>
-              <ListItemText primary="(Select All)" primaryTypographyProps={{ fontSize: 13, fontWeight: 500 }} />
+              <ListItemText primary={t('tcc.selectAll', '(Select All)')} primaryTypographyProps={{ fontSize: 13, fontWeight: 500 }} />
             </ListItemButton>
           </ListItem>
           
@@ -237,10 +237,10 @@ export default function ExcelStyleColumnMenu(props: GridColumnMenuProps) {
 
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1, p: 1, borderTop: '1px solid #eee' }}>
         <Button size="small" variant="outlined" onClick={hideMenu} sx={{ textTransform: 'none', height: 28, fontSize: 12 }}>
-          Cancel
+          {t('tcc.cancel', 'Cancel')}
         </Button>
         <Button size="small" variant="contained" onClick={applyFilter} sx={{ textTransform: 'none', height: 28, fontSize: 12, bgcolor: '#2e7d32', '&:hover': { bgcolor: '#1b5e20' } }}>
-          OK
+          {t('tcc.ok', 'OK')}
         </Button>
       </Box>
     </Box>

@@ -29,7 +29,7 @@ const YardageRedirectPage: React.FC = () => {
         navigate('/rd-material/fabric', { replace: true });
       } catch (err) {
         console.error('Failed to load yardage item', err);
-        setError('Không thể tìm thấy thông tin cuộn mẫu.');
+        setError(t('rdMaterial.yardage_not_found', 'Không thể tìm thấy thông tin cuộn mẫu.'));
         setTimeout(() => {
           navigate('/rd-material/fabric', { replace: true });
         }, 2000);

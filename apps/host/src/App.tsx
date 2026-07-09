@@ -216,8 +216,8 @@ function App() {
       <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={currentLocale}>
         <ApkUpdatePrompt />
         <CssBaseline />
-        <ToastProvider>
-          <BrowserRouter basename={import.meta.env.VITE_BASE_PATH === '/' ? undefined : import.meta.env.VITE_BASE_PATH?.replace(/\/$/, '') || undefined}>
+        <BrowserRouter basename={import.meta.env.VITE_BASE_PATH === '/' ? undefined : import.meta.env.VITE_BASE_PATH?.replace(/\/$/, '') || undefined}>
+          <ToastProvider>
         <ActivityTrackerWrapper />
         <ErrorBoundary>
         <Routes>
@@ -353,8 +353,8 @@ function App() {
           <Route path="*" element={<CatchAllRedirect />} />
         </Routes>
         </ErrorBoundary>
-      </BrowserRouter>
       </ToastProvider>
+        </BrowserRouter>
       </LocalizationProvider>
     </ThemeProvider>
   );

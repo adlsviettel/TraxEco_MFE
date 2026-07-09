@@ -8,7 +8,8 @@
     "forgotPassword": "ភ្លេចពាក្យសម្ងាត់?",
     "errorEmpty": "សូមបំពេញគ្រប់ចន្លោះ",
     "errorInvalid": "លេខសម្គាល់បុគ្គលិកឬពាក្យសម្ងាត់មិនត្រឹមត្រូវ",
-    "errorServer": "កំហុសម៉ាស៊ីនមេ។ សូមព្យាយាមម្តងទៀត។"
+    "errorServer": "កំហុសម៉ាស៊ីនមេ។ សូមព្យាយាមម្តងទៀត។",
+    "errorNoAppAccess": "អ្នកមិនមានសិទ្ធិចូលប្រើកម្មវិធីណាមួយទេ។ សូមទាក់ទង Admin។"
   },
   "nav": {
     "scan": "ស្កែនទំនិញ",
@@ -17,7 +18,8 @@
     "logout": "ចាកចេញ",
     "home": "ទំព័រដើម",
     "menu": "ម៉ឺនុយ",
-    "settings": "ការកំណត់"
+    "settings": "ការកំណត់",
+    "cartonShip": "Carton Ship"
   },
   "scan": {
     "title": "ស្កែនទំនិញ",
@@ -51,12 +53,13 @@
     "confirm": "Confirm",
     "cancel": "Cancel",
     "filter": "Filter",
-    "search": "Search",
-    "reset": "Default",
+    "search": "ស្វែងរក",
+    "reset": "លំនាំដើម",
+    "clear_all": "លុបទាំងអស់",
     "apply": "Apply Now",
     "noData": "No Data",
     "delete": "Delete row",
-    "close": "Close",
+    "close": "បិទ",
     "closeCam": "Close Camera",
     "later": "Later",
     "actions": "Actions",
@@ -70,7 +73,18 @@
     "thisMonth": "ខែនេះ",
     "thisYear": "ឆ្នាំនេះ",
     "customRange": "ចន្លោះពេលកំណត់",
-    "clearFilters": "សម្អាតតម្រង"
+    "clearFilters": "សម្អាតតម្រង",
+    "none": "គ្មាន",
+    "notSent": "មិនទាន់ផ្ញើ",
+    "notReceived": "មិនទាន់ទទួល",
+    "notStarted": "មិនទាន់ចាប់ផ្តើម",
+    "notFinished": "មិនទាន់បញ្ចប់",
+    "notUpdated": "មិនទាន់ធ្វើបច្ចុប្បន្នភាព",
+    "notAssigned": "មិនទាន់ចាត់តាំង",
+    "normal": "ធម្មតា",
+    "refresh": "Refresh / Clear",
+    "processing": "Processing...",
+    "offlineQueue": "Offline Queue Status"
   },
   "history": {
     "title": "ប្រវត្តិស្កែន",
@@ -303,7 +317,13 @@
     "dashboardTitle": "ទិដ្ឋភាពទូទៅ ឃ្លាំងក្រណាត់",
     "comingSoon": "មុខងារបន្ថែមនឹងមកដល់ឆាប់ៗ...",
     "comingSoonDesc": "ទទួល, ចេញ, ស្តុក, សារពើភ័ណ្ឌ, របាយការណ៍ នឹងត្រូវបញ្ចូលនៅទីនេះ។",
-    "tccTemplate": "TCC Template Request"
+    "tccTemplate": "TCC Template Request",
+    "itInventory": "IT Inventory",
+    "f2sDelivery": "F2S Delivery",
+    "qcfbWH": "QC Fabric WH",
+    "rdMaterial": "R&D Material Library",
+    "accessoryWH": "Accessory Warehouse",
+    "clinic": "Clinic Management"
   },
   "f2s": {
     "appName": "F2S Delivery",
@@ -1160,6 +1180,12 @@
     "save": "រក្សាទុក",
     "cancel": "បោះបង់",
     "advancedFilter": "តម្រងកម្រិតខ្ពស់",
+    "allFactories": "រោងចក្រទាំងអស់",
+    "allCustomers": "អតិថិជនទាំងអស់",
+    "allStatus": "ស្ថានភាពទាំងអស់",
+    "enterSeason": "បញ្ចូលរដូវកាល...",
+    "fromDate": "ចាប់ពីថ្ងៃ",
+    "toDate": "រហូតដល់ថ្ងៃ",
     "clearAll": "លុបទាំងអស់",
     "apply": "អនុវត្ត",
     "requester": "NameOfRequester",
@@ -1252,6 +1278,50 @@
     "addColumnFilter": "បន្ថែមតម្រងជួរឈរ",
     "selectColumn": "ជ្រើសរើសជួរឈរដើម្បីបន្ថែម",
     "selectAll": "ជ្រើសរើសទាំងអស់",
-    "noValuesMatch": "រកមិនឃើញតម្លៃដែលស្វែងរកទេ"
+    "noValuesMatch": "រកមិនឃើញតម្លៃដែលស្វែងរកទេ",
+    "notification": {
+      "bellHeader": "ការជូនដំណឹង TCC",
+      "markAllRead": "សម្គាល់ថាបានអានទាំងអស់",
+      "emptyTitle": "គ្មានការជូនដំណឹងថ្មីទេ",
+      "emptyDesc": "ការជូនដំណឹងអំពីស្ថានភាពគំរូនឹងបង្ហាញនៅទីនេះ",
+      "resetUnread": "កំណត់មិនទាន់អានឡើងវិញ",
+      "refresh": "ធ្វើឲ្យបញ្ជីស្រស់",
+      "dialogTitle": "ព័ត៌មានលម្អិតនៃសំណើ #{{id}}",
+      "progressHeader": "វឌ្ឍនភាព និងការធ្វើបច្ចុប្បន្នភាពពី TCC",
+      "statusTitle": "ស្ថានភាព: {{status}}",
+      "statusDetail": "សំណើរបស់អ្នក #{{id}} ត្រូវបានផ្លាស់ប្តូរទៅជា \"{{status}}\" ដោយ {{by}}។",
+      "cancelledTitle": "សំណើត្រូវបានលុបចោល",
+      "cancelledDetail": "សំណើរបស់អ្នក #{{id}} ត្រូវបានលុបចោលដោយ {{by}}។",
+      "finishedTitle": "សំណើបានបញ្ចប់",
+      "finishedDetail": "សំណើរបស់អ្នក #{{id}} បានបញ្ចប់រួចរាល់ និងរួចរាល់សម្រាប់ការប្រគល់ជូន។",
+      "materialTitle": "បានផ្ញើវត្ថុធាតុដើម",
+      "materialDetail": "សំណើរបស់អ្នក #{{id}} ត្រូវបានបញ្ជាក់ថាបានផ្ញើវត្ថុធាតុដើមនៅថ្ងៃ {{date}}។",
+      "newTitle": "សំណើថ្មី",
+      "newDetail": "សំណើថ្មី #{{id}} ត្រូវបានបង្កើតឡើងដោយ {{by}}។",
+      "materialAdminDetail": "សំណើ #{{id}} ត្រូវបានបញ្ជាក់ថាបានផ្ញើវត្ថុធាតុដើមដោយ {{by}}។"
+    }
+  },
+  "cartonShip": {
+    "driverName": "Driver Name",
+    "phoneNo": "Phone No",
+    "plate1": "Truck Plate 1 *",
+    "plate2": "Truck Plate 2",
+    "seal1": "Seal No 1",
+    "seal2": "Seal No 2",
+    "seal3": "Seal No 3",
+    "scanEntirePO": "Scan Entire PO",
+    "scanPKL": "Scan PKL",
+    "scanPlaceholder": "Scan Barcode here and press Enter...",
+    "confirm": "Confirm Ship",
+    "cartonsInTruck": "Cartons in Truck",
+    "posInTruck": "POs in Truck",
+    "loadError": "Error loading unship list: ",
+    "invalidBarcode": "Invalid barcode or already shipped!",
+    "addedCtns": "Added {{count}} cartons successfully!",
+    "alreadyScanned": "Barcode already scanned!",
+    "errPlate1": "Plate No 1 is required!",
+    "errNoCtns": "No cartons scanned!",
+    "successConfirm": "Shipping confirmed successfully!",
+    "dataRefreshed": "Data refreshed and unship list reloaded!"
   }
 }

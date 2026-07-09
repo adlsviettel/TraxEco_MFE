@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import {
-  Box, Typography, Paper, CircularProgress, Avatar, Button, Chip, Grid, Stack, Menu, MenuItem,
+  Box, Typography, Paper, CircularProgress, Button, Chip, Grid, Stack, Menu, MenuItem,
 } from '@mui/material';
 import {
   Inventory as PackingIcon,
@@ -97,17 +97,24 @@ export default function MainPage() {
   useEffect(() => {
     const loadApps = async () => {
       try {
-        const [allApps, myAppCodes] = await Promise.all([
-          appService.getAllApps(),
-          appService.getMyApps(),
-        ]);
-        
-        if (!allApps || !Array.isArray(allApps)) {
-           throw new Error('Danh sách ứng dụng không hợp lệ');
-        }
+        const hasAccessToAllApps = roleLevel <= 2 || isAdmin;
+        if (hasAccessToAllApps) {
+          const [allApps, myAppCodes] = await Promise.all([
+            appService.getAllApps(),
+            appService.getMyApps(),
+          ]);
+          
+          if (!allApps || !Array.isArray(allApps)) {
+             throw new Error(t('main.invalidAppList', 'Invalid application list'));
+          }
 
-        setApps(allApps.filter(a => a.isActive));
-        setUserAppCodes(myAppCodes || []);
+          setApps(allApps.filter(a => a.isActive));
+          setUserAppCodes(myAppCodes || []);
+        } else {
+          const myAppCodes = await appService.getMyApps();
+          setApps([]);
+          setUserAppCodes(myAppCodes || []);
+        }
       } catch (err: any) {
         // Fallback: try getMyApps alone
         try {
@@ -122,16 +129,28 @@ export default function MainPage() {
       }
     };
     loadApps();
-  }, []);
+  }, [roleLevel, isAdmin]);
 
   // Filter apps user has access to
   const visibleApps = apps.length > 0
     ? apps.filter(app => userAppCodes.includes(app.appCode))
-    : userAppCodes.map(code => ({
-        appCode: code,
-        appName: code,
-        isActive: true,
-      }));
+    : userAppCodes.map(code => {
+        let fallbackName = code;
+        if (code === 'FGS_WH') fallbackName = 'FGS Warehouse';
+        else if (code === 'FABRIC_WH') fallbackName = 'Fabric Warehouse';
+        else if (code === 'RD_MATERIAL') fallbackName = 'R&D Material Library';
+        else if (code === 'IT_INVENTORY') fallbackName = 'IT Inventory';
+        else if (code === 'F2S_DELIVERY') fallbackName = 'F2S Delivery';
+        else if (code === 'QCFB_WH') fallbackName = 'QC Fabric Warehouse';
+        else if (code === 'ACCESSORY_WH') fallbackName = 'Accessory Warehouse';
+        else if (code === 'TCC_TEMPLATE') fallbackName = 'TCC Template';
+        else if (code === 'CLINIC') fallbackName = 'Clinic';
+        return {
+          appCode: code,
+          appName: fallbackName,
+          isActive: true,
+        };
+      });
 
   // Đã bỏ tính năng auto-redirect nếu user chỉ có 1 app (theo yêu cầu fix lỗi chớp màn hình)
 
@@ -338,7 +357,7 @@ export default function MainPage() {
               '&:hover': { backgroundColor: '#2e8b4a' },
             }}
           >
-            {t('main.logout', 'Đăng xuất')}
+            {t('main.logout', 'Logout')}
           </Button>
         </Stack>
       </Box>
@@ -354,7 +373,7 @@ export default function MainPage() {
           
           <Box sx={{ textAlign: 'center', mb: 6 }}>
             <Typography variant="h4" sx={{ fontWeight: 800, color: '#2d3748', mb: 1 }}>
-              {t('main.selectApp', 'Chọn ứng dụng để bắt đầu')}
+              {t('main.selectApp', 'Select an application to start')}
             </Typography>
           </Box>
 

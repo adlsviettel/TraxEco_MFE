@@ -439,16 +439,16 @@ export default function MedicineDispensePage() {
         flexDirection: "column",
         overflow: "hidden",
         bgcolor: "#f4f6f8", // Nền xám mát sang trọng hơn
-        fontFamily: "'Outfit', 'Inter', system-ui, sans-serif",
+        fontFamily: "'Be Vietnam Pro', 'Inter', system-ui, sans-serif",
       }}
     >
       {/* ─── DYNAMICALLY IMPORT GOOGLE FONTS FOR ULTRA-PREMIUM LOOK ─── */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;750;800&family=Outfit:wght@500;600;700;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;750;800&family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap');
         
         /* Apply custom font globally to MUI components rendering inside this scope */
         .MuiTypography-root, .MuiButton-root, .MuiInputBase-root, .MuiTableCell-root, .MuiChip-root {
-          font-family: 'Inter', 'Outfit', sans-serif !important;
+          font-family: 'Inter', 'Be Vietnam Pro', sans-serif !important;
         }
       `}</style>
 
@@ -621,7 +621,7 @@ export default function MedicineDispensePage() {
                   flexShrink: 0,
                 }}
               >
-                <Typography variant="subtitle2" sx={{ fontWeight: 800, color: "#0f172a", fontSize: 15, fontFamily: "'Outfit' !important", letterSpacing: "0.2px" }}>
+                <Typography variant="subtitle2" sx={{ fontWeight: 800, color: "#0f172a", fontSize: 15, fontFamily: "'Be Vietnam Pro' !important", letterSpacing: "0.2px" }}>
                   2. CHẨN ĐOÁN & CHỌN THUỐC
                 </Typography>
               </Box>
@@ -845,7 +845,7 @@ export default function MedicineDispensePage() {
                   <Avatar sx={{ bgcolor: "#fee2e2", color: "#ef4444", width: 56, height: 56, boxShadow: "0 4px 10px rgba(239,68,68,0.15)" }}>
                     <LockIcon sx={{ fontSize: 28 }} />
                   </Avatar>
-                  <Typography variant="subtitle1" fontWeight={900} color="#0f172a" sx={{ fontFamily: "'Outfit' !important", letterSpacing: "0.2px" }}>
+                  <Typography variant="subtitle1" fontWeight={900} color="#0f172a" sx={{ fontFamily: "'Be Vietnam Pro' !important", letterSpacing: "0.2px" }}>
                     CHƯA CHỌN BỆNH NHÂN
                   </Typography>
                   <Typography variant="body2" color="#64748b" textAlign="center" sx={{ fontSize: 13, lineHeight: 1.6, fontWeight: 500 }}>
@@ -880,7 +880,7 @@ export default function MedicineDispensePage() {
                   flexShrink: 0,
                 }}
               >
-                <Typography variant="subtitle2" sx={{ fontWeight: 800, color: "#0f172a", fontSize: 15, fontFamily: "'Outfit' !important", letterSpacing: "0.2px" }}>
+                <Typography variant="subtitle2" sx={{ fontWeight: 800, color: "#0f172a", fontSize: 15, fontFamily: "'Be Vietnam Pro' !important", letterSpacing: "0.2px" }}>
                   3. TOA THUỐC ĐÃ CHỌN
                 </Typography>
               </Box>
@@ -1011,7 +1011,7 @@ export default function MedicineDispensePage() {
         fullWidth
         PaperProps={{ sx: { borderRadius: "16px" } }}
       >
-        <DialogTitle sx={{ fontWeight: 800, fontSize: 16, fontFamily: "'Outfit' !important" }}>
+        <DialogTitle sx={{ fontWeight: 800, fontSize: 16, fontFamily: "'Be Vietnam Pro' !important" }}>
           Lịch sử phát thuốc của {selectedEmployee?.fullname} ({selectedEmployee?.globalId})
         </DialogTitle>
         <DialogContent dividers>
@@ -1080,7 +1080,7 @@ export default function MedicineDispensePage() {
         onClose={() => setOpenConfirmDialog(false)}
         PaperProps={{ sx: { borderRadius: "16px", width: "100%", maxWidth: 410 } }}
       >
-        <DialogTitle sx={{ fontWeight: 800, fontSize: 16, pb: 1, fontFamily: "'Outfit' !important" }}>
+        <DialogTitle sx={{ fontWeight: 800, fontSize: 16, pb: 1, fontFamily: "'Be Vietnam Pro' !important" }}>
           Xác nhận cấp phát thuốc
         </DialogTitle>
         <DialogContent dividers sx={{ py: 2.5 }}>
@@ -1140,7 +1140,7 @@ export default function MedicineDispensePage() {
         onClose={() => setOpenCancelDialog(false)}
         PaperProps={{ sx: { borderRadius: "16px", width: "100%", maxWidth: 400 } }}
       >
-        <DialogTitle sx={{ fontWeight: 800, fontSize: 16, pb: 1, fontFamily: "'Outfit' !important" }}>
+        <DialogTitle sx={{ fontWeight: 800, fontSize: 16, pb: 1, fontFamily: "'Be Vietnam Pro' !important" }}>
           Hủy bỏ toa thuốc hiện tại?
         </DialogTitle>
         <DialogContent dividers sx={{ py: 2.5 }}>
@@ -1181,7 +1181,7 @@ export default function MedicineDispensePage() {
         onClose={() => setOpenDeleteConfirm(false)}
         PaperProps={{ sx: { borderRadius: "16px", width: "100%", maxWidth: 400 } }}
       >
-        <DialogTitle sx={{ fontWeight: 800, fontSize: 16, pb: 1, fontFamily: "'Outfit' !important" }}>
+        <DialogTitle sx={{ fontWeight: 800, fontSize: 16, pb: 1, fontFamily: "'Be Vietnam Pro' !important" }}>
           Xác nhận xóa lịch sử phát thuốc?
         </DialogTitle>
         <DialogContent dividers sx={{ py: 2.5 }}>
@@ -1250,7 +1250,7 @@ export default function MedicineDispensePage() {
               mt: 2.5,
               fontWeight: 800,
               color: "#0f172a",
-              fontFamily: "'Outfit' !important",
+              fontFamily: "'Be Vietnam Pro' !important",
               fontSize: 16
             }}
           >

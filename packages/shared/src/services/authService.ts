@@ -173,7 +173,7 @@ export const authService = {
   /**
    * Check if user has specific action permission on a page
    */
-  hasAction(pageCode: string, action: 'canAdd' | 'canEdit' | 'canDelete' | 'canExport' | 'canBypassCheck' | 'bypassQC' | 'bypassRelax' | 'bypassLabTest' | 'bypassSunrise'): boolean {
+  hasAction(pageCode: string, action: 'canAdd' | 'canEdit' | 'canDelete' | 'canExport' | 'canCancel' | 'canBypassCheck' | 'bypassQC' | 'bypassRelax' | 'bypassLabTest' | 'bypassSunrise'): boolean {
     if (this.isSuperAdmin()) return true;
     const perm = this.getPermissions().find(p => p.pageCode === pageCode);
     return perm ? !!perm[action] : false;

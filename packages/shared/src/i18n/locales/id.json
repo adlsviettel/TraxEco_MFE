@@ -8,7 +8,8 @@
     "forgotPassword": "Lupa kata sandi?",
     "errorEmpty": "Harap isi semua bidang",
     "errorInvalid": "ID Karyawan atau kata sandi salah",
-    "errorServer": "Kesalahan server. Silakan coba lagi."
+    "errorServer": "Kesalahan server. Silakan coba lagi.",
+    "errorNoAppAccess": "Anda tidak memiliki akses ke aplikasi apapun. Silakan hubungi Admin."
   },
   "nav": {
     "scan": "Pindai Barang",
@@ -17,7 +18,8 @@
     "logout": "Keluar",
     "home": "Beranda",
     "menu": "Menu",
-    "settings": "Pengaturan"
+    "settings": "Pengaturan",
+    "cartonShip": "Carton Ship"
   },
   "scan": {
     "title": "Pindai Barang",
@@ -51,6 +53,7 @@
     "filter": "Filter",
     "search": "Cari",
     "reset": "Membawa",
+    "clear_all": "Hapus Semua",
     "apply": "Terapkan",
     "close": "Tutup",
     "closeCam": "Tutup Kamera",
@@ -70,7 +73,18 @@
     "thisMonth": "Bulan Ini",
     "thisYear": "Tahun Ini",
     "customRange": "Rentang Kustom",
-    "clearFilters": "Hapus Filter"
+    "clearFilters": "Hapus Filter",
+    "none": "Tidak ada",
+    "notSent": "Belum dikirim",
+    "notReceived": "Belum diterima",
+    "notStarted": "Belum dimulai",
+    "notFinished": "Belum selesai",
+    "notUpdated": "Belum diperbarui",
+    "notAssigned": "Belum ditugaskan",
+    "normal": "Normal",
+    "refresh": "Refresh / Clear",
+    "processing": "Processing...",
+    "offlineQueue": "Offline Queue Status"
   },
   "history": {
     "title": "Riwayat Pemindaian",
@@ -303,7 +317,13 @@
     "dashboardTitle": "Dasbor Gudang Kain",
     "comingSoon": "Fitur lainnya segera hadir...",
     "comingSoonDesc": "Penerimaan, Pengeluaran, Stok, Inventaris, Laporan akan ditambahkan di sini.",
-    "tccTemplate": "TCC Template Request"
+    "tccTemplate": "TCC Template Request",
+    "itInventory": "IT Inventory",
+    "f2sDelivery": "F2S Delivery",
+    "qcfbWH": "QC Fabric WH",
+    "rdMaterial": "R&D Material Library",
+    "accessoryWH": "Accessory Warehouse",
+    "clinic": "Clinic Management"
   },
   "f2s": {
     "appName": "F2S Delivery",
@@ -1160,6 +1180,12 @@
     "save": "Simpan",
     "cancel": "Batal",
     "advancedFilter": "Filter Lanjutan",
+    "allFactories": "Semua Pabrik",
+    "allCustomers": "Semua Pelanggan",
+    "allStatus": "Semua Status",
+    "enterSeason": "Masukkan musim...",
+    "fromDate": "DARI TANGGAL",
+    "toDate": "SAMPAI TANGGAL",
     "clearAll": "Hapus Semua",
     "apply": "Terapkan",
     "requester": "NameOfRequester",
@@ -1252,6 +1278,50 @@
     "addColumnFilter": "Tambah filter kolom",
     "selectColumn": "Pilih kolom untuk ditambahkan",
     "selectAll": "Pilih Semua",
-    "noValuesMatch": "Tidak ada nilai yang cocok"
+    "noValuesMatch": "Tidak ada nilai yang cocok",
+    "notification": {
+      "bellHeader": "Notifikasi TCC",
+      "markAllRead": "Tandai semua telah dibaca",
+      "emptyTitle": "Tidak ada notifikasi baru",
+      "emptyDesc": "Notifikasi status sampel akan muncul di sini",
+      "resetUnread": "Reset belum dibaca",
+      "refresh": "Segarkan daftar",
+      "dialogTitle": "Detail Permintaan #{{id}}",
+      "progressHeader": "Kemajuan & Pembaruan dari TCC",
+      "statusTitle": "Status: {{status}}",
+      "statusDetail": "Permintaan Anda #{{id}} telah diubah menjadi \"{{status}}\" oleh {{by}}.",
+      "cancelledTitle": "Permintaan Dibatalkan",
+      "cancelledDetail": "Permintaan Anda #{{id}} telah dibatalkan oleh {{by}}.",
+      "finishedTitle": "Permintaan Selesai",
+      "finishedDetail": "Permintaan Anda #{{id}} telah selesai dan siap dikirim.",
+      "materialTitle": "Bahan Dikirim",
+      "materialDetail": "Permintaan Anda #{{id}} telah dikonfirmasi pengiriman bahan pada tanggal {{date}}.",
+      "newTitle": "Permintaan Baru",
+      "newDetail": "Permintaan baru #{{id}} telah dibuat oleh {{by}}.",
+      "materialAdminDetail": "Permintaan #{{id}} telah dikonfirmasi pengiriman bahan oleh {{by}}."
+    }
+  },
+  "cartonShip": {
+    "driverName": "Driver Name",
+    "phoneNo": "Phone No",
+    "plate1": "Truck Plate 1 *",
+    "plate2": "Truck Plate 2",
+    "seal1": "Seal No 1",
+    "seal2": "Seal No 2",
+    "seal3": "Seal No 3",
+    "scanEntirePO": "Scan Entire PO",
+    "scanPKL": "Scan PKL",
+    "scanPlaceholder": "Scan Barcode here and press Enter...",
+    "confirm": "Confirm Ship",
+    "cartonsInTruck": "Cartons in Truck",
+    "posInTruck": "POs in Truck",
+    "loadError": "Error loading unship list: ",
+    "invalidBarcode": "Invalid barcode or already shipped!",
+    "addedCtns": "Added {{count}} cartons successfully!",
+    "alreadyScanned": "Barcode already scanned!",
+    "errPlate1": "Plate No 1 is required!",
+    "errNoCtns": "No cartons scanned!",
+    "successConfirm": "Shipping confirmed successfully!",
+    "dataRefreshed": "Data refreshed and unship list reloaded!"
   }
 }

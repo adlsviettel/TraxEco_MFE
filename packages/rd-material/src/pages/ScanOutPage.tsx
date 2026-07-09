@@ -169,7 +169,7 @@ const ScanOutPage: React.FC = () => {
           photoUrl = await rdItemApi.uploadImage(capturedPhotoFile);
         } catch (uploadErr) {
           console.error("Image upload failed, proceeding without image", uploadErr);
-          showToast("Không thể tải lên ảnh minh chứng, vẫn tiếp tục lưu...", "warning");
+          showToast(t('rdMaterial.upload_photo_failed_continue', 'Không thể tải lên ảnh minh chứng, vẫn tiếp tục lưu...'), "warning");
         }
       }
 

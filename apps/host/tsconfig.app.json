@@ -22,7 +22,21 @@
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+
+    "baseUrl": ".",
+    "paths": {
+      "@traxeco/shared": ["../../packages/shared/src"],
+      "@traxeco/clinic": ["../../packages/clinic/src"],
+      "@traxeco/fgs-wh": ["../../packages/fgs-wh/src"],
+      "@traxeco/fabric-wh": ["../../packages/fabric-wh/src"],
+      "@traxeco/it-inventory": ["../../packages/it-inventory/src"],
+      "@traxeco/accessory-wh": ["../../packages/accessory-wh/src"],
+      "@traxeco/f2s-delivery": ["../../packages/f2s-delivery/src"],
+      "@traxeco/tcc-template": ["../../packages/tcc-template/src"],
+      "@traxeco/qcfb-wh": ["../../packages/qcfb-wh/src"],
+      "@traxeco/rd-material": ["../../packages/rd-material/src"]
+    }
   },
   "include": ["src"]
 }

@@ -8,7 +8,8 @@
     "forgotPassword": "ลืมรหัสผ่าน?",
     "errorEmpty": "กรุณากรอกข้อมูลให้ครบถ้วน",
     "errorInvalid": "รหัสพนักงานหรือรหัสผ่านไม่ถูกต้อง",
-    "errorServer": "ข้อผิดพลาดของเซิร์ฟเวอร์ กรุณาลองอีกครั้ง"
+    "errorServer": "ข้อผิดพลาดของเซิร์ฟเวอร์ กรุณาลองอีกครั้ง",
+    "errorNoAppAccess": "คุณไม่มีสิทธิ์เข้าถึงแอปพลิเคชันใดๆ กรุณาติดต่อ Admin"
   },
   "nav": {
     "scan": "สแกนสินค้า",
@@ -17,7 +18,8 @@
     "logout": "ออกจากระบบ",
     "home": "หน้าแรก",
     "menu": "เมนู",
-    "settings": "ตั้งค่า"
+    "settings": "ตั้งค่า",
+    "cartonShip": "Carton Ship"
   },
   "scan": {
     "title": "สแกนสินค้า",
@@ -51,12 +53,13 @@
     "confirm": "Confirm",
     "cancel": "Cancel",
     "filter": "Filter",
-    "search": "Search",
-    "reset": "Default",
+    "search": "ค้นหา",
+    "reset": "ค่าเริ่มต้น",
+    "clear_all": "ล้างทั้งหมด",
     "apply": "Apply Now",
     "noData": "No Data",
     "delete": "Delete row",
-    "close": "Close",
+    "close": "ปิด",
     "closeCam": "Close Camera",
     "later": "Later",
     "actions": "Actions",
@@ -70,7 +73,18 @@
     "thisMonth": "เดือนนี้",
     "thisYear": "ปีนี้",
     "customRange": "กำหนดเอง",
-    "clearFilters": "ล้างตัวกรอง"
+    "clearFilters": "ล้างตัวกรอง",
+    "none": "ไม่มี",
+    "notSent": "ยังไม่ส่ง",
+    "notReceived": "ยังไม่ได้รับ",
+    "notStarted": "ยังไม่เริ่ม",
+    "notFinished": "ยังไม่เสร็จ",
+    "notUpdated": "ยังไม่อัปเดต",
+    "notAssigned": "ยังไม่ได้มอบหมาย",
+    "normal": "ปกติ",
+    "refresh": "Refresh / Clear",
+    "processing": "Processing...",
+    "offlineQueue": "Offline Queue Status"
   },
   "history": {
     "title": "ประวัติการสแกน",
@@ -303,7 +317,13 @@
     "dashboardTitle": "แดชบอร์ดคลังผ้า",
     "comingSoon": "ฟีเจอร์เพิ่มเติมจะมาเร็วๆ นี้...",
     "comingSoonDesc": "รับเข้า, เบิกจ่าย, สต็อก, ตรวจนับ, รายงาน จะถูกเพิ่มที่นี่",
-    "tccTemplate": "TCC Template Request"
+    "tccTemplate": "TCC Template Request",
+    "itInventory": "IT Inventory",
+    "f2sDelivery": "F2S Delivery",
+    "qcfbWH": "QC Fabric WH",
+    "rdMaterial": "R&D Material Library",
+    "accessoryWH": "Accessory Warehouse",
+    "clinic": "Clinic Management"
   },
   "f2s": {
     "appName": "F2S Delivery",
@@ -1160,6 +1180,12 @@
     "save": "บันทึก",
     "cancel": "ยกเลิก",
     "advancedFilter": "ตัวกรองขั้นสูง",
+    "allFactories": "โรงงานทั้งหมด",
+    "allCustomers": "ลูกค้าทั้งหมด",
+    "allStatus": "สถานะทั้งหมด",
+    "enterSeason": "เข้าสู่ฤดูกาล...",
+    "fromDate": "จากวันที่",
+    "toDate": "ถึงวันที่",
     "clearAll": "ล้างทั้งหมด",
     "apply": "นำไปใช้",
     "requester": "NameOfRequester",
@@ -1252,6 +1278,50 @@
     "addColumnFilter": "เพิ่มตัวกรองคอลัมน์",
     "selectColumn": "เลือกคอลัมน์เพื่อเพิ่ม",
     "selectAll": "เลือกทั้งหมด",
-    "noValuesMatch": "ไม่พบค่าที่ค้นหา"
+    "noValuesMatch": "ไม่พบค่าที่ค้นหา",
+    "notification": {
+      "bellHeader": "การแจ้งเตือน TCC",
+      "markAllRead": "ทำเครื่องหมายว่าอ่านแล้วทั้งหมด",
+      "emptyTitle": "ไม่มีการแจ้งเตือนใหม่",
+      "emptyDesc": "การแจ้งเตือนสถานะตัวอย่างจะแสดงที่นี่",
+      "resetUnread": "รีเซ็ตที่ยังไม่ได้อ่าน",
+      "refresh": "รีเฟรชรายการ",
+      "dialogTitle": "รายละเอียดคำขอ #{{id}}",
+      "progressHeader": "ความคืบหน้าและการอัปเดตจาก TCC",
+      "statusTitle": "สถานะ: {{status}}",
+      "statusDetail": "คำขอของคุณ #{{id}} ได้รับการเปลี่ยนสถานะเป็น \"{{status}}\" โดย {{by}}.",
+      "cancelledTitle": "คำขอถูกยกเลิก",
+      "cancelledDetail": "คำขอของคุณ #{{id}} ถูกยกเลิกโดย {{by}}.",
+      "finishedTitle": "คำขอเสร็จสิ้น",
+      "finishedDetail": "คำขอของคุณ #{{id}} เสร็จสิ้นและพร้อมสำหรับการจัดส่งแล้ว",
+      "materialTitle": "ส่งวัตถุดิบแล้ว",
+      "materialDetail": "คำขอของคุณ #{{id}} ได้รับการยืนยันการส่งวัตถุดิบเมื่อวันที่ {{date}}.",
+      "newTitle": "คำขอใหม่",
+      "newDetail": "คำขอใหม่ #{{id}} ถูกสร้างขึ้นโดย {{by}}.",
+      "materialAdminDetail": "คำขอ #{{id}} ได้รับการยืนยันการส่งวัตถุดิบโดย {{by}}."
+    }
+  },
+  "cartonShip": {
+    "driverName": "Driver Name",
+    "phoneNo": "Phone No",
+    "plate1": "Truck Plate 1 *",
+    "plate2": "Truck Plate 2",
+    "seal1": "Seal No 1",
+    "seal2": "Seal No 2",
+    "seal3": "Seal No 3",
+    "scanEntirePO": "Scan Entire PO",
+    "scanPKL": "Scan PKL",
+    "scanPlaceholder": "Scan Barcode here and press Enter...",
+    "confirm": "Confirm Ship",
+    "cartonsInTruck": "Cartons in Truck",
+    "posInTruck": "POs in Truck",
+    "loadError": "Error loading unship list: ",
+    "invalidBarcode": "Invalid barcode or already shipped!",
+    "addedCtns": "Added {{count}} cartons successfully!",
+    "alreadyScanned": "Barcode already scanned!",
+    "errPlate1": "Plate No 1 is required!",
+    "errNoCtns": "No cartons scanned!",
+    "successConfirm": "Shipping confirmed successfully!",
+    "dataRefreshed": "Data refreshed and unship list reloaded!"
   }
 }

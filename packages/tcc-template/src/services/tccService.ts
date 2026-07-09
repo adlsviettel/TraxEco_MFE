@@ -40,6 +40,25 @@ export interface TccRequest {
   updatedBy?: string | null;
   confirmDeliveryDate?: string | null;
   confirmStatus?: string | null;
+  createdBy?: string | null;
+}
+
+export interface TccComment {
+  id: number;
+  requestId: string;
+  authorCode: string;
+  authorName: string;
+  content: string;
+  attachments?: string | null;
+  isPinned: boolean;
+  createdAt: string;
+}
+
+export interface TccAuditLog {
+  userName: string;
+  actionType: string;
+  details: string;
+  createdAt: string;
 }
 
 export interface TccLeadTimeConfig {
@@ -308,6 +327,71 @@ export const tccService = {
     const res = await authFetch('/tcc/requests/import', {
       method: 'POST',
       body: JSON.stringify(requests)
+    });
+    if (!res.ok) throw new Error('API error: ' + res.status);
+  },
+
+  async getReadNotifications(): Promise<string[]> {
+    const res = await authFetch('/tcc/notifications/read');
+    if (!res.ok) throw new Error('API error: ' + res.status);
+    return res.json();
+  },
+
+  async markNotificationAsRead(notificationId: string): Promise<void> {
+    const res = await authFetch('/tcc/notifications/read', {
+      method: 'POST',
+      body: JSON.stringify({ notificationId })
+    });
+    if (!res.ok) throw new Error('API error: ' + res.status);
+  },
+
+  async markAllNotificationsAsRead(notificationIds: string[]): Promise<void> {
+    const res = await authFetch('/tcc/notifications/read-all', {
+      method: 'POST',
+      body: JSON.stringify({ notificationIds })
+    });
+    if (!res.ok) throw new Error('API error: ' + res.status);
+  },
+
+  async resetNotifications(): Promise<void> {
+    const res = await authFetch('/tcc/notifications/reset-unread', {
+      method: 'POST'
+    });
+    if (!res.ok) throw new Error('API error: ' + res.status);
+  },
+
+  async getAuditLogs(requestId: string): Promise<TccAuditLog[]> {
+    const res = await authFetch(`/tcc/requests/${requestId}/audit-logs`);
+    if (!res.ok) throw new Error('API error: ' + res.status);
+    return res.json();
+  },
+
+  async getComments(requestId: string): Promise<TccComment[]> {
+    const res = await authFetch(`/tcc/requests/${requestId}/comments`);
+    if (!res.ok) throw new Error('API error: ' + res.status);
+    return res.json();
+  },
+
+  async addComment(requestId: string, content: string, attachments?: string | null): Promise<TccComment> {
+    const res = await authFetch(`/tcc/requests/${requestId}/comments`, {
+      method: 'POST',
+      body: JSON.stringify({ content, attachments })
+    });
+    if (!res.ok) throw new Error('API error: ' + res.status);
+    return res.json();
+  },
+
+  async togglePinComment(commentId: number, pinned: boolean): Promise<void> {
+    const res = await authFetch(`/tcc/comments/${commentId}/pin`, {
+      method: 'PUT',
+      body: JSON.stringify({ pinned })
+    });
+    if (!res.ok) throw new Error('API error: ' + res.status);
+  },
+
+  async deleteComment(commentId: number): Promise<void> {
+    const res = await authFetch(`/tcc/comments/${commentId}`, {
+      method: 'DELETE'
     });
     if (!res.ok) throw new Error('API error: ' + res.status);
   },

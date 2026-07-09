@@ -115,7 +115,7 @@ const CameraCaptureDialog: React.FC<CameraCaptureDialogProps> = ({ open, onClose
       }
     } catch (e) {
       console.error("Failed to capture frame", e);
-      setError("Failed to capture image");
+      setError(t('rdMaterial.capture_failed', 'Failed to capture image'));
     }
   };
 

@@ -14,6 +14,19 @@ if (typeof window !== 'undefined') {
     }
     originalWarn(...args);
   };
+
+  // Suppress known harmless MUI X DataGrid "useResizeContainer" warning.
+  // This fires on initial render before browser layout is complete, then self-corrects.
+  const originalError = console.error;
+  console.error = (...args: any[]) => {
+    if (
+      typeof args[0] === 'string' &&
+      args[0].includes('useResizeContainer')
+    ) {
+      return;
+    }
+    originalError(...args);
+  };
 }
 
 /**

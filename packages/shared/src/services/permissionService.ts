@@ -19,6 +19,7 @@ export interface UserWithPermissions {
   isSuperAdmin: boolean;
   isAdmin: boolean;
   isActive: boolean;
+  appCodes?: string[];
   permissions: {
     pageCode: string;
     canView: boolean;
@@ -26,6 +27,7 @@ export interface UserWithPermissions {
     canEdit: boolean;
     canDelete: boolean;
     canExport: boolean;
+    canCancel?: boolean;
     canBypassCheck: boolean;
     bypassQC?: boolean;
     bypassRelax?: boolean;
@@ -56,6 +58,7 @@ export const permissionService = {
     canEdit: boolean;
     canDelete: boolean;
     canExport: boolean;
+    canCancel?: boolean;
     canBypassCheck?: boolean;
     bypassQC?: boolean;
     bypassRelax?: boolean;
