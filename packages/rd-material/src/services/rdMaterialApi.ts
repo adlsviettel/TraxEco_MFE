@@ -285,6 +285,26 @@ export const rdItemApi = {
     return responseText.replace(/^"|"$/g, '');
   },
 
+  extractSticker: async (file: File, itemType: string): Promise<any> => {
+    const authFetch = await getAuthFetch();
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('itemType', itemType);
+
+    const res = await authFetch('rd-items/extract-sticker', {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!res.ok) {
+      const errText = await res.text().catch(() => '');
+      throw new Error(`AI Sticker Scan failed: ${errText || res.statusText}`);
+    }
+
+    return res.json();
+  },
+
+
   getCustomers: async (): Promise<any[]> => {
     try {
       const authFetch = await getAuthFetch();

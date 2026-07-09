@@ -15,6 +15,8 @@ import { rdItemApi } from '../services/rdMaterialApi';
 import type { Item, ItemFabric } from '../types';
 import { useTranslation } from 'react-i18next';
 import { AppTextField, authService } from '@traxeco/shared';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import { AiScanDialog } from '../components/AiScanDialog';
 
 const BASE = '/rd-material';
 
@@ -54,6 +56,33 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
   const [shakeFields, setShakeFields] = useState<Record<string, boolean>>({});
   const [errors, setErrors] = useState<Record<string, boolean>>({});
   const [duplicateCodeError, setDuplicateCodeError] = useState(false);
+  const [aiOpen, setAiOpen] = useState(false);
+
+  const handleAiApply = (extracted: any) => {
+    setForm(prev => ({
+      ...prev,
+      itemCode: extracted.itemCode || prev.itemCode,
+      supplierName: extracted.supplierName || prev.supplierName,
+      origin: extracted.origin || prev.origin,
+      composition: extracted.composition || prev.composition,
+      compositionDetail: extracted.compositionDetail || prev.compositionDetail,
+      weightGsm: extracted.weightGsm || prev.weightGsm,
+      cuttableWidth: extracted.cuttableWidth || prev.cuttableWidth,
+      colorName: extracted.colorName || prev.colorName,
+      structure: extracted.structure || prev.structure,
+      remark: extracted.remark ? `${prev.remark ? prev.remark + '\n' : ''}${extracted.remark}` : prev.remark,
+    }));
+
+    if (extracted.itemCode) {
+      checkDuplicate(extracted.itemCode);
+    }
+
+    setSnackbar({
+      open: true,
+      message: t('rdMaterial.ai_scan_applied', 'AI sticker data applied successfully!'),
+      severity: 'success'
+    });
+  };
 
   const checkDuplicate = async (code: string) => {
     if (!code || !code.trim()) {
@@ -413,7 +442,28 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
       {/* Header */}
       <Box sx={{ px: 3, py: 2.5, background: 'linear-gradient(135deg, #2e7d32 0%, #3ba55c 100%)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Typography fontWeight={800} fontSize={18} color="#fff" sx={{ textShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>{isEdit ? t('rdMaterial.edit_fabric_hanger', 'Edit Vải Hanger') : (isCopy ? t('rdMaterial.copy_fabric_hanger', 'Copy Vải Hanger') : t('rdMaterial.add_fabric_hanger', 'Thêm Vải Hanger'))}</Typography>
-        <IconButton size="small" onClick={onClose} sx={{ color: '#fff', bgcolor: 'rgba(255,255,255,0.2)', '&:hover': { bgcolor: 'rgba(255,255,255,0.3)' } }}><CloseIcon /></IconButton>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          {!isEdit && (
+            <Button
+              variant="contained"
+              size="small"
+              startIcon={<AutoAwesomeIcon />}
+              onClick={() => setAiOpen(true)}
+              sx={{
+                background: 'linear-gradient(135deg, #a855f7 0%, #7e22ce 100%)',
+                color: 'white',
+                fontWeight: 'bold',
+                boxShadow: '0 4px 14px rgba(168, 85, 247, 0.4)',
+                '&:hover': {
+                  background: 'linear-gradient(135deg, #7e22ce 0%, #6b21a8 100%)',
+                }
+              }}
+            >
+              AI Scan
+            </Button>
+          )}
+          <IconButton size="small" onClick={onClose} sx={{ color: '#fff', bgcolor: 'rgba(255,255,255,0.2)', '&:hover': { bgcolor: 'rgba(255,255,255,0.3)' } }}><CloseIcon /></IconButton>
+        </Box>
       </Box>
 
             {/* Body */}
@@ -1039,6 +1089,12 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
           <Button onClick={() => setHistoryOpen(false)} sx={{ fontWeight: 600 }}>Close</Button>
         </DialogActions>
       </Dialog>
+      <AiScanDialog
+        open={aiOpen}
+        onClose={() => setAiOpen(false)}
+        onApply={handleAiApply}
+        itemType="FABRIC"
+      />
     </Drawer>
   );
 };

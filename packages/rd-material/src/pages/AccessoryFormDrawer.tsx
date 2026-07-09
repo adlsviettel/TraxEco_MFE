@@ -14,6 +14,8 @@ import { rdItemApi } from '../services/rdMaterialApi';
 import type { Item } from '../types';
 import { useTranslation } from 'react-i18next';
 import { AppTextField } from '@traxeco/shared';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import { AiScanDialog } from '../components/AiScanDialog';
 
 const BASE = '/rd-material';
 
@@ -54,6 +56,27 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
   const priceUnitRef = React.useRef<HTMLInputElement | null>(null);
   const [shakeFields, setShakeFields] = useState<Record<string, boolean>>({});
   const [errors, setErrors] = useState<Record<string, boolean>>({});
+  const [aiOpen, setAiOpen] = useState(false);
+
+  const handleAiApply = (extracted: any) => {
+    setForm((prev: any) => ({
+      ...prev,
+      itemCode: extracted.itemCode || prev.itemCode,
+      supplierName: extracted.supplierName || prev.supplierName,
+      origin: extracted.origin || prev.origin,
+      composition: extracted.composition || prev.composition,
+      specification: extracted.specification || prev.specification,
+      size: extracted.size || prev.size,
+      colorName: extracted.colorName || prev.colorName,
+      remark: extracted.remark ? `${prev.remark ? prev.remark + '\n' : ''}${extracted.remark}` : prev.remark,
+    }));
+
+    setSnackbar({
+      open: true,
+      message: t('rdMaterial.ai_scan_applied', 'AI sticker data applied successfully!'),
+      severity: 'success'
+    });
+  };
 
   // Dynamic Options
   const [structureOpts, setStructureOpts] = useState<string[]>(['Knit', 'Woven']);
@@ -361,7 +384,28 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
       {/* Header */}
       <Box sx={{ px: 3, py: 2.5, background: 'linear-gradient(135deg, #2e7d32 0%, #3ba55c 100%)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Typography fontWeight={800} fontSize={18} color="#fff" sx={{ textShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>{isEdit ? t('rdMaterial.edit_accessory_hanger', 'Edit Accessory') : (isCopy ? t('rdMaterial.copy_accessory_hanger', 'Copy Accessory') : t('rdMaterial.add_accessory_hanger', 'Add Accessory'))}</Typography>
-        <IconButton size="small" onClick={onClose} sx={{ color: '#fff', bgcolor: 'rgba(255,255,255,0.2)', '&:hover': { bgcolor: 'rgba(255,255,255,0.3)' } }}><CloseIcon /></IconButton>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          {!isEdit && (
+            <Button
+              variant="contained"
+              size="small"
+              startIcon={<AutoAwesomeIcon />}
+              onClick={() => setAiOpen(true)}
+              sx={{
+                background: 'linear-gradient(135deg, #a855f7 0%, #7e22ce 100%)',
+                color: 'white',
+                fontWeight: 'bold',
+                boxShadow: '0 4px 14px rgba(168, 85, 247, 0.4)',
+                '&:hover': {
+                  background: 'linear-gradient(135deg, #7e22ce 0%, #6b21a8 100%)',
+                }
+              }}
+            >
+              AI Scan
+            </Button>
+          )}
+          <IconButton size="small" onClick={onClose} sx={{ color: '#fff', bgcolor: 'rgba(255,255,255,0.2)', '&:hover': { bgcolor: 'rgba(255,255,255,0.3)' } }}><CloseIcon /></IconButton>
+        </Box>
       </Box>
 
             {/* Body */}
@@ -928,6 +972,12 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
           <Button onClick={() => confirmPaste('mainImage')} variant="contained" color="primary" sx={{ borderRadius: 1, fontWeight: 600 }}>Accessory Image</Button>
         </DialogActions>
       </Dialog>
+      <AiScanDialog
+        open={aiOpen}
+        onClose={() => setAiOpen(false)}
+        onApply={handleAiApply}
+        itemType="ACCESSORY"
+      />
     </Drawer>
   );
 };
