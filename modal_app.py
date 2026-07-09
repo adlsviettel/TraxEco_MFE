@@ -1,5 +1,6 @@
 import os
 from modal import App, Image, fastapi_endpoint
+from fastapi import Request
 
 # 1. Define the container image with all dependencies
 image = (
@@ -50,7 +51,7 @@ class QwenModel:
         print("Model loaded successfully!")
 
     @fastapi_endpoint(method="POST")
-    def extract(self, file: bytes, itemType: str):
+    async def extract(self, request: Request, itemType: str):
         import torch
         from PIL import Image as PILImage
         import io
@@ -59,7 +60,8 @@ class QwenModel:
         
         try:
             # 1. Load image from request body
-            image = PILImage.open(io.BytesIO(file)).convert("RGB")
+            file_bytes = await request.body()
+            image = PILImage.open(io.BytesIO(file_bytes)).convert("RGB")
             
             # 2. Define the system/user prompts based on itemType
             schema_instructions = ""
