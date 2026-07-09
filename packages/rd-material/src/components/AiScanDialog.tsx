@@ -51,6 +51,12 @@ export const AiScanDialog: React.FC<Props> = ({ open, onClose, onApply, itemType
     setError(null);
   };
 
+  React.useEffect(() => {
+    if (!open) {
+      handleClear();
+    }
+  }, [open]);
+
   const handleAnalyze = async () => {
     if (!file) return;
     setLoading(true);
@@ -126,9 +132,9 @@ export const AiScanDialog: React.FC<Props> = ({ open, onClose, onApply, itemType
                     alt="Sticker Preview"
                     style={{ maxWidth: '100%', maxHeight: 220, borderRadius: 8, objectFit: 'contain' }}
                   />
-                  {!loading && !extractedData && (
+                  {!loading && (
                     <Button variant="outlined" color="error" size="small" onClick={handleClear} sx={{ mt: 1.5 }}>
-                      Remove Photo
+                      {extractedData ? "Scan Another Image" : "Remove Photo"}
                     </Button>
                   )}
                 </Box>
