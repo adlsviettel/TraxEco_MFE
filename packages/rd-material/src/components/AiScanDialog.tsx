@@ -63,6 +63,7 @@ export const AiScanDialog: React.FC<Props> = ({ open, onClose, onApply, itemType
       const items = e.clipboardData?.items;
       if (!items) return;
       
+      let hasImage = false;
       for (let i = 0; i < items.length; i++) {
         if (items[i].type.indexOf("image") !== -1) {
           const pastedFile = items[i].getAsFile();
@@ -75,16 +76,22 @@ export const AiScanDialog: React.FC<Props> = ({ open, onClose, onApply, itemType
             setPreviewUrl(URL.createObjectURL(pastedFile));
             setError(null);
             setExtractedData(null);
-            e.preventDefault();
+            hasImage = true;
             break;
           }
         }
       }
+
+      if (hasImage) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+      }
     };
 
-    window.addEventListener('paste', handlePaste);
+    window.addEventListener('paste', handlePaste, true); // Capture phase to intercept before parent Drawer
     return () => {
-      window.removeEventListener('paste', handlePaste);
+      window.removeEventListener('paste', handlePaste, true);
     };
   }, [open, loading]);
 
