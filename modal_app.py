@@ -1,5 +1,5 @@
 import os
-from modal import App, Image, web_endpoint
+from modal import App, Image, fastapi_endpoint
 
 # 1. Define the container image with all dependencies
 image = (
@@ -49,7 +49,7 @@ class QwenModel:
         )
         print("Model loaded successfully!")
 
-    @web_endpoint(method="POST")
+    @fastapi_endpoint(method="POST")
     def extract(self, file: bytes, itemType: str):
         import torch
         from PIL import Image as PILImage
