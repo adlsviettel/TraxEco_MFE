@@ -30,8 +30,8 @@ export const AiScanDialog: React.FC<Props> = ({ open, onClose, onApply, itemType
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
-      if (selectedFile.size > 5 * 1024 * 1024) {
-        setError("File size too large (>5MB). Please upload a smaller image.");
+      if (selectedFile.size > 25 * 1024 * 1024) {
+        setError("File size too large (>25MB). Please upload a smaller image.");
         return;
       }
       setFile(selectedFile);
@@ -68,8 +68,8 @@ export const AiScanDialog: React.FC<Props> = ({ open, onClose, onApply, itemType
         if (items[i].type.indexOf("image") !== -1) {
           const pastedFile = items[i].getAsFile();
           if (pastedFile) {
-            if (pastedFile.size > 5 * 1024 * 1024) {
-              setError("File size too large (>5MB). Please upload a smaller image.");
+            if (pastedFile.size > 25 * 1024 * 1024) {
+              setError("File size too large (>25MB). Please upload a smaller image.");
               return;
             }
             setFile(pastedFile);
