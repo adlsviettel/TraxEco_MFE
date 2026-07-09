@@ -1,5 +1,5 @@
 import os
-from modal import App, Image, fastapi_endpoint
+from modal import App, Image, fastapi_endpoint, enter
 from fastapi import Request
 
 # 1. Define the container image with all dependencies
@@ -37,6 +37,7 @@ class QwenModel:
         AutoModelForVision2Seq.from_pretrained(model_id, device_map="cpu")
         print("Model downloaded successfully!")
 
+    @enter()
     def __enter__(self):
         import torch
         from transformers import AutoProcessor, AutoModelForVision2Seq
@@ -140,6 +141,10 @@ class QwenModel:
                 generated_ids_trimmed, skip_special_tokens=True, clean_up_tokenization_spaces=False
             )[0]
             
+            print(f"--- QWEN MODEL RAW OUTPUT ---")
+            print(output_text)
+            print(f"-----------------------------")
+            
             # 6. Parse JSON safely and return
             cleaned_text = output_text.strip()
             if cleaned_text.startswith("```"):
@@ -151,8 +156,13 @@ class QwenModel:
                     lines = lines[:-1]
                 cleaned_text = "\n".join(lines).strip()
             
+            if cleaned_text.startswith("json"):
+                cleaned_text = cleaned_text[4:].strip()
+            
             result = json.loads(cleaned_text)
+            print(f"Parsed JSON Result: {result}")
             return result
             
         except Exception as e:
+            print(f"Error during extraction: {e}")
             return {"error": f"Failed to extract sticker details: {str(e)}"}
