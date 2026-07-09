@@ -24,7 +24,7 @@ model_id = "Qwen/Qwen2-VL-2B-Instruct"  # 2B is chosen for fast cold-starts and 
 
 @app.cls(
     gpu="T4",  # Cheap and efficient T4 GPU
-    concurrency_limit=5,
+    max_containers=5,
     timeout=600
 )
 class QwenModel:
