@@ -82,7 +82,7 @@ export const AiScanDialog: React.FC<Props> = ({ open, onClose, onApply, itemType
   };
 
   return (
-    <Dialog open={open} onClose={loading ? undefined : onClose} maxWidth="md" fullWidth>
+    <Dialog open={open} onClose={loading ? undefined : onClose} maxWidth="md" fullWidth sx={{ zIndex: 99999 }}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pb: 1 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <AutoAwesomeIcon sx={{ color: '#a855f7' }} />
