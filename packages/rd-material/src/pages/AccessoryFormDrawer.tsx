@@ -68,6 +68,7 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
       specification: extracted.specification || prev.specification,
       size: extracted.size || prev.size,
       colorName: extracted.colorName || prev.colorName,
+      description: extracted.description || prev.description,
       remark: extracted.remark ? `${prev.remark ? prev.remark + '\n' : ''}${extracted.remark}` : prev.remark,
     }));
 

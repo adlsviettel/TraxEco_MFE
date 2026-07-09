@@ -70,6 +70,9 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
       cuttableWidth: extracted.cuttableWidth || prev.cuttableWidth,
       colorName: extracted.colorName || prev.colorName,
       structure: extracted.structure || prev.structure,
+      fabricName: extracted.fabricName || prev.fabricName,
+      function: extracted.function || prev.function,
+      description: extracted.description || prev.description,
       remark: extracted.remark ? `${prev.remark ? prev.remark + '\n' : ''}${extracted.remark}` : prev.remark,
     }));
 
