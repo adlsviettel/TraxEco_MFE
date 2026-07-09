@@ -57,6 +57,37 @@ export const AiScanDialog: React.FC<Props> = ({ open, onClose, onApply, itemType
     }
   }, [open]);
 
+  React.useEffect(() => {
+    const handlePaste = (e: ClipboardEvent) => {
+      if (!open || loading) return;
+      const items = e.clipboardData?.items;
+      if (!items) return;
+      
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf("image") !== -1) {
+          const pastedFile = items[i].getAsFile();
+          if (pastedFile) {
+            if (pastedFile.size > 5 * 1024 * 1024) {
+              setError("File size too large (>5MB). Please upload a smaller image.");
+              return;
+            }
+            setFile(pastedFile);
+            setPreviewUrl(URL.createObjectURL(pastedFile));
+            setError(null);
+            setExtractedData(null);
+            e.preventDefault();
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener('paste', handlePaste);
+    return () => {
+      window.removeEventListener('paste', handlePaste);
+    };
+  }, [open, loading]);
+
   const handleAnalyze = async () => {
     if (!file) return;
     setLoading(true);
@@ -141,7 +172,7 @@ export const AiScanDialog: React.FC<Props> = ({ open, onClose, onApply, itemType
               ) : (
                 <Box>
                   <Typography variant="body1" color="textSecondary" sx={{ mb: 2 }}>
-                    Take a photo of the sticker or upload an image
+                    Take a photo, upload or press <b>Ctrl + V</b> to paste an image
                   </Typography>
                   <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center' }}>
                     <Button
