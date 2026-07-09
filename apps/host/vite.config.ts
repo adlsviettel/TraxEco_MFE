@@ -47,6 +47,7 @@ export default defineConfig(({ mode }) => {
         injectRegister: false,
         injectManifest: {
           maximumFileSizeToCacheInBytes: 15 * 1024 * 1024, // 15MB
+          globIgnores: ['**/travel/**'],
         },
         devOptions: {
           enabled: false,
