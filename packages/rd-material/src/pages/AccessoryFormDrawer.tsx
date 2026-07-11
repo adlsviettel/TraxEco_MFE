@@ -225,7 +225,8 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
       return setSnackbar({ open: true, message: errorMsg, severity: 'error' });
     }
     
-    // Check duplicate code
+    // Check duplicate code (disabled to allow multiple accessories with the same ItemCode but different suppliers/colors)
+    /*
     const isDuplicate = await rdItemApi.checkDuplicateCode(form.itemCode || '', 'ACCESSORY', isEdit && item ? item.id : undefined);
     if (isDuplicate) {
       setShakeFields({ itemCode: true });
@@ -237,6 +238,7 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
         severity: 'error' 
       });
     }
+    */
 
     setLoading(true);
     try {

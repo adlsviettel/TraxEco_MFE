@@ -269,7 +269,7 @@ const AccessoryListPage: React.FC = () => {
         );
       case 'Description':
         return (
-          <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945', maxWidth: 200, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945', minWidth: 250, whiteSpace: 'normal' }}>
             {item.accessory?.description || '—'}
           </TableCell>
         );
