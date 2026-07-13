@@ -119,7 +119,12 @@ export const AiScanDialog: React.FC<Props> = ({ open, onClose, onApply, itemType
 
   const handleApplyClick = () => {
     if (extractedData) {
-      onApply(extractedData);
+      const cleanData = { ...extractedData };
+      delete cleanData.compositionDetail;
+      delete cleanData.description;
+      delete cleanData.colorName;
+      delete cleanData.remark;
+      onApply(cleanData);
       handleClear();
       onClose();
     }
@@ -262,7 +267,7 @@ export const AiScanDialog: React.FC<Props> = ({ open, onClose, onApply, itemType
                     Review Extracted Information
                   </Typography>
                   <Grid container spacing={2}>
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={12}>
                       <TextField
                         label="Item Code"
                         fullWidth
@@ -272,27 +277,28 @@ export const AiScanDialog: React.FC<Props> = ({ open, onClose, onApply, itemType
                         helperText="Article / Code"
                       />
                     </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <TextField
-                        label="Supplier Name"
-                        fullWidth
-                        size="small"
-                        value={extractedData.supplierName || ''}
-                        onChange={(e) => handleFieldChange('supplierName', e.target.value)}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <TextField
-                        label="Origin"
-                        fullWidth
-                        size="small"
-                        value={extractedData.origin || ''}
-                        onChange={(e) => handleFieldChange('origin', e.target.value)}
-                      />
-                    </Grid>
 
                     {itemType === 'FABRIC' ? (
                       <>
+                        <Grid item xs={12} sm={6}>
+                          <TextField
+                            label="Structure"
+                            fullWidth
+                            size="small"
+                            value={extractedData.structure || ''}
+                            onChange={(e) => handleFieldChange('structure', e.target.value)}
+                            helperText="Knit / Woven"
+                          />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                          <TextField
+                            label="Fabric Name"
+                            fullWidth
+                            size="small"
+                            value={extractedData.fabricName || ''}
+                            onChange={(e) => handleFieldChange('fabricName', e.target.value)}
+                          />
+                        </Grid>
                         <Grid item xs={12} sm={6}>
                           <TextField
                             label="Composition (Synthetic/Natural/Natural blend)"
@@ -304,11 +310,13 @@ export const AiScanDialog: React.FC<Props> = ({ open, onClose, onApply, itemType
                         </Grid>
                         <Grid item xs={12}>
                           <TextField
-                            label="Composition Detail"
+                            label="Function"
                             fullWidth
                             size="small"
-                            value={extractedData.compositionDetail || ''}
-                            onChange={(e) => handleFieldChange('compositionDetail', e.target.value)}
+                            multiline
+                            rows={2}
+                            value={extractedData.function || ''}
+                            onChange={(e) => handleFieldChange('function', e.target.value)}
                           />
                         </Grid>
                         <Grid item xs={12} sm={6}>
@@ -331,41 +339,20 @@ export const AiScanDialog: React.FC<Props> = ({ open, onClose, onApply, itemType
                         </Grid>
                         <Grid item xs={12} sm={6}>
                           <TextField
-                            label="Structure"
+                            label="Supplier Name"
                             fullWidth
                             size="small"
-                            value={extractedData.structure || ''}
-                            onChange={(e) => handleFieldChange('structure', e.target.value)}
-                            helperText="Knit / Woven"
+                            value={extractedData.supplierName || ''}
+                            onChange={(e) => handleFieldChange('supplierName', e.target.value)}
                           />
                         </Grid>
                         <Grid item xs={12} sm={6}>
                           <TextField
-                            label="Fabric Name"
+                            label="Origin"
                             fullWidth
                             size="small"
-                            value={extractedData.fabricName || ''}
-                            onChange={(e) => handleFieldChange('fabricName', e.target.value)}
-                          />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                          <TextField
-                            label="Function"
-                            fullWidth
-                            size="small"
-                            value={extractedData.function || ''}
-                            onChange={(e) => handleFieldChange('function', e.target.value)}
-                          />
-                        </Grid>
-                        <Grid item xs={12}>
-                          <TextField
-                            label="Description"
-                            fullWidth
-                            size="small"
-                            multiline
-                            rows={2}
-                            value={extractedData.description || ''}
-                            onChange={(e) => handleFieldChange('description', e.target.value)}
+                            value={extractedData.origin || ''}
+                            onChange={(e) => handleFieldChange('origin', e.target.value)}
                           />
                         </Grid>
                       </>
@@ -376,6 +363,8 @@ export const AiScanDialog: React.FC<Props> = ({ open, onClose, onApply, itemType
                             label="Specification"
                             fullWidth
                             size="small"
+                            multiline
+                            rows={2}
                             value={extractedData.specification || ''}
                             onChange={(e) => handleFieldChange('specification', e.target.value)}
                           />
@@ -389,38 +378,26 @@ export const AiScanDialog: React.FC<Props> = ({ open, onClose, onApply, itemType
                             onChange={(e) => handleFieldChange('size', e.target.value)}
                           />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={12} sm={6}>
                           <TextField
-                            label="Description"
+                            label="Supplier Name"
                             fullWidth
                             size="small"
-                            multiline
-                            rows={2}
-                            value={extractedData.description || ''}
-                            onChange={(e) => handleFieldChange('description', e.target.value)}
+                            value={extractedData.supplierName || ''}
+                            onChange={(e) => handleFieldChange('supplierName', e.target.value)}
+                          />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                          <TextField
+                            label="Origin"
+                            fullWidth
+                            size="small"
+                            value={extractedData.origin || ''}
+                            onChange={(e) => handleFieldChange('origin', e.target.value)}
                           />
                         </Grid>
                       </>
                     )}
-
-                    <Grid item xs={12} sm={6}>
-                      <TextField
-                        label="Color Name"
-                        fullWidth
-                        size="small"
-                        value={extractedData.colorName || ''}
-                        onChange={(e) => handleFieldChange('colorName', e.target.value)}
-                      />
-                    </Grid>
-                    <Grid item xs={12}>
-                      <TextField
-                        label="Remark / AI Notes"
-                        fullWidth
-                        size="small"
-                        value={extractedData.remark || ''}
-                        onChange={(e) => handleFieldChange('remark', e.target.value)}
-                      />
-                    </Grid>
                   </Grid>
                 </CardContent>
               </Card>

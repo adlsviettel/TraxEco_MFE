@@ -600,7 +600,7 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
                 <CardContent sx={{ p: 0 }}>
                   
                   {/* ITEM CODE HIGHLIGHT */}
-                  <Box p={4} pb={2}>
+                  <Box p={{ xs: 2, md: 4 }} pb={2}>
                     <TextField 
                       inputRef={itemCodeRef}
                       placeholder="Enter Item Code / Item No..." 
@@ -614,7 +614,7 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
                           setErrors(prev => ({ ...prev, itemCode: false }));
                         }
                       }} 
-                      InputProps={{ disableUnderline: true, sx: { fontSize: { xs: 24, md: 32 }, fontWeight: 800, color: '#0f172a', '& input::placeholder': { color: '#cbd5e1', opacity: 1 } } }} 
+                      InputProps={{ disableUnderline: true, sx: { fontSize: { xs: 16, md: 24 }, fontWeight: 800, color: '#0f172a', '& input::placeholder': { color: '#cbd5e1', opacity: 1 } } }} 
                       sx={{ 
                         bgcolor: errors.itemCode ? '#fef2f2' : '#f8fafc', 
                         p: 2, 
