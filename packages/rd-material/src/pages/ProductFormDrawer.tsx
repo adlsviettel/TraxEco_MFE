@@ -254,7 +254,7 @@ const ProductFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSav
 
   const handleSave = async (printAfter = false) => {
     const isMissingCode = !form.itemCode;
-    const isMissingName = !form.name;
+    const isMissingName = false; // ERP Number (MasterItem) is optional
     const qty = toNum(form.quantity);
     const isMissingQty = qty === undefined || qty <= 0;
 
@@ -269,8 +269,6 @@ const ProductFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSav
 
       if (isMissingCode) {
         itemCodeRef.current?.focus();
-      } else if (isMissingName) {
-        nameRef.current?.focus();
       } else if (isMissingQty) {
         quantityRef.current?.focus();
       }
@@ -279,7 +277,6 @@ const ProductFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSav
 
       const missingList: string[] = [];
       if (isMissingCode) missingList.push(t('rdMaterial.validation.missing_style_no', 'Mã hàng (Style Number) chưa nhập'));
-      if (isMissingName) missingList.push(t('rdMaterial.validation.missing_erp', 'ERP Number chưa nhập'));
       if (isMissingQty) missingList.push(t('rdMaterial.validation.missing_qty', 'Số lượng (Qty) chưa nhập'));
 
       const errorMsg = `${t('rdMaterial.validation.check_below', 'Vui lòng kiểm tra:')} ${missingList.join(', ')}`;
@@ -482,7 +479,6 @@ const ProductFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSav
                       <TextField 
                         inputRef={nameRef}
                         label="ERP Number" 
-                        required
                         size="small" 
                         value={form.name ?? ''} 
                         onChange={(e) => {
