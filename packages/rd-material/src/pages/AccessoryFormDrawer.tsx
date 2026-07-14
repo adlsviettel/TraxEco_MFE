@@ -85,6 +85,8 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
   const [unitOpts, setUnitOpts] = useState<string[]>(['yd', 'm', 'pcs', 'set', 'kg', 'roll']);
   const [moqUnitOpts, setMoqUnitOpts] = useState<string[]>(['yd/yd', 'm/m', 'pcs/pcs', 'set/set']);
   const [categoryOpts, setCategoryOpts] = useState<string[]>(['Elastic', 'Zipper', 'Elastic Zipper', 'Button', 'Label', 'Hook & Eye', 'Snap', 'Velcro', 'Thread', 'Pocket Bag', 'Other']);
+  const [colorOpts, setColorOpts] = useState<string[]>(['Black', 'White', 'Navy', 'Grey']);
+  const [supplierOpts, setSupplierOpts] = useState<string[]>([]);
   const optsLoaded = React.useRef(false);
 
   React.useEffect(() => {
@@ -107,6 +109,8 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
       loadOptions('unit', setUnitOpts);
       loadOptions('moq_unit', setMoqUnitOpts);
       loadOptions('accessoryCategory', setCategoryOpts);
+      loadOptions('color', setColorOpts);
+      loadOptions('supplierName', setSupplierOpts);
       optsLoaded.current = true;
     }
   }, [open]);
@@ -700,7 +704,37 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
                         />
                         <AppTextField label={t('rdMaterial.accessory_description', 'Accessory Description')} size="small" multiline rows={1} value={(form as any).accessoryDescription ?? ''} debounceMs={200} onDebounceChange={(val) => set('accessoryDescription', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
                         <AppTextField label={t('rdMaterial.size', 'Size')} size="small" value={(form as any).size ?? ''} debounceMs={200} onDebounceChange={(val) => set('size', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
-                        <AppTextField label={t('rdMaterial.color', 'Color')} size="small" value={(form as any).color ?? ''} debounceMs={200} onDebounceChange={(val) => set('color', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
+                        <Autocomplete 
+                          componentsProps={{ popper: { style: { zIndex: 10000 } } }} 
+                          forcePopupIcon 
+                          options={colorOpts} 
+                          freeSolo 
+                          size="small" 
+                          value={(form as any).color ?? ''} 
+                          onChange={(_, val) => {
+                            set('color', val);
+                          }} 
+                          onInputChange={(_, val, reason) => { 
+                            if (reason === 'input' || reason === 'clear') {
+                              set('color', val);
+                            }
+                          }} 
+                          renderInput={(params) => (
+                            <TextField 
+                              {...params} 
+                              label={t('rdMaterial.color', 'Color')} 
+                              size="small" 
+                              sx={{ 
+                                '& .MuiOutlinedInput-root': { 
+                                  bgcolor: '#f8fafc', 
+                                  borderRadius: 1, 
+                                  '&:hover': { bgcolor: '#f1f5f9' }, 
+                                  '&.Mui-focused': { bgcolor: '#fff' } 
+                                } 
+                              }} 
+                            />
+                          )} 
+                        />
                       </Box>
                     </Box>
 
@@ -708,7 +742,37 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
                     <Box p={4}>
                       <Typography variant="subtitle2" sx={{ color: '#0f172a', textTransform: 'uppercase', letterSpacing: 1 }} fontWeight={800} mb={3}>{t('rdMaterial.supplier_title', '3. Supplier')}</Typography>
                       <Box display="grid" gridTemplateColumns={{ xs: '1fr', sm: '1fr 1fr' }} gap={2.5}>
-                        <AppTextField label={t('rdMaterial.supplier', 'Supplier Name')} size="small" value={form.supplierName ?? ''} debounceMs={200} onDebounceChange={(val) => set('supplierName', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
+                        <Autocomplete 
+                          componentsProps={{ popper: { style: { zIndex: 10000 } } }} 
+                          forcePopupIcon 
+                          options={supplierOpts} 
+                          freeSolo 
+                          size="small" 
+                          value={form.supplierName ?? ''} 
+                          onChange={(_, val) => {
+                            set('supplierName', val);
+                          }} 
+                          onInputChange={(_, val, reason) => { 
+                            if (reason === 'input' || reason === 'clear') {
+                              set('supplierName', val);
+                            }
+                          }} 
+                          renderInput={(params) => (
+                            <TextField 
+                              {...params} 
+                              label={t('rdMaterial.supplier', 'Supplier Name')} 
+                              size="small" 
+                              sx={{ 
+                                '& .MuiOutlinedInput-root': { 
+                                  bgcolor: '#f8fafc', 
+                                  borderRadius: 1, 
+                                  '&:hover': { bgcolor: '#f1f5f9' }, 
+                                  '&.Mui-focused': { bgcolor: '#fff' } 
+                                } 
+                              }} 
+                            />
+                          )} 
+                        />
                         <AppTextField label={t('rdMaterial.origin', 'Origin')} size="small" value={form.origin ?? ''} debounceMs={200} onDebounceChange={(val) => set('origin', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
                       </Box>
                     </Box>
