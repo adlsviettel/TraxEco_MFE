@@ -298,7 +298,7 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
         itemCode: form.itemCode !== undefined && form.itemCode !== null ? form.itemCode : undefined,
         name: form.name !== undefined && form.name !== null ? form.name : undefined,
         description: form.description !== undefined && form.description !== null ? form.description : undefined,
-        category: form.category !== undefined && form.category !== null ? form.category : undefined,
+        category: (form as any).specification || undefined,
         supplierName: form.supplierName !== undefined && form.supplierName !== null ? form.supplierName : undefined,
         origin: form.origin !== undefined && form.origin !== null ? form.origin : undefined,
         price: toNum(form.price),
