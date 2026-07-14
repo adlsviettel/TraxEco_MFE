@@ -255,8 +255,7 @@ const ProductFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSav
   const handleSave = async (printAfter = false) => {
     const isMissingCode = !form.itemCode;
     const isMissingName = false; // ERP Number (MasterItem) is optional
-    const qty = toNum(form.quantity);
-    const isMissingQty = qty === undefined || qty <= 0;
+    const isMissingQty = false; // Quantity is optional
 
     if (isMissingCode || isMissingName || isMissingQty) {
       const newErrors = {
