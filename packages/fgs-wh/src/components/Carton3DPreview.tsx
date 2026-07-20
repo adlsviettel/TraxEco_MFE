@@ -34,8 +34,8 @@ const CartonMesh = ({ length, width, height, marks }: Carton3DPreviewProps) => {
       
       {/* Face Labels */}
       <Text position={[0, 0, W/2 + 0.01]} rotation={[0, 0, 0]} fontSize={Math.min(L, H) * 0.4} color="#000000" fillOpacity={0.9}>B</Text>
-      <Text position={[L/2 + 0.01, 0, 0]} rotation={[0, Math.PI / 2, 0]} fontSize={Math.min(W, H) * 0.4} color="#000000" fillOpacity={0.9}>A</Text>
-      <Text position={[0, 0, -W/2 - 0.01]} rotation={[0, Math.PI, 0]} fontSize={Math.min(L, H) * 0.4} color="#000000" fillOpacity={0.9}>D</Text>
+      <Text position={[L/2 + 0.01, 0, 0]} rotation={[0, Math.PI / 2, 0]} fontSize={Math.min(W, H) * 0.4} color="#000000" fillOpacity={0.9}>D</Text>
+      <Text position={[0, 0, -W/2 - 0.01]} rotation={[0, Math.PI, 0]} fontSize={Math.min(L, H) * 0.4} color="#000000" fillOpacity={0.9}>A</Text>
       <Text position={[-L/2 - 0.01, 0, 0]} rotation={[0, -Math.PI / 2, 0]} fontSize={Math.min(W, H) * 0.4} color="#000000" fillOpacity={0.9}>C</Text>
       <Text position={[0, H/2 + 0.01, 0]} rotation={[-Math.PI / 2, 0, 0]} fontSize={Math.min(L, W) * 0.4} color="#000000" fillOpacity={0.9}>E</Text>
       <Text position={[0, -H/2 - 0.01, 0]} rotation={[Math.PI / 2, 0, 0]} fontSize={Math.min(L, W) * 0.4} color="#000000" fillOpacity={0.9}>F</Text>
@@ -59,19 +59,19 @@ const CartonMesh = ({ length, width, height, marks }: Carton3DPreviewProps) => {
         const pX = mark.posX * scale;
         const pY = mark.posY * scale;
 
-        // Map area to 3D faces (A: Front, B: Right, C: Back, D: Left, E: Top, F: Bottom)
+        // Map area to 3D faces (B: Front, A: Back, D: Right, C: Left, E: Top, F: Bottom)
         if (mark.area === 'B') {
           // Front face (Z = W/2)
           position.set(-L/2 + pX + labelW/2, -H/2 + pY + labelH/2, W/2);
           rotation.set(0, 0, 0);
         } else if (mark.area === 'A') {
-          // Right face (X = L/2)
-          position.set(L/2, -H/2 + pY + labelH/2, W/2 - pX - labelW/2);
-          rotation.set(0, Math.PI / 2, 0);
-        } else if (mark.area === 'D') {
           // Back face (Z = -W/2)
           position.set(L/2 - pX - labelW/2, -H/2 + pY + labelH/2, -W/2);
           rotation.set(0, Math.PI, 0);
+        } else if (mark.area === 'D') {
+          // Right face (X = L/2)
+          position.set(L/2, -H/2 + pY + labelH/2, W/2 - pX - labelW/2);
+          rotation.set(0, Math.PI / 2, 0);
         } else if (mark.area === 'C') {
           // Left face (X = -L/2)
           position.set(-L/2, -H/2 + pY + labelH/2, -W/2 + pX + labelW/2);

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useRef } from 'react';
+import React, { useEffect, useState, useCallback, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Box, Button, Card, Chip, CircularProgress, IconButton, InputAdornment, Paper,
@@ -23,7 +23,8 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import SyncIcon from '@mui/icons-material/Sync';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import { authService, AppButton, AppTextField, AdvancedFilterDrawer } from '@traxeco/shared';
+import { authService, AppButton, AppTextField, AdvancedFilterDrawer, columnFilterStore, TableExcelColumnMenu } from '@traxeco/shared';
+import { format } from 'date-fns';
 import { exportFabricSubmissionToExcel } from '../utils/excelExport';
 import { rdItemApi } from '../services/rdMaterialApi';
 import type { Item } from '../types';
@@ -150,6 +151,88 @@ const FabricListPage: React.FC = () => {
   }, []);
 
   const [filterOpen, setFilterOpen] = useState(false);
+
+  const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
+  const [sortConfig, setSortConfig] = useState<{ field: string, direction: 'asc'|'desc' } | null>(null);
+
+  const getFieldValueForFilter = useCallback((row: any, field: string) => {
+    let val: any;
+    switch(field) {
+      // Common fields
+      case 'Name': val = row.name; break;
+      case 'Item Code': val = row.itemCode; break;
+      case 'Supplier': val = row.supplierName; break;
+      case 'Origin': val = row.origin; break;
+      case 'Price': val = row.price ? `${row.price}${row.currency ? ' ' + row.currency : ''}${row.priceUnit ? '/' + row.priceUnit : ''}` : undefined; break;
+      case 'Location': val = row.location; break;
+      case 'Holder': val = row.holder; break;
+      case 'Qty': val = row.quantity ? `${row.quantity} ${row.quantityUnit || 'pcs'}` : undefined; break;
+      case 'Created At': 
+        if (row.createdAt) {
+          try { val = new Date(row.createdAt).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }); } catch {}
+        }
+        break;
+      case 'Remark': val = row.remark; break;
+
+      // Accessory specific
+      case 'Description': val = row.accessory?.description || row.description; break;
+      case 'Size': val = row.accessory?.size || row.product?.size || row.pattern?.size; break;
+      case 'Color': val = row.accessory?.color || row.fabric?.colorName || row.product?.color; break;
+      case 'Specification': val = row.accessory?.specification; break;
+      
+      // Fabric & Yardage specific
+      case 'Structure': val = row.fabric?.structure; break;
+      case 'Composition': val = row.fabric?.composition || row.accessory?.composition; break;
+      case 'Function': val = row.fabric?.function; break;
+      case 'GSM': val = row.fabric?.weightGsm || row.accessory?.weightGsm; break;
+      case 'Width': val = row.fabric?.cuttableWidth; break;
+      case 'leadtimeWithGreige': val = row.leadtimeWithGreige; break;
+      case 'leadtimeWithoutGreige': val = row.leadtimeWithoutGreige; break;
+      case 'S/Y': val = row.fabric?.hasSy ? 'Yes' : 'No'; break;
+      
+      // Product specific
+      case 'Project': val = row.product?.projectName; break;
+      case 'Category': val = row.product?.garmentCategory || row.category; break;
+      case 'Sport': val = row.product?.sportCategory; break;
+      case 'Style Name': val = row.product?.styleName; break;
+      case 'Stage': val = row.product?.sampleStage; break;
+      case 'Gender': val = row.product?.gender; break;
+      case 'Pattern Marker': val = row.product?.patternMarker; break;
+      case 'Allocation': val = row.product?.allocation; break;
+      case 'Main Composition': val = row.product?.mainComposition; break;
+      case 'FOB Price': val = row.product?.fobPrice; break;
+      
+      default: val = row[field];
+    }
+    return (val !== undefined && val !== null && val !== '') ? String(val) : '(Blanks)';
+  }, []);
+
+  const filteredItems = useMemo(() => {
+    let result = items;
+    const filterEntries = Object.entries(columnFilters);
+    if (filterEntries.length > 0) {
+      result = items.filter(row => {
+        return filterEntries.every(([field, allowedValues]) => {
+          if (!allowedValues || allowedValues.length === 0) return true;
+          const val = getFieldValueForFilter(row, field);
+          return allowedValues.includes(val);
+        });
+      });
+    }
+    if (sortConfig) {
+      result = [...result].sort((a, b) => {
+        const valA = getFieldValueForFilter(a, sortConfig.field);
+        const valB = getFieldValueForFilter(b, sortConfig.field);
+        if (valA < valB) return sortConfig.direction === 'asc' ? -1 : 1;
+        if (valA > valB) return sortConfig.direction === 'asc' ? 1 : -1;
+        return 0;
+      });
+    }
+    return result;
+  }, [items, columnFilters, sortConfig, getFieldValueForFilter]);
+
+  columnFilterStore.register(window.location.pathname, columnFilters, setColumnFilters, items);
+
   const activeFiltersCount = (itemCode.length > 0 ? 1 : 0) + (supplierName.length > 0 ? 1 : 0) + (color.length > 0 ? 1 : 0) + (origin.length > 0 ? 1 : 0) + (location.length > 0 ? 1 : 0) + (holder.length > 0 ? 1 : 0);
 
   const [colMenuAnchor, setColMenuAnchor] = useState<null | HTMLElement>(null);
@@ -789,7 +872,20 @@ const FabricListPage: React.FC = () => {
         {columns.map((col) => (
           <MenuItem key={col.id} onClick={() => setVisibleColumns(prev => ({ ...prev, [col.id]: prev[col.id] === false }))} sx={{ py: 0.5, borderRadius: 1 }}>
             <Checkbox size="small" checked={visibleColumns[col.id] !== false} onChange={() => {}} sx={{ mr: 1, p: 0, pointerEvents: 'none' }} />
-            <Typography fontSize={13} fontWeight={500} sx={{ pointerEvents: 'none' }}>{col.label}</Typography>
+            <Typography fontSize={13} fontWeight={500} sx={{ pointerEvents: 'none' }}><Box sx={{ display: 'flex', alignItems: 'center', justifyContent: col.isCenter ? 'center' : col.isRight ? 'flex-end' : 'flex-start' }}>
+                          <span>{col.label}</span>
+                          {col.id !== 'Image' && col.id !== 'Actions' && (
+                            <TableExcelColumnMenu 
+                              field={col.id}
+                              allRows={items}
+                              columnFilters={columnFilters}
+                              setColumnFilters={setColumnFilters}
+                              getFieldValue={getFieldValueForFilter}
+                              onSortAsc={() => setSortConfig({ field: col.id, direction: 'asc' })}
+                              onSortDesc={() => setSortConfig({ field: col.id, direction: 'desc' })}
+                            />
+                          )}
+                        </Box></Typography>
           </MenuItem>
         ))}
       </Menu>
@@ -851,11 +947,11 @@ const FabricListPage: React.FC = () => {
         )}
         {isMobile ? (
           <Box sx={{ flexGrow: 1, minHeight: 0, overflowY: 'auto', p: 1.5, display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-            {loading && items.length === 0 ? (
+            {loading && filteredItems.length === 0 ? (
               <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
                 <CircularProgress size={28} color="primary" />
               </Box>
-            ) : items.length === 0 ? (
+            ) : filteredItems.length === 0 ? (
               <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1.5, py: 8 }}>
                 <TextureIcon sx={{ fontSize: 48, color: '#e2e8f0' }} />
                 <Typography color="text.secondary" fontWeight={600} fontSize={14}>
@@ -863,7 +959,7 @@ const FabricListPage: React.FC = () => {
                 </Typography>
               </Box>
             ) : (
-              items.map((item) => {
+              filteredItems.map((item) => {
                 const rightActions = [];
                 if (canEdit) {
                   rightActions.push({
@@ -1071,7 +1167,20 @@ const FabricListPage: React.FC = () => {
                         } as any}
                       >
                         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: col.isCenter ? 'center' : (col.isRight ? 'flex-end' : 'flex-start'), gap: 0.5 }}>
+                          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: col.isCenter ? 'center' : col.isRight ? 'flex-end' : 'flex-start' }}>
                           <span>{col.label}</span>
+                          {col.id !== 'Image' && col.id !== 'Actions' && (
+                            <TableExcelColumnMenu 
+                              field={col.id}
+                              allRows={items}
+                              columnFilters={columnFilters}
+                              setColumnFilters={setColumnFilters}
+                              getFieldValue={getFieldValueForFilter}
+                              onSortAsc={() => setSortConfig({ field: col.id, direction: 'asc' })}
+                              onSortDesc={() => setSortConfig({ field: col.id, direction: 'desc' })}
+                            />
+                          )}
+                        </Box>
                           {col.id !== 'Actions' && col.id !== 'Image' && (
                             <IconButton 
                               size="small" 
@@ -1097,11 +1206,11 @@ const FabricListPage: React.FC = () => {
                 </TableRow>
               </TableHead>
               <TableBody sx={{ '& tr:nth-of-type(even)': { bgcolor: '#fff' }, '& tr:nth-of-type(odd)': { bgcolor: '#fff' }, opacity: loading ? 0.6 : 1, transition: 'opacity 0.2s' }}>
-                {loading && items.length === 0 ? (
+                {loading && filteredItems.length === 0 ? (
                   <TableRow><TableCell colSpan={colSpanCount} align="center" sx={{ py: 6 }}>
                     <CircularProgress size={28} color="primary" />
                   </TableCell></TableRow>
-                ) : items.length === 0 ? (
+                ) : filteredItems.length === 0 ? (
                   <TableRow><TableCell colSpan={colSpanCount} align="center" sx={{ py: 8 }}>
                     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1.5 }}>
                       <TextureIcon sx={{ fontSize: 48, color: '#e2e8f0' }} />
@@ -1110,7 +1219,7 @@ const FabricListPage: React.FC = () => {
                       </Typography>
                     </Box>
                   </TableCell></TableRow>
-                ) : items.map((item) => {
+                ) : filteredItems.map((item) => {
                   const rowBgColor = (item.quantity ?? 0) <= 0 ? '#fef2f2' : '#fff';
                   return (
                     <TableRow

@@ -52,6 +52,7 @@ export function useAdminDrawerForm(
         developerName: selectedRow.developerName || '',
         delayRemakeReason: selectedRow.delayRemakeReason || '',
         templateQty: selectedRow.templateQty,
+        templateType: selectedRow.templateType || '',
         remarks: selectedRow.remarks || '',
         releasedDate: selectedRow.releasedDate,
         confirmDeliveryDate: selectedRow.confirmDeliveryDate || null,

@@ -84,7 +84,7 @@ export const UserList: React.FC<UserListProps> = ({
                       {user.employeeName}
                     </Typography>
                     <Typography variant="caption" sx={{ color: '#64748b', display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 0.25, fontSize: '0.75rem' }}>
-                      <span>{user.employeeCode}</span>
+                      <span>{user.employeeCode} {user.email ? `• ${user.email}` : ''}</span>
                       <span style={{ fontWeight: 700, color: user.isAdmin ? '#2563eb' : '#64748b' }}>{user.roleLabel}</span>
                     </Typography>
                   </Box>

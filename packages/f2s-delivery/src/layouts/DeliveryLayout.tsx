@@ -9,7 +9,7 @@ import {
   Inventory as InventoryIcon,
   QrCodeScanner as ScanIcon,
 } from '@mui/icons-material';
-import { AppShell } from '@traxeco/shared';
+import { AppShell , authService } from '@traxeco/shared';
 import Dashboard from '../pages/Dashboard';
 import DeliverPage from '../pages/DeliverPage';
 import HistoryPage from '../pages/HistoryPage';

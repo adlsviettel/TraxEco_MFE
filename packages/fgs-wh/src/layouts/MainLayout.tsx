@@ -7,7 +7,7 @@ import {
   Assignment as AssignmentIcon, FactCheck as FactCheckIcon, 
   EditLocation as EditLocationIcon, Map as MapIcon, Print as PrintIcon
 } from '@mui/icons-material';
-import { AppShell, SyncQueueWidget, AdminPage } from '@traxeco/shared';
+import { AppShell, SyncQueueWidget, AdminPage , authService } from '@traxeco/shared';
 
 import ScanPage from '../pages/ScanPage';
 import HistoryPage from '../pages/HistoryPage';
@@ -33,7 +33,7 @@ export default function MainLayout() {
     { text: t('nav.updateLocation', 'Cập Nhật Vị Trí'), icon: <EditLocationIcon />, path: '/fgswh/updatelocation', pageCode: 'updatelocation' },
     { text: t('nav.warehouseMap', 'Bản Đồ Kho'), icon: <MapIcon />, path: '/fgswh/map', pageCode: 'warehousemap' },
     { text: 'Cấu Hình In', icon: <PrintIcon />, path: '/fgswh/labelconfig', pageCode: 'labelconfig' },
-    ...(roleLevel <= 2 ? [{ text: t('nav.admin', 'Admin'), icon: <AdminSettingsIcon />, path: '/fgswh/admin', pageCode: 'admin' }] : []),
+    ...(roleLevel <= 2 || authService.hasPageAccess('admin') ? [{ text: t('nav.admin', 'Admin'), icon: <AdminSettingsIcon />, path: '/fgswh/admin', pageCode: 'admin' }] : []),
   ], [t, roleLevel]);
 
   const pages = useMemo(() => [
@@ -46,7 +46,7 @@ export default function MainLayout() {
     { path: '/fgswh/updatelocation', component: <UpdateLocationPage /> },
     { path: '/fgswh/map', component: <WarehouseMapPage /> },
     { path: '/fgswh/labelconfig', component: <LabelConfigPage /> },
-    ...(roleLevel <= 2 ? [{ path: '/fgswh/admin', component: <AdminPage /> }] : []),
+    ...(roleLevel <= 2 || authService.hasPageAccess('admin') ? [{ path: '/fgswh/admin', component: <AdminPage /> }] : []),
   ], [roleLevel]);
 
   const appLogo = (

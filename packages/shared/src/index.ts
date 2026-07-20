@@ -50,3 +50,7 @@ export { lightTheme, darkTheme } from './theme';
 
 // Constants
 export { languages } from './constants/languages';
+
+export { columnFilterStore } from './components/ColumnFilterContext';
+export { default as ExcelStyleColumnMenu } from './components/ExcelStyleColumnMenu';
+export { default as TableExcelColumnMenu } from './components/TableExcelColumnMenu';

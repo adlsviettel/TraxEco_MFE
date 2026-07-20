@@ -32,9 +32,9 @@ import { tccService, type TccRequest, type RequestFilters } from '../services/tc
 import { authService, AppButton, AppTextField, AdvancedFilterDrawer } from '@traxeco/shared';
 
 // Column Menu & Context
-import ExcelStyleColumnMenu from '../components/ExcelStyleColumnMenu';
+import { ExcelStyleColumnMenu, columnFilterStore } from '@traxeco/shared';
 import CustomFilterPanel from '../components/CustomFilterPanel';
-import { columnFilterStore } from '../components/ColumnFilterContext';
+
 
 // Hooks
 import { useSnackbar } from '../hooks/useSnackbar';
@@ -115,7 +115,7 @@ export default function AdminStatusPage() {
   // 2. Request Data hook
   const {
     requests, setRequests, loading, fromDate, setFromDate, toDate, setToDate,
-    filters, developers, customers, factories,
+    filters, developers, customers, factories, templateTypes,
     columnFilters, setColumnFilters, localColumnFilters, setLocalColumnFilters,
     filteredRequests, fetchRequests, handleFilterChange
   } = useAdminRequests(showSnackbar, t);
@@ -562,7 +562,7 @@ export default function AdminStatusPage() {
   }, [reorderOpen, columns, setLocalFields]);
 
   // Register column filters
-  columnFilterStore.register('admin', columnFilters, setColumnFilters, requests);
+  columnFilterStore.register(window.location.pathname, columnFilters, setColumnFilters, requests);
 
   return (
     <Box sx={{ height: '100%', minHeight: 0, display: 'flex', flexDirection: 'column', gap: 1.5, overflow: 'hidden' }}>
@@ -944,6 +944,7 @@ export default function AdminStatusPage() {
         developers={developers}
         customers={customers}
         factories={factories}
+        templateTypes={templateTypes}
         onSaveSuccess={handleSaveSuccess}
         onRefreshData={fetchRequests}
       />

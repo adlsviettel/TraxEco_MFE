@@ -49,47 +49,53 @@ export function useMachineTemplateData(
 
   // Update available machine types based on factory
   useEffect(() => {
-    if (factory && machineTemplates.length > 0) {
-      const normalizedSelected = normalizeStr(factory);
-      const types = Array.from(
-        new Set(
-          machineTemplates
-            .filter(t => normalizeStr(t.factory) === normalizedSelected)
-            .map(t => t.machineType)
-        )
-      );
-      setAvailableMachineTypes(types);
-      if (machineType && !types.includes(machineType)) {
-        setEditForm(prev => ({ ...prev, machineType: '', machineDimension: '' }));
-      }
-    } else {
+    if (!open || machineTemplates.length === 0) return;
+
+    if (!factory) {
       setAvailableMachineTypes([]);
+      if (machineType) setEditForm(prev => ({ ...prev, machineType: '', machineDimension: '' }));
+      return;
+    }
+
+    const normalizedSelected = normalizeStr(factory);
+    const types = Array.from(
+      new Set(
+        machineTemplates
+          .filter(t => normalizeStr(t.factory) === normalizedSelected)
+          .map(t => t.machineType)
+      )
+    );
+    setAvailableMachineTypes(types);
+    if (machineType && !types.includes(machineType)) {
       setEditForm(prev => ({ ...prev, machineType: '', machineDimension: '' }));
     }
-  }, [factory, machineTemplates, machineType, setEditForm]);
+  }, [open, factory, machineTemplates, machineType, setEditForm]);
 
   // Update available machine dimensions based on factory and machineType
   useEffect(() => {
-    if (machineType && factory && machineTemplates.length > 0) {
-      const normalizedSelected = normalizeStr(factory);
-      const dims = Array.from(
-        new Set(
-          machineTemplates
-            .filter(
-              t => normalizeStr(t.factory) === normalizedSelected && t.machineType === machineType
-            )
-            .map(t => t.machineDimension)
-        )
-      );
-      setAvailableMachineDimensions(dims);
-      if (machineDimension && !dims.includes(machineDimension)) {
-        setEditForm(prev => ({ ...prev, machineDimension: '' }));
-      }
-    } else {
+    if (!open || machineTemplates.length === 0) return;
+
+    if (!machineType || !factory) {
       setAvailableMachineDimensions([]);
+      if (machineDimension) setEditForm(prev => ({ ...prev, machineDimension: '' }));
+      return;
+    }
+
+    const normalizedSelected = normalizeStr(factory);
+    const dims = Array.from(
+      new Set(
+        machineTemplates
+          .filter(
+            t => normalizeStr(t.factory) === normalizedSelected && t.machineType === machineType
+          )
+          .map(t => t.machineDimension)
+      )
+    );
+    setAvailableMachineDimensions(dims);
+    if (machineDimension && !dims.includes(machineDimension)) {
       setEditForm(prev => ({ ...prev, machineDimension: '' }));
     }
-  }, [machineType, factory, machineTemplates, machineDimension, setEditForm]);
+  }, [open, machineType, factory, machineTemplates, machineDimension, setEditForm]);
 
   return {
     availableMachineTypes,

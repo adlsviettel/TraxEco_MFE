@@ -11,7 +11,7 @@ import {
   SettingsOutlined as MasterDataIcon,
   AdminPanelSettings as AdminIcon,
 } from "@mui/icons-material";
-import { AdminPage } from "@traxeco/shared";
+import { AdminPage , authService } from "@traxeco/shared";
 import ClinicAppShell from "./ClinicAppShell";
 
 import MedicineDispensePage from "../pages/MedicineDispensePage";
@@ -79,7 +79,7 @@ export default function ClinicLayout() {
         path: `${BASE}/master-data`,
         pageCode: "clinic_master_data",
       },
-      ...(roleLevel <= 2
+      ...(roleLevel <= 2 || authService.hasPageAccess('clinic_admin')
         ? [
             {
               text: t("nav.admin", "Admin"),
@@ -103,7 +103,7 @@ export default function ClinicLayout() {
       { path: `${BASE}/maternity`, component: <MaternityPage /> },
       { path: `${BASE}/report`, component: <ReportPage /> },
       { path: `${BASE}/master-data`, component: <MasterDataPage /> },
-      ...(roleLevel <= 2
+      ...(roleLevel <= 2 || authService.hasPageAccess('clinic_admin')
         ? [{ path: `${BASE}/admin`, component: <AdminPage /> }]
         : []),
     ],

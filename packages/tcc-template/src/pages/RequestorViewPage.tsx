@@ -36,9 +36,9 @@ import { tccService, type TccRequest, type RequestFilters } from '../services/tc
 import { authService, AppButton, AppTextField, AdvancedFilterDrawer } from '@traxeco/shared';
 
 // Column Context
-import ExcelStyleColumnMenu from '../components/ExcelStyleColumnMenu';
+import { ExcelStyleColumnMenu, columnFilterStore } from '@traxeco/shared';
 import CustomFilterPanel from '../components/CustomFilterPanel';
-import { columnFilterStore } from '../components/ColumnFilterContext';
+
 
 // Hooks
 import { useSnackbar } from '../hooks/useSnackbar';
@@ -647,7 +647,7 @@ export default function RequestorViewPage() {
   }, [reorderOpen, sortedColumns, setLocalFields]);
 
   // Auto register local filters with context
-  columnFilterStore.register('requestor', columnFilters, setColumnFilters, requests);
+  columnFilterStore.register(window.location.pathname, columnFilters, setColumnFilters, requests);
 
   const detailRow = requests.find(r => r.requestId === selectedDetailId) || null;
 

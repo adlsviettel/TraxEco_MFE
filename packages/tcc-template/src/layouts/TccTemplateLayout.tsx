@@ -8,7 +8,7 @@ import {
   AdminPanelSettings as AdminSettingsIcon,
   Settings as SettingsIcon,
 } from '@mui/icons-material';
-import { AppShell, AdminPage } from '@traxeco/shared';
+import { AppShell, AdminPage , authService } from '@traxeco/shared';
 
 import RequestorViewPage from '../pages/RequestorViewPage';
 import AdminStatusPage from '../pages/AdminStatusPage';
@@ -48,7 +48,7 @@ export default function TccTemplateLayout() {
     { text: t('tcc.nav.adminStatus', 'Master Data'), icon: <AssignmentIcon fontSize="small" />, path: `${BASE}/admin-status`, pageCode: 'tcc_admin_status' },
     { text: t('tcc.nav.dashboard', 'Dashboard'), icon: <BarChartIcon fontSize="small" />, path: `${BASE}/dashboard`, pageCode: 'tcc_dashboard' },
     { text: t('nav.settings', 'Settings'), icon: <SettingsIcon fontSize="small" />, path: `${BASE}/settings`, pageCode: 'tcc_settings' },
-    ...(roleLevel <= 2 ? [{ text: t('nav.admin', 'Admin'), icon: <AdminSettingsIcon fontSize="small" />, path: `${BASE}/admin`, pageCode: 'tcc_admin' }] : []),
+    ...(roleLevel <= 2 || authService.hasPageAccess('tcc_admin') ? [{ text: t('nav.admin', 'Admin'), icon: <AdminSettingsIcon fontSize="small" />, path: `${BASE}/admin`, pageCode: 'tcc_admin' }] : []),
   ], [t, roleLevel]);
 
   const pages = useMemo(() => [
@@ -56,7 +56,7 @@ export default function TccTemplateLayout() {
     { path: `${BASE}/admin-status`, component: <AdminStatusPage /> },
     { path: `${BASE}/dashboard`, component: <DashboardPage /> },
     { path: `${BASE}/settings`, component: <TccSettingsPage /> },
-    ...(roleLevel <= 2 ? [{ path: `${BASE}/admin`, component: <AdminPage /> }] : []),
+    ...(roleLevel <= 2 || authService.hasPageAccess('tcc_admin') ? [{ path: `${BASE}/admin`, component: <AdminPage /> }] : []),
   ], [roleLevel]);
 
   return (

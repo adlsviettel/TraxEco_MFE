@@ -38,6 +38,7 @@ export function useAdminRequests(
   ]);
   const [customers, setCustomers] = useState<string[]>([]);
   const [factories, setFactories] = useState<string[]>([]);
+  const [templateTypes, setTemplateTypes] = useState<string[]>([]);
 
   const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
   const [localColumnFilters, setLocalColumnFilters] = useState<Record<string, string[]>>({});
@@ -131,6 +132,9 @@ export function useAdminRequests(
         if (data.factory && data.factory.length > 0) {
           setFactories(data.factory);
         }
+        if (data.templateType && data.templateType.length > 0) {
+          setTemplateTypes(data.templateType);
+        }
       } catch (error) {
         console.error('Failed to fetch metadata for filters', error);
       }
@@ -155,6 +159,7 @@ export function useAdminRequests(
     setDevelopers,
     customers,
     factories,
+    templateTypes,
     columnFilters,
     setColumnFilters,
     localColumnFilters,

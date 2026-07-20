@@ -55,7 +55,7 @@ export default function Sidebar() {
         { to: `${BASE}/stock-opname/auxiliary`, label: 'Auxiliary Materials' },
         { to: `${BASE}/stock-opname/wip`, label: 'Work-in-Process' },
         { to: `${BASE}/stock-opname/finished`, label: 'Finished Goods' },
-        { to: `${BASE}/stock-opname/scrap`, label: 'Rejects and Scrap' }
+        { to: `${BASE}/stock-opname/scrap`, label: 'Material Waste & Scrap Management' }
       ]
     },
     { to: `${BASE}/adjustment`, icon: SlidersHorizontal, label: t('nav.adjustment'), pageCode: 'it_adjustment' },

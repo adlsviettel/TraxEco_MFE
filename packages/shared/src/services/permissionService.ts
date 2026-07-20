@@ -11,6 +11,7 @@ const getHeaders = async () => {
 export interface UserWithPermissions {
   employeeCode: string;
   employeeName: string;
+  email?: string;
   factory: string;
   dept: string;
   section: string;

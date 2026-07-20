@@ -62,6 +62,11 @@ const APP_CONFIG: Record<string, { icon: React.ReactNode; route: string; i18nKey
     route: '/clinic',
     i18nKey: 'app.clinic',
   },
+  COO: {
+    icon: <DefaultAppIcon sx={{ fontSize: 36 }} />,
+    route: '/coo/dashboard',
+    i18nKey: 'app.coo',
+  },
   // Future apps can be added here
 };
 
@@ -145,12 +150,18 @@ export default function MainPage() {
         else if (code === 'ACCESSORY_WH') fallbackName = 'Accessory Warehouse';
         else if (code === 'TCC_TEMPLATE') fallbackName = 'TCC Template';
         else if (code === 'CLINIC') fallbackName = 'Clinic';
+        else if (code === 'COO') fallbackName = 'COO Data Import';
         return {
           appCode: code,
           appName: fallbackName,
           isActive: true,
         };
       });
+
+  // Tạm thời hiển thị app COO cho mọi người để review UI
+  if (!visibleApps.find(a => a.appCode === 'COO')) {
+    visibleApps.push({ appCode: 'COO', appName: 'COO Data Import', isActive: true });
+  }
 
   // Đã bỏ tính năng auto-redirect nếu user chỉ có 1 app (theo yêu cầu fix lỗi chớp màn hình)
 

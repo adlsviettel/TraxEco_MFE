@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   Box, Typography, Button, Paper, Table, TableBody, TableCell, TableContainer,
   TableHead, TableRow, IconButton, Dialog, DialogTitle, DialogContent,
-  DialogActions, TextField, MenuItem, CircularProgress, Alert, Pagination, Tooltip, Stack, Autocomplete
+  DialogActions, TextField, MenuItem, CircularProgress, Alert, Pagination, Tooltip, Stack, Autocomplete, Divider
 } from '@mui/material';
 import { createFilterOptions } from '@mui/material/Autocomplete';
 import { Edit as EditIcon, Delete as DeleteIcon, Add as AddIcon, Refresh as RefreshIcon, ContentCopy as ContentCopyIcon } from '@mui/icons-material';
@@ -118,7 +118,8 @@ export default function LabelConfigPage() {
   
   const [commonData, setCommonData] = useState({
     custNo: '', customer: '', shipDest: '',
-    ext1: '', ext2: '', ext3: '', ctnL: '', ctnW: '', ctnH: ''
+    ext1: '', ext2: '', ext3: '', ctnL: '', ctnW: '', ctnH: '',
+    customerInitial: '', portOfDestination: '', customerCoNo: ''
   });
   const [customers, setCustomers] = useState<Customer[]>([]);
   
@@ -127,6 +128,87 @@ export default function LabelConfigPage() {
   ]);
 
   const [confirmDialog, setConfirmDialog] = useState<ConfirmDialogState>(defaultConfirmDialog);
+
+  const [poDialogOpen, setPoDialogOpen] = useState(false);
+  const [poDialogSearch, setPoDialogSearch] = useState('');
+  const [poDialogLoading, setPoDialogLoading] = useState(false);
+  const [poDialogError, setPoDialogError] = useState('');
+  const [poDialogSuccess, setPoDialogSuccess] = useState('');
+  const [poDialogData, setPoDialogData] = useState({
+    customerInitial: '',
+    portOfDestination: '',
+    customerCoNo: ''
+  });
+
+  const handleOpenPoDialog = () => {
+    setPoDialogSearch('');
+    setPoDialogError('');
+    setPoDialogSuccess('');
+    setPoDialogData({ customerInitial: '', portOfDestination: '', customerCoNo: '' });
+    setPoDialogOpen(true);
+  };
+
+  const handleFetchPoDialog = async () => {
+    if (!poDialogSearch.trim()) {
+      setPoDialogError('Vui lòng nhập số PO');
+      return;
+    }
+    setPoDialogLoading(true);
+    setPoDialogError('');
+    setPoDialogSuccess('');
+    try {
+      const res = await authFetch(`/v2/label-config/po-config-info/${encodeURIComponent(poDialogSearch.trim())}`);
+      const data = await res.json();
+      if (data.code === 200 && data.data) {
+        setPoDialogData({
+          customerInitial: data.data.customerInitial || '',
+          portOfDestination: data.data.portOfDestination || '',
+          customerCoNo: data.data.customerCoNo || ''
+        });
+      } else {
+        setPoDialogError(data.msg || 'Không tìm thấy dữ liệu PO');
+      }
+    } catch (err: any) {
+      setPoDialogError(err.message || 'Lỗi tải dữ liệu PO');
+    } finally {
+      setPoDialogLoading(false);
+    }
+  };
+
+  const handleSavePoDialog = async () => {
+    if (!poDialogSearch.trim()) {
+      setPoDialogError('Vui lòng nhập số PO');
+      return;
+    }
+    setPoDialogLoading(true);
+    setPoDialogError('');
+    setPoDialogSuccess('');
+    try {
+      const res = await authFetch('/v2/label-config/po-manual-config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          poNo: poDialogSearch.trim(),
+          customerInitial: poDialogData.customerInitial,
+          portOfDestination: poDialogData.portOfDestination,
+          customerCoNo: poDialogData.customerCoNo
+        })
+      });
+      const data = await res.json();
+      if (data.code === 200) {
+        setPoDialogSuccess('Lưu cấu hình PO thành công!');
+        setTimeout(() => {
+          setPoDialogOpen(false);
+        }, 1200);
+      } else {
+        setPoDialogError(data.msg || 'Lưu thất bại');
+      }
+    } catch (err: any) {
+      setPoDialogError(err.message || 'Lỗi lưu dữ liệu');
+    } finally {
+      setPoDialogLoading(false);
+    }
+  };
 
   const fetchConfigs = async () => {
     setLoading(true);
@@ -206,7 +288,8 @@ export default function LabelConfigPage() {
       ctnH: group.ctnH,
       shipDest: group.shipDest,
       customer: group.customer,
-      ext1: '', ext2: '', ext3: ''
+      ext1: '', ext2: '', ext3: '',
+      customerInitial: '', portOfDestination: '', customerCoNo: ''
     });
     setMarksData(group.marks.map(m => ({
       id: Date.now() + Math.random(),
@@ -227,7 +310,8 @@ export default function LabelConfigPage() {
     setDeletedMarks([]);
     setEditingId(undefined);
     setCommonData({
-      custNo: '', ctnL: '', ctnW: '', ctnH: '', shipDest: '', customer: '', ext1: '', ext2: '', ext3: ''
+      custNo: '', ctnL: '', ctnW: '', ctnH: '', shipDest: '', customer: '', ext1: '', ext2: '', ext3: '',
+      customerInitial: '', portOfDestination: '', customerCoNo: ''
     });
     setMarksData([{
       id: Date.now(), shippingMarkId: 0, area: 'A', sealMethod: 'H', posX: 0, posY: 0
@@ -290,6 +374,9 @@ export default function LabelConfigPage() {
 
         const newCustNo = data.data.label || commonData.custNo;
         const newShipDest = data.data.shipDest || commonData.shipDest;
+        const customerInitial = data.data.customerInitial || '';
+        const portOfDestination = data.data.portOfDestination || '';
+        const customerCoNo = data.data.customerCoNo || '';
         
         // Show first dimension in commonData
         const firstL = parsedDims.length > 0 ? parsedDims[0].l : commonData.ctnL;
@@ -347,7 +434,10 @@ export default function LabelConfigPage() {
           shipDest: newShipDest,
           ctnL: firstL,
           ctnW: firstW,
-          ctnH: firstH
+          ctnH: firstH,
+          customerInitial: customerInitial,
+          portOfDestination: portOfDestination,
+          customerCoNo: customerCoNo
         }));
         
         // Recalculate marks UI just for the first dimension for display purposes
@@ -624,6 +714,9 @@ export default function LabelConfigPage() {
         <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
           <LocalSearchInput onSearch={(val) => { setTableSearch(val); setPage(0); }} />
           <Button startIcon={<RefreshIcon />} onClick={fetchConfigs}>Làm mới</Button>
+          <Button variant="contained" color="secondary" startIcon={<AddIcon />} onClick={() => handleOpenPoDialog()}>
+            Cấu Hình Theo PO
+          </Button>
           <Button variant="contained" startIcon={<AddIcon />} onClick={() => handleOpenDialog()}>
             Thêm Cấu Hình
           </Button>
@@ -852,15 +945,13 @@ export default function LabelConfigPage() {
           <Box p={2} border="1px solid #bbdefb" borderRadius={2} bgcolor="#e3f2fd">
             <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
               <Typography variant="subtitle1" fontWeight="bold" color="primary">DANH SÁCH TEM & MẶT IN (Mỗi Tem 1 dòng)</Typography>
-              {!editingId && (
-                <Button 
-                  variant="outlined" 
-                  startIcon={<AddIcon />} 
-                  onClick={() => setMarksData(p => [...p, { id: Date.now(), shippingMarkId: 0, area: 'A', sealMethod: 'H', posX: 0, posY: 0 }])}
-                >
-                  Thêm Tem
-                </Button>
-              )}
+              <Button 
+                variant="outlined" 
+                startIcon={<AddIcon />} 
+                onClick={() => setMarksData(p => [...p, { id: Date.now(), shippingMarkId: 0, area: 'A', sealMethod: 'H', posX: 0, posY: 0 }])}
+              >
+                Thêm Tem
+              </Button>
             </Box>
             
             <Stack spacing={2}>
@@ -874,7 +965,7 @@ export default function LabelConfigPage() {
                     value={
                       (mark.shippingMarkId === 0) 
                         ? { shippingMarkId: 0, shippingMarkPicture: '-- Chọn Mã Tem --' }
-                        : shippingMarks.find(sm => sm.shippingMarkId === mark.shippingMarkId) || { shippingMarkId: 0, shippingMarkPicture: '-- Chọn Mã Tem --' }
+                        : shippingMarks.find(sm => sm.shippingMarkId === mark.shippingMarkId) || { shippingMarkId: mark.shippingMarkId, shippingMarkPicture: `Mã ${mark.shippingMarkId} (Không tìm thấy)` }
                     }
                     onChange={(e, v) => handleMarkChange(mark.id, 'shippingMarkId', v ? v.shippingMarkId : 0)}
                     isOptionEqualToValue={(o, v) => o.shippingMarkId === v.shippingMarkId}
@@ -909,7 +1000,7 @@ export default function LabelConfigPage() {
                     <TextField label="PosY" type="number" value={mark.posY} onChange={e => handleMarkChange(mark.id, 'posY', parseFloat(e.target.value) || 0)} size="small" sx={{ width: 100 }} />
                   )}
                   
-                                    {!editingId && marksData.length > 1 && (
+                                    {marksData.length > 1 && (
                     <IconButton color="error" onClick={() => {
                       if (mark.recNo) {
                         setDeletedMarks(prev => [...prev, mark.recNo]);
@@ -956,6 +1047,73 @@ export default function LabelConfigPage() {
       </Dialog>
 
       <ConfirmDialog state={confirmDialog} onClose={() => setConfirmDialog(p => ({ ...p, open: false }))} />
+
+      {/* Dedicated Dialog for PO Manual Config */}
+      <Dialog open={poDialogOpen} onClose={() => setPoDialogOpen(false)} maxWidth="sm" fullWidth>
+        <DialogTitle sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e0e0e0', fontWeight: 'bold' }}>
+          Cấu Hình In Theo PO (Manual Values)
+        </DialogTitle>
+        <DialogContent sx={{ p: 3, display: 'flex', flexDirection: 'column', gap: 2 }}>
+          {poDialogError && <Alert severity="error" sx={{ mt: 1 }}>{poDialogError}</Alert>}
+          {poDialogSuccess && <Alert severity="success" sx={{ mt: 1 }}>{poDialogSuccess}</Alert>}
+          
+          <Box display="flex" gap={1} alignItems="center" sx={{ mt: 1 }}>
+            <TextField 
+              label="Nhập số PO" 
+              placeholder="Ví dụ: 4602900114" 
+              value={poDialogSearch} 
+              onChange={e => setPoDialogSearch(e.target.value)}
+              size="small"
+              fullWidth
+            />
+            <Button 
+              variant="contained" 
+              color="secondary" 
+              disabled={poDialogLoading}
+              onClick={handleFetchPoDialog}
+              sx={{ whiteSpace: 'nowrap' }}
+            >
+              {poDialogLoading ? <CircularProgress size={24} color="inherit" /> : 'Kéo dữ liệu PO'}
+            </Button>
+          </Box>
+
+          <Divider sx={{ my: 1 }} />
+
+          <Typography variant="subtitle2" color="primary">THÔNG TIN IN THỦ CÔNG</Typography>
+          <TextField 
+            label="Customer Initial" 
+            value={poDialogData.customerInitial} 
+            onChange={e => setPoDialogData({ ...poDialogData, customerInitial: e.target.value })} 
+            size="small" 
+            fullWidth 
+          />
+          <TextField 
+            label="Port of Destination" 
+            value={poDialogData.portOfDestination} 
+            onChange={e => setPoDialogData({ ...poDialogData, portOfDestination: e.target.value })} 
+            size="small" 
+            fullWidth 
+          />
+          <TextField 
+            label="Customer CO NO" 
+            value={poDialogData.customerCoNo} 
+            onChange={e => setPoDialogData({ ...poDialogData, customerCoNo: e.target.value })} 
+            size="small" 
+            fullWidth 
+          />
+        </DialogContent>
+        <DialogActions sx={{ p: 2, bgcolor: '#f8fafc', borderTop: '1px solid #e0e0e0' }}>
+          <Button onClick={() => setPoDialogOpen(false)} color="inherit" variant="outlined">Hủy</Button>
+          <Button 
+            onClick={handleSavePoDialog} 
+            variant="contained" 
+            color="primary"
+            disabled={poDialogLoading}
+          >
+            {poDialogLoading ? <CircularProgress size={24} color="inherit" /> : 'Lưu lại'}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

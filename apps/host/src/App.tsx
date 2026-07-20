@@ -28,6 +28,7 @@ const RDMaterialApp = React.lazy(() => import('@traxeco/rd-material'));
 const AccessoryWHApp = React.lazy(() => import('@traxeco/accessory-wh'));
 const TccTemplateApp = React.lazy(() => import('@traxeco/tcc-template'));
 const ClinicApp = React.lazy(() => import('@traxeco/clinic'));
+const CooApp = React.lazy(() => import('@traxeco/coo'));
 
 import { useTranslation } from 'react-i18next';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -344,6 +345,17 @@ function App() {
               <ChangePasswordGuard>
                 <Suspense fallback={<CircularProgress sx={{ m: 'auto', mt: 10 }} />}>
                   <ClinicApp />
+                </Suspense>
+              </ChangePasswordGuard>
+            </PrivateRoute>
+          } />
+
+          {/* COO app */}
+          <Route path="/coo/*" element={
+            <PrivateRoute>
+              <ChangePasswordGuard>
+                <Suspense fallback={<CircularProgress sx={{ m: 'auto', mt: 10 }} />}>
+                  <CooApp />
                 </Suspense>
               </ChangePasswordGuard>
             </PrivateRoute>

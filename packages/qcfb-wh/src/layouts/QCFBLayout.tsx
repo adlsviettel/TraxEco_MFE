@@ -6,7 +6,7 @@ import {
   ViewList as ListIcon,
   ManageAccounts as AdminIcon,
 } from '@mui/icons-material';
-import { AppShell, AdminPage } from '@traxeco/shared';
+import { AppShell, AdminPage , authService } from '@traxeco/shared';
 import DailyReportPage from '../pages/DailyReportPage';
 import PackingListSummaryPage from '../pages/PackingListSummaryPage';
 import PassFailPage from '../pages/PassFailPage';
@@ -31,7 +31,7 @@ export default function QCFBLayout() {
       { text: t('qcfb.nav.QCMockupTest', '🔥 QC Mockup (Test)'), icon: <InspectIcon />, path: '/qcfb-wh/qc-mockup', pageCode: 'qcfb-dashboard' },
       { text: t('qcfb.nav.ScannerTest', '🔥 Scanner (Test)'), icon: <InspectIcon />, path: '/qcfb-wh/scanner', pageCode: 'qcfb-dashboard' },
     ];
-    if (roleLevel <= 2) {
+    if (roleLevel <= 2 || authService.hasPageAccess('qcfb-admin')) {
       items.push({ text: t('nav.admin', 'Admin'), icon: <AdminIcon />, path: '/qcfb-wh/admin', pageCode: 'qcfb-admin' });
     }
     return items;
@@ -46,7 +46,7 @@ export default function QCFBLayout() {
     { path: '/qcfb-wh/report-defect', component: <ReportDefectPage /> },
     { path: '/qcfb-wh/qc-mockup', component: <QCInspectionMockupPage /> },
     { path: '/qcfb-wh/scanner', component: <ScannerSimulatorPage /> },
-    ...(roleLevel <= 2 ? [{ path: '/qcfb-wh/admin', component: <AdminPage /> }] : []),
+    ...(roleLevel <= 2 || authService.hasPageAccess('qcfb-admin') ? [{ path: '/qcfb-wh/admin', component: <AdminPage /> }] : []),
   ], [roleLevel]);
 
   return (

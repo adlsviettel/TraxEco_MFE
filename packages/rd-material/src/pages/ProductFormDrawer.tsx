@@ -67,8 +67,10 @@ const ProductFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSav
     // Dynamic Options
   const [garmentCategoryOpts, setGarmentCategoryOpts] = useState<string[]>(['Tops', 'Pants', 'Jackets', 'Polo', 'Shorts', 'Dress']);
   const [sportCategoryOpts, setSportCategoryOpts] = useState<string[]>(['Golf', 'Running', 'Training', 'Yoga', 'Lifestyle']);
-  const [sampleStageOpts, setSampleStageOpts] = useState<string[]>(['Mock up', '1st proto', '2nd proto', 'Sales sample']);
-  const [allocationOpts, setAllocationOpts] = useState<string[]>(['Puma SR', 'Adidas SR', 'R&D', 'Nike SR']);
+  const [sampleStageOpts, setSampleStageOpts] = useState<string[]>(['Mock up', '1st proto', '2nd proto', '3rd proto', '4th proto']);
+  const [allocationOpts, setAllocationOpts] = useState<string[]>(['Puma SR', 'Adidas SR', 'R&D']);
+  const [patternMarkerOpts] = useState<string[]>(['Puma', 'Adidas', 'R&D Arben']);
+  const [sizeOpts] = useState<string[]>(['S', 'M', 'L', 'XL']);
   const [usageOpts, setUsageOpts] = useState<string[]>(['Main Fabric', 'Lining Fabric', 'Accessory']);
 
   // Fabrics & Accessories for Lookups
@@ -218,7 +220,17 @@ const ProductFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSav
     setPendingStickerImages([]);
   }, [item, open]);
 
-  const set = (field: string, value: unknown) => setForm((f: any) => ({ ...f, [field]: value }));
+  const set = (field: string, value: unknown) => {
+    let finalValue = value;
+    if (typeof value === 'string') {
+      if (field === 'projectName' || field === 'styleName') {
+        finalValue = value.toUpperCase();
+      } else if (field === 'color' && value.length > 0) {
+        finalValue = value.charAt(0).toUpperCase() + value.slice(1);
+      }
+    }
+    setForm((f: any) => ({ ...f, [field]: finalValue }));
+  };
 
   const toNum = (v: unknown) => {
     const n = Number(v);
@@ -665,7 +677,7 @@ const ProductFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSav
                     {/* General Fields */}
                     <Box p={4}>
                       <Box display="grid" gridTemplateColumns={{ xs: '1fr', sm: '1fr 1fr 1fr' }} gap={2.5}>
-                        <AppTextField label="Project Name" size="small" value={form.projectName ?? ''} debounceMs={200} onDebounceChange={(val) => set('projectName', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
+                        <AppTextField label="Project Name" size="small" value={form.projectName ?? ''} debounceMs={200} onDebounceChange={(val) => set('projectName', val ? val.toUpperCase() : val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
                         <Autocomplete componentsProps={{ popper: { style: { zIndex: 10000 } } }} forcePopupIcon options={garmentCategoryOpts} freeSolo size="small" value={form.garmentCategory ?? ''} onChange={(_, val) => set('garmentCategory', val)} onInputChange={(_, val, reason) => { if (reason === 'input' || reason === 'clear') set('garmentCategory', val); }} renderInput={(params) => <TextField {...params} label="Product Category" sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />} />
                         <Autocomplete componentsProps={{ popper: { style: { zIndex: 10000 } } }} forcePopupIcon options={sportCategoryOpts} freeSolo size="small" value={form.sportCategory ?? ''} onChange={(_, val) => set('sportCategory', val)} onInputChange={(_, val, reason) => { if (reason === 'input' || reason === 'clear') set('sportCategory', val); }} renderInput={(params) => <TextField {...params} label="Sport Category" sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />} />
                       </Box>
@@ -714,9 +726,9 @@ const ProductFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSav
                             }
                           }} 
                         />
-                        <AppTextField label={t('rdMaterial.style_name', 'Style Name')} size="small" value={form.styleName ?? ''} debounceMs={200} onDebounceChange={(val) => set('styleName', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
+                        <AppTextField label={t('rdMaterial.style_name', 'Style Name')} size="small" value={form.styleName ?? ''} debounceMs={200} onDebounceChange={(val) => set('styleName', val ? val.toUpperCase() : val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
                         <Autocomplete componentsProps={{ popper: { style: { zIndex: 10000 } } }} forcePopupIcon options={sampleStageOpts} freeSolo size="small" value={form.sampleStage ?? ''} onChange={(_, val) => set('sampleStage', val)} onInputChange={(_, val, reason) => { if (reason === 'input' || reason === 'clear') set('sampleStage', val); }} renderInput={(params) => <TextField {...params} label={t('rdMaterial.stage', 'Sample Stage')} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />} />
-                        <AppTextField label={t('rdMaterial.color', 'Color')} size="small" value={form.color ?? ''} debounceMs={200} onDebounceChange={(val) => set('color', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
+                        <AppTextField label={t('rdMaterial.color', 'Color')} size="small" value={form.color ?? ''} debounceMs={200} onDebounceChange={(val) => set('color', val ? val.charAt(0).toUpperCase() + val.slice(1) : val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
                         <Box sx={{ gridColumn: '1 / -1', display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr 1fr' }, gap: 2.5 }}>
                           <AppTextField
                             select
@@ -742,7 +754,7 @@ const ProductFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSav
                             <MenuItem value="Unisex">{t('rdMaterial.unisex', 'Unisex')}</MenuItem>
                             <MenuItem value="Kids">{t('rdMaterial.kids', 'Kids')}</MenuItem>
                           </AppTextField>
-                          <AppTextField label={t('rdMaterial.size', 'Size')} size="small" value={form.size ?? ''} debounceMs={200} onDebounceChange={(val) => set('size', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
+                          <Autocomplete componentsProps={{ popper: { style: { zIndex: 10000 } } }} forcePopupIcon options={sizeOpts} freeSolo size="small" value={form.size ?? ''} onChange={(_, val) => set('size', val)} onInputChange={(_, val, reason) => { if (reason === 'input' || reason === 'clear') set('size', val); }} renderInput={(params) => <TextField {...params} label={t('rdMaterial.size', 'Size')} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />} />
                            <TextField 
                             inputRef={quantityRef}
                             label={t('rdMaterial.quantity', 'Quantity')} 
@@ -809,7 +821,7 @@ const ProductFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSav
                           />
                         </Box>
                         <Box sx={{ gridColumn: '1 / -1', display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr 1fr' }, gap: 2.5 }}>
-                          <AppTextField label={t('rdMaterial.pattern_marker', 'Pattern Marker')} size="small" value={form.patternMarker ?? ''} debounceMs={200} onDebounceChange={(val) => set('patternMarker', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
+                          <Autocomplete componentsProps={{ popper: { style: { zIndex: 10000 } } }} forcePopupIcon options={patternMarkerOpts} freeSolo size="small" value={form.patternMarker ?? ''} onChange={(_, val) => set('patternMarker', val)} onInputChange={(_, val, reason) => { if (reason === 'input' || reason === 'clear') set('patternMarker', val); }} renderInput={(params) => <TextField {...params} label={t('rdMaterial.pattern_marker', 'Pattern Marker')} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />} />
                           <Autocomplete componentsProps={{ popper: { style: { zIndex: 10000 } } }} forcePopupIcon options={allocationOpts} freeSolo size="small" value={form.allocation ?? ''} onChange={(_, val) => set('allocation', val)} onInputChange={(_, val, reason) => { if (reason === 'input' || reason === 'clear') set('allocation', val); }} renderInput={(params) => <TextField {...params} label={t('rdMaterial.allocation', 'Allocation')} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />} />
                           <AppTextField label={t('rdMaterial.location', 'Location')} size="small" value={form.location ?? ''} debounceMs={200} onDebounceChange={(val) => set('location', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
                         </Box>

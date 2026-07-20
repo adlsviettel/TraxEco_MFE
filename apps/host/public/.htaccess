@@ -2,12 +2,12 @@
   RewriteEngine On
   RewriteBase /trax-eco/
 
-  # Proxy WebSocket requests to Backend (192.168.14.10:8100)
+  # Proxy WebSocket requests to Backend (127.0.0.1:8100)
   RewriteCond %{HTTP:Upgrade} =websocket [NC]
-  RewriteRule ^ws-qc(.*)$ ws://192.168.14.10:8100/ws-qc$1 [P,L]
+  RewriteRule ^ws-qc(.*)$ ws://127.0.0.1:8100/ws-qc$1 [P,L]
 
-  # Proxy API requests to Backend (192.168.14.10:8100)
-  RewriteRule ^api/(.*)$ http://192.168.14.10:8100/api/$1 [P,L]
+  # Proxy API requests to Backend (127.0.0.1:8100)
+  RewriteRule ^api/(.*)$ http://127.0.0.1:8100/api/$1 [P,L]
 
   # Existing SPA routing
   RewriteRule ^index\.html$ - [L]

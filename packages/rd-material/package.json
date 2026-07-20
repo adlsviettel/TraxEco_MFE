@@ -5,6 +5,8 @@
   "main": "src/index.ts",
   "types": "src/index.ts",
   "dependencies": {
-    "@traxeco/shared": "workspace:*"
+    "@traxeco/shared": "workspace:*",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^4.2.1"
   }
 }

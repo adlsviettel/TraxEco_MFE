@@ -12,7 +12,7 @@ import {
   Settings as SettingsIcon,
   Warehouse as WarehouseIcon,
 } from '@mui/icons-material';
-import { AppShell } from '@traxeco/shared';
+import { AppShell , authService } from '@traxeco/shared';
 import RDSettingsDialog from './RDSettingsDialog';
 import { IconButton } from '@mui/material';
 
@@ -33,7 +33,7 @@ export default function RDLayout() {
       { text: t('rdMaterial.scan', 'Scan Out'), icon: <InventoryIcon fontSize="small" />, path: `${BASE}/scan`, pageCode: 'rd_scan' },
       { text: t('rdMaterial.scanHistory', 'Scan History'), icon: <HistoryIcon fontSize="small" />, path: `${BASE}/scan-history`, pageCode: 'rd_scan' },
     ];
-    if (roleLevel <= 2) {
+    if (roleLevel <= 2 || authService.hasPageAccess('rd_fabric')) {
       items.push({ text: t('nav.admin', 'Admin'), icon: <WarehouseIcon fontSize="small" />, path: `${BASE}/admin`, pageCode: 'rd_fabric' });
     }
     return items;

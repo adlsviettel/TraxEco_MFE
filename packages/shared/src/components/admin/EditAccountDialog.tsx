@@ -10,6 +10,7 @@ interface EditAccountDialogProps {
   editForm: {
     employeeCode: string;
     employeeName: string;
+    email: string;
     factory: string;
     dept: string;
     section: string;
@@ -18,6 +19,7 @@ interface EditAccountDialogProps {
   setEditForm: React.Dispatch<React.SetStateAction<{
     employeeCode: string;
     employeeName: string;
+    email: string;
     factory: string;
     dept: string;
     section: string;
@@ -53,6 +55,8 @@ export const EditAccountDialog: React.FC<EditAccountDialogProps> = ({
       <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: '16px !important' }}>
         <TextField label="Employee Name" size="small" value={editForm.employeeName}
           onChange={e => setEditForm(f => ({ ...f, employeeName: e.target.value }))} />
+        <TextField label="Email" size="small" value={editForm.email} type="email"
+          onChange={e => setEditForm(f => ({ ...f, email: e.target.value }))} />
         <Box sx={{ display: 'flex', gap: 2 }}>
           <TextField label="Factory" size="small" value={editForm.factory}
             disabled={!isSuperAdmin && myRoleLevel > 1}

@@ -68,29 +68,39 @@ function detectFormat(pages: PdfTextItem[][]): DocFormat {
   console.log('── [DETECT] Total text items:', pages.flat().length);
   console.log('── [DETECT] First 500 chars:', firstPageText.substring(0, 500));
 
-  // Only check the first page for the document title to avoid false positives
-  // from other form names being mentioned in the table headers on subsequent pages.
-  if (firstPageText.includes('BC 4.0') || firstPageText.includes('BC4.0') ||
-      firstPageText.includes('PEMASUKAN BARANG ASAL TEMPAT LAIN DALAM DAERAH PABEAN'))
-    return 'bc40';
+  // ── Robust detection: find standalone "BC X.Y" title items near the top of page 1 ──
+  // The document type (e.g., "BC 2.7", "BC 4.0") always appears as a standalone text item
+  // near the top of the page. Cross-references like "Nomor dan tanggal BC 4.0" also contain
+  // "BC 4.0" but are embedded in a longer string and appear lower on the page.
+  // Strategy: collect all short standalone items that look like "BC X.Y" from the top half,
+  // and use those for detection. Fallback to full-text search for subtitle-based detection.
+  const topHalfY = pages[0].length > 0
+    ? Math.max(...pages[0].map(i => i.y)) / 2
+    : 400;
+  const titleItems = pages[0]
+    .filter(i => i.y >= topHalfY) // top half of the page only
+    .map(i => i.str.trim().toUpperCase())
+    .filter(s => /^BC\s*\d/.test(s) && s.length <= 12); // standalone short "BC X.Y" items
 
-  if (firstPageText.includes('BC 2.3') || firstPageText.includes('BC2.3') ||
-      firstPageText.includes('IMPOR BARANG UNTUK DITIMBUN DI TEMPAT PENIMBUNAN BERIKAT'))
+  console.log('── [DETECT] Title items found:', titleItems);
+
+  // Check standalone title items first (most reliable)
+  for (const title of titleItems) {
+    if (title.includes('2.6.2')) return 'bc262';
+    if (title.includes('2.6.1') || title.includes('2.6')) return 'bc261';
+    if (title.includes('2.7')) return 'bc27';
+    if (title.includes('2.5')) return 'bc25';
+    if (title.includes('2.3')) return 'bc23';
+    if (title.includes('3.0')) return 'bc30';
+    if (title.includes('4.0')) return 'bc40';
+    if (title.includes('4.1')) return 'bc41';
+  }
+
+  // Fallback: check subtitle/description text on the first page
+  if (firstPageText.includes('IMPOR BARANG UNTUK DITIMBUN DI TEMPAT PENIMBUNAN BERIKAT'))
     return 'bc23';
-
-  if (firstPageText.includes('BC 2.6.1') || firstPageText.includes('BC2.6.1') || firstPageText.includes('BC 2.6') || firstPageText.includes('BC2.6'))
-    return 'bc261';
-
-  if (firstPageText.includes('BC 2.6.2') || firstPageText.includes('BC2.6.2')) { console.log('[detectFormat] Detected bc262'); return 'bc262'; }
-
-  if (firstPageText.includes('BC 2.5') || firstPageText.includes('BC2.5')) { console.log('[detectFormat] Detected bc25'); return 'bc25'; }
-
-  if (firstPageText.includes('BC 2.7') || firstPageText.includes('BC2.7')) { console.log('[detectFormat] Detected bc27'); return 'bc27'; }
-
-  if (firstPageText.includes('BC 3.0') || firstPageText.includes('BC3.0')) return 'bc30';
-
-  if (firstPageText.includes('BC 4.1') || firstPageText.includes('BC4.1')) return 'bc41';
-
+  if (firstPageText.includes('PEMASUKAN BARANG ASAL TEMPAT LAIN DALAM DAERAH PABEAN'))
+    return 'bc40';
   if (firstPageText.includes('PPKEK') || firstPageText.includes('KAWASAN EKONOMI KHUSUS'))
     return 'ppkek';
 
@@ -709,10 +719,40 @@ function extractHeaderBC26(pages: PdfTextItem[][]): ParsedHeader {
   const yTol = 5;
 
   for (const pageItems of pages) {
-    // ── Nomor Pengajuan: 26 chars starting with 000
-    for (const item of pageItems) {
-      if (!result.nomorPengajuan && /\b000[A-Z0-9]{23}\b/i.test(item.str)) {
-        result.nomorPengajuan = item.str.match(/\b000[A-Z0-9]{23}\b/i)![0];
+    // ── Nomor Pengajuan: 26 chars, next to "NOMOR PENGAJUAN" label
+    const pengajuanLabel = pageItems.find(i => /^NOMOR\s*PENGAJUAN/i.test(i.str.trim()));
+    if (pengajuanLabel && !result.nomorPengajuan) {
+      // It might be on the same item: "NOMOR PENGAJUAN : 0509..."
+      if (pengajuanLabel.str.includes(':')) {
+        const val = stripColon(pengajuanLabel.str);
+        if (val && /[A-Z0-9]{15,}/i.test(val.replace(/[^A-Z0-9]/g, ''))) {
+          result.nomorPengajuan = val.replace(/[^A-Z0-9]/g, '');
+        }
+      }
+      
+      if (!result.nomorPengajuan) {
+        // Look to the right of the label
+        const rightOfLabel = pageItems
+          .filter(i => Math.abs(i.y - pengajuanLabel.y) <= yTol && i.x > pengajuanLabel.x + 10)
+          .sort((a, b) => a.x - b.x);
+        for (const ri of rightOfLabel) {
+          const v = stripColon(ri.str).replace(/[^A-Z0-9]/g, '');
+          if (v && v.length >= 15) {
+            result.nomorPengajuan = v;
+            break;
+          }
+        }
+      }
+    }
+
+    // Fallback: search for a 26-char string that has at least some digits (to avoid matching text titles)
+    if (!result.nomorPengajuan) {
+      for (const item of pageItems) {
+        const txt = item.str.replace(/[^A-Z0-9]/gi, '');
+        if (/[A-Z0-9]{26}/i.test(txt) && /\d{6,}/.test(txt)) {
+          result.nomorPengajuan = txt.match(/[A-Z0-9]{26}/i)![0];
+          break;
+        }
       }
     }
 
@@ -940,14 +980,19 @@ function extractItemsBC26(pages: PdfTextItem[][]): ParsedItem[] {
 
   for (let pageIdx = 0; pageIdx < pages.length; pageIdx++) {
     const pageItems = pages[pageIdx];
-    // Find 'Kode Barang' or 'Kode Brg', ignore table headers (column labels)
-    // Table headers typically have patterns like "- Kode barang" (with dash prefix) — skip those
+
+    // Skip Lampiran pages to prevent ghost rows (scan all items to be safe since pdfjs item order can vary)
+    const pageStr = pageItems.map(i => i.str.toUpperCase()).join(' ');
+    if (pageStr.includes('KONVERSI PEMAKAIAN BAHAN') || pageStr.includes('BAHAN IMPOR') || pageStr.includes('BAHAN ASAL TLDDP')) {
+       console.log(`🚫 [extractItemsBC26] SKIPPING Lampiran page ${pageIdx + 1}`);
+       continue;
+    }
+    console.log(`✅ [extractItemsBC26] Processing page ${pageIdx + 1} (${pageItems.length} items)`);
     const kodeBrgItems = pageItems.filter(i => {
       const s = i.str.trim();
-      // Must start with "Kode Brg" or "Kode Barang", but NOT be a column header like "- Kode barang"
-      if (/^-\s*Kode/i.test(s)) return false;
-      // Must match actual data Kode labels
-      return /^Kode\s*(Br[g]?|Barang)\s*[:]*$/i.test(s) || /^Kode\s*(Br[g]?|Barang)\s*:\s*.+/i.test(s);
+      // In BC2.7, actual items can be prefixed with dash, e.g., "- Kode Brg: DK0023-P000Q"
+      // Therefore, we allow optional leading dash. We no longer aggressively reject all "- Kode".
+      return /^-?\s*Kode\s*(Br[g]?|Barang)\s*[:]*$/i.test(s) || /^-?\s*Kode\s*(Br[g]?|Barang)\s*:\s*.+/i.test(s);
     });
 
     if (kodeBrgItems.length > 0) {
@@ -1047,7 +1092,7 @@ function extractItemsBC26(pages: PdfTextItem[][]): ParsedItem[] {
           }
 
           // ── NEW: Kategori Barang (e.g. "HASIL PRODUKSI")
-          if (/Kategori(\s*Barang)?\s*:/i.test(item.str) || /^Kategori(\s*Barang)?$/i.test(item.str.trim()) || /Goods\s*Category/i.test(item.str)) {
+          if (/Kategori\s*(Barang|Brg)?\s*:/i.test(item.str) || /^Kategori\s*(Barang|Brg)?$/i.test(item.str.trim()) || /Goods\s*Category/i.test(item.str)) {
             if (item.str.includes(':')) {
               const parts = item.str.split(':');
               if (parts.length > 1 && parts[1].trim()) row.kategoriBarang = parts[1].trim();
@@ -1062,7 +1107,7 @@ function extractItemsBC26(pages: PdfTextItem[][]): ParsedItem[] {
           }
 
           // ── NEW: Kondisi Barang (e.g. "TIDAK RUSAK")
-          if (/Kondisi(\s*Barang)?\s*:/i.test(item.str) || /^Kondisi(\s*Barang)?$/i.test(item.str.trim()) || /Goods\s*Condition/i.test(item.str)) {
+          if (/Kondisi\s*(Barang|Brg)?\s*:/i.test(item.str) || /^Kondisi\s*(Barang|Brg)?$/i.test(item.str.trim()) || /Goods\s*Condition/i.test(item.str)) {
             if (item.str.includes(':')) {
               const parts = item.str.split(':');
               if (parts.length > 1 && parts[1].trim()) row.kondisiBarang = parts[1].trim();
@@ -1094,53 +1139,130 @@ function extractItemsBC26(pages: PdfTextItem[][]): ParsedItem[] {
         // 3. Quantities & Satuan — improved: distinguish Jumlah from Berat Bersih
         // "Berat Bersih" label marks weight, NOT quantity. We need "Sat.:" or "Satuan" for quantity.
         const beratBersihLabels = nearby.filter(i => /Berat\s*Bersih/i.test(i.str));
-        const satuanLabels = nearby.filter(i => /^Sat\.|^Satuan/i.test(i.str.trim()));
         const rightSideItems = nearby.filter(i => i.x > kodeLabel.x + 50).sort((a, b) => a.x - b.x);
 
-        // First, find Satuan (unit) — this is key to knowing the correct Jumlah
-        for (const sri of rightSideItems) {
-          // Unit codes like PCE (PIECE), KG, ROLL, YRD, CONE, CARTON, CT
-          if (/^\(?(PCE|PCS|PIECE|SET|UNIT|KG|KGM|MTR|MTQ|ROLL|RO|YRD|CONE|CARTON|CT)\b/i.test(sri.str.trim()) && !row.satuan) {
-             const satuanFull = sri.str.trim();
-             row.satuan = satuanFull;
-             
-             // Extract conversion inside parenthesis (e.g., "YARD (0.9144 M)" -> "0.9144")
-             const match = satuanFull.match(/\(([\d\.]+)\s*[A-Za-z]+\)/);
-             if (match) {
-                 row.harga = match[1];
-             }
-          }
-        }
+        // ── Extract Satuan (unit of measurement) ──
+        // Define the y-range for this item: from this kodeLabel down to the next kodeLabel (or page bottom)
+        const currentKodeIdx = kodeBrgItems.indexOf(kodeLabel);
+        const nextKodeLabel = kodeBrgItems[currentKodeIdx + 1];
+        const itemYTop = kodeLabel.y + 5;
+        const itemYBottom = nextKodeLabel ? nextKodeLabel.y : kodeLabel.y - 200;
 
-        // Now find Jumlah — the number on the SAME line as "Sat.:" or near the Satuan value, NOT near "Berat Bersih"
-        for (const sri of rightSideItems) {
-          if (/^\d{1,10}[\.,]\d{4}$/.test(sri.str) && !row.jumlah) {
-            // Check if this number is near "Berat Bersih" label — if so, skip it
-            const isBeratBersih = beratBersihLabels.some(bb => Math.abs(sri.y - bb.y) <= 8);
-            if (isBeratBersih) continue;
-            row.jumlah = sri.str;
-          }
-        }
-
-        // Fallback: if no jumlah found, try number near "Sat.:" label
-        if (!row.jumlah && satuanLabels.length > 0) {
-          for (const satLabel of satuanLabels) {
-            const numNearSat = nearby
-              .filter(i => Math.abs(i.y - satLabel.y) <= 15 && /^\d{1,10}[\.,]\d{4}$/.test(i.str))
-              .sort((a, b) => a.x - b.x);
-            if (numNearSat.length > 0) {
-              row.jumlah = numNearSat[0].str;
+        // *** Strategy 0 (PRIMARY): In BC 2.7, satuan is on the SAME LINE as "Kode Brg:", to the right ***
+        // e.g., [x=51,y=633] "- Kode Brg: DK0023"  [x=308,y=633] "YRD (YARD (0.9144 M))"
+        //        or  "CONE"  or  "KG"  etc.
+        if (!row.satuan) {
+          const sameLineRight = pageItems
+            .filter(i => Math.abs(i.y - kodeLabel.y) <= 5 && i.x > kodeLabel.x + 100)
+            .sort((a, b) => a.x - b.x);
+          for (const sri of sameLineRight) {
+            const txt = sri.str.trim();
+            // Match unit text: starts with letters, at least 2 chars, not a number, not "Rp"
+            if (txt && /^[A-Za-z]{2,}/i.test(txt) && !/^(Rp|No|pos|uraian|kode|merk|tipe|ukuran)/i.test(txt)) {
+              row.satuan = txt.split(/[\s(]/)[0].toUpperCase();
+              // Extract conversion value from parentheses like "YRD (YARD (0.9144 M))"
+              const convMatch = txt.match(/\(([\d.]+)\s*[A-Za-z]+\)/);
+              if (convMatch) row.amount = convMatch[1];
+              console.log(`  [BC26] Item ${row.no} Strategy0: found satuan "${row.satuan}" from same-line text "${txt}"`);
               break;
             }
           }
         }
 
-        // Nilai Pabean / CIF — numbers with 2 decimals
-        for (const sri of rightSideItems) {
-          if (/^\d{1,10}[\.,]\d{2}$/.test(sri.str) && !row.nilaiPabean) {
-             row.nilaiPabean = sri.str;
+        // Strategy 1-3: Search for "Sat.:" labels (fallback for other PDF formats)
+        const allSatuanLabels = pageItems.filter(i => 
+          /Sat(\.|uan)/i.test(i.str.trim()) &&
+          i.y <= itemYTop && i.y >= itemYBottom
+        );
+        
+        console.log(`  [BC26] Item ${row.no}: kodeLabel.y=${kodeLabel.y.toFixed(0)}, satuan so far="${row.satuan}", satuanLabels: [${allSatuanLabels.map(l => `"${l.str}" y=${l.y.toFixed(0)}`).join(', ')}]`);
+
+        // Strategy 1: Check if "Sat.:" label contains the value inline (e.g. "Sat.: CONE")
+        if (!row.satuan && allSatuanLabels.length > 0) {
+          for (const satLabel of allSatuanLabels) {
+            // Try inline: "Sat.: CONE" or "Sat.:CONE" or "- Sat.: CONE"
+            const colonIdx = satLabel.str.indexOf(':');
+            if (colonIdx >= 0) {
+              const afterColon = satLabel.str.substring(colonIdx + 1).trim();
+              if (afterColon && /^[A-Za-z]{2,}/i.test(afterColon)) {
+                row.satuan = afterColon.split(/[\s(]/)[0].toUpperCase();
+                break;
+              }
+            }
+            // Strategy 2: Look for text to the RIGHT of "Sat.:" on the same line
+            const rightOfSat = pageItems
+              .filter(i => Math.abs(i.y - satLabel.y) <= 10 && i.x > satLabel.x + 2)
+              .sort((a, b) => a.x - b.x);
+            for (const ri of rightOfSat) {
+              const v = ri.str.trim();
+              if (v && v !== ':' && v !== '.' && /^[A-Za-z]/i.test(v)) {
+                row.satuan = v.split(/[\s(]/)[0].toUpperCase();
+                break;
+              }
+            }
+            if (row.satuan) break;
           }
         }
+
+        // Strategy 3: Scan rightSideItems for standalone unit keywords (wider nearby range)
+        if (!row.satuan) {
+          const wideNearby = pageItems.filter(i => i.y <= itemYTop && i.y >= itemYBottom && i.x > kodeLabel.x + 50);
+          for (const sri of wideNearby) {
+            if (/^\(?(PCE|PCS|PIECE|SET|UNIT|KG|KGM|KILO|MTR|METER|MTQ|LTR|LITER|ROLL|ROL|RO|YRD|YARD|CONE|CNE|CN|CARTON|CTN|CT|BALE|BAL|BL|GRM|GRAM|TNE)\b/i.test(sri.str.trim())) {
+               row.satuan = sri.str.trim().split(/[\s(]/)[0].toUpperCase();
+               break;
+            }
+          }
+        }
+
+        // Extract conversion inside parenthesis (e.g., "YARD (0.9144 M)" -> "0.9144")
+        if (row.satuan) {
+          const wideItems = pageItems.filter(i => i.y <= itemYTop && i.y >= itemYBottom);
+          const convMatch = wideItems.find(i => i.str.includes('(') && /\([\d.]+\s*[A-Za-z]+\)/.test(i.str));
+          if (convMatch) {
+            const m = convMatch.str.match(/\(([\d.]+)\s*[A-Za-z]+\)/);
+            if (m) row.amount = m[1];
+          }
+        }
+
+        console.log(`  [BC26] Item ${row.no} satuan result: "${row.satuan}"`);
+
+        // Now find Jumlah — the number on the SAME line as "Sat.:" or near the Satuan value, NOT near "Berat Bersih"
+        for (const sri of rightSideItems) {
+          if (/^-?\s*\d{1,10}[\.,]\d{4}$/.test(sri.str) && !row.jumlah) {
+            // Check if this number is near "Berat Bersih" label — if so, skip it
+            const isBeratBersih = beratBersihLabels.some(bb => Math.abs(sri.y - bb.y) <= 8);
+            if (isBeratBersih) continue;
+            row.jumlah = sri.str.replace(/^-?\s*/, '');
+          }
+        }
+
+        // Fallback: if no jumlah found, try number near "Sat.:" label (using page-wide search)
+        if (!row.jumlah && allSatuanLabels.length > 0) {
+          for (const satLabel of allSatuanLabels) {
+            const numNearSat = pageItems
+              .filter(i => Math.abs(i.y - satLabel.y) <= 15 && /^-?\s*\d{1,10}[\.,]\d{4}$/.test(i.str))
+              .sort((a, b) => a.x - b.x);
+            if (numNearSat.length > 0) {
+              row.jumlah = numNearSat[0].str.replace(/^-?\s*/, '');
+              break;
+            }
+          }
+        }
+
+        // Nilai Pabean / Harga / Amount — numbers with 2 decimals
+        for (const sri of rightSideItems) {
+          if (/^-?\s*(Rp\s*)?\d{1,10}([\.,]\d{3})*[\.,]\d{2}$/i.test(sri.str)) {
+             const cleanVal = sri.str.replace(/^-?\s*(Rp\s*)?/i, '').trim();
+             // In BC 2.7, CIF is usually 0.00, Harga Penyerahan is the large value
+             if (sri.str.toLowerCase().includes('rp') || (parseFloat(cleanVal.replace(/,/g, '')) > 100)) {
+               row.harga = cleanVal;
+             } else if (!row.nilaiPabean) {
+               row.nilaiPabean = cleanVal;
+             }
+          }
+        }
+        if (!row.harga && row.nilaiPabean) row.harga = row.nilaiPabean;
         
         // ── BC 2.5 special: Uraian might not have a label, it's the description text just below Kode Brg
         if (!row.uraianBarang) {
@@ -1149,7 +1271,8 @@ function extractItemsBC26(pages: PdfTextItem[][]): ParsedItem[] {
           const descCandidates = pageItems.filter(i =>
             i.y < kodeLabel.y && i.y > kodeLabel.y - 25 &&
             Math.abs(i.x - kodeLabel.x) <= 20 &&
-            !/^(Merk|Tipe|Ukuran|Lain|Pos\s*Tarif|Kode|Dokumen|Seri|HS|Kategori|Kondisi)/i.test(i.str.trim()) &&
+            !/^(Merk|Tipe|Ukuran|Lain|Kode|Dokumen|Seri|HS|Kategori|Kondisi)/i.test(i.str.trim()) &&
+            !/^-?\s*Pos\s*Tarif/i.test(i.str.trim()) && // strictly ignore - Pos Tarif
             !/^\d+[\.,]\d+$/.test(i.str.trim()) && // not a number
             !/^[-:,]$/.test(i.str.trim()) && // not punctuation only
             i.str.trim().length > 2
@@ -1193,8 +1316,28 @@ function extractItemsBC26(pages: PdfTextItem[][]): ParsedItem[] {
   }
 
   allRows.forEach((r, i) => { r.no = String(i + 1); });
-  console.log(`[extractItemsBC26] Finished extraction. Total items: ${allRows.length}`);
-  return allRows;
+
+  // ── Deduplicate ghost rows from unrecognized Lampiran pages ──
+  // If a row has no 'harga' but perfectly matches the 'kodeBarang' and 'jumlah'
+  // of a previously parsed row that DOES have a 'harga', it is a ghost row.
+  const uniqueRows: ParsedItem[] = [];
+  for (const row of allRows) {
+    const isGhostDuplicate = uniqueRows.some(ur => 
+      ur.kodeBarang === row.kodeBarang &&
+      ur.jumlah === row.jumlah &&
+      ur.harga && !row.harga
+    );
+    if (!isGhostDuplicate) {
+      // Re-assign item number so it's sequential after filtering
+      row.no = String(uniqueRows.length + 1);
+      uniqueRows.push(row);
+    } else {
+      console.log(`🚫 [extractItemsBC26] Filtered out ghost duplicate row:`, row.kodeBarang);
+    }
+  }
+
+  console.log('[extractItemsBC26] Final extracted items:', uniqueRows);
+  return uniqueRows;
 }
 
 function containsNumber(str: string): boolean {

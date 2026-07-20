@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AppShell } from '@traxeco/shared';
+import { AppShell , authService } from '@traxeco/shared';
 import DashboardPage from '../pages/DashboardPage';
 import InventoryPage from '../pages/InventoryPage';
 import RelaxPage from '../pages/RelaxPage';
@@ -12,7 +12,7 @@ import IssueFabricPage from '../pages/IssueFabricPage';
 import IssueReportPage from '../pages/IssueReportPage';
 import PutawayPage from '../pages/PutawayPage';
 import PrintQrCodePage from '../pages/PrintQrCodePage';
-import { AdminPage } from '@traxeco/shared';
+import { AdminPage , authService } from '@traxeco/shared';
 
 import {
   Dashboard as DashboardIcon,
@@ -47,7 +47,7 @@ export default function FabricLayout() {
     { text: t('relaxScan.title', 'Xả vải'), icon: <PlayCircleFilledIcon />, path: `${BASE}/scan-relax`, pageCode: 'fb_relax' },
     { text: t('relax.title', 'Báo cáo xả vải'), icon: <RelaxIcon />, path: `${BASE}/relax`, pageCode: 'fb_relax_report' },
     { text: t('issueReport.title', 'Issue Report'), icon: <BarChartIcon />, path: `${BASE}/report`, pageCode: 'fb_report' },
-    ...(roleLevel <= 2
+    ...(roleLevel <= 2 || authService.hasPageAccess('fb_admin')
       ? [
           { text: t('tracking.title', 'Tracking Logs'), icon: <HistoryIcon />, path: `${BASE}/tracking`, pageCode: 'fb_tracking' },
           { text: t('nav.admin', 'Admin'), icon: <AdminSettingsIcon />, path: `${BASE}/admin`, pageCode: 'fb_admin' }
@@ -66,7 +66,7 @@ export default function FabricLayout() {
     { path: `${BASE}/scan-relax`, component: <ScanRelaxPage /> },
     { path: `${BASE}/relax`, component: <RelaxPage /> },
     { path: `${BASE}/report`, component: <IssueReportPage /> },
-    ...(roleLevel <= 2 ? [
+    ...(roleLevel <= 2 || authService.hasPageAccess('fb_admin') ? [
       { path: `${BASE}/tracking`, component: <TrackingPage /> },
       { path: `${BASE}/admin`, component: <AdminPage /> },
     ] : []),

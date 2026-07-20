@@ -68,6 +68,7 @@ interface AdminStatusDrawerProps {
   developers: string[];
   customers: string[];
   factories: string[];
+  templateTypes: string[];
   onSaveSuccess: () => void;
   onRefreshData: () => void;
 }
@@ -81,6 +82,7 @@ export function AdminStatusDrawer({
   developers,
   customers,
   factories,
+  templateTypes,
   onSaveSuccess,
   onRefreshData
 }: AdminStatusDrawerProps) {
@@ -222,8 +224,8 @@ export function AdminStatusDrawer({
                       onChange={(e) => handleChange('customer', e.target.value)}
                       sx={{ borderRadius: '8px', fontSize: 13 }}
                     >
-                      {customers.map((c) => (
-                        <MenuItem key={c} value={c} sx={{ fontSize: 13 }}>{c}</MenuItem>
+                      {Array.from(new Set([...customers, editForm.customer])).filter(Boolean).map((c) => (
+                        <MenuItem key={c as string} value={c} sx={{ fontSize: 13 }}>{c as string}</MenuItem>
                       ))}
                     </Select>
                   </FormControl>
@@ -246,8 +248,8 @@ export function AdminStatusDrawer({
                       onChange={(e) => handleChange('season', e.target.value)}
                       sx={{ borderRadius: '8px', fontSize: 13 }}
                     >
-                      {seasons.map((s) => (
-                        <MenuItem key={s} value={s} sx={{ fontSize: 13 }}>{s}</MenuItem>
+                      {Array.from(new Set([...seasons, editForm.season])).filter(Boolean).map((s) => (
+                        <MenuItem key={s as string} value={s} sx={{ fontSize: 13 }}>{s as string}</MenuItem>
                       ))}
                     </Select>
                   </FormControl>
@@ -280,8 +282,8 @@ export function AdminStatusDrawer({
                       onChange={(e) => handleChange('productType', e.target.value)}
                       sx={{ borderRadius: '8px', fontSize: 13 }}
                     >
-                      {productTypes.map((pt) => (
-                        <MenuItem key={pt} value={pt} sx={{ fontSize: 13 }}>{pt}</MenuItem>
+                      {Array.from(new Set([...productTypes, editForm.productType])).filter(Boolean).map((pt) => (
+                        <MenuItem key={pt as string} value={pt} sx={{ fontSize: 13 }}>{pt as string}</MenuItem>
                       ))}
                     </Select>
                   </FormControl>
@@ -304,8 +306,8 @@ export function AdminStatusDrawer({
                       onChange={(e) => handleChange('sampleStage', e.target.value)}
                       sx={{ borderRadius: '8px', fontSize: 13 }}
                     >
-                      {sampleStages.map((ss) => (
-                        <MenuItem key={ss} value={ss} sx={{ fontSize: 13 }}>{ss}</MenuItem>
+                      {Array.from(new Set([...sampleStages, editForm.sampleStage])).filter(Boolean).map((ss) => (
+                        <MenuItem key={ss as string} value={ss} sx={{ fontSize: 13 }}>{ss as string}</MenuItem>
                       ))}
                     </Select>
                   </FormControl>
@@ -328,8 +330,8 @@ export function AdminStatusDrawer({
                       onChange={(e) => handleChange('factory', e.target.value)}
                       sx={{ borderRadius: '8px', fontSize: 13 }}
                     >
-                      {factories.map((f) => (
-                        <MenuItem key={f} value={f} sx={{ fontSize: 13 }}>{f}</MenuItem>
+                      {Array.from(new Set([...factories, editForm.factory])).filter(Boolean).map((f) => (
+                        <MenuItem key={f as string} value={f} sx={{ fontSize: 13 }}>{f as string}</MenuItem>
                       ))}
                     </Select>
                   </FormControl>
@@ -347,7 +349,7 @@ export function AdminStatusDrawer({
                   <FormControl fullWidth size="small">
                     <InputLabel sx={{ fontSize: 13 }}>{t('tcc.processType', 'Process Type')}</InputLabel>
                     <Select
-                      value={editForm.processType || 'Light'}
+                      value={editForm.processType === 'Full' || editForm.processType === 'Full Process' ? 'Full' : 'Light'}
                       label={t('tcc.processType', 'Process Type')}
                       onChange={(e) => handleChange('processType', e.target.value)}
                       sx={{
@@ -469,8 +471,8 @@ export function AdminStatusDrawer({
                       onChange={(e) => handleChange('machineType', e.target.value)}
                       sx={{ borderRadius: '8px', fontSize: 13 }}
                     >
-                      {availableMachineTypes.map((mt) => (
-                        <MenuItem key={mt} value={mt} sx={{ fontSize: 13 }}>{mt}</MenuItem>
+                      {Array.from(new Set([...availableMachineTypes, editForm.machineType])).filter(Boolean).map((mt) => (
+                        <MenuItem key={mt as string} value={mt} sx={{ fontSize: 13 }}>{mt as string}</MenuItem>
                       ))}
                     </Select>
                   </FormControl>
@@ -493,8 +495,8 @@ export function AdminStatusDrawer({
                       onChange={(e) => handleChange('machineDimension', e.target.value)}
                       sx={{ borderRadius: '8px', fontSize: 13 }}
                     >
-                      {availableMachineDimensions.map((md) => (
-                        <MenuItem key={md} value={md} sx={{ fontSize: 13 }}>{md}</MenuItem>
+                      {Array.from(new Set([...availableMachineDimensions, editForm.machineDimension])).filter(Boolean).map((md) => (
+                        <MenuItem key={md as string} value={md} sx={{ fontSize: 13 }}>{md as string}</MenuItem>
                       ))}
                     </Select>
                   </FormControl>
@@ -604,6 +606,20 @@ export function AdminStatusDrawer({
                     }
                   }}
                 />
+                <FormControl fullWidth size="small" disabled={!isConfirmSectionEditable || editForm.confirmStatus === 'Rejected'}>
+                  <InputLabel sx={{ fontSize: 13 }}>{t('tcc.templateType', 'Template Type')}</InputLabel>
+                  <Select
+                    value={editForm.templateType ?? ''}
+                    label={t('tcc.templateType', 'Template Type')}
+                    onChange={(e) => handleChange('templateType', e.target.value)}
+                    sx={{ borderRadius: '8px', fontSize: 13 }}
+                  >
+                    <MenuItem value="" sx={{ fontSize: 13 }}><em>None</em></MenuItem>
+                    {templateTypes.map((tt) => (
+                      <MenuItem key={tt} value={tt} sx={{ fontSize: 13 }}>{tt}</MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
                 <Box display="flex" gap={1} alignItems="center">
                   <AppButton
                     variant={editForm.confirmStatus === 'Approved' ? 'contained' : 'outlined'}
@@ -636,7 +652,7 @@ export function AdminStatusDrawer({
                   label={t('tcc.materialReceivedDate', 'Material Received Date')}
                   value={editForm.materialReceivedDate ? new Date(editForm.materialReceivedDate) : null}
                   onChange={(val) => handleDateChange('materialReceivedDate', val)}
-                  disabled={!isProgressSectionEditable}
+                  disabled={!isEditable || editForm.status === 'Rejected'}
                   slotProps={{
                     field: { clearable: true },
                     textField: {

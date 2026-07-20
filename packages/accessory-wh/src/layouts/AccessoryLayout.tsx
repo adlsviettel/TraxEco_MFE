@@ -5,7 +5,7 @@ import {
   Inventory as PutawayIcon,
   QrCodeScanner as QrCodeIcon,
 } from '@mui/icons-material';
-import { AppShell } from '@traxeco/shared';
+import { AppShell , authService } from '@traxeco/shared';
 import AccessorySearchPage from '../pages/AccessorySearchPage';
 import AccessoryPutawayPage from '../pages/AccessoryPutawayPage';
 

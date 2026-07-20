@@ -79,6 +79,7 @@ export const EXTRA_PAGES: PageDef[] = [
   { code: 'tcc_dashboard', label: 'Dashboard', appCode: 'TCC_TEMPLATE' },
   { code: 'tcc_settings', label: 'Settings (Cài Đặt)', appCode: 'TCC_TEMPLATE' },
   { code: 'tcc_admin', label: 'Admin', appCode: 'TCC_TEMPLATE' },
+  { code: 'tcc_receive_email', label: 'Receive Email Notifications', appCode: 'TCC_TEMPLATE' },
   // CLINIC
   { code: 'clinic_dispense', label: 'Phát thuốc', appCode: 'CLINIC' },
   { code: 'clinic_warehouse', label: 'Kho thuốc', appCode: 'CLINIC' },

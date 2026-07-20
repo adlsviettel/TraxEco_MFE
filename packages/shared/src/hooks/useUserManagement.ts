@@ -28,6 +28,7 @@ export const useUserManagement = (currentAppCode: string | null, t: any, setSnac
   const [createForm, setCreateForm] = useState(() => ({
     employeeCode: '',
     employeeName: '',
+    email: '',
     factory: localStorage.getItem('factory') || '',
     dept: localStorage.getItem('dept') || '',
     section: localStorage.getItem('section') || '',
@@ -38,7 +39,7 @@ export const useUserManagement = (currentAppCode: string | null, t: any, setSnac
 
   // Edit Form State
   const [editOpen, setEditOpen] = useState(false);
-  const [editForm, setEditForm] = useState({ employeeCode: '', employeeName: '', factory: '', dept: '', section: '', roleLevel: 4 });
+  const [editForm, setEditForm] = useState({ employeeCode: '', employeeName: '', email: '', factory: '', dept: '', section: '', roleLevel: 4 });
   const [editing, setEditing] = useState(false);
 
   const fetchUsers = useCallback(async () => {
@@ -126,6 +127,7 @@ export const useUserManagement = (currentAppCode: string | null, t: any, setSnac
       const payload = {
         employeeCode: createForm.employeeCode.trim(),
         employeeName: createForm.employeeName,
+        email: createForm.email,
         factory: createForm.factory,
         dept: createForm.dept,
         section: createForm.section,
@@ -153,6 +155,7 @@ export const useUserManagement = (currentAppCode: string | null, t: any, setSnac
       setCreateForm({
         employeeCode: '',
         employeeName: '',
+        email: '',
         factory: localStorage.getItem('factory') || '',
         dept: localStorage.getItem('dept') || '',
         section: localStorage.getItem('section') || '',
@@ -172,7 +175,7 @@ export const useUserManagement = (currentAppCode: string | null, t: any, setSnac
     setEditing(true);
     try {
       const res = await authFetch(`accounts/update/${encodeURIComponent(editForm.employeeCode)}`, {
-        method: 'POST',
+        method: 'PUT',
         body: JSON.stringify(editForm)
       });
       const data = await res.json();

@@ -114,6 +114,32 @@ async function mapKategoriBarangAsync(kategoriText: string, uraianBarang: string
 // ─── Build request body from parsed PDF data ─────────────────────────────────
 // kdKegiatan: 30=Pemasukan, 31=Pengeluaran, 32=Stock Opname, 33=Adjustment
 
+function mapKdSatuan(rawSatuan: string, itemNo: string | number): string {
+  if (!rawSatuan || !rawSatuan.trim()) {
+    console.warn(`⚠️ [INSW] Mặt hàng số ${itemNo} thiếu Đơn vị tính (Satuan), mặc định dùng PCE`);
+    return 'PCE';
+  }
+  const s = rawSatuan.toUpperCase().replace(/[^A-Z]/g, '');
+  if (s.includes('KGM') || s === 'KG' || s.includes('KILO')) return 'KGM';
+  if (s.includes('PCS') || s.includes('PCE') || s.includes('PIECE')) return 'PCE';
+  if (s.includes('MTR') || s.includes('METER')) return 'MTR';
+  if (s.includes('YRD') || s.includes('YARD')) return 'YRD';
+  if (s.includes('SET')) return 'SET';
+  if (s.includes('ROLL') || s.includes('ROL') || s === 'RO') return 'ROL';
+  if (s.includes('CONE') || s.includes('CNE') || s === 'CN') return 'CNE';
+  if (s.includes('CARTON') || s.includes('CTN') || s === 'CT') return 'CT';
+  if (s.includes('LTR') || s.includes('LITER')) return 'LTR';
+  if (s.includes('MTQ')) return 'MTQ';
+  if (s.includes('GRM') || s.includes('GRAM')) return 'GRM';
+  if (s.includes('BALE') || s.includes('BAL')) return 'BL';
+  
+  // If we have a 2-3 letter code, just use it and hope INSW accepts it
+  if (s.length >= 2 && s.length <= 3) return s;
+  
+  // Truncate to 3 chars for INSW
+  return s.substring(0, 3);
+}
+
 export async function buildInswRequestBody(parsedData: ParsedDataSuccess, kdKegiatan: string = '30'): Promise<InswRequestBody> {
   const barangTransaksi: InswBarang[] = [];
   for (const item of parsedData.items) {
@@ -122,7 +148,7 @@ export async function buildInswRequestBody(parsedData: ParsedDataSuccess, kdKegi
       kdBarang: item.kodeBarang || '',
       uraianBarang: item.uraianBarang || '',
       jumlah: parseNumber(item.jumlah),
-      kdSatuan: item.satuan || '',
+      kdSatuan: mapKdSatuan(item.satuan, item.no),
       nilai: parseNumber(item.nilaiPabean),
       dokumen: [],
     });

@@ -21,6 +21,7 @@ interface CreateAccountDialogProps {
   setCreateForm: React.Dispatch<React.SetStateAction<{
     employeeCode: string;
     employeeName: string;
+    email: string;
     factory: string;
     dept: string;
     section: string;
@@ -87,6 +88,8 @@ export const CreateAccountDialog: React.FC<CreateAccountDialogProps> = ({
         />
         <TextField label="Employee Name" size="small" value={createForm.employeeName}
           onChange={e => setCreateForm(f => ({ ...f, employeeName: e.target.value }))} />
+        <TextField label="Email" size="small" value={createForm.email} type="email"
+          onChange={e => setCreateForm(f => ({ ...f, email: e.target.value }))} />
         <Box sx={{ display: 'flex', '& > *:not(:last-child)': { mr: 2, mb: 2 } }}>
           <TextField label="Factory" size="small" value={createForm.factory}
             disabled={!isSuperAdmin && myRoleLevel > 1}

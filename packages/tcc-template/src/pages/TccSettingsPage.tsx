@@ -11,6 +11,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import WarningIcon from '@mui/icons-material/WarningRounded';
 import { useTranslation } from 'react-i18next';
 import { tccService } from '../services/tccService';
+import { EmailTemplateConfig } from '../components/EmailTemplateConfig';
 
 const PRIMARY_COLOR = '#2e7d32';
 
@@ -408,6 +409,7 @@ export default function TccSettingsPage() {
             <Tab label={t('tcc.settings.tabLeadTime', 'Thời Gian (Lead Time)')} />
             <Tab label={t('tcc.settings.tabSeason', 'Season')} />
             <Tab label={t('tcc.settings.tabProductType', 'Loại Sản Phẩm (Product Type)')} />
+            <Tab label={t('tcc.settings.tabEmailTemplate', 'Email Template')} />
           </Tabs>
         </Box>
         <CustomTabPanel value={tabIndex} index={0}>
@@ -430,6 +432,9 @@ export default function TccSettingsPage() {
         </CustomTabPanel>
         <CustomTabPanel value={tabIndex} index={6}>
           {renderMetadataList('productType', t('tcc.settings.listProductType', 'Danh Sách Loại Sản Phẩm'))}
+        </CustomTabPanel>
+        <CustomTabPanel value={tabIndex} index={7}>
+          <EmailTemplateConfig />
         </CustomTabPanel>
       </Paper>
 

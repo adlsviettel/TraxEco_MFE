@@ -38,6 +38,7 @@
     "@traxeco/rd-material": "workspace:*",
     "@traxeco/shared": "workspace:*",
     "@traxeco/tcc-template": "workspace:*",
+    "@traxeco/coo": "workspace:*",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "docxtemplater": "^3.68.3",

@@ -32,6 +32,7 @@ export interface TccRequest {
   status: string;
   delayRemakeReason: string;
   templateQty: number | null;
+  templateType: string;
   releasedDate: string | null;
   developerName: string;
   comments: string;
@@ -116,6 +117,7 @@ export interface UpdateProgressPayload {
   developerName?: string;
   delayRemakeReason?: string;
   templateQty?: number | null;
+  templateType?: string;
   remarks?: string;
   comments?: string;
   releasedDate?: string | null;
@@ -394,5 +396,22 @@ export const tccService = {
       method: 'DELETE'
     });
     if (!res.ok) throw new Error('API error: ' + res.status);
+  },
+
+  async getConfig(key: string): Promise<any> {
+    const res = await authFetch(`/tcc/config/${key}`);
+    if (!res.ok) throw new Error('API error: ' + res.status);
+    const json = await res.json();
+    return json.data;
+  },
+
+  async updateConfig(key: string, value: string): Promise<any> {
+    const res = await authFetch(`/tcc/config/${key}`, {
+      method: 'PUT',
+      body: JSON.stringify({ configValue: value })
+    });
+    if (!res.ok) throw new Error('API error: ' + res.status);
+    const json = await res.json();
+    return json.data;
   },
 };

@@ -22,6 +22,7 @@ export default defineConfig(({ mode }) => {
         '@traxeco/tcc-template': path.resolve(__dirname, '../../packages/tcc-template/src'),
         '@traxeco/qcfb-wh': path.resolve(__dirname, '../../packages/qcfb-wh/src'),
         '@traxeco/rd-material': path.resolve(__dirname, '../../packages/rd-material/src'),
+        '@traxeco/coo': path.resolve(__dirname, '../../packages/coo/src'),
       }
     },
     base: env.VITE_BASE_PATH || '/',
@@ -47,7 +48,6 @@ export default defineConfig(({ mode }) => {
         injectRegister: false,
         injectManifest: {
           maximumFileSizeToCacheInBytes: 15 * 1024 * 1024, // 15MB
-          globIgnores: ['**/travel/**'],
         },
         devOptions: {
           enabled: false,

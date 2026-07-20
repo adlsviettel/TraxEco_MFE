@@ -11,7 +11,7 @@ const CATEGORY_NAMES = {
   auxiliary: 'Auxiliary Materials',
   wip: 'Work-in-Process',
   finished: 'Finished Goods',
-  scrap: 'Rejects and Scrap'
+  scrap: 'Material Waste & Scrap Management'
 };
 
 export default function StockOpname({ category }: StockOpnameProps) {

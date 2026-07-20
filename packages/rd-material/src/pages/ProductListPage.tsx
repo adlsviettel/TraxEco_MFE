@@ -1,4 +1,6 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 import { useNavigate } from 'react-router-dom';
 import {
   Box, Button, Card, Chip, CircularProgress, IconButton, InputAdornment, Paper,
@@ -20,13 +22,17 @@ import SyncIcon from '@mui/icons-material/Sync';
 import TextureIcon from '@mui/icons-material/Texture';
 import LaunchIcon from '@mui/icons-material/Launch';
 import ViewWeekIcon from '@mui/icons-material/ViewWeek';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+
 import { DraggableFab } from '../components/DraggableFab';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { authService, AppButton, AppTextField, AdvancedFilterDrawer } from '@traxeco/shared';
+import { authService, AppButton, AppTextField, AdvancedFilterDrawer, columnFilterStore, TableExcelColumnMenu } from '@traxeco/shared';
 import { exportRdItemsToExcel } from '../utils/excelExport';
 import { rdItemApi } from '../services/rdMaterialApi';
 import type { Item } from '../types';
 import ProductFormDrawer from './ProductFormDrawer';
+import ProductPdfExport, { PdfProductData } from '../components/ProductPdfExport';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import { useTranslation } from 'react-i18next';
 import { useDragScroll } from '../hooks/useDragScroll';
 import SwipeableItem from '../components/ui/SwipeableItem';
@@ -174,7 +180,7 @@ const ProductListPage: React.FC = () => {
   
   const [garmentCategoryOpts, setGarmentCategoryOpts] = useState<string[]>(['Tops', 'Pants', 'Jackets', 'Polo', 'Shorts', 'Dress']);
   const [sportCategoryOpts, setSportCategoryOpts] = useState<string[]>(['Golf', 'Running', 'Training', 'Yoga', 'Lifestyle']);
-  const [sampleStageOpts, setSampleStageOpts] = useState<string[]>(['Mock up', '1st proto', '2nd proto', 'Sales sample']);
+  const [sampleStageOpts, setSampleStageOpts] = useState<string[]>(['Mock up', '1st proto', '2nd proto', '3rd proto', '4th proto']);
   
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(init.hasSearched ?? false);
@@ -188,6 +194,8 @@ const ProductListPage: React.FC = () => {
   const [editItem, setEditItem] = useState<Item | null>(null);
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [exporting, setExporting] = useState(false);
+  const [exportingPdf, setExportingPdf] = useState(false);
+  const [pdfData, setPdfData] = useState<PdfProductData[]>([]);
   const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: 'success' | 'error' | 'warning' }>({ open: false, message: '', severity: 'success' });
   const dragRef = useDragScroll();
 
@@ -195,6 +203,7 @@ const ProductListPage: React.FC = () => {
   const activeFiltersCount = (garmentCategory.length > 0 ? 1 : 0) + (sportCategory.length > 0 ? 1 : 0) + (styleNo.length > 0 ? 1 : 0) + (sampleStage.length > 0 ? 1 : 0) + (categoryFilter !== 'ALL' ? 1 : 0);
 
   const [colMenuAnchor, setColMenuAnchor] = useState<null | HTMLElement>(null);
+  const [exportMenuAnchor, setExportMenuAnchor] = useState<null | HTMLElement>(null);
   const [mobileMenuAnchor, setMobileMenuAnchor] = useState<null | HTMLElement>(null);
   const [visibleColumns, setVisibleColumns] = useState<Record<string, boolean>>(() => {
     try {
@@ -232,6 +241,59 @@ const ProductListPage: React.FC = () => {
 
   const [draggedColId, setDraggedColId] = useState<string | null>(null);
   const [dragOverColId, setDragOverColId] = useState<string | null>(null);
+
+  // Column Filters and Sorting Logic
+  const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
+  const [sortConfig, setSortConfig] = useState<{ field: string, direction: 'asc' | 'desc' } | null>(null);
+
+  const getFieldValueForFilter = useCallback((row: Item, field: string): string => {
+    let val: any = '';
+    switch (field) {
+      case 'Project': val = row.product?.projectName; break;
+      case 'Item Code': val = row.itemCode; break;
+      case 'Category': val = row.product?.garmentCategory || row.category; break;
+      case 'Sport': val = row.product?.sportCategory; break;
+      case 'Style Name': val = row.product?.styleName; break;
+      case 'Stage': val = row.product?.sampleStage; break;
+      case 'Color': val = row.color; break;
+      case 'Size': val = row.product?.size; break;
+      case 'Gender': val = row.product?.gender; break;
+      case 'Pattern Marker': val = row.product?.patternMarker; break;
+      case 'Allocation': val = row.product?.allocation; break;
+      case 'FOB Price': val = row.product?.fobPrice; break;
+      case 'Location': val = row.location; break;
+      case 'Qty': val = row.quantity; break;
+      case 'Remark': val = row.remark; break;
+      default: val = row[field as keyof Item];
+    }
+    return (val !== undefined && val !== null && val !== '') ? String(val) : '(Blanks)';
+  }, []);
+
+  const filteredItems = useMemo(() => {
+    let result = items;
+    const filterEntries = Object.entries(columnFilters);
+    if (filterEntries.length > 0) {
+      result = items.filter(row => {
+        return filterEntries.every(([field, allowedValues]) => {
+          if (!allowedValues || allowedValues.length === 0) return true;
+          const val = getFieldValueForFilter(row, field);
+          return allowedValues.includes(val);
+        });
+      });
+    }
+    if (sortConfig) {
+      result = [...result].sort((a, b) => {
+        const valA = getFieldValueForFilter(a, sortConfig.field);
+        const valB = getFieldValueForFilter(b, sortConfig.field);
+        if (valA < valB) return sortConfig.direction === 'asc' ? -1 : 1;
+        if (valA > valB) return sortConfig.direction === 'asc' ? 1 : -1;
+        return 0;
+      });
+    }
+    return result;
+  }, [items, columnFilters, sortConfig, getFieldValueForFilter]);
+
+  columnFilterStore.register(window.location.pathname, columnFilters, setColumnFilters, items);
 
   const columns = [
     { id: 'Image', label: t('rdMaterial.image', 'Image'), isCenter: true },
@@ -530,6 +592,129 @@ const ProductListPage: React.FC = () => {
     }
   };
 
+  
+  const handleExportPdf = async () => {
+    const targetItems = selectedIds.length > 0 ? items.filter(i => selectedIds.includes(i.id!)) : items;
+    if (targetItems.length === 0) {
+      setSnackbar({ open: true, message: 'Không có dữ liệu để xuất PDF', severity: 'warning' });
+      return;
+    }
+    setExportingPdf(true);
+    try {
+      const selectedItems = targetItems;
+      const newPdfData: PdfProductData[] = [];
+      
+      for (const product of selectedItems) {
+        let parsedBom: any[] = [];
+        try {
+          if (product.product?.mainComposition && product.product.mainComposition.startsWith('[')) {
+            parsedBom = JSON.parse(product.product.mainComposition);
+          }
+        } catch (e) {}
+
+        const enrichedBom = [];
+        for (const bom of parsedBom) {
+          if (bom.itemId) {
+            try {
+              const materialDetail = await rdItemApi.getById(bom.itemId);
+              if (materialDetail.itemType === 'FABRIC' || materialDetail.category === 'Fabric' || bom.usage?.toUpperCase().includes('FABRIC')) {
+                enrichedBom.push({
+                  usage: bom.usage || 'Fabric',
+                  itemId: bom.itemId,
+                  itemCode: bom.itemCode || materialDetail.itemCode,
+                  name: bom.name || materialDetail.name,
+                  color: bom.color || materialDetail.fabric?.colorName || materialDetail.color || '',
+                  supplierName: materialDetail.supplierName,
+                  composition: materialDetail.fabric?.composition,
+                  weightGsm: materialDetail.fabric?.weightGsm,
+                  cuttableWidth: materialDetail.fabric?.cuttableWidth,
+                });
+              }
+            } catch (err) {
+              console.error('Failed to load material detail', err);
+            }
+          } else {
+            if (bom.usage?.toUpperCase().includes('FABRIC')) {
+              enrichedBom.push({ ...bom });
+            }
+          }
+        }
+        
+        newPdfData.push({ product, enrichedBom });
+      }
+      
+      setPdfData(newPdfData);
+      
+      // Allow React to render the PDF component before printing
+      setTimeout(async () => {
+        const container = document.querySelector('.print-only-container') as HTMLElement;
+        if (container) {
+          const originalDisplay = container.style.display;
+          const originalLeft = container.style.left;
+          const originalTop = container.style.top;
+          
+          container.style.display = 'block';
+          container.style.left = '-9999px';
+          container.style.top = '-9999px';
+          container.style.position = 'fixed';
+          container.style.zIndex = '-9999';
+
+          try {
+            // Wait for all images to fully load before capturing
+            const images = Array.from(container.querySelectorAll('img'));
+            await Promise.all(images.map(img => {
+              if (img.complete) return Promise.resolve();
+              return new Promise((resolve) => {
+                img.onload = resolve;
+                img.onerror = resolve; // Ignore errors, still resolve so we don't block
+              });
+            }));
+
+            const pages = container.querySelectorAll('.pdf-page');
+            if (pages.length > 0) {
+              const pdf = new jsPDF('l', 'mm', 'a4');
+              const pdfWidth = pdf.internal.pageSize.getWidth();
+              const pdfHeight = pdf.internal.pageSize.getHeight();
+
+              for (let i = 0; i < pages.length; i++) {
+                const pageEl = pages[i] as HTMLElement;
+                const canvas = await html2canvas(pageEl, {
+                  scale: 2,
+                  useCORS: true,
+                  backgroundColor: '#f5f5f5',
+                  logging: false,
+                  width: pageEl.offsetWidth,
+                  height: pageEl.offsetHeight
+                });
+
+                const imgData = canvas.toDataURL('image/png', 1.0);
+                if (i > 0) pdf.addPage();
+                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+              }
+              pdf.save(`Products_Export_${new Date().getTime()}.pdf`);
+            }
+          } catch (err) {
+            console.error("PDF export failed", err);
+          } finally {
+            container.style.display = originalDisplay;
+            container.style.left = originalLeft;
+            container.style.top = originalTop;
+            container.style.position = 'fixed'; // reset to CSS defined
+            container.style.zIndex = '99999';
+            setExportingPdf(false);
+          }
+        } else {
+          setExportingPdf(false);
+        }
+      }, 1000);
+      
+    } catch (err) {
+      console.error(err);
+      setSnackbar({ open: true, message: 'Error generating PDF data', severity: 'error' });
+      setExportingPdf(false);
+    }
+  };
+
   const handleExport = async () => {
     setExporting(true);
     try {
@@ -556,6 +741,35 @@ const ProductListPage: React.FC = () => {
 
   return (
     <Box sx={{ flexGrow: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
+      <style>
+        {`
+          @media print {
+            body * {
+              visibility: hidden;
+            }
+            .print-only-container, .print-only-container * {
+              visibility: visible !important;
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+            }
+            .print-only-container {
+              position: fixed;
+              left: 0;
+              top: 0;
+              width: 100vw;
+              height: 100vh;
+              background: white;
+              z-index: 99999;
+              overflow: visible;
+            }
+            @page { size: landscape; margin: 0; }
+          }
+        `}
+      </style>
+      <Box className="print-only-container" sx={{ display: 'none', displayPrint: 'block' }}>
+        <ProductPdfExport data={pdfData} />
+      </Box>
+
       {/* 🚀 Toolbar Area 🚀 */}
       {isMobile ? (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, mb: 2, width: '100%' }}>
@@ -766,6 +980,9 @@ const ProductListPage: React.FC = () => {
           </Box>
 
           {/* Right Section: Actions */}
+
+
+
           <Box sx={{ 
             display: 'flex', 
             alignItems: 'center', 
@@ -780,12 +997,12 @@ const ProductListPage: React.FC = () => {
             </Box>
 
             <AppButton variant="outlined" customVariant="primary"
-              disabled={exporting || items.length === 0}
-              onClick={handleExport}
+              disabled={exporting || exportingPdf || items.length === 0}
+              onClick={(e) => setExportMenuAnchor(e.currentTarget)}
               startIcon={
                 <FileDownloadIcon sx={{ 
                   fontSize: '20px !important',
-                  animation: exporting ? 'bounce 1s infinite' : 'none',
+                  animation: (exporting || exportingPdf) ? 'bounce 1s infinite' : 'none',
                 }} />
               }
               sx={{ 
@@ -796,8 +1013,22 @@ const ProductListPage: React.FC = () => {
                 }
               }}
             >
-              {exporting ? t('rdMaterial.exporting', 'Exporting...') : t('rdMaterial.export', 'Export')}
+              {(exporting || exportingPdf) ? t('rdMaterial.exporting', 'Exporting...') : t('rdMaterial.export', 'Export')}
             </AppButton>
+
+            <Menu
+              anchorEl={exportMenuAnchor}
+              open={Boolean(exportMenuAnchor)}
+              onClose={() => setExportMenuAnchor(null)}
+              PaperProps={{ sx: { borderRadius: 2, minWidth: 150, boxShadow: '0 4px 20px rgba(0,0,0,0.1)', mt: 1 } }}
+            >
+              <MenuItem onClick={() => { setExportMenuAnchor(null); handleExport(); }}>
+                <Typography fontSize={14} fontWeight={500}>Export Excel</Typography>
+              </MenuItem>
+              <MenuItem onClick={() => { setExportMenuAnchor(null); handleExportPdf(); }}>
+                <Typography fontSize={14} fontWeight={500} color="error">Export PDF</Typography>
+              </MenuItem>
+            </Menu>
 
             {canAdd && (
               <AppButton variant="contained" customVariant="primary"
@@ -916,11 +1147,11 @@ const ProductListPage: React.FC = () => {
         )}
         {isMobile ? (
           <Box sx={{ flexGrow: 1, minHeight: 0, overflowY: 'auto', p: 1.5, display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-            {loading && items.length === 0 ? (
+            {loading && filteredItems.length === 0 ? (
               <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
                 <CircularProgress size={28} color="primary" />
               </Box>
-            ) : items.length === 0 ? (
+            ) : filteredItems.length === 0 ? (
               <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1.5, py: 8 }}>
                 <TextureIcon sx={{ fontSize: 48, color: '#e2e8f0' }} />
                 <Typography color="text.secondary" fontWeight={600} fontSize={14}>
@@ -1127,21 +1358,55 @@ const ProductListPage: React.FC = () => {
                           opacity: draggedColId === col.id ? 0.4 : 1,
                           transition: 'opacity 0.15s, border 0.15s',
                           ...stickyStyle,
-                          ...widthStyle
-                        }}
+                          ...widthStyle,
+                          '&:hover .hide-col-btn': { opacity: 0.6 }
+                        } as any}
                       >
-                        {col.label}
+                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: col.isCenter ? 'center' : (col.isRight ? 'flex-end' : 'flex-start'), gap: 0.5 }}>
+                          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: col.isCenter ? 'center' : col.isRight ? 'flex-end' : 'flex-start' }}>
+                            <span>{col.label}</span>
+                            {col.id !== 'Image' && col.id !== 'Actions' && (
+                              <TableExcelColumnMenu 
+                                field={col.id}
+                                allRows={items}
+                                columnFilters={columnFilters}
+                                setColumnFilters={setColumnFilters}
+                                getFieldValue={getFieldValueForFilter}
+                                onSortAsc={() => setSortConfig({ field: col.id, direction: 'asc' })}
+                                onSortDesc={() => setSortConfig({ field: col.id, direction: 'desc' })}
+                              />
+                            )}
+                          </Box>
+                          {col.id !== 'Actions' && col.id !== 'Image' && (
+                            <IconButton 
+                              size="small" 
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setVisibleColumns(prev => ({ ...prev, [col.id]: false }));
+                              }}
+                              sx={{ 
+                                p: 0.2, 
+                                opacity: 0, 
+                                transition: 'opacity 0.2s', 
+                                '&:hover': { color: '#ef4444', opacity: '1 !important' } 
+                              }}
+                              className="hide-col-btn"
+                            >
+                              <VisibilityOffIcon sx={{ fontSize: 14 }} />
+                            </IconButton>
+                          )}
+                        </Box>
                       </TableCell>
                     );
                   })}
                 </TableRow>
               </TableHead>
               <TableBody sx={{ '& tr:nth-of-type(even)': { bgcolor: '#fff' }, '& tr:nth-of-type(odd)': { bgcolor: '#fff' }, opacity: loading ? 0.6 : 1, transition: 'opacity 0.2s' }}>
-                {loading && items.length === 0 ? (
+                {loading && filteredItems.length === 0 ? (
                   <TableRow><TableCell colSpan={colSpanCount} align="center" sx={{ py: 6 }}>
                     <CircularProgress size={28} color="primary" />
                   </TableCell></TableRow>
-                ) : items.length === 0 ? (
+                ) : filteredItems.length === 0 ? (
                   <TableRow><TableCell colSpan={colSpanCount} align="center" sx={{ py: 8 }}>
                     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1.5 }}>
                       <TextureIcon sx={{ fontSize: 48, color: '#e2e8f0' }} />
@@ -1150,7 +1415,7 @@ const ProductListPage: React.FC = () => {
                       </Typography>
                     </Box>
                   </TableCell></TableRow>
-                ) : items.map((item) => {
+                ) : filteredItems.map((item) => {
                   const rowBgColor = '#fff';
                   return (
                     <TableRow
