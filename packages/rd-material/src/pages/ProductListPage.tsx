@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useRef } from 'react';
+import React, { useEffect, useState, useCallback, useRef, useMemo } from 'react';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import { useNavigate } from 'react-router-dom';
