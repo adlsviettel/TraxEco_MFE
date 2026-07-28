@@ -72,6 +72,7 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
       structure: extracted.structure || prev.structure,
       fabricName: extracted.fabricName || prev.fabricName,
       function: extracted.function || prev.function,
+      technology: extracted.technology || prev.technology,
       description: extracted.description || prev.description,
       remark: extracted.remark ? `${prev.remark ? prev.remark + '\n' : ''}${extracted.remark}` : prev.remark,
     }));
@@ -145,6 +146,7 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
         composition: item.fabric?.composition,
         compositionDetail: item.fabric?.compositionDetail,
         function: item.fabric?.function,
+        technology: item.fabric?.technology,
         weightGsm: item.fabric?.weightGsm,
         cuttableWidth: item.fabric?.cuttableWidth,
         colorName: item.fabric?.colorName,
@@ -160,6 +162,7 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
         structure: '',
         composition: '',
         function: '',
+        technology: '',
         weightGsm: undefined,
         cuttableWidth: undefined,
         price: undefined,
@@ -196,10 +199,6 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
     if (!e.target.files?.length) return;
     const files = Array.from(e.target.files);
     
-    if (files.some(f => f.size > 5 * 1024 * 1024)) {
-      return setSnackbar({ open: true, message: t('rdMaterial.image_too_large', 'Image size > 5MB'), severity: 'warning' });
-    }
-
     if (targetField === 'mainImage') {
       setPendingMainImages(prev => [...prev, ...files]);
     } else {
@@ -372,6 +371,7 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
           composition: (form as any).composition || undefined,
           compositionDetail: (form as any).compositionDetail || undefined,
           function: (form as any).function || undefined,
+          technology: (form as any).technology || undefined,
           weightGsm: toNum((form as any).weightGsm),
           cuttableWidth: toNum((form as any).cuttableWidth),
           colorName: (form as any).colorName || undefined,
@@ -419,10 +419,6 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
     }
 
     if (files.length === 0) return;
-    
-    if (files.some(f => f.size > 5 * 1024 * 1024)) {
-      return setSnackbar({ open: true, message: t('rdMaterial.image_too_large', 'Image size > 5MB'), severity: 'warning' });
-    }
 
     // Open dialog to let user choose target
     setPastedFiles(files);
@@ -704,6 +700,7 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
                         <AppTextField label={t('rdMaterial.fabric_name', 'Fabric Name')} size="small" inputProps={{ 'data-testid': 'rd-fabric-form-fabricName' }} value={(form as any).fabricName ?? ''} debounceMs={200} onDebounceChange={(val) => set('fabricName', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
                         <AppTextField label={t('rdMaterial.composition', 'Composition')} size="small" value={(form as any).composition ?? ''} debounceMs={200} onDebounceChange={(val) => set('composition', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
                         <AppTextField label={t('rdMaterial.function', 'Function')} size="small" value={(form as any).function ?? ''} debounceMs={200} onDebounceChange={(val) => set('function', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
+                        <AppTextField label={t('rdMaterial.technology', 'Technology')} size="small" value={(form as any).technology ?? ''} debounceMs={200} onDebounceChange={(val) => set('technology', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
                         <AppTextField label={t('rdMaterial.weight_gsm', 'Weight (GSM)')} size="small" type="number" inputProps={{ min: 0 }} value={(form as any).weightGsm ?? ''} debounceMs={200} onDebounceChange={(val) => set('weightGsm', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
                         <AppTextField label={t('rdMaterial.width', 'Cuttable width (inch)')} size="small" type="number" inputProps={{ min: 0 }} value={(form as any).cuttableWidth ?? ''} debounceMs={200} onDebounceChange={(val) => set('cuttableWidth', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
                       </Box>
@@ -939,12 +936,19 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
                         />
                         <AppTextField label={t('rdMaterial.location', 'Hanger location')} size="small" value={form.location ?? ''} debounceMs={200} onDebounceChange={(val) => set('location', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
                         <AppTextField label={t('rdMaterial.remark', 'Remark')} size="small" multiline rows={3} value={form.remark ?? ''} debounceMs={200} onDebounceChange={(val) => set('remark', val)} sx={{ gridColumn: '1/-1', '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
-                        <Box sx={{ gridColumn: '1/-1', bgcolor: '#f0fdf4', p: 1.5, borderRadius: 1, border: '1px solid #bbf7d0', display: 'inline-flex', width: 'fit-content' }}>
-                          <FormControlLabel
-                            control={<Checkbox size="small" checked={!!(form as any).hasSy} onChange={(e) => set('hasSy', e.target.checked)} sx={{ color: '#22c55e', '&.Mui-checked': { color: '#16a34a' } }} />}
-                            label={<Typography variant="body2" fontWeight={700} color="#166534">{t('rdMaterial.has_sy', 'Sample Yardage')}</Typography>}
-                            sx={{ m: 0 }}
-                          />
+                        <Box sx={{ gridColumn: '1/-1', display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
+                          <Box sx={{ bgcolor: '#f0fdf4', p: 1.5, borderRadius: 1, border: '1px solid #bbf7d0', display: 'inline-flex', width: 'fit-content' }}>
+                            <FormControlLabel
+                              control={<Checkbox size="small" checked={!!(form as any).hasSy} onChange={(e) => set('hasSy', e.target.checked)} sx={{ color: '#22c55e', '&.Mui-checked': { color: '#16a34a' } }} />}
+                              label={<Typography variant="body2" fontWeight={700} color="#166534">{t('rdMaterial.has_sy', 'Sample Yardage')}</Typography>}
+                              sx={{ m: 0 }}
+                            />
+                          </Box>
+                          <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.75, bgcolor: '#fef2f2', border: '1px solid #fca5a5', px: 1.5, py: 1, borderRadius: 1 }}>
+                            <Typography variant="caption" sx={{ color: '#dc2626', fontWeight: 700, fontSize: '0.825rem', display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                              ⚠️ {t('rdMaterial.textile_engineer_note', 'Chỉ có Textile Engineer mới thao tác phần này')}
+                            </Typography>
+                          </Box>
                         </Box>
                       </Box>
                     </Box>

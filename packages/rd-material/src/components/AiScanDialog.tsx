@@ -30,10 +30,6 @@ export const AiScanDialog: React.FC<Props> = ({ open, onClose, onApply, itemType
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
-      if (selectedFile.size > 25 * 1024 * 1024) {
-        setError("File size too large (>25MB). Please upload a smaller image.");
-        return;
-      }
       setFile(selectedFile);
       setPreviewUrl(URL.createObjectURL(selectedFile));
       setError(null);
@@ -68,10 +64,6 @@ export const AiScanDialog: React.FC<Props> = ({ open, onClose, onApply, itemType
         if (items[i].type.indexOf("image") !== -1) {
           const pastedFile = items[i].getAsFile();
           if (pastedFile) {
-            if (pastedFile.size > 25 * 1024 * 1024) {
-              setError("File size too large (>25MB). Please upload a smaller image.");
-              return;
-            }
             setFile(pastedFile);
             setPreviewUrl(URL.createObjectURL(pastedFile));
             setError(null);
@@ -317,6 +309,15 @@ export const AiScanDialog: React.FC<Props> = ({ open, onClose, onApply, itemType
                             rows={2}
                             value={extractedData.function || ''}
                             onChange={(e) => handleFieldChange('function', e.target.value)}
+                          />
+                        </Grid>
+                        <Grid item xs={12}>
+                          <TextField
+                            label="Technology"
+                            fullWidth
+                            size="small"
+                            value={extractedData.technology || ''}
+                            onChange={(e) => handleFieldChange('technology', e.target.value)}
                           />
                         </Grid>
                         <Grid item xs={12} sm={6}>

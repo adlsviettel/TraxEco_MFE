@@ -48,7 +48,7 @@ const getStickyHeaderStyle = (colId: string, filteredCols: any[]) => {
       if (c.id === 'Image') left += 80;
       else if (c.id === 'Name') left += 200;
       else if (c.id === 'Fabric Name') left += 200;
-      else if (c.id === 'Item Code') left += 150;
+      else if (c.id === 'Item Code') left += 240;
     }
   }
   
@@ -72,7 +72,7 @@ const getStickyBodyStyle = (colId: string, filteredCols: any[], rowBgColor: stri
       if (c.id === 'Image') left += 80;
       else if (c.id === 'Name') left += 200;
       else if (c.id === 'Fabric Name') left += 200;
-      else if (c.id === 'Item Code') left += 150;
+      else if (c.id === 'Item Code') left += 240;
     }
   }
   
@@ -184,6 +184,7 @@ const FabricListPage: React.FC = () => {
       case 'Structure': val = row.fabric?.structure; break;
       case 'Composition': val = row.fabric?.composition || row.accessory?.composition; break;
       case 'Function': val = row.fabric?.function; break;
+      case 'Technology': val = row.fabric?.technology; break;
       case 'GSM': val = row.fabric?.weightGsm || row.accessory?.weightGsm; break;
       case 'Width': val = row.fabric?.cuttableWidth; break;
       case 'leadtimeWithGreige': val = row.leadtimeWithGreige; break;
@@ -251,7 +252,7 @@ const FabricListPage: React.FC = () => {
 
   const [columnOrder, setColumnOrder] = useState<string[]>(() => {
     const defaultOrder = [
-      'Image', 'Name', 'Item Code', 'Structure', 'Composition', 'Function', 'GSM',
+      'Image', 'Name', 'Item Code', 'Structure', 'Composition', 'Function', 'Technology', 'GSM',
       'Width', 'Supplier', 'Origin', 'Price', 'MOQ / MCQ', 'Surcharge', 
       'leadtimeWithGreige', 'leadtimeWithoutGreige', 'Qty', 'Location', 'Remark', 
       'Created At', 'Holder', 'S/Y', 'Actions'
@@ -286,6 +287,7 @@ const FabricListPage: React.FC = () => {
     { id: 'Structure', label: t('rdMaterial.structure', 'Structure') },
     { id: 'Composition', label: t('rdMaterial.composition', 'Composition') },
     { id: 'Function', label: t('rdMaterial.function', 'Function') },
+    { id: 'Technology', label: t('rdMaterial.technology', 'Technology') },
     { id: 'GSM', label: t('rdMaterial.weight_gsm', 'Weight (GSM)') },
     { id: 'Width', label: t('rdMaterial.width', 'Cuttable width (inch)') },
     { id: 'Supplier', label: t('rdMaterial.supplier', 'Supplier Name') },
@@ -363,15 +365,28 @@ const FabricListPage: React.FC = () => {
           <TableCell key={colId} sx={{
             py: 1.5, fontSize: 13,
             ...getStickyBodyStyle('Item Code', filteredCols, rowBgColor),
-            width: 150, minWidth: 150, maxWidth: 150
+            minWidth: 180, width: 220,
+            overflow: 'hidden'
           } as any}>
-            <Typography 
-              component="span" 
-              onClick={() => React.startTransition(() => navigate(`${BASE}/fabric/${item.id}`))}
-              sx={{ fontSize: 13, color: '#1a73e8', fontWeight: 500, cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
-            >
-              {item.itemCode || '—'}
-            </Typography>
+            <Tooltip title={item.itemCode || '—'} arrow placement="top">
+              <Typography 
+                component="div" 
+                onClick={() => React.startTransition(() => navigate(`${BASE}/fabric/${item.id}`))}
+                sx={{ 
+                  fontSize: 13, 
+                  color: '#1a73e8', 
+                  fontWeight: 500, 
+                  cursor: 'pointer',
+                  wordBreak: 'break-word',
+                  overflowWrap: 'anywhere',
+                  lineHeight: 1.35,
+                  display: 'block',
+                  '&:hover': { textDecoration: 'underline' } 
+                }}
+              >
+                {item.itemCode || '—'}
+              </Typography>
+            </Tooltip>
           </TableCell>
         );
       case 'Supplier':
@@ -388,6 +403,12 @@ const FabricListPage: React.FC = () => {
         return (
           <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945' }}>
             {item.fabric?.composition || '—'}
+          </TableCell>
+        );
+      case 'Technology':
+        return (
+          <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945' }}>
+            {item.fabric?.technology || '—'}
           </TableCell>
         );
       case 'GSM':
@@ -1110,7 +1131,7 @@ const FabricListPage: React.FC = () => {
                     const stickyStyle = getStickyHeaderStyle(col.id, filteredCols);
                     const widthStyle = col.id === 'Image' ? { width: 80, minWidth: 80, maxWidth: 80 }
                                      : col.id === 'Name' ? { width: 200, minWidth: 200, maxWidth: 200 }
-                                     : col.id === 'Item Code' ? { width: 150, minWidth: 150, maxWidth: 150 }
+                                     : col.id === 'Item Code' ? { width: 240, minWidth: 240, maxWidth: 240 }
                                      : {};
                     return (
                       <TableCell

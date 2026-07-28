@@ -27,6 +27,7 @@ export interface ItemFilter {
   sportCategory?: string;
   styleNo?: string;
   sampleStage?: string;
+  technology?: string;
 }
 
 export const rdItemApi = {

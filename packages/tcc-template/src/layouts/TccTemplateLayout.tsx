@@ -14,6 +14,7 @@ import RequestorViewPage from '../pages/RequestorViewPage';
 import AdminStatusPage from '../pages/AdminStatusPage';
 import DashboardPage from '../pages/DashboardPage';
 import TccSettingsPage from '../pages/TccSettingsPage';
+import QueueManagementPage from '../pages/QueueManagementPage';
 import TccNotificationBell from '../components/TccNotificationBell';
 
 const BASE = '/tcc-template';
@@ -43,21 +44,25 @@ export default function TccTemplateLayout() {
     }
   }, []);
 
+  const hasAdminAccess = useMemo(() => roleLevel <= 2 || authService.hasPageAccess('tcc_admin'), [roleLevel]);
+
   const navItems = useMemo(() => [
     { text: t('tcc.nav.tracking', 'Template Request Form'), icon: <SearchIcon fontSize="small" />, path: `${BASE}/tracking`, pageCode: 'tcc_tracking' },
     { text: t('tcc.nav.adminStatus', 'Master Data'), icon: <AssignmentIcon fontSize="small" />, path: `${BASE}/admin-status`, pageCode: 'tcc_admin_status' },
+    { text: t('tcc.nav.queue', 'Queue Management'), icon: <AssignmentIcon fontSize="small" />, path: `${BASE}/queue`, pageCode: 'tcc_admin_status' },
     { text: t('tcc.nav.dashboard', 'Dashboard'), icon: <BarChartIcon fontSize="small" />, path: `${BASE}/dashboard`, pageCode: 'tcc_dashboard' },
     { text: t('nav.settings', 'Settings'), icon: <SettingsIcon fontSize="small" />, path: `${BASE}/settings`, pageCode: 'tcc_settings' },
-    ...(roleLevel <= 2 || authService.hasPageAccess('tcc_admin') ? [{ text: t('nav.admin', 'Admin'), icon: <AdminSettingsIcon fontSize="small" />, path: `${BASE}/admin`, pageCode: 'tcc_admin' }] : []),
-  ], [t, roleLevel]);
+    ...(hasAdminAccess ? [{ text: t('nav.admin', 'Admin'), icon: <AdminSettingsIcon fontSize="small" />, path: `${BASE}/admin`, pageCode: 'tcc_admin' }] : []),
+  ], [t, hasAdminAccess]);
 
   const pages = useMemo(() => [
     { path: `${BASE}/tracking`, component: <RequestorViewPage /> },
     { path: `${BASE}/admin-status`, component: <AdminStatusPage /> },
+    { path: `${BASE}/queue`, component: <QueueManagementPage /> },
     { path: `${BASE}/dashboard`, component: <DashboardPage /> },
     { path: `${BASE}/settings`, component: <TccSettingsPage /> },
-    ...(roleLevel <= 2 || authService.hasPageAccess('tcc_admin') ? [{ path: `${BASE}/admin`, component: <AdminPage /> }] : []),
-  ], [roleLevel]);
+    ...(hasAdminAccess ? [{ path: `${BASE}/admin`, component: <AdminPage /> }] : []),
+  ], [hasAdminAccess]);
 
   return (
     <AppShell
@@ -65,7 +70,7 @@ export default function TccTemplateLayout() {
       appTitleShort="TCC TEMPLATE"
       appLogo={<NoteAddIcon sx={{ color: '#fff', fontSize: 18 }} />}
       accentColor="#2e7d32"
-      drawerWidth={240}
+      drawerWidth={280}
       navItems={navItems}
       pages={pages}
       storageKey="tcc_layout_open"

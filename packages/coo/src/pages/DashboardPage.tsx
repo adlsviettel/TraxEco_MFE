@@ -214,12 +214,25 @@ export const DashboardPage = () => {
             const res = await authFetch(`coo/erp-materials?poNumber=${encodeURIComponent(poNumber)}`);
             if (res.ok) {
                 const rawData = await res.json();
+                
+                // Group by PO to find main fabric's Country
+                const mainFabricsByPo: Record<string, any> = {};
+                rawData.forEach((row: any) => {
+                    if (row.isMainFabric && row.customerReference) {
+                        mainFabricsByPo[row.customerReference] = row;
+                    }
+                });
+
                 const data = rawData.map((row: any) => {
                     let formType = '';
                     let remark = '';
                     
-                    // Bất kể vải chính hay phụ, luôn luôn điền FormType và Remark theo CountryRegion
-                    const rawCountry = (row.countryRegion || '').trim();
+                    // Lấy countryRegion của Main Fabric (nếu có), nếu không có thì lấy của chính nó
+                    const mainFabric = mainFabricsByPo[row.customerReference];
+                    const countryToUse = (mainFabric && mainFabric.countryRegion) ? mainFabric.countryRegion : row.countryRegion;
+                    const hasMainFabric = !!mainFabric;
+                    
+                    const rawCountry = (countryToUse || '').trim();
                     if (rawCountry) {
                         const countryLower = rawCountry.toLowerCase();
                         if (countryLower === 'vietnam' || countryLower === 'vn' || countryLower === 'vnm' || countryLower === 'việt nam') {
@@ -231,8 +244,11 @@ export const DashboardPage = () => {
                             if (formattedCountry.toUpperCase() === 'THAILND') {
                                 formattedCountry = 'Thailand';
                             }
-                            remark = `Import from ${formattedCountry}`;
+                            remark = hasMainFabric ? `Main Fabric Import from ${formattedCountry}` : `Import from ${formattedCountry}`;
                         }
+                    } else {
+                        remark = '';
+                        row.missingFromWeekly = 'Missing Declaration';
                     }
                     
                     return { ...row, formType, remark };

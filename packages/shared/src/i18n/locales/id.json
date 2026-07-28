@@ -966,6 +966,7 @@
     "qtyLabel": "Jumlah:"
   },
   "rdMaterial": {
+    "textile_engineer_note": "Hanya Textile Engineer yang mengoperasikan bagian ini",
     "dashboard": "Dasbor",
     "fabricHanger": "Gantungan Kain",
     "accessory": "Aksesoris",
@@ -1279,6 +1280,11 @@
     "selectColumn": "Pilih kolom untuk ditambahkan",
     "selectAll": "Pilih Semua",
     "noValuesMatch": "Tidak ada nilai yang cocok",
+    "capacityFullTitle": "Kapasitas Penuh!",
+    "capacityFullMessage": "Factory saat ini tidak memiliki slot untuk tanggal ini.",
+    "capacityFullDesc": "Apakah request ini Urgent? Jika Urgent, request akan masuk ke Queue untuk persetujuan Admin.",
+    "confirmUrgent": "Ya, Urgent!",
+    "notUrgent": "Tidak, batalkan request",
     "notification": {
       "bellHeader": "Notifikasi TCC",
       "markAllRead": "Tandai semua telah dibaca",

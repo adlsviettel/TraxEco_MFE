@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { AppButton, AppTextField, authService } from '@traxeco/shared';
 import {
   Box,
@@ -26,11 +26,15 @@ import {
   Button,
   useTheme,
   useMediaQuery,
+  Checkbox,
+  FormControlLabel,
+  InputAdornment,
+  Chip,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { DatePicker } from '@mui/x-date-pickers';
 import { useTranslation } from 'react-i18next';
-import { tccService, type TccRequest, type CreateRequestPayload, type TccMachineTemplate, type TccLeadTimeConfig } from '../services/tccService';
+import { tccService, type TccRequest, type CreateRequestPayload, type TccMachineTemplate, type TccLeadTimeConfig, type SmvConfigRule } from '../services/tccService';
 import { format, addDays, getDay } from 'date-fns';
 
 const CUSTOMERS = ['Adidas', 'Puma', 'NB', 'Swannies', 'Bomber', 'Rhone'];
@@ -42,7 +46,7 @@ const PRODUCT_TYPES = ['Polo', 'T-Shirt', 'Jacket', 'Pants', 'Shorts', 'Dress', 
 interface RequestFormDialogProps {
   open: boolean;
   onClose: () => void;
-  onSuccess: () => void;
+  onSuccess: (req?: any) => void;
   lastRequest?: TccRequest;
 }
 
@@ -55,6 +59,8 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [urgentConfirmOpen, setUrgentConfirmOpen] = useState(false);
+  const [pendingShouldSave, setPendingShouldSave] = useState<boolean>(false);
 
   const [customers, setCustomers] = useState<string[]>(CUSTOMERS);
   const [sampleStages, setSampleStages] = useState<string[]>(SAMPLE_STAGES);
@@ -68,6 +74,14 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
   const [availableMachineTypes, setAvailableMachineTypes] = useState<string[]>([]);
   const [availableMachineDimensions, setAvailableMachineDimensions] = useState<string[]>([]);
 
+  const [smvConfigs, setSmvConfigs] = useState<SmvConfigRule[]>([]);
+  const [matchedSmv, setMatchedSmv] = useState<SmvConfigRule | null>(null);
+
+  const commonOperationOptions = useMemo(() => {
+    const ops = smvConfigs.map(c => c.commonOperation).filter(Boolean);
+    return Array.from(new Set(ops));
+  }, [smvConfigs]);
+
   const initialFormState: CreateRequestPayload = {
     requesterName: '',
     customer: '',
@@ -76,7 +90,14 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
     productType: '',
     sampleStage: '',
     factory: '',
-    materialSentDate: null,
+    fabricDeliveryDate: null,
+    fabricNoNeed: false,
+    paperPatternDeliveryDate: null,
+    paperPatternNoNeed: false,
+    trimDeliveryDate: null,
+    trimNoNeed: false,
+    sampleSketchDeliveryDate: null,
+    sampleSketchNoNeed: false,
     processType: 'Light Process',
     operationDescription: '',
     machineType: '',
@@ -90,6 +111,21 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
   };
 
   const [form, setForm] = useState<CreateRequestPayload>(initialFormState);
+
+  useEffect(() => {
+    if (form.operationDescription && form.sampleStage && smvConfigs.length > 0) {
+      const op = form.operationDescription.trim().toLowerCase();
+      const matched = smvConfigs.find(r => 
+        r.sampleStage === form.sampleStage && (
+          op.includes(r.commonOperation.toLowerCase()) || 
+          r.commonOperation.toLowerCase().includes(op)
+        )
+      );
+      setMatchedSmv(matched || null);
+    } else {
+      setMatchedSmv(null);
+    }
+  }, [form.operationDescription, form.sampleStage, smvConfigs]);
 
   useEffect(() => {
     if (open) {
@@ -107,19 +143,13 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
       }
 
 
-      const userStr = localStorage.getItem('user');
-      let user = null;
-      if (userStr) {
-        try {
-          user = JSON.parse(userStr);
-        } catch (e) {
-          console.error('Failed to parse user from localStorage', e);
-        }
-      }
-      const loggedInName = user?.displayName || user?.name || '';
+      const userInfo = authService.getUserInfo();
+      const loggedInName = userInfo?.employeeName || userInfo?.employeeCode || 'Guest';
 
-      if (sourceForm) {
+      if (lastRequest) {
+        const sourceForm = lastRequest;
         setForm({
+          ...initialFormState,
           requesterName: loggedInName,
           customer: sourceForm.customer || '',
           season: sourceForm.season || '',
@@ -127,17 +157,24 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
           productType: sourceForm.productType || '',
           sampleStage: sourceForm.sampleStage || '',
           factory: sourceForm.factory || '',
-          materialSentDate: sourceForm.materialSentDate || null,
+          paperPatternDeliveryDate: sourceForm.paperPatternDeliveryDate || null,
+          trimDeliveryDate: sourceForm.trimDeliveryDate || null,
+          fabricDeliveryDate: sourceForm.fabricDeliveryDate || null,
+          sampleSketchDeliveryDate: sourceForm.sampleSketchDeliveryDate || null,
+          paperPatternNoNeed: sourceForm.paperPatternNoNeed || false,
+          trimNoNeed: sourceForm.trimNoNeed || false,
+          fabricNoNeed: sourceForm.fabricNoNeed || false,
+          sampleSketchNoNeed: sourceForm.sampleSketchNoNeed || false,
           processType: sourceForm.processType || 'Light Process',
           operationDescription: sourceForm.operationDescription || '',
           machineType: sourceForm.machineType || '',
           machineDimension: sourceForm.machineDimension || '',
           sizesRequired: sourceForm.sizesRequired || '',
-          isPriority: !!sourceForm.isPriority,
-          priorityReason: sourceForm.priorityReason || '',
-          expectedDeliveryDate: sourceForm.expectedDeliveryDate || null,
+          templateQty: sourceForm.templateQty || 1,
           lineQuantity: sourceForm.lineQuantity || '',
-          templateQty: sourceForm.templateQty || null,
+          expectedDeliveryDate: sourceForm.expectedDeliveryDate || null,
+          isPriority: sourceForm.isPriority || false,
+          priorityReason: sourceForm.priorityReason || '',
         });
       } else {
         setForm({
@@ -170,6 +207,12 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
             setLeadTimeConfigs(configs);
           } catch (e) {
             console.error('Failed to load lead time configs', e);
+          }
+          try {
+            const smvRules = await tccService.getSmvConfigs();
+            setSmvConfigs(smvRules);
+          } catch (e) {
+            console.error('Failed to load SMV rules', e);
           }
           const templates = await tccService.getMachineTemplates();
           if (Array.isArray(templates)) {
@@ -300,23 +343,29 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
     setConfirmOpen(true);
   };
 
-  const handleConfirmSubmit = async (shouldSave: boolean) => {
-    setConfirmOpen(false);
+  const doCreateRequest = async (shouldSave: boolean, forceUrgent?: boolean) => {
     setSubmitting(true);
     setError(null);
-
     try {
       const payload = {
         ...form,
         machineType: form.machineType || null,
         machineDimension: form.machineDimension || null,
         requesterName: authService.getUserInfo().employeeCode,
-        materialSentDate: form.materialSentDate ? format(new Date(form.materialSentDate), 'yyyy-MM-dd') : null,
         expectedDeliveryDate: form.expectedDeliveryDate ? format(new Date(form.expectedDeliveryDate), 'yyyy-MM-dd') : null,
+        fabricDeliveryDate: form.fabricDeliveryDate && !form.fabricNoNeed ? format(new Date(form.fabricDeliveryDate), 'yyyy-MM-dd') : null,
+        fabricNoNeed: form.fabricNoNeed,
+        paperPatternDeliveryDate: form.paperPatternDeliveryDate && !form.paperPatternNoNeed ? format(new Date(form.paperPatternDeliveryDate), 'yyyy-MM-dd') : null,
+        paperPatternNoNeed: form.paperPatternNoNeed,
+        trimDeliveryDate: form.trimDeliveryDate && !form.trimNoNeed ? format(new Date(form.trimDeliveryDate), 'yyyy-MM-dd') : null,
+        trimNoNeed: form.trimNoNeed,
+        sampleSketchDeliveryDate: form.sampleSketchDeliveryDate && !form.sampleSketchNoNeed ? format(new Date(form.sampleSketchDeliveryDate), 'yyyy-MM-dd') : null,
+        sampleSketchNoNeed: form.sampleSketchNoNeed,
+        ...(forceUrgent ? { isPriority: true, priorityReason: form.priorityReason || 'Urgent - capacity full' } : {}),
       };
 
       await tccService.createRequest(payload);
-      
+
       try {
         if (shouldSave) {
           localStorage.setItem('tcc_last_submitted_request', JSON.stringify(form));
@@ -334,6 +383,48 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const handleConfirmSubmit = async (shouldSave: boolean) => {
+    setConfirmOpen(false);
+    setPendingShouldSave(shouldSave);
+
+    // Pre-check capacity before creating request
+    if (form.factory && form.expectedDeliveryDate && !form.isPriority) {
+      try {
+        const dateStr = format(new Date(form.expectedDeliveryDate), 'yyyy-MM-dd');
+        const usage = await tccService.getFactoryCapacityUsage(form.factory, dateStr);
+
+        console.log('[Capacity Check]', { factory: form.factory, date: dateStr, usage });
+
+        const used = usage?.used ?? usage?.currentUsage ?? 0;
+        const max = usage?.max ?? usage?.maxCapacity ?? 0;
+        const available = usage?.available ?? (max > 0 ? max - used : 999);
+
+        console.log('[Capacity Calc]', { used, max, available });
+
+        if (max > 0 && available <= 0) {
+          // Capacity full → show urgent popup, do NOT create request yet
+          setUrgentConfirmOpen(true);
+          return;
+        }
+      } catch (err) {
+        console.warn('Capacity check failed, proceeding with request:', err);
+      }
+    }
+
+    // Capacity OK or no check needed → create request directly
+    await doCreateRequest(shouldSave);
+  };
+
+  const handleUrgentConfirm = async () => {
+    setUrgentConfirmOpen(false);
+    await doCreateRequest(pendingShouldSave, true);
+  };
+
+  const handleUrgentCancel = () => {
+    setUrgentConfirmOpen(false);
+    setSubmitting(false);
   };
 
   const isFormValid = !!(
@@ -447,7 +538,6 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
                           options={seasons}
                           value={form.season}
                           onChange={(_, newValue) => handleChange('season', newValue || '')}
-                          onInputChange={(_, newInputValue) => handleChange('season', newInputValue)}
                           renderInput={(params) => (
                             <TextField
                               {...params}
@@ -479,7 +569,7 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
                           label={t('tcc.styleNumber')}
                           fullWidth
                           required
-                          value={form.styleNumber} debounceMs={150} onDebounceChange={(val) => handleChange('styleNumber', val)}
+                          value={form.styleNumber} debounceMs={500} onDebounceChange={(val) => handleChange('styleNumber', val)}
                         />
                       </Grid>
 
@@ -489,7 +579,6 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
                           options={productTypes}
                           value={form.productType}
                           onChange={(_, newValue) => handleChange('productType', newValue || '')}
-                          onInputChange={(_, newInputValue) => handleChange('productType', newInputValue)}
                           renderInput={(params) => (
                             <TextField
                               {...params}
@@ -580,35 +669,160 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
                       </Grid>
 
                       <Grid size={{ xs: 12, sm: 6 }}>
-                        <DatePicker format="dd/MM/yyyy"
-                          label={t('tcc.materialSentDate')}
-                          value={form.materialSentDate ? new Date(form.materialSentDate) : null}
-                          onChange={(val: Date | null) => handleChange('materialSentDate', val)}
-                          slotProps={{ 
-                            textField: { 
-                              fullWidth: true,
-                              size: 'small',
-                              sx: {
-                                '& .MuiOutlinedInput-root': { 
-                                  borderRadius: '8px', 
-                                  height: 40, 
-                                  fontSize: 13, 
-                                  bgcolor: '#fff', 
-                                  '& fieldset': { borderColor: '#bfc9c4' }, 
-                                  '&:hover fieldset': { borderColor: '#2e7d32' }, 
-                                  '&.Mui-focused fieldset': { borderColor: '#2e7d32' } 
-                                },
-                                '& .MuiInputLabel-root': {
-                                  fontSize: 13,
-                                },
-                                '& .MuiFormLabel-asterisk': {
-                                  color: '#dc2626',
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                          <Checkbox 
+                            size="small"
+                            checked={!form.paperPatternNoNeed}
+                            onChange={(e) => {
+                              const isNoNeed = !e.target.checked;
+                              handleChange('paperPatternNoNeed', isNoNeed);
+                              if (isNoNeed) handleChange('paperPatternDeliveryDate', null);
+                            }}
+                            sx={{ p: 0, '&.Mui-checked': { color: '#2e7d32' } }}
+                          />
+                          <DatePicker 
+                            label="Paper Pattern"
+                            format="dd/MM/yyyy"
+                            value={form.paperPatternDeliveryDate ? new Date(form.paperPatternDeliveryDate) : null}
+                            onChange={(val: Date | null) => handleChange('paperPatternDeliveryDate', val)}
+                            disabled={!!form.paperPatternNoNeed}
+                            slotProps={{ 
+                              textField: { 
+                                size: 'small',
+                                fullWidth: true,
+                                sx: {
+                                  '& .MuiOutlinedInput-root': {
+                                    borderRadius: '8px',
+                                    height: 40,
+                                    bgcolor: '#fff',
+                                    '& fieldset': { borderColor: '#bfc9c4' },
+                                    '&:hover fieldset': { borderColor: '#2e7d32' },
+                                    '&.Mui-focused fieldset': { borderColor: '#2e7d32' }
+                                  }
                                 }
-                              }
-                            } 
-                          }}
-                        />
+                              } as any
+                            }}
+                          />
+                        </Box>
                       </Grid>
+
+                      <Grid size={{ xs: 12, sm: 6 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                          <Checkbox 
+                            size="small"
+                            checked={!form.trimNoNeed}
+                            onChange={(e) => {
+                              const isNoNeed = !e.target.checked;
+                              handleChange('trimNoNeed', isNoNeed);
+                              if (isNoNeed) handleChange('trimDeliveryDate', null);
+                            }}
+                            sx={{ p: 0, '&.Mui-checked': { color: '#2e7d32' } }}
+                          />
+                          <DatePicker 
+                            label="Trim Delivery"
+                            format="dd/MM/yyyy"
+                            value={form.trimDeliveryDate ? new Date(form.trimDeliveryDate) : null}
+                            onChange={(val: Date | null) => handleChange('trimDeliveryDate', val)}
+                            disabled={!!form.trimNoNeed}
+                            slotProps={{ 
+                              textField: { 
+                                size: 'small',
+                                fullWidth: true,
+                                sx: {
+                                  '& .MuiOutlinedInput-root': {
+                                    borderRadius: '8px',
+                                    height: 40,
+                                    bgcolor: '#fff',
+                                    '& fieldset': { borderColor: '#bfc9c4' },
+                                    '&:hover fieldset': { borderColor: '#2e7d32' },
+                                    '&.Mui-focused fieldset': { borderColor: '#2e7d32' }
+                                  }
+                                }
+                              } as any
+                            }}
+                          />
+                        </Box>
+                      </Grid>
+
+                      {form.processType === 'Full Process' && (
+                        <Grid size={{ xs: 12, sm: 6 }}>
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                            <Checkbox 
+                              size="small"
+                              checked={!form.fabricNoNeed}
+                              onChange={(e) => {
+                                const isNoNeed = !e.target.checked;
+                                handleChange('fabricNoNeed', isNoNeed);
+                                if (isNoNeed) handleChange('fabricDeliveryDate', null);
+                              }}
+                              sx={{ p: 0, '&.Mui-checked': { color: '#2e7d32' } }}
+                            />
+                            <DatePicker 
+                              label="Fabric Delivery"
+                              format="dd/MM/yyyy"
+                              value={form.fabricDeliveryDate ? new Date(form.fabricDeliveryDate) : null}
+                              onChange={(val: Date | null) => handleChange('fabricDeliveryDate', val)}
+                              disabled={!!form.fabricNoNeed}
+                              slotProps={{ 
+                                textField: { 
+                                  size: 'small',
+                                  fullWidth: true,
+                                  sx: {
+                                    '& .MuiOutlinedInput-root': {
+                                      borderRadius: '8px',
+                                      height: 40,
+                                      bgcolor: '#fff',
+                                      '& fieldset': { borderColor: '#bfc9c4' },
+                                      '&:hover fieldset': { borderColor: '#2e7d32' },
+                                      '&.Mui-focused fieldset': { borderColor: '#2e7d32' }
+                                    }
+                                  }
+                                } as any
+                              }}
+                            />
+                          </Box>
+                        </Grid>
+                      )}
+
+                      {form.processType === 'Full Process' && (
+                        <Grid size={{ xs: 12, sm: 6 }}>
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                            <Checkbox 
+                              size="small"
+                              checked={!form.sampleSketchNoNeed}
+                              onChange={(e) => {
+                                const isNoNeed = !e.target.checked;
+                                handleChange('sampleSketchNoNeed', isNoNeed);
+                                if (isNoNeed) handleChange('sampleSketchDeliveryDate', null);
+                              }}
+                              sx={{ p: 0, '&.Mui-checked': { color: '#2e7d32' } }}
+                            />
+                            <DatePicker 
+                              label="Sample/Sketch"
+                              format="dd/MM/yyyy"
+                              value={form.sampleSketchDeliveryDate ? new Date(form.sampleSketchDeliveryDate) : null}
+                              onChange={(val: Date | null) => handleChange('sampleSketchDeliveryDate', val)}
+                              disabled={!!form.sampleSketchNoNeed}
+                              slotProps={{ 
+                                textField: { 
+                                  size: 'small',
+                                  fullWidth: true,
+                                  sx: {
+                                    '& .MuiOutlinedInput-root': {
+                                      borderRadius: '8px',
+                                      height: 40,
+                                      bgcolor: '#fff',
+                                      '& fieldset': { borderColor: '#bfc9c4' },
+                                      '&:hover fieldset': { borderColor: '#2e7d32' },
+                                      '&.Mui-focused fieldset': { borderColor: '#2e7d32' }
+                                    }
+                                  }
+                                } as any
+                              }}
+                            />
+                          </Box>
+                        </Grid>
+                      )}
 
                       <Grid size={{ xs: 12, sm: 6 }}>
                         <FormControl fullWidth required size="small">
@@ -649,17 +863,57 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
                   <CardContent sx={{ pt: isMobile ? 2 : 3, px: isMobile ? 2 : 3, pb: isMobile ? 2 : 3 }}>
                     <Grid container spacing={isMobile ? 2 : 2.5}>
                       <Grid size={{ xs: 12, sm: 12 }}>
-                        <Typography variant="caption" sx={{ display: 'block', mb: 1, color: '#000', fontWeight: 'bold', fontStyle: 'italic', fontSize: 12 }}>
-                          * {t('tcc.operationDescHelper', 'Vui lòng nhập chi tiết mô tả...')}
+                        <Typography variant="caption" sx={{ display: 'block', mb: 1, color: '#475569', fontWeight: 600, fontSize: 12 }}>
+                          * Select common operation or type custom description:
                         </Typography>
-                        <AppTextField
-                          label={t('tcc.operationDescription')}
-                          fullWidth
-                          required
-                          multiline
-                          rows={4}
-                          value={form.operationDescription} debounceMs={150} onDebounceChange={(val) => handleChange('operationDescription', val)}
+                        <Autocomplete
+                          freeSolo
+                          options={commonOperationOptions}
+                          value={form.operationDescription || ''}
+                          onInputChange={(_, newValue) => handleChange('operationDescription', newValue || '')}
+                          onChange={(_, newValue) => handleChange('operationDescription', typeof newValue === 'string' ? newValue : (newValue || ''))}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label={t('tcc.operationDescription')}
+                              required
+                              size="small"
+                              fullWidth
+                              placeholder="Select or enter operation..."
+                            />
+                          )}
                         />
+                        {matchedSmv && (
+                          <Box sx={{ mt: 1.5, p: 1.5, bgcolor: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '8px', display: 'flex', flexDirection: 'column', gap: 1 }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 1 }}>
+                              <Typography variant="caption" sx={{ fontWeight: 700, color: '#15803d', display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                                ⚡ Automatic SMV Matched:
+                              </Typography>
+                              <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', flexWrap: 'wrap' }}>
+                                <Chip
+                                  label={`Category: ${matchedSmv.templateCategory}`}
+                                  size="small"
+                                  sx={{
+                                    fontWeight: 700,
+                                    fontSize: 11,
+                                    bgcolor: matchedSmv.templateCategory === 'Easy' ? '#dcfce7' : matchedSmv.templateCategory === 'Medium' ? '#fef9c3' : '#fee2e2',
+                                    color: matchedSmv.templateCategory === 'Easy' ? '#15803d' : matchedSmv.templateCategory === 'Medium' ? '#a16207' : '#b91c1c'
+                                  }}
+                                />
+                                <Chip
+                                  label={`Base SAM: ${matchedSmv.sam} min`}
+                                  size="small"
+                                  sx={{ fontWeight: 700, fontSize: 11, bgcolor: '#e0f2fe', color: '#0369a1' }}
+                                />
+                                <Chip
+                                  label={`Total SAM: ${Number(matchedSmv.sam) * Number(form.templateQty || 1)} min`}
+                                  size="small"
+                                  sx={{ fontWeight: 800, fontSize: 11, bgcolor: '#15803d', color: '#fff' }}
+                                />
+                              </Box>
+                            </Box>
+                          </Box>
+                        )}
                       </Grid>
 
                       <Grid size={{ xs: 12, sm: 6 }}>
@@ -715,7 +969,7 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
                           label={t('tcc.sizesRequired', 'Sample size')}
                           fullWidth
                           required
-                          value={form.sizesRequired} debounceMs={150} onDebounceChange={(val) => handleChange('sizesRequired', val)}
+                          value={form.sizesRequired} debounceMs={500} onDebounceChange={(val) => handleChange('sizesRequired', val)}
                         />
                       </Grid>
 
@@ -735,7 +989,7 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
                           label={t('tcc.lineQuantity', 'Quantity of Sewing Line')}
                           fullWidth
                           required
-                          value={form.lineQuantity} debounceMs={150} onDebounceChange={(val) => handleChange('lineQuantity', val)}
+                          value={form.lineQuantity} debounceMs={500} onDebounceChange={(val) => handleChange('lineQuantity', val)}
                         />
                       </Grid>
                     </Grid>
@@ -816,7 +1070,7 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
                             label={t('tcc.priorityReason')}
                             fullWidth
                             required={form.isPriority}
-                            value={form.priorityReason} debounceMs={150} onDebounceChange={(val) => handleChange('priorityReason', val)}
+                            value={form.priorityReason} debounceMs={500} onDebounceChange={(val) => handleChange('priorityReason', val)}
                           />
                         </Grid>
                       )}
@@ -869,10 +1123,19 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
           </Button>
           <Button
             variant="outlined"
-            color="primary"
             fullWidth
             onClick={() => handleConfirmSubmit(false)}
-            sx={{ fontWeight: 'bold', textTransform: 'none', borderRadius: 2 }}
+            sx={{ 
+              fontWeight: 'bold', 
+              textTransform: 'none', 
+              borderRadius: 2,
+              border: '1px solid #cbd5e1',
+              color: '#334155',
+              '&:hover': {
+                border: '1px solid #94a3b8',
+                bgcolor: '#f8fafc'
+              }
+            }}
           >
             {t('tcc.submitOnly', 'Chỉ gửi yêu cầu (Không lưu)')}
           </Button>
@@ -884,6 +1147,42 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
             sx={{ fontWeight: 'bold', textTransform: 'none', opacity: 0.8 }}
           >
             {t('common.cancel', 'Hủy')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Urgent Confirm Dialog - shown when capacity is full */}
+      <Dialog
+        open={urgentConfirmOpen}
+        onClose={handleUrgentCancel}
+        maxWidth="xs"
+        fullWidth
+        PaperProps={{ sx: { borderRadius: 3, p: 1 } }}
+      >
+        <DialogTitle sx={{ fontWeight: 'bold', pb: 1, color: '#dc2626' }}>
+          {t('tcc.urgentConfirmTitle', 'Capacity Full')}
+        </DialogTitle>
+        <DialogContent>
+          <Typography variant="body2" color="text.secondary">
+            {t('tcc.urgentConfirmMessage', 'The requested factory capacity for this delivery date is full. Do you want to submit this request as URGENT? It will be placed in the queue for approval.')}
+          </Typography>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2, display: 'flex', gap: 1 }}>
+          <Button
+            variant="text"
+            color="inherit"
+            onClick={handleUrgentCancel}
+            sx={{ fontWeight: 'bold', textTransform: 'none' }}
+          >
+            {t('tcc.no', 'No')}
+          </Button>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={handleUrgentConfirm}
+            sx={{ fontWeight: 'bold', textTransform: 'none' }}
+          >
+            {t('tcc.yesUrgent', 'Yes, Submit as Urgent')}
           </Button>
         </DialogActions>
       </Dialog>

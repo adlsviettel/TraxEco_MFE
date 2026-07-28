@@ -94,7 +94,11 @@ export function useRequestData(
         if (!allowedValues || allowedValues.length === 0) return true;
         let val: any;
         if (field === 'status') {
-          val = row.releasedDate ? 'Released' : (row.status || 'Not Started');
+          if (row.queueStatus === 'Pending' && (!row.status || row.status === 'Not Started')) {
+            val = 'Queued';
+          } else {
+            val = row.releasedDate ? 'Released' : (row.status || 'Not Started');
+          }
         } else {
           val = (row as any)[field];
           if (val && (field.toLowerCase().includes('date') || field.endsWith('At'))) {

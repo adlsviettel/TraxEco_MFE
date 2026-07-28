@@ -46,17 +46,13 @@ interface RequestDetailDialogProps {
   onClose: () => void;
   request: TccRequest | null;
   canEditTracking: boolean;
-  setEditingRow: (row: TccRequest) => void;
-  setNewDate: (d: Date | null) => void;
 }
 
 export function RequestDetailDialog({
   open,
   onClose,
   request,
-  canEditTracking,
-  setEditingRow,
-  setNewDate
+  canEditTracking
 }: RequestDetailDialogProps) {
   const { t } = useTranslation();
 
@@ -97,7 +93,6 @@ export function RequestDetailDialog({
   const nameLower = (userInfo.employeeName || '').trim().toLowerCase();
   const isMyRequest = reqLower === codeLower || reqLower === nameLower || reqLower.startsWith(codeLower + ' -');
   const canEditThisRow = isSuperOrAdmin || (isMyRequest && canEditTracking);
-  const canEditMaterialSent = canEditThisRow && !isCancelled;
 
   const getStatusLabel = (status: string) => {
     switch (status) {
@@ -123,7 +118,7 @@ export function RequestDetailDialog({
 
   const steps = [
     { label: t('tcc.stepCreated', 'Request Created'), done: true, current: false },
-    { label: t('tcc.stepMaterialSent', 'Material Sent'), done: !!request.materialSentDate, current: false },
+    { label: t('tcc.stepFabricDelivery', 'Fabric Delivery'), done: !!request.fabricDeliveryDate, current: false },
     { label: t('tcc.stepMaterialReceived', 'Material Received'), done: !!request.materialReceivedDate || ['Work in Progress', 'Ready', 'Released', 'Completed'].includes(request.status), current: false },
     { label: t('tcc.stepFinished', 'Pattern Finished'), done: ['Ready', 'Released', 'Completed'].includes(request.status) || !!request.finishedDate, current: false },
     { label: t('tcc.stepReleased', 'Released'), done: ['Released', 'Completed'].includes(request.status) || !!request.releasedDate, current: false },
@@ -296,36 +291,14 @@ export function RequestDetailDialog({
           </Typography>
           <Grid container spacing={2}>
             <Grid size={{ xs: 6 }}><DetailItem label={t('tcc.creationDate', 'Creation Date')} value={formatDate(request.createdAt)} /></Grid>
-            <Grid size={{ xs: 6 }}>
-              <Box 
-                onClick={() => {
-                  if (canEditMaterialSent) {
-                    setEditingRow(request);
-                    setNewDate(request.materialSentDate ? new Date(request.materialSentDate) : null);
-                  }
-                }}
-                sx={{
-                  cursor: canEditMaterialSent ? 'pointer' : 'default',
-                  borderRadius: '6px',
-                  p: 0.5,
-                  ml: -0.5,
-                  transition: 'background-color 0.15s ease',
-                  '&:hover': {
-                    bgcolor: canEditMaterialSent ? 'rgba(46,125,50,0.08)' : 'transparent',
-                  }
-                }}
-              >
-                <Typography sx={{ color: '#64748b', fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', mb: 0.3, display: 'flex', alignItems: 'center', gap: 0.3 }}>
-                  {t('tcc.materialSent', 'Material Sent')}
-                  {canEditMaterialSent && (
-                    <EditIcon sx={{ fontSize: 11, color: '#1b5e20' }} />
-                  )}
-                </Typography>
-                <Typography sx={{ color: request.materialSentDate ? '#0f172a' : '#94a3b8', fontSize: 13, fontWeight: 600 }}>
-                  {formatDate(request.materialSentDate) || '—'}
-                </Typography>
-              </Box>
-            </Grid>
+            <Grid size={{ xs: 6 }}><DetailItem label={t('tcc.paperPatternDeliveryDate', 'Paper Pattern Delivery')} value={request.paperPatternNoNeed ? t('tcc.noNeed', 'No need') : formatDate(request.paperPatternDeliveryDate)} /></Grid>
+            <Grid size={{ xs: 6 }}><DetailItem label={t('tcc.trimDeliveryDate', 'Trim Delivery')} value={request.trimNoNeed ? t('tcc.noNeed', 'No need') : formatDate(request.trimDeliveryDate)} /></Grid>
+            {request.processType === 'Full Process' && (
+              <>
+                <Grid size={{ xs: 6 }}><DetailItem label={t('tcc.fabricDeliveryDate', 'Fabric Delivery')} value={request.fabricNoNeed ? t('tcc.noNeed', 'No need') : formatDate(request.fabricDeliveryDate)} /></Grid>
+                <Grid size={{ xs: 6 }}><DetailItem label={t('tcc.sampleSketchDeliveryDate', 'Sample/Sketch Delivery')} value={request.sampleSketchNoNeed ? t('tcc.noNeed', 'No need') : formatDate(request.sampleSketchDeliveryDate)} /></Grid>
+              </>
+            )}
             <Grid size={{ xs: 6 }}><DetailItem label={t('tcc.materialReceived', 'Material Received')} value={formatDate(request.materialReceivedDate)} /></Grid>
             <Grid size={{ xs: 6 }}><DetailItem label={t('tcc.startDate', 'Start Date')} value={formatDate(request.startDate)} /></Grid>
             <Grid size={{ xs: 6 }}><DetailItem label={t('tcc.finishedDate', 'Finished Date')} value={formatDate(request.finishedDate)} /></Grid>

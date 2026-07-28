@@ -566,6 +566,7 @@ const ScanQueryPage: React.FC = () => {
                       </Typography>
                       <InfoRow label={t('rdMaterial.structure', 'Structure')} value={item.fabric?.structure} />
                       <InfoRow label={t('rdMaterial.composition', 'Composition')} value={item.fabric?.composition} />
+                      <InfoRow label={t('rdMaterial.technology', 'Technology')} value={item.fabric?.technology} />
                       <InfoRow label={t('rdMaterial.weight_gsm', 'GSM')} value={item.fabric?.weightGsm ? `${item.fabric.weightGsm} gsm` : undefined} />
                       <InfoRow label={t('rdMaterial.cuttable_width', 'Cuttable Width')} value={item.fabric?.cuttableWidth ? `${item.fabric.cuttableWidth} inch` : undefined} />
                       <InfoRow label={t('rdMaterial.color', 'Color')} value={item.fabric?.colorName} />

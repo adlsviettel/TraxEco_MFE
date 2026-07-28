@@ -1061,6 +1061,7 @@
     "dataRefreshed": "Data refreshed and unship list reloaded!"
   },
   "rdMaterial": {
+    "textile_engineer_note": "Only Textile Engineer operates this section",
     "dashboard": "Dashboard",
     "fabricHanger": "Fabric Hanger",
     "accessory": "Accessories",
@@ -1502,6 +1503,11 @@
     },
     "selectAll": "Select All",
     "noValuesMatch": "No values match search",
+    "capacityFullTitle": "Capacity is Full!",
+    "capacityFullMessage": "This factory has no available slots for the selected date.",
+    "capacityFullDesc": "Is this request Urgent? If Urgent, the request will be placed in the Queue for Admin approval.",
+    "confirmUrgent": "Yes, Urgent!",
+    "notUrgent": "No, cancel request",
     "notification": {
       "bellHeader": "TCC Notifications",
       "markAllRead": "Mark all as read",

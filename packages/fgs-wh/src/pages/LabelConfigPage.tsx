@@ -137,14 +137,15 @@ export default function LabelConfigPage() {
   const [poDialogData, setPoDialogData] = useState({
     customerInitial: '',
     portOfDestination: '',
-    customerCoNo: ''
+    customerCoNo: '',
+    ultimateCustomerCoNo: ''
   });
 
   const handleOpenPoDialog = () => {
     setPoDialogSearch('');
     setPoDialogError('');
     setPoDialogSuccess('');
-    setPoDialogData({ customerInitial: '', portOfDestination: '', customerCoNo: '' });
+    setPoDialogData({ customerInitial: '', portOfDestination: '', customerCoNo: '', ultimateCustomerCoNo: '' });
     setPoDialogOpen(true);
   };
 
@@ -163,8 +164,10 @@ export default function LabelConfigPage() {
         setPoDialogData({
           customerInitial: data.data.customerInitial || '',
           portOfDestination: data.data.portOfDestination || '',
-          customerCoNo: data.data.customerCoNo || ''
+          customerCoNo: data.data.customerCoNo || '',
+          ultimateCustomerCoNo: data.data.ultimateCustomerCoNo || ''
         });
+        setPoDialogSuccess('Lấy thông tin PO thành công!');
       } else {
         setPoDialogError(data.msg || 'Không tìm thấy dữ liệu PO');
       }
@@ -191,17 +194,18 @@ export default function LabelConfigPage() {
           poNo: poDialogSearch.trim(),
           customerInitial: poDialogData.customerInitial,
           portOfDestination: poDialogData.portOfDestination,
-          customerCoNo: poDialogData.customerCoNo
+          customerCoNo: poDialogData.customerCoNo,
+          ultimateCustomerCoNo: poDialogData.ultimateCustomerCoNo
         })
       });
       const data = await res.json();
-      if (data.code === 200) {
+      if (res.ok) {
         setPoDialogSuccess('Lưu cấu hình PO thành công!');
         setTimeout(() => {
           setPoDialogOpen(false);
         }, 1200);
       } else {
-        setPoDialogError(data.msg || 'Lưu thất bại');
+        setPoDialogError(data.msg || 'Lỗi khi lưu cấu hình');
       }
     } catch (err: any) {
       setPoDialogError(err.message || 'Lỗi lưu dữ liệu');
@@ -1098,6 +1102,13 @@ export default function LabelConfigPage() {
             label="Customer CO NO" 
             value={poDialogData.customerCoNo} 
             onChange={e => setPoDialogData({ ...poDialogData, customerCoNo: e.target.value })} 
+            size="small" 
+            fullWidth 
+          />
+          <TextField 
+            label="Ultimate Customer CO NO" 
+            value={poDialogData.ultimateCustomerCoNo} 
+            onChange={e => setPoDialogData({ ...poDialogData, ultimateCustomerCoNo: e.target.value })} 
             size="small" 
             fullWidth 
           />

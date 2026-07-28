@@ -352,6 +352,7 @@ const FabricDetailPage: React.FC = () => {
                     <InfoRow label="GSM" value={item.fabric?.weightGsm ? `${item.fabric.weightGsm} gsm` : undefined} />
                     <InfoRow label="Cuttable Width" value={item.fabric?.cuttableWidth ? `${item.fabric.cuttableWidth} inch` : undefined} />
                     <InfoRow label="Function" value={item.fabric?.function} />
+                    <InfoRow label="Technology" value={item.fabric?.technology} />
                     <InfoRow label="Origin" value={item.origin} />
                     <InfoRow label="Location" value={item.location} />
                     <InfoRow label="Price" value={item.price ? <>{item.price} {item.currency || ''} {item.priceUnit ? <Typography component="span" fontSize={14} color="#6b7280" fontWeight={400}>/ {item.priceUnit}</Typography> : null}</> : undefined} />

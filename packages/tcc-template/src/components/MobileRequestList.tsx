@@ -199,7 +199,7 @@ export function MobileRequestList({
                       if (canEditThisRow && !isCancelled) {
                         e.stopPropagation();
                         setEditingRow(row);
-                        setNewDate(row.materialSentDate ? new Date(row.materialSentDate) : null);
+                        setNewDate(row.fabricDeliveryDate ? new Date(row.fabricDeliveryDate) : null);
                       }
                     }}
                     sx={{ 
@@ -223,7 +223,7 @@ export function MobileRequestList({
                     }}
                   >
                     <Typography sx={{ color: '#94a3b8', fontSize: 10, textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.06em', display: 'flex', alignItems: 'center', gap: 0.3 }}>
-                      {t('tcc.matSent', 'Mat. Sent')}
+                      {t('tcc.fabDel', 'Fab. Del.')}
                       {(() => {
                         const reqLower = (row.requesterName || '').trim().toLowerCase();
                         const isMyRequest = reqLower === codeLower || reqLower === nameLower || reqLower.startsWith(codeLower + ' -');
@@ -234,7 +234,7 @@ export function MobileRequestList({
                       )}
                     </Typography>
                     <Typography sx={{ fontWeight: 600, color: '#334155', fontSize: 12, whiteSpace: 'nowrap' }}>
-                      {formatDate(row.materialSentDate) || '—'}
+                      {formatDate(row.fabricDeliveryDate) || '—'}
                     </Typography>
                   </Box>
                   <Box>

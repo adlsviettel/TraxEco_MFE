@@ -966,6 +966,7 @@
     "qtyLabel": "จำนวน:"
   },
   "rdMaterial": {
+    "textile_engineer_note": "เฉพาะ Textile Engineer เท่านั้นที่ดำเนินการในส่วนนี้",
     "dashboard": "แดชบอร์ด",
     "fabricHanger": "ไม้แขวนผ้า",
     "accessory": "อุปกรณ์เสริม",
@@ -1279,6 +1280,11 @@
     "selectColumn": "เลือกคอลัมน์เพื่อเพิ่ม",
     "selectAll": "เลือกทั้งหมด",
     "noValuesMatch": "ไม่พบค่าที่ค้นหา",
+    "capacityFullTitle": "Capacity เต็มแล้ว!",
+    "capacityFullMessage": "โรงงานนี้ไม่มีสล็อตว่างสำหรับวันนี้",
+    "capacityFullDesc": "Request นี้ Urgent หรือไม่? ถ้า Urgent จะถูกส่งเข้า Queue เพื่อรอ Admin อนุมัติ",
+    "confirmUrgent": "ใช่ Urgent!",
+    "notUrgent": "ไม่ ยกเลิก request",
     "notification": {
       "bellHeader": "การแจ้งเตือน TCC",
       "markAllRead": "ทำเครื่องหมายว่าอ่านแล้วทั้งหมด",

@@ -1,12 +1,10 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { format } from 'date-fns';
-import ExcelJS from 'exceljs';
-import { saveAs } from 'file-saver';
+// ExcelJS and file-saver are dynamically imported in handleExport to avoid loading ~1MB on page mount
 import { 
   Box, Checkbox, Typography, Paper, IconButton, Divider, MenuItem, Chip, 
-  Menu, Badge, useTheme, useMediaQuery, Tooltip, InputAdornment, Button
+  Menu, Badge, useTheme, useMediaQuery, Tooltip, InputAdornment, Button, CircularProgress
 } from '@mui/material';
 import { 
   DataGrid, useGridApiRef, gridFilteredSortedRowIdsSelector 
@@ -50,6 +48,8 @@ import { AdminStatusDrawer } from '../components/AdminStatusDrawer';
 
 const getStatusStyle = (status: string) => {
   switch (status) {
+    case 'Queued':
+      return { bgcolor: '#fff7ed', color: '#c2410c', border: '1px solid #ffedd5', fontWeight: 600 };
     case 'Work in Progress':
       return { bgcolor: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', fontWeight: 600 };
     case 'Completed':
@@ -87,13 +87,27 @@ const formatDateTime = (val: any) => {
   }
 };
 
-export default function AdminStatusPage() {
+const InlineDateCell = ({ params, noNeedField, isForceNoNeed }: any) => {
+  const value = params.value;
+
+  if (params.row[noNeedField] || isForceNoNeed) {
+    return <Typography variant="body2">—</Typography>;
+  }
+
+  return (
+    <Typography variant="body2" sx={{ fontSize: 13, color: value ? 'inherit' : 'text.disabled' }}>
+      {value ? formatDate(value) : 'Loading'}
+    </Typography>
+  );
+};
+
+
+export default function AdminStatusPage({ isActive = true }: any) {
   const { t } = useTranslation();
   const mainApiRef = useGridApiRef();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const location = useLocation();
-  const navigate = useNavigate();
+
 
   const [mobileMenuAnchor, setMobileMenuAnchor] = useState<null | HTMLElement>(null);
   const [columnsMenuAnchor, setColumnsMenuAnchor] = useState<null | HTMLElement>(null);
@@ -163,6 +177,8 @@ export default function AdminStatusPage() {
   const handleExport = async () => {
     setExporting(true);
     try {
+      const ExcelJS = (await import('exceljs')).default;
+      const { saveAs } = await import('file-saver');
       const workbook = new ExcelJS.Workbook();
       const worksheet = workbook.addWorksheet('Template Status');
 
@@ -195,7 +211,7 @@ export default function AdminStatusPage() {
         const rowData: any = {};
         visibleCols.forEach(col => {
           let val = (req as any)[col.field];
-          if (col.field === 'createdAt' || col.field === 'materialSentDate' || col.field === 'materialReceivedDate' || col.field === 'startDate' || col.field === 'expectedDeliveryDate' || col.field === 'confirmDeliveryDate' || col.field === 'finishedDate' || col.field === 'releasedDate') {
+          if (col.field === 'createdAt' || col.field === 'fabricDeliveryDate' || col.field === 'paperPatternDeliveryDate' || col.field === 'trimDeliveryDate' || col.field === 'sampleSketchDeliveryDate' || col.field === 'materialReceivedDate' || col.field === 'startDate' || col.field === 'expectedDeliveryDate' || col.field === 'confirmDeliveryDate' || col.field === 'finishedDate' || col.field === 'releasedDate') {
             rowData[col.field] = val ? format(new Date(val), 'yyyy-MM-dd') : '';
           } else if (col.field === 'isPriority') {
             rowData[col.field] = val ? 'Yes' : 'No';
@@ -226,6 +242,8 @@ export default function AdminStatusPage() {
 
   const getStatusLabel = (status: string) => {
     switch (status) {
+      case 'Queued':
+        return 'Queued (Pending Approval)';
       case 'Work in Progress':
         return t('tcc.statusWip');
       case 'Completed':
@@ -360,10 +378,28 @@ export default function AdminStatusPage() {
     { field: 'sampleStage', headerName: 'Sample  stage ®', width: 140 },
     { field: 'factory', headerName: 'Factory ®', width: 120 },
     {
-      field: 'materialSentDate',
-      headerName: 'Material sent date ®',
-      width: 140,
-      renderCell: (params: GridRenderCellParams) => formatDate(params.value),
+      field: 'paperPatternDeliveryDate',
+      headerName: t('tcc.paperPatternSendDate', 'Paper Pattern Send Date'),
+      width: 170,
+      renderCell: (params: GridRenderCellParams) => <InlineDateCell params={params} field="paperPatternDeliveryDate" noNeedField="paperPatternNoNeed" apiRef={mainApiRef} canEditAdmin={false} />
+    },
+    {
+      field: 'trimDeliveryDate',
+      headerName: t('tcc.trimSendDate', 'Trim Send Date'),
+      width: 160,
+      renderCell: (params: GridRenderCellParams) => <InlineDateCell params={params} field="trimDeliveryDate" noNeedField="trimNoNeed" apiRef={mainApiRef} canEditAdmin={false} />
+    },
+    {
+      field: 'fabricDeliveryDate',
+      headerName: t('tcc.fabricSendDate', 'Fabric Send Date'),
+      width: 160,
+      renderCell: (params: GridRenderCellParams) => <InlineDateCell params={params} field="fabricDeliveryDate" noNeedField="fabricNoNeed" isForceNoNeed={params.row.processType === 'Light Process'} apiRef={mainApiRef} canEditAdmin={false} />
+    },
+    {
+      field: 'sampleSketchDeliveryDate',
+      headerName: t('tcc.sampleSketchSendDate', 'Sample/Sketch Send Date'),
+      width: 180,
+      renderCell: (params: GridRenderCellParams) => <InlineDateCell params={params} field="sampleSketchDeliveryDate" noNeedField="sampleSketchNoNeed" isForceNoNeed={params.row.processType === 'Light Process'} apiRef={mainApiRef} canEditAdmin={false} />
     },
     {
       field: 'processType',
@@ -385,10 +421,28 @@ export default function AdminStatusPage() {
       }
     },
     {
-      field: 'materialReceivedDate',
-      headerName: 'Material received date (TCC)',
-      width: 140,
-      renderCell: (params: GridRenderCellParams) => formatDate(params.value),
+      field: 'paperPatternReceivedDate',
+      headerName: t('tcc.paperPatternReceivedDate', 'Paper Pattern Received Date (TCC)'),
+      width: 180,
+      renderCell: (params: GridRenderCellParams) => <InlineDateCell params={params} field="paperPatternReceivedDate" noNeedField="paperPatternNoNeed" apiRef={mainApiRef} canEditAdmin={true} />
+    },
+    {
+      field: 'trimReceivedDate',
+      headerName: t('tcc.trimReceivedDate', 'Trim Received Date (TCC)'),
+      width: 170,
+      renderCell: (params: GridRenderCellParams) => <InlineDateCell params={params} field="trimReceivedDate" noNeedField="trimNoNeed" apiRef={mainApiRef} canEditAdmin={true} />
+    },
+    {
+      field: 'fabricReceivedDate',
+      headerName: t('tcc.fabricReceivedDate', 'Fabric Received Date (TCC)'),
+      width: 170,
+      renderCell: (params: GridRenderCellParams) => <InlineDateCell params={params} field="fabricReceivedDate" noNeedField="fabricNoNeed" isForceNoNeed={params.row.processType === 'Light Process'} apiRef={mainApiRef} canEditAdmin={true} />
+    },
+    {
+      field: 'sampleSketchReceivedDate',
+      headerName: t('tcc.sampleSketchReceivedDate', 'Sample/Sketch Received Date (TCC)'),
+      width: 190,
+      renderCell: (params: GridRenderCellParams) => <InlineDateCell params={params} field="sampleSketchReceivedDate" noNeedField="sampleSketchNoNeed" isForceNoNeed={params.row.processType === 'Light Process'} apiRef={mainApiRef} canEditAdmin={true} />
     },
     { field: 'operationDescription', headerName: 'Operation Description ®', width: 180 },
     { field: 'machineType', headerName: 'Machine type®', width: 120 },
@@ -405,6 +459,16 @@ export default function AdminStatusPage() {
       headerName: 'Request Delivery Date',
       width: 140,
       renderCell: (params: GridRenderCellParams) => formatDate(params.value),
+    },
+    {
+      field: 'queueStatus',
+      headerName: 'Queue Status',
+      width: 120,
+      renderCell: (params) => {
+        if (!params.value) return <Typography variant="body2">-</Typography>;
+        const color = params.value === 'Pending' ? 'warning' : params.value === 'Approved' ? 'success' : 'error';
+        return <Chip label={params.value} color={color as any} size="small" />;
+      }
     },
     {
       field: 'confirmDeliveryDate',
@@ -445,6 +509,7 @@ export default function AdminStatusPage() {
       headerName: 'Status (Auto)',
       width: 140,
       valueGetter: (value: any, row: any) => {
+        if (row.queueStatus === 'Pending' && (!value || value === 'Not Started')) return 'Queued';
         return row.releasedDate ? 'Released' : (value || 'Not Started');
       },
       renderCell: (params: GridRenderCellParams) => {
@@ -561,8 +626,12 @@ export default function AdminStatusPage() {
     }
   }, [reorderOpen, columns, setLocalFields]);
 
-  // Register column filters
-  columnFilterStore.register(window.location.pathname, columnFilters, setColumnFilters, requests);
+  // Auto register local filters with context
+  useEffect(() => {
+    if (window.location.pathname.includes('/admin-status')) {
+      columnFilterStore.register(window.location.pathname, columnFilters, setColumnFilters, requests);
+    }
+  }, [columnFilters, setColumnFilters, requests]);
 
   return (
     <Box sx={{ height: '100%', minHeight: 0, display: 'flex', flexDirection: 'column', gap: 1.5, overflow: 'hidden' }}>
@@ -802,8 +871,8 @@ export default function AdminStatusPage() {
           formatDate={formatDate}
           t={t}
         />
-      ) : (
-        <Paper elevation={0} sx={{ flex: 1, minHeight: 400, height: 'calc(100vh - 200px)', borderRadius: '8px', border: '1px solid #e2e8f0', bgcolor: '#ffffff', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+      ) : isActive ? (
+        <Paper elevation={0} sx={{ flex: 1, minHeight: 400, height: 'calc(100vh - 200px)', borderRadius: '8px', border: '1px solid #e1e3e4', boxShadow: '0px 4px 20px rgba(0,0,0,0.05)', bgcolor: '#ffffff', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
           <DataGrid
             apiRef={mainApiRef}
             rows={filteredRequests}
@@ -812,33 +881,30 @@ export default function AdminStatusPage() {
             getRowClassName={(params) => params.row.status === 'Cancelled' ? 'row-cancelled' : ''}
             loading={loading}
             disableRowSelectionOnClick
-            rowHeight={60}
-            columnVisibilityModel={columnVisibilityModel}
-            onColumnVisibilityModelChange={(newModel) => setColumnVisibilityModel(newModel)}
-            onRowDoubleClick={(params: GridRowParams) => {
+            onRowDoubleClick={(params) => {
               setSelectedRow(params.row as TccRequest);
               setDrawerOpen(true);
             }}
-            initialState={{
-              pagination: { paginationModel: { pageSize: 20 } },
-            }}
-            slots={{
-              footer: DataGridFooter,
-              columnMenu: ExcelStyleColumnMenu,
-              filterPanel: CustomFilterPanel,
-            }}
+            rowHeight={60}
+            columnHeaderHeight={64}
+            columnVisibilityModel={columnVisibilityModel}
+            onColumnVisibilityModelChange={(newModel) => setColumnVisibilityModel(newModel)}
+            initialState={{ pagination: { paginationModel: { pageSize: 20 } } }}
+            slots={{ footer: DataGridFooter, columnMenu: ExcelStyleColumnMenu, filterPanel: CustomFilterPanel }}
             sx={{
               height: '100%',
               border: 'none',
               '& .MuiDataGrid-columnHeaders, & .MuiDataGrid-filler, & .MuiDataGrid-scrollbarFiller, & .MuiDataGrid-columnHeader--filled': { backgroundColor: '#F9FAFA !important', borderBottom: '1px solid #e1e3e4 !important' },
               '& .MuiDataGrid-columnHeader': { bgcolor: '#F9FAFA', color: '#707975', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em' },
               '& .MuiDataGrid-columnHeaderTitle': { fontWeight: 700, whiteSpace: 'normal !important', lineHeight: '1.2 !important', wordBreak: 'normal' },
-              '& .MuiDataGrid-cell': { borderColor: '#e2e8f0', fontSize: '13px', color: '#3f4945', '&:focus': { outline: 'none !important' }, '&:focus-within': { outline: 'none !important' } },
+              '& .MuiDataGrid-cell': { borderColor: '#e1e3e4', fontSize: '13px', color: '#3f4945', '&:focus': { outline: 'none !important' }, '&:focus-within': { outline: 'none !important' } },
               '& .MuiDataGrid-row:hover': { bgcolor: '#F9FAFA !important' },
               '& .row-cancelled': { opacity: 0.5 }
             }}
           />
         </Paper>
+      ) : (
+        <Box sx={{ flex: 1, minHeight: 400, height: 'calc(100vh - 200px)' }} />
       )}
 
       {/* Advanced Filter Drawer */}
@@ -878,6 +944,22 @@ export default function AdminStatusPage() {
               <MenuItem value="">{t('tcc.allFactories', 'All Factories')}</MenuItem>
               {factories.map((f) => <MenuItem key={f} value={f}>{f}</MenuItem>)}
             </AppTextField>
+          </Box>
+
+          <Box>
+            <Typography variant="subtitle2" sx={{ fontWeight: 800, mb: 1, color: '#334155' }}>
+              {t('tcc.status', 'Status')}
+            </Typography>
+            <AppTextField
+              select fullWidth size="small"
+              value={filters.status}
+              onChange={(e) => handleFilterChange('status', e.target.value)}
+              slotProps={{ select: { displayEmpty: true } }}
+            >
+              <MenuItem value="">{t('tcc.allStatus', 'All Statuses')}</MenuItem>
+            {['Queued', 'Not Started', 'Work in Progress', 'Completed', 'Released', 'Remake', 'Cancelled', 'Rejected', 'Deleted'].map((st) => (
+              <MenuItem key={st} value={st}>{getStatusLabel(st)}</MenuItem>
+            ))}</AppTextField>
           </Box>
 
           <Box>

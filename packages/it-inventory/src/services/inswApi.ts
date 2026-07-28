@@ -79,36 +79,80 @@ export async function getMappings(): Promise<InswCategoryMapping[]> {
   return [];
 }
 
+/**
+ * Smart Hybrid Auto-Classifier for INSW Kategori Barang (1-8)
+ * Combines DB Mappings + HS Code Rules + Built-in Keyword Dictionary
+ */
+export function detectKategoriBarang(item: { kodeHS?: string; kategoriBarang?: string; uraianBarang?: string; kodeBarang?: string }, mappings: InswCategoryMapping[] = []): string {
+  const rawCat = (item.kategoriBarang || '').trim();
+  if (/^[1-8]$/.test(rawCat)) return rawCat;
+
+  const uraian = (item.uraianBarang || '').toLowerCase();
+  const hs = (item.kodeHS || '').replace(/[^0-9]/g, '');
+  const kdBarang = (item.kodeBarang || '').toLowerCase();
+
+  // 1. Check User/DB Custom Mappings
+  if (mappings.length > 0) {
+    if (uraian) {
+      const found = mappings.find(m => uraian.includes(m.keyword.toLowerCase()) || uraian === m.description.toLowerCase());
+      if (found) return found.inswCode;
+    }
+    if (rawCat) {
+      const found = mappings.find(m => rawCat.includes(m.keyword.toLowerCase()) || rawCat === m.description.toLowerCase() || rawCat === m.inswCode.toLowerCase());
+      if (found) return found.inswCode;
+    }
+  }
+
+  // 2. HS Code Tariff Classification Rules (Indonesia Customs Standard)
+  if (hs.length >= 2) {
+    const chapter = parseInt(hs.substring(0, 2), 10);
+    // Machinery & Assets (Ch. 84 - 85)
+    if (chapter === 84 || chapter === 85) return '1';
+    // Finished Goods Garments (Ch. 61 - 62)
+    if (chapter === 61 || chapter === 62) return '2';
+    // Raw Materials & Textiles (Ch. 50 - 60, 39, 48, 96)
+    if ((chapter >= 50 && chapter <= 60) || chapter === 39 || chapter === 48 || chapter === 96) return '3';
+    // Capital Goods & Metal Tools (Ch. 72 - 83)
+    if (chapter >= 72 && chapter <= 83) return '4';
+    // Scrap (3915, 5505, 6310)
+    if (hs.startsWith('3915') || hs.startsWith('5505') || hs.startsWith('6310')) return '5';
+  }
+
+  // 3. Built-in Keyword Dictionary Rules
+  const combinedText = `${uraian} ${kdBarang} ${rawCat}`.toLowerCase();
+
+  // Machinery & Asset
+  if (/\b(máy|machine|mc-|motor|equipment|sparepart|juki|eastman|jack|brother|pewanti|thiết bị)\b/i.test(combinedText)) {
+    return '1';
+  }
+
+  // Finished Goods
+  if (/\b(t-shirt|shirt|pant|jacket|polo|garment|thành phẩm|áo|quần|trang phục|s2706|fg-)\b/i.test(combinedText)) {
+    return '2';
+  }
+
+  // Scrap & Waste
+  if (/\b(scrap|phế|vải vụn|rác|waste|phế liệu|đầu mẫu)\b/i.test(combinedText)) {
+    return '5';
+  }
+
+  // Work In Process (WIP)
+  if (/\b(wip|prodline|bán thành phẩm|cutting|panel|thùng bán thành)\b/i.test(combinedText)) {
+    return '8';
+  }
+
+  // Auxiliary Materials & Raw Materials (Default for textile/garment production inputs)
+  if (/\b(vải|fabric|jersey|cotton|poly|thread|chỉ|elastic|thun|button|cúc|zipper|khóa|label|nhãn|polybag|túi|box|hộp|tape|băng|yarn|sợi|sub-)\b/i.test(combinedText)) {
+    return '3';
+  }
+
+  // Safe Default for Import Materials (Category 3 = Bahan Baku / Penolong)
+  return '3';
+}
+
 async function mapKategoriBarangAsync(kategoriText: string, uraianBarang: string): Promise<string> {
-  if (kategoriText && /^[1-8]$/.test(kategoriText.trim())) {
-    return kategoriText.trim();
-  }
-
   const mappings = await getMappings();
-
-  // 1. Prioritize mapping by specific item description (uraianBarang)
-  if (uraianBarang) {
-    const textUraian = uraianBarang.toLowerCase();
-    for (const m of mappings) {
-      if (textUraian.includes(m.keyword.toLowerCase()) || textUraian === m.description.toLowerCase()) {
-        return m.inswCode;
-      }
-    }
-  }
-
-  // 2. Fallback to mapping by global category name (kategoriText)
-  if (kategoriText) {
-    const textKategori = kategoriText.toLowerCase();
-    for (const m of mappings) {
-      if (textKategori.includes(m.keyword.toLowerCase()) || textKategori === m.description.toLowerCase() || textKategori === m.inswCode.toLowerCase()) {
-        return m.inswCode;
-      }
-    }
-  }
-
-  // 3. Strict Mode: If not found, throw error to BLOCK the push because INSW will reject blanks
-  const displayVal = kategoriText ? `Kategori '${kategoriText}'` : `Tên hàng '${uraianBarang}'`;
-  throw new Error(`Thiếu danh mục (Kategori) cho mặt hàng: ${displayVal}. Vui lòng thêm Keyword vào trang INSW Mapping và thử lại!`);
+  return detectKategoriBarang({ kategoriBarang: kategoriText, uraianBarang: uraianBarang }, mappings);
 }
 
 // ─── Build request body from parsed PDF data ─────────────────────────────────

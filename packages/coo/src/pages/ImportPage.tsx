@@ -15,21 +15,21 @@ export const ImportPage = () => {
     const [tabIndex, setTabIndex] = useState(0);
     
     // states for custom COO import
-    const [cooFile, setCooFile] = useState<File | null>(null);
+    const [cooFiles, setCooFiles] = useState<File[]>([]);
     const [cooLoading, setCooLoading] = useState(false);
     const [cooMessage, setCooMessage] = useState<{type: 'success' | 'error', text: string} | null>(null);
 
     // states for main fabric import
-    const [fabricFile, setFabricFile] = useState<File | null>(null);
+    const [fabricFiles, setFabricFiles] = useState<File[]>([]);
     const [fabricLoading, setFabricLoading] = useState(false);
     const [fabricMessage, setFabricMessage] = useState<{type: 'success' | 'error', text: string} | null>(null);
 
     const handleUploadCoo = async () => {
-        if (!cooFile) return;
+        if (cooFiles.length === 0) return;
         setCooLoading(true); setCooMessage(null);
         try {
             const formData = new FormData();
-            formData.append('file', cooFile);
+            cooFiles.forEach(file => formData.append('file', file));
             const res = await authFetch('coo/import/customs', {
                 method: 'POST',
                 body: formData
@@ -45,8 +45,8 @@ export const ImportPage = () => {
                 }
                 throw new Error(errMessage);
             }
-            setCooMessage({ type: 'success', text: `Đã map thành công dữ liệu Tờ Khai từ file: ${cooFile.name}` });
-            setCooFile(null);
+            setCooMessage({ type: 'success', text: `Đã map thành công dữ liệu Tờ Khai từ ${cooFiles.length} file.` });
+            setCooFiles([]);
         } catch (error: any) {
             setCooMessage({ type: 'error', text: error.message || 'Lỗi khi import file' });
         } finally {
@@ -55,11 +55,11 @@ export const ImportPage = () => {
     };
 
     const handleUploadFabric = async () => {
-        if (!fabricFile) return;
+        if (fabricFiles.length === 0) return;
         setFabricLoading(true); setFabricMessage(null);
         try {
             const formData = new FormData();
-            formData.append('file', fabricFile);
+            fabricFiles.forEach(file => formData.append('file', file));
             const res = await authFetch('coo/import/consumption', {
                 method: 'POST',
                 body: formData
@@ -75,8 +75,8 @@ export const ImportPage = () => {
                 }
                 throw new Error(errMessage);
             }
-            setFabricMessage({ type: 'success', text: `Đã cập nhật Vải Chính từ file: ${fabricFile.name}` });
-            setFabricFile(null);
+            setFabricMessage({ type: 'success', text: `Đã cập nhật Vải Chính từ ${fabricFiles.length} file.` });
+            setFabricFiles([]);
         } catch (error: any) {
             setFabricMessage({ type: 'error', text: error.message || 'Lỗi khi import file' });
         } finally {
@@ -131,23 +131,23 @@ export const ImportPage = () => {
                                     {/* Upload Area */}
                                     <Box sx={{ 
                                         border: '1.5px dashed #cbd5e1', borderRadius: 2, p: 4, 
-                                        textAlign: 'center', bgcolor: cooFile ? '#f0fdf4' : '#f8fafc',
+                                        textAlign: 'center', bgcolor: cooFiles.length > 0 ? '#f0fdf4' : '#f8fafc',
                                         transition: 'all 0.3s ease', cursor: 'pointer',
                                         '&:hover': { borderColor: '#3ba55c', bgcolor: '#f0fdf4' }
                                     }}>
                                         <input 
-                                            type="file" id="coo-file" hidden accept=".xlsx, .xls" 
-                                            onChange={(e) => setCooFile(e.target.files?.[0] || null)} 
+                                            type="file" id="coo-file" hidden accept=".xlsx, .xls" multiple
+                                            onChange={(e) => setCooFiles(Array.from(e.target.files || []))} 
                                         />
                                         <label htmlFor="coo-file" style={{ cursor: 'pointer', display: 'block' }}>
-                                            <CloudUploadIcon sx={{ fontSize: 48, color: cooFile ? '#22c55e' : '#94a3b8', mb: 1, transition: 'color 0.3s' }} />
-                                            {cooFile ? (
+                                            <CloudUploadIcon sx={{ fontSize: 48, color: cooFiles.length > 0 ? '#22c55e' : '#94a3b8', mb: 1, transition: 'color 0.3s' }} />
+                                            {cooFiles.length > 0 ? (
                                                 <Typography variant="body2" sx={{ fontWeight: 600, color: '#166534' }}>
-                                                    {cooFile.name}
+                                                    Đã chọn {cooFiles.length} file
                                                 </Typography>
                                             ) : (
                                                 <Typography variant="body2" color="text.secondary">
-                                                    Nhấn để chọn file Excel hoặc kéo thả vào đây
+                                                    Nhấn để chọn file Excel hoặc kéo thả vào đây (hỗ trợ nhiều file)
                                                 </Typography>
                                             )}
                                         </label>
@@ -156,7 +156,7 @@ export const ImportPage = () => {
                                     <Button 
                                         variant="contained" 
                                         fullWidth 
-                                        disabled={!cooFile || cooLoading} 
+                                        disabled={cooFiles.length === 0 || cooLoading} 
                                         onClick={handleUploadCoo}
                                         sx={{ 
                                             mt: 3, py: 1.5, borderRadius: 2, fontWeight: 700,
@@ -190,23 +190,23 @@ export const ImportPage = () => {
                                     {/* Upload Area */}
                                     <Box sx={{ 
                                         border: '1.5px dashed #cbd5e1', borderRadius: 2, p: 4, 
-                                        textAlign: 'center', bgcolor: fabricFile ? '#eff6ff' : '#f8fafc',
+                                        textAlign: 'center', bgcolor: fabricFiles.length > 0 ? '#eff6ff' : '#f8fafc',
                                         transition: 'all 0.3s ease', cursor: 'pointer',
                                         '&:hover': { borderColor: '#3b82f6', bgcolor: '#eff6ff' }
                                     }}>
                                         <input 
-                                            type="file" id="fabric-file" hidden accept=".xlsx, .xls" 
-                                            onChange={(e) => setFabricFile(e.target.files?.[0] || null)} 
+                                            type="file" id="fabric-file" hidden accept=".xlsx, .xls" multiple
+                                            onChange={(e) => setFabricFiles(Array.from(e.target.files || []))} 
                                         />
                                         <label htmlFor="fabric-file" style={{ cursor: 'pointer', display: 'block' }}>
-                                            <CloudUploadIcon sx={{ fontSize: 48, color: fabricFile ? '#3b82f6' : '#94a3b8', mb: 1, transition: 'color 0.3s' }} />
-                                            {fabricFile ? (
+                                            <CloudUploadIcon sx={{ fontSize: 48, color: fabricFiles.length > 0 ? '#3b82f6' : '#94a3b8', mb: 1, transition: 'color 0.3s' }} />
+                                            {fabricFiles.length > 0 ? (
                                                 <Typography variant="body2" sx={{ fontWeight: 600, color: '#1e40af' }}>
-                                                    {fabricFile.name}
+                                                    Đã chọn {fabricFiles.length} file
                                                 </Typography>
                                             ) : (
                                                 <Typography variant="body2" color="text.secondary">
-                                                    Nhấn để chọn file Excel hoặc kéo thả vào đây
+                                                    Nhấn để chọn file Excel hoặc kéo thả vào đây (hỗ trợ nhiều file)
                                                 </Typography>
                                             )}
                                         </label>
@@ -215,7 +215,7 @@ export const ImportPage = () => {
                                     <Button 
                                         variant="contained" 
                                         fullWidth 
-                                        disabled={!fabricFile || fabricLoading} 
+                                        disabled={fabricFiles.length === 0 || fabricLoading} 
                                         onClick={handleUploadFabric}
                                         sx={{ 
                                             mt: 3, py: 1.5, borderRadius: 2, fontWeight: 700,

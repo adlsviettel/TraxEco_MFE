@@ -175,8 +175,8 @@ export function MobileAdminRequestList({
                 {/* Dates */}
                 <Box sx={{ borderTop: '1px dashed #e2e8f0', pt: 1, display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 1 }}>
                   <Box>
-                    <Typography sx={{ color: '#94a3b8', fontSize: 10, textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.06em' }}>{t('tcc.matSent', 'Mat. Sent')}</Typography>
-                    <Typography sx={{ fontWeight: 600, color: '#334155', fontSize: 12, whiteSpace: 'nowrap' }}>{formatDate(row.materialSentDate) || '—'}</Typography>
+                    <Typography sx={{ color: '#94a3b8', fontSize: 10, textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.06em' }}>{t('tcc.fabDel', 'Fab. Del.')}</Typography>
+                    <Typography sx={{ fontWeight: 600, color: '#334155', fontSize: 12, whiteSpace: 'nowrap' }}>{formatDate(row.fabricDeliveryDate) || '—'}</Typography>
                   </Box>
                   <Box>
                     <Typography sx={{ color: '#94a3b8', fontSize: 10, textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.06em' }}>{t('tcc.reqDel', 'Req. Del.')}</Typography>

@@ -220,7 +220,7 @@ export default function TccNotificationBell() {
         }
 
         // 2. Material Sent
-        if (req.materialSentDate) {
+        if (req.fabricDeliveryDate) {
           const sentTime = req.updatedAt ? parseTime(req.updatedAt) : createdTime;
           const updatedByUser = (req.updatedBy || '').trim().toLowerCase();
 
@@ -230,7 +230,7 @@ export default function TccNotificationBell() {
               id,
               requestId: req.requestId,
               title: t('tcc.notification.materialTitle', 'Material Sent'),
-              detail: t('tcc.notification.materialDetail', 'Your request #{{id}} has been confirmed as material sent on {{date}}.', { id: req.requestId, date: req.materialSentDate }),
+              detail: t('tcc.notification.materialDetail', 'Your request #{{id}} has been confirmed as material sent on {{date}}.', { id: req.requestId, date: req.fabricDeliveryDate }),
               timestamp: sentTime,
               icon: <ShippingIcon sx={{ fontSize: 18, color: '#8b5cf6' }} />,
               iconBg: '#f5f3ff',
@@ -256,7 +256,7 @@ export default function TccNotificationBell() {
           });
         }
 
-        if (req.materialSentDate) {
+        if (req.fabricDeliveryDate) {
           const sentTime = req.updatedAt ? parseTime(req.updatedAt) : createdTime;
           const updatedByUser = (req.updatedBy || '').trim().toLowerCase();
 
@@ -718,8 +718,8 @@ export default function TccNotificationBell() {
                   </Grid>
 
                   <Grid size={{ xs: 12, sm: 4 }}>
-                    <Typography variant="caption" color="text.secondary" sx={{ display: 'block', fontWeight: 600 }}>{t('tcc.materialSentDate', 'Material sent date')}</Typography>
-                    <Typography variant="body2" sx={{ fontWeight: 700, color: '#334155' }}>{selectedNotificationReq.materialSentDate || t('common.notSent', 'Chưa gửi')}</Typography>
+                    <Typography variant="caption" color="text.secondary" sx={{ display: 'block', fontWeight: 600 }}>{t('tcc.fabricDeliveryDate', 'Fabric delivery date')}</Typography>
+                    <Typography variant="body2" sx={{ fontWeight: 700, color: '#334155' }}>{selectedNotificationReq.fabricDeliveryDate || t('common.notSent', 'Chưa gửi')}</Typography>
                   </Grid>
                   <Grid size={{ xs: 12, sm: 4 }}>
                     <Typography variant="caption" color="text.secondary" sx={{ display: 'block', fontWeight: 600 }}>{t('tcc.expectedDeliveryDate', 'Request Delivery Date')}</Typography>

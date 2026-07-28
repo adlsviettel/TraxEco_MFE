@@ -69,6 +69,7 @@ export default function Sidebar() {
   );
   function changeLang(code: string): void {
     i18n.changeLanguage(code);
+    localStorage.setItem('i18nextLng', code);
     localStorage.setItem('lang', code);
     setShowLangMenu(false);
   }

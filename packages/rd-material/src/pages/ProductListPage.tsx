@@ -23,16 +23,19 @@ import TextureIcon from '@mui/icons-material/Texture';
 import LaunchIcon from '@mui/icons-material/Launch';
 import ViewWeekIcon from '@mui/icons-material/ViewWeek';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import TableChartIcon from '@mui/icons-material/TableChart';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import SlideshowIcon from '@mui/icons-material/Slideshow';
 
 import { DraggableFab } from '../components/DraggableFab';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { authService, AppButton, AppTextField, AdvancedFilterDrawer, columnFilterStore, TableExcelColumnMenu } from '@traxeco/shared';
 import { exportRdItemsToExcel } from '../utils/excelExport';
+import { saveFileWithPicker } from '../utils/fileSaveHelper';
 import { rdItemApi } from '../services/rdMaterialApi';
 import type { Item } from '../types';
 import ProductFormDrawer from './ProductFormDrawer';
 import ProductPdfExport, { PdfProductData } from '../components/ProductPdfExport';
-import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import { useTranslation } from 'react-i18next';
 import { useDragScroll } from '../hooks/useDragScroll';
 import SwipeableItem from '../components/ui/SwipeableItem';
@@ -99,16 +102,17 @@ const renderCompositionCell = (compStr?: any) => {
 };
 
 const getStickyHeaderStyle = (colId: string, filteredCols: any[]): any => {
-  const stickyIds = ['Image', 'Project', 'Item Code'];
+  const stickyIds = ['Select', 'Image', 'Project', 'Item Code'];
   if (!stickyIds.includes(colId)) return {};
   
   let left = 0;
   for (const c of filteredCols) {
     if (c.id === colId) break;
     if (stickyIds.includes(c.id)) {
-      if (c.id === 'Image') left += 80;
+      if (c.id === 'Select') left += 44;
+      else if (c.id === 'Image') left += 80;
       else if (c.id === 'Project') left += 200;
-      else if (c.id === 'Item Code') left += 150;
+      else if (c.id === 'Item Code') left += 240;
     }
   }
   
@@ -122,16 +126,17 @@ const getStickyHeaderStyle = (colId: string, filteredCols: any[]): any => {
 };
 
 const getStickyBodyStyle = (colId: string, filteredCols: any[], rowBgColor: string): any => {
-  const stickyIds = ['Image', 'Project', 'Item Code'];
+  const stickyIds = ['Select', 'Image', 'Project', 'Item Code'];
   if (!stickyIds.includes(colId)) return {};
   
   let left = 0;
   for (const c of filteredCols) {
     if (c.id === colId) break;
     if (stickyIds.includes(c.id)) {
-      if (c.id === 'Image') left += 80;
+      if (c.id === 'Select') left += 44;
+      else if (c.id === 'Image') left += 80;
       else if (c.id === 'Project') left += 200;
-      else if (c.id === 'Item Code') left += 150;
+      else if (c.id === 'Item Code') left += 240;
     }
   }
   
@@ -195,6 +200,7 @@ const ProductListPage: React.FC = () => {
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [exporting, setExporting] = useState(false);
   const [exportingPdf, setExportingPdf] = useState(false);
+  const [exportingPpt, setExportingPpt] = useState(false);
   const [pdfData, setPdfData] = useState<PdfProductData[]>([]);
   const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: 'success' | 'error' | 'warning' }>({ open: false, message: '', severity: 'success' });
   const dragRef = useDragScroll();
@@ -219,17 +225,17 @@ const ProductListPage: React.FC = () => {
 
   const [columnOrder, setColumnOrder] = useState<string[]>(() => {
     const defaultOrder = [
-      'Image', 'Project', 'Item Code', 'Category', 'Sport', 'Style Name', 'Stage',
-      'Color', 'Size', 'Gender', 'Pattern Marker', 'Allocation', 'Main Composition',
+      'Select', 'Image', 'Project', 'Item Code', 'Category', 'Sport', 'Style Name', 'Stage',
+      'Color', 'Size', 'Gender', 'Pattern Marker', 'Allocation', 'Garment Test', 'Main Composition',
       'FOB Price', 'Location', 'Qty', 'Created At', 'Remark', 'Actions'
     ];
     try {
       const saved = localStorage.getItem('rd-product-column-order');
       if (saved) {
         const parsed = JSON.parse(saved) as string[];
-        const validSaved = parsed.filter(id => defaultOrder.includes(id));
-        const missing = defaultOrder.filter(id => !validSaved.includes(id));
-        return [...validSaved, ...missing];
+        const validSaved = parsed.filter(id => defaultOrder.includes(id) && id !== 'Select');
+        const missing = defaultOrder.filter(id => !validSaved.includes(id) && id !== 'Select');
+        return ['Select', ...validSaved, ...missing];
       }
     } catch { /* ignore */ }
     return defaultOrder;
@@ -260,6 +266,7 @@ const ProductListPage: React.FC = () => {
       case 'Gender': val = row.product?.gender; break;
       case 'Pattern Marker': val = row.product?.patternMarker; break;
       case 'Allocation': val = row.product?.allocation; break;
+      case 'Garment Test': val = row.product?.garmentTest ? 'Yes' : 'No'; break;
       case 'FOB Price': val = row.product?.fobPrice; break;
       case 'Location': val = row.location; break;
       case 'Qty': val = row.quantity; break;
@@ -296,6 +303,7 @@ const ProductListPage: React.FC = () => {
   columnFilterStore.register(window.location.pathname, columnFilters, setColumnFilters, items);
 
   const columns = [
+    { id: 'Select', label: '', isCenter: true },
     { id: 'Image', label: t('rdMaterial.image', 'Image'), isCenter: true },
     { id: 'Project', label: t('rdMaterial.project', 'Project') },
     { id: 'Item Code', label: t('rdMaterial.item_code', 'Style Number') },
@@ -308,6 +316,7 @@ const ProductListPage: React.FC = () => {
     { id: 'Gender', label: t('rdMaterial.gender', 'Gender') },
     { id: 'Pattern Marker', label: t('rdMaterial.pattern_marker', 'Pattern Marker') },
     { id: 'Allocation', label: t('rdMaterial.allocation', 'Allocation') },
+    { id: 'Garment Test', label: 'Garment Test', isCenter: true },
     { id: 'Main Composition', label: t('rdMaterial.material_info', 'Material Information') },
     { id: 'FOB Price', label: t('rdMaterial.fob_price', 'FOB Price') },
     { id: 'Location', label: t('rdMaterial.location', 'Location') },
@@ -328,6 +337,31 @@ const ProductListPage: React.FC = () => {
 
   const renderRowCell = (item: Item, colId: string, rowBgColor: string) => {
     switch (colId) {
+      case 'Select':
+        return (
+          <TableCell
+            key={colId}
+            align="center"
+            sx={{
+              py: 1, px: 0.5,
+              ...getStickyBodyStyle('Select', filteredCols, rowBgColor),
+              width: 44, minWidth: 44, maxWidth: 44
+            }}
+          >
+            <Checkbox
+              size="small"
+              checked={selectedIds.includes(item.id!)}
+              onChange={(e) => {
+                if (e.target.checked) {
+                  setSelectedIds(prev => [...prev, item.id!]);
+                } else {
+                  setSelectedIds(prev => prev.filter(id => id !== item.id));
+                }
+              }}
+              sx={{ p: 0.5 }}
+            />
+          </TableCell>
+        );
       case 'Image':
         return (
           <TableCell key={colId} sx={{
@@ -383,19 +417,28 @@ const ProductListPage: React.FC = () => {
           <TableCell key={colId} sx={{
             py: 1.5, fontSize: 13, fontWeight: 600, color: '#191c1d',
             ...getStickyBodyStyle('Item Code', filteredCols, rowBgColor),
-            width: 150, minWidth: 150, maxWidth: 150
+            minWidth: 180, width: 220,
+            overflow: 'hidden'
           }}>
-            <Typography 
-              component="span"
-              fontWeight={500} 
-              fontSize={13} 
-              color="#1a73e8" 
-              noWrap 
-              sx={{ maxWidth: 150, cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
-              onClick={() => React.startTransition(() => navigate(`${BASE}/product/${item.id}`))}
-            >
-              {item.itemCode || '–'}
-            </Typography>
+            <Tooltip title={item.itemCode || '–'} arrow placement="top">
+              <Typography 
+                component="div"
+                fontWeight={500} 
+                fontSize={13} 
+                color="#1a73e8" 
+                sx={{ 
+                  cursor: 'pointer', 
+                  wordBreak: 'break-word',
+                  overflowWrap: 'anywhere',
+                  lineHeight: 1.35,
+                  display: 'block',
+                  '&:hover': { textDecoration: 'underline' } 
+                }}
+                onClick={() => React.startTransition(() => navigate(`${BASE}/product/${item.id}`))}
+              >
+                {item.itemCode || '–'}
+              </Typography>
+            </Tooltip>
           </TableCell>
         );
       case 'Category':
@@ -450,6 +493,16 @@ const ProductListPage: React.FC = () => {
         return (
           <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945' }}>
             {item.product?.allocation || '–'}
+          </TableCell>
+        );
+      case 'Garment Test':
+        return (
+          <TableCell key={colId} align="center" sx={{ py: 1.5, fontSize: 13 }}>
+            {item.product?.garmentTest ? (
+              <Chip label="Yes" size="small" color="primary" sx={{ height: 22, fontSize: 11, fontWeight: 700 }} />
+            ) : (
+              <Typography fontSize={13} color="text.secondary">—</Typography>
+            )}
           </TableCell>
         );
       case 'Main Composition':
@@ -599,6 +652,28 @@ const ProductListPage: React.FC = () => {
       setSnackbar({ open: true, message: 'Không có dữ liệu để xuất PDF', severity: 'warning' });
       return;
     }
+
+    let fileHandle: any = null;
+    const defaultFileName = `Products_Export_${new Date().getTime()}.pdf`;
+
+    if (typeof window !== 'undefined' && 'showSaveFilePicker' in window) {
+      try {
+        fileHandle = await (window as any).showSaveFilePicker({
+          suggestedName: defaultFileName,
+          types: [{
+            description: 'PDF File (*.pdf)',
+            accept: { 'application/pdf': ['.pdf'] }
+          }]
+        });
+      } catch (err: any) {
+        if (err.name === 'AbortError') {
+          // User clicked Cancel in Save Dialog
+          return;
+        }
+        console.warn('showSaveFilePicker skipped or unsupported', err);
+      }
+    }
+
     setExportingPdf(true);
     try {
       const selectedItems = targetItems;
@@ -606,37 +681,98 @@ const ProductListPage: React.FC = () => {
       
       for (const product of selectedItems) {
         let parsedBom: any[] = [];
-        try {
-          if (product.product?.mainComposition && product.product.mainComposition.startsWith('[')) {
-            parsedBom = JSON.parse(product.product.mainComposition);
+        const compStr = product.product?.mainComposition || (product as any).mainComposition;
+        if (compStr) {
+          if (typeof compStr === 'string' && compStr.trim().startsWith('[')) {
+            try {
+              const list = JSON.parse(compStr);
+              if (Array.isArray(list)) parsedBom = list;
+            } catch (e) {
+              parsedBom = [{ composition: compStr }];
+            }
+          } else {
+            parsedBom = [{ composition: compStr }];
           }
-        } catch (e) {}
+        }
 
         const enrichedBom = [];
         for (const bom of parsedBom) {
           if (bom.itemId) {
             try {
               const materialDetail = await rdItemApi.getById(bom.itemId);
-              if (materialDetail.itemType === 'FABRIC' || materialDetail.category === 'Fabric' || bom.usage?.toUpperCase().includes('FABRIC')) {
-                enrichedBom.push({
-                  usage: bom.usage || 'Fabric',
-                  itemId: bom.itemId,
-                  itemCode: bom.itemCode || materialDetail.itemCode,
-                  name: bom.name || materialDetail.name,
-                  color: bom.color || materialDetail.fabric?.colorName || materialDetail.color || '',
-                  supplierName: materialDetail.supplierName,
-                  composition: materialDetail.fabric?.composition,
-                  weightGsm: materialDetail.fabric?.weightGsm,
-                  cuttableWidth: materialDetail.fabric?.cuttableWidth,
-                });
-              }
+              const fab = materialDetail.fabric || {};
+              const acc = materialDetail.accessory || {};
+              enrichedBom.push({
+                usage: bom.usage || 'Fabric',
+                itemId: bom.itemId,
+                itemCode: bom.itemCode || materialDetail.itemCode || '',
+                name: bom.name || materialDetail.name || '',
+                color: bom.color || fab.colorName || acc.color || materialDetail.color || '',
+                supplierName: bom.supplierName || materialDetail.supplierName || '',
+                structure: bom.structure || fab.structure || acc.specification || '',
+                composition: bom.composition || fab.composition || acc.composition || '',
+                technology: bom.technology || fab.technology || '',
+                function: bom.function || fab.function || '',
+                weightGsm: bom.weightGsm || fab.weightGsm || acc.weightGsm || '',
+                cuttableWidth: bom.cuttableWidth || fab.cuttableWidth || acc.size || '',
+              });
             } catch (err) {
               console.error('Failed to load material detail', err);
+              enrichedBom.push({
+                usage: bom.usage || 'Fabric',
+                itemCode: bom.itemCode || '',
+                name: bom.name || '',
+                color: bom.color || '',
+                supplierName: bom.supplierName || '',
+                structure: bom.structure || '',
+                composition: bom.composition || '',
+                technology: bom.technology || '',
+                function: bom.function || '',
+                weightGsm: bom.weightGsm || '',
+                cuttableWidth: bom.cuttableWidth || '',
+              });
             }
           } else {
-            if (bom.usage?.toUpperCase().includes('FABRIC')) {
-              enrichedBom.push({ ...bom });
-            }
+            enrichedBom.push({
+              usage: bom.usage || 'Fabric',
+              itemCode: bom.itemCode || '',
+              name: bom.name || '',
+              color: bom.color || '',
+              supplierName: bom.supplierName || '',
+              structure: bom.structure || '',
+              composition: bom.composition || '',
+              technology: bom.technology || '',
+              function: bom.function || '',
+              weightGsm: bom.weightGsm || '',
+              cuttableWidth: bom.cuttableWidth || '',
+            });
+          }
+        }
+
+        if (enrichedBom.length === 0) {
+          const supp = product.supplierName || product.product?.allocation || '';
+          const code = product.itemCode || '';
+          const color = product.color || product.product?.color || '';
+          const struct = product.fabric?.structure || '';
+          const comp = product.product?.mainComposition && !product.product.mainComposition.startsWith('[') ? product.product.mainComposition : '';
+          const tech = product.fabric?.technology || '';
+          const func = product.fabric?.function || '';
+          const weight = product.fabric?.weightGsm ? String(product.fabric.weightGsm) : '';
+          const width = product.fabric?.cuttableWidth ? String(product.fabric.cuttableWidth) : '';
+
+          if (supp || code || color || struct || comp || tech || func || weight || width) {
+            enrichedBom.push({
+              usage: '',
+              itemCode: code,
+              supplierName: supp,
+              color: color,
+              structure: struct,
+              composition: comp,
+              technology: tech,
+              function: func,
+              weightGsm: weight,
+              cuttableWidth: width,
+            });
           }
         }
         
@@ -691,7 +827,16 @@ const ProductListPage: React.FC = () => {
                 if (i > 0) pdf.addPage();
                 pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
               }
-              pdf.save(`Products_Export_${new Date().getTime()}.pdf`);
+
+              if (fileHandle) {
+                const pdfBlob = pdf.output('blob');
+                const writable = await fileHandle.createWritable();
+                await writable.write(pdfBlob);
+                await writable.close();
+              } else {
+                pdf.save(defaultFileName);
+              }
+              setSelectedIds([]);
             }
           } catch (err) {
             console.error("PDF export failed", err);
@@ -716,25 +861,363 @@ const ProductListPage: React.FC = () => {
   };
 
   const handleExport = async () => {
+    let fileHandle: any = null;
+    const now = new Date();
+    const dateStr = now.toISOString().split('T')[0];
+    const timeStr = now.toTimeString().split(' ')[0].replace(/:/g, '');
+    const defaultFileName = `Garment_Mockup_List_${dateStr}_${timeStr}.xlsx`;
+
+    if (typeof window !== 'undefined' && 'showSaveFilePicker' in window) {
+      try {
+        fileHandle = await (window as any).showSaveFilePicker({
+          suggestedName: defaultFileName,
+          types: [{
+            description: 'Excel File (*.xlsx)',
+            accept: { 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'] }
+          }]
+        });
+      } catch (err: any) {
+        if (err.name === 'AbortError') {
+          return;
+        }
+      }
+    }
+
     setExporting(true);
     try {
-      const data = await rdItemApi.getAll({ 
-        itemType: 'PRODUCT', 
-        keyword, 
-        garmentCategory: garmentCategory.join(','),
-        sportCategory: sportCategory.join(','),
-        styleNo: styleNo.join(','),
-        sampleStage: sampleStage.join(','),
-        page: 0, 
-        size: 10000 
-      });
-      await exportRdItemsToExcel(data.content ?? [], 'PRODUCT', t);
+      let exportData: Item[];
+      if (selectedIds.length > 0) {
+        exportData = items.filter(i => selectedIds.includes(i.id!));
+      } else {
+        const data = await rdItemApi.getAll({ 
+          itemType: 'PRODUCT', 
+          keyword, 
+          garmentCategory: garmentCategory.join(','),
+          sportCategory: sportCategory.join(','),
+          styleNo: styleNo.join(','),
+          sampleStage: sampleStage.join(','),
+          page: 0, 
+          size: 10000 
+        });
+        exportData = data.content ?? [];
+      }
+      await exportRdItemsToExcel(exportData, 'PRODUCT', t, fileHandle);
       setSnackbar({ open: true, message: t('rdMaterial.export_success', 'Exported to Excel successfully'), severity: 'success' });
+      setSelectedIds([]);
     } catch (err: unknown) {
       console.error('Export error:', err);
       setSnackbar({ open: true, message: t('rdMaterial.export_error', 'Error exporting Excel'), severity: 'error' });
     } finally {
       setExporting(false);
+    }
+  };
+
+  const handleExportPpt = async () => {
+    const targetItems = selectedIds.length > 0 ? items.filter(i => selectedIds.includes(i.id!)) : items;
+    if (targetItems.length === 0) {
+      setSnackbar({ open: true, message: 'Không có dữ liệu để xuất PPT', severity: 'warning' });
+      return;
+    }
+
+    let fileHandle: any = null;
+    const defaultFileName = `Products_Export_${new Date().getTime()}.pptx`;
+
+    if (typeof window !== 'undefined' && 'showSaveFilePicker' in window) {
+      try {
+        fileHandle = await (window as any).showSaveFilePicker({
+          suggestedName: defaultFileName,
+          types: [{
+            description: 'PowerPoint Presentation (*.pptx)',
+            accept: { 'application/vnd.openxmlformats-officedocument.presentationml.presentation': ['.pptx'] }
+          }]
+        });
+      } catch (err: any) {
+        if (err.name === 'AbortError') {
+          return;
+        }
+        console.warn('showSaveFilePicker skipped or unsupported', err);
+      }
+    }
+
+    setExportingPpt(true);
+    try {
+      const selectedItems = targetItems;
+      const enrichedData: { product: Item; enrichedBom: any[] }[] = [];
+      
+      for (const product of selectedItems) {
+        let parsedBom: any[] = [];
+        const compStr = product.product?.mainComposition || (product as any).mainComposition;
+        if (compStr) {
+          if (typeof compStr === 'string' && compStr.trim().startsWith('[')) {
+            try {
+              const list = JSON.parse(compStr);
+              if (Array.isArray(list)) parsedBom = list;
+            } catch (e) {
+              parsedBom = [{ composition: compStr }];
+            }
+          } else {
+            parsedBom = [{ composition: compStr }];
+          }
+        }
+
+        const enrichedBom = [];
+        for (const bom of parsedBom) {
+          if (bom.itemId) {
+            try {
+              const materialDetail = await rdItemApi.getById(bom.itemId);
+              const fab = materialDetail.fabric || {};
+              const acc = materialDetail.accessory || {};
+              enrichedBom.push({
+                usage: bom.usage || 'Fabric',
+                itemId: bom.itemId,
+                itemCode: bom.itemCode || materialDetail.itemCode || '',
+                name: bom.name || materialDetail.name || '',
+                color: bom.color || fab.colorName || acc.color || materialDetail.color || '',
+                supplierName: bom.supplierName || materialDetail.supplierName || '',
+                structure: bom.structure || fab.structure || acc.specification || '',
+                composition: bom.composition || fab.composition || acc.composition || '',
+                technology: bom.technology || fab.technology || '',
+                function: bom.function || fab.function || '',
+                weightGsm: bom.weightGsm || fab.weightGsm || acc.weightGsm || '',
+                cuttableWidth: bom.cuttableWidth || fab.cuttableWidth || acc.size || '',
+              });
+            } catch (err) {
+              enrichedBom.push({
+                usage: bom.usage || 'Fabric',
+                itemCode: bom.itemCode || '',
+                name: bom.name || '',
+                color: bom.color || '',
+                supplierName: bom.supplierName || '',
+                structure: bom.structure || '',
+                composition: bom.composition || '',
+                technology: bom.technology || '',
+                function: bom.function || '',
+                weightGsm: bom.weightGsm || '',
+                cuttableWidth: bom.cuttableWidth || '',
+              });
+            }
+          } else {
+            enrichedBom.push({
+              usage: bom.usage || 'Fabric',
+              itemCode: bom.itemCode || '',
+              name: bom.name || '',
+              color: bom.color || '',
+              supplierName: bom.supplierName || '',
+              structure: bom.structure || '',
+              composition: bom.composition || '',
+              technology: bom.technology || '',
+              function: bom.function || '',
+              weightGsm: bom.weightGsm || '',
+              cuttableWidth: bom.cuttableWidth || '',
+            });
+          }
+        }
+
+        if (enrichedBom.length === 0) {
+          const supp = product.supplierName || product.product?.allocation || '';
+          const code = product.itemCode || '';
+          const color = product.color || product.product?.color || '';
+          const struct = product.fabric?.structure || '';
+          const comp = product.product?.mainComposition && !product.product.mainComposition.startsWith('[') ? product.product.mainComposition : '';
+          const tech = product.fabric?.technology || '';
+          const func = product.fabric?.function || '';
+          const weight = product.fabric?.weightGsm ? String(product.fabric.weightGsm) : '';
+          const width = product.fabric?.cuttableWidth ? String(product.fabric.cuttableWidth) : '';
+
+          if (supp || code || color || struct || comp || tech || func || weight || width) {
+            enrichedBom.push({
+              usage: '',
+              itemCode: code,
+              supplierName: supp,
+              color: color,
+              structure: struct,
+              composition: comp,
+              technology: tech,
+              function: func,
+              weightGsm: weight,
+              cuttableWidth: width,
+            });
+          }
+        }
+        
+        enrichedData.push({ product, enrichedBom });
+      }
+
+      // Load PptxGenJS library
+      let PptxGenJSConstructor: any = (window as any).PptxGenJS;
+      if (!PptxGenJSConstructor) {
+        await new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = 'https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/dist/pptxgen.bundle.js';
+          script.onload = () => resolve(true);
+          script.onerror = reject;
+          document.head.appendChild(script);
+        });
+        PptxGenJSConstructor = (window as any).PptxGenJS;
+      }
+
+      const pptx = new PptxGenJSConstructor();
+      pptx.layout = 'LAYOUT_16x9'; // Slide dimensions: 13.33 x 7.5 inches
+
+      const cardPositions = [
+        { x: 0.4, y: 0.4, w: 6.0, h: 3.2 },
+        { x: 6.8, y: 0.4, w: 6.0, h: 3.2 },
+        { x: 0.4, y: 3.8, w: 6.0, h: 3.2 },
+        { x: 6.8, y: 3.8, w: 6.0, h: 3.2 }
+      ];
+
+      // Build 4 cards per slide natively
+      for (let i = 0; i < enrichedData.length; i += 4) {
+        const pageItems = enrichedData.slice(i, i + 4);
+        const slide = pptx.addSlide();
+
+        for (let j = 0; j < pageItems.length; j++) {
+          const { product, enrichedBom } = pageItems[j];
+          const pos = cardPositions[j];
+
+          // 1. Native Rectangular Shape Border
+          slide.addShape(pptx.ShapeType.rect, {
+            x: pos.x,
+            y: pos.y,
+            w: pos.w,
+            h: pos.h,
+            line: { color: 'E2E8F0', width: 1 },
+            fill: { color: 'FAFAFA' }
+          });
+
+          // 2. Native Images (up to 2 converted to Base64)
+          const rawImgUrls = (product.imageUrl || '')
+            .split(',')
+            .map(u => u.trim())
+            .filter(Boolean)
+            .slice(0, 2);
+
+          const base64Images: string[] = [];
+          for (const url of rawImgUrls) {
+            try {
+              const fullUrl = url.startsWith('http') ? url : `${window.location.origin}${url.startsWith('/') ? '' : '/'}${url}`;
+              const res = await fetch(fullUrl, { mode: 'cors' });
+              const blob = await res.blob();
+              const b64 = await new Promise<string>((resolve) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result as string);
+                reader.onerror = () => resolve('');
+                reader.readAsDataURL(blob);
+              });
+              if (b64) base64Images.push(b64);
+            } catch (err) {
+              console.error('Failed to convert image for PPT:', url, err);
+            }
+          }
+
+          const imgW = 2.0;
+          if (base64Images.length === 1) {
+            slide.addImage({
+              data: base64Images[0],
+              x: pos.x + 0.15,
+              y: pos.y + 0.15,
+              w: imgW,
+              h: 2.9,
+              sizing: { type: 'contain' }
+            });
+          } else if (base64Images.length >= 2) {
+            slide.addImage({
+              data: base64Images[0],
+              x: pos.x + 0.15,
+              y: pos.y + 0.15,
+              w: imgW,
+              h: 1.35,
+              sizing: { type: 'contain' }
+            });
+            slide.addImage({
+              data: base64Images[1],
+              x: pos.x + 0.15,
+              y: pos.y + 1.6,
+              w: imgW,
+              h: 1.35,
+              sizing: { type: 'contain' }
+            });
+          }
+
+          // 3. Native Editable Text Box Frame
+          const textX = pos.x + 2.3;
+          const textW = pos.w - 2.45;
+
+          const textObjects: any[] = [];
+
+          // Item Code (Bold Title)
+          textObjects.push({
+            text: product.itemCode || 'N/A',
+            options: { fontSize: 13, bold: true, color: '000000', breakLine: true }
+          });
+
+          // Style Name
+          textObjects.push({
+            text: product.product?.styleName || product.name || '—',
+            options: { fontSize: 11, color: '1E293B', breakLine: true }
+          });
+
+          // Remark
+          if (product.remark) {
+            textObjects.push({
+              text: `(~${product.remark}/ garment)`,
+              options: { fontSize: 10, italic: true, color: '475569', breakLine: true }
+            });
+          }
+
+          // BOM Lines
+          enrichedBom.forEach(bom => {
+            const supp = (bom.supplierName || '').trim();
+            const code = (bom.itemCode || '').trim();
+            const color = (bom.color || '').trim();
+            const struct = (bom.structure || '').trim();
+            const comp = (bom.composition || '').trim();
+            const tech = (bom.technology || '').trim();
+            const func = (bom.function || '').trim();
+            const weight = (bom.weightGsm !== undefined && bom.weightGsm !== null && bom.weightGsm !== '') ? String(bom.weightGsm).trim() : '';
+            const width = (bom.cuttableWidth !== undefined && bom.cuttableWidth !== null && bom.cuttableWidth !== '') ? String(bom.cuttableWidth).trim() : '';
+
+            const part1 = (supp && code) ? `${supp} - ${code}` : (supp || code);
+            const part2 = color;
+            const part3 = [struct, comp, tech, func, weight, width].filter(Boolean).join(', ');
+
+            const lineText = [part1, part2, part3].filter(Boolean).join('/ ');
+            if (lineText) {
+              textObjects.push({
+                text: lineText,
+                options: { fontSize: 9.5, color: '0F172A', breakLine: true }
+              });
+            }
+          });
+
+          // Add native editable text box to PowerPoint slide
+          slide.addText(textObjects, {
+            x: textX,
+            y: pos.y + 0.15,
+            w: textW,
+            h: 2.9,
+            valign: 'top',
+            margin: 0
+          });
+        }
+      }
+
+      const pptxBlob = await pptx.write({ outputType: 'blob' });
+      if (fileHandle) {
+        const writable = await fileHandle.createWritable();
+        await writable.write(pptxBlob);
+        await writable.close();
+      } else {
+        const { saveAs } = await import('file-saver');
+        saveAs(pptxBlob, defaultFileName);
+      }
+      setSelectedIds([]);
+      setSnackbar({ open: true, message: 'Exported PPT with native editable text boxes successfully', severity: 'success' });
+    } catch (err) {
+      console.error("PPT export failed", err);
+      setSnackbar({ open: true, message: 'Error exporting PPT', severity: 'error' });
+    } finally {
+      setExportingPpt(false);
     }
   };
 
@@ -997,12 +1480,12 @@ const ProductListPage: React.FC = () => {
             </Box>
 
             <AppButton variant="outlined" customVariant="primary"
-              disabled={exporting || exportingPdf || items.length === 0}
+              disabled={exporting || exportingPdf || exportingPpt || items.length === 0}
               onClick={(e) => setExportMenuAnchor(e.currentTarget)}
               startIcon={
                 <FileDownloadIcon sx={{ 
                   fontSize: '20px !important',
-                  animation: (exporting || exportingPdf) ? 'bounce 1s infinite' : 'none',
+                  animation: (exporting || exportingPdf || exportingPpt) ? 'bounce 1s infinite' : 'none',
                 }} />
               }
               sx={{ 
@@ -1013,20 +1496,51 @@ const ProductListPage: React.FC = () => {
                 }
               }}
             >
-              {(exporting || exportingPdf) ? t('rdMaterial.exporting', 'Exporting...') : t('rdMaterial.export', 'Export')}
+              {(exporting || exportingPdf || exportingPpt) ? t('rdMaterial.exporting', 'Exporting...') : t('rdMaterial.export', 'Export')}
             </AppButton>
 
             <Menu
               anchorEl={exportMenuAnchor}
               open={Boolean(exportMenuAnchor)}
               onClose={() => setExportMenuAnchor(null)}
-              PaperProps={{ sx: { borderRadius: 2, minWidth: 150, boxShadow: '0 4px 20px rgba(0,0,0,0.1)', mt: 1 } }}
+              PaperProps={{ 
+                sx: { 
+                  borderRadius: 2.5, 
+                  minWidth: 200, 
+                  boxShadow: '0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05)', 
+                  mt: 1,
+                  p: 0.5
+                } 
+              }}
             >
-              <MenuItem onClick={() => { setExportMenuAnchor(null); handleExport(); }}>
-                <Typography fontSize={14} fontWeight={500}>Export Excel</Typography>
+              <MenuItem 
+                onClick={() => { setExportMenuAnchor(null); handleExport(); }}
+                sx={{ py: 1, px: 1.5, borderRadius: 1.5, '&:hover': { bgcolor: '#f0fdf4' } }}
+              >
+                <TableChartIcon sx={{ color: '#16a34a', mr: 1.5, fontSize: 20 }} />
+                <Typography fontSize={13.5} fontWeight={600} color="#15803d">
+                  Export Excel (.xlsx)
+                </Typography>
               </MenuItem>
-              <MenuItem onClick={() => { setExportMenuAnchor(null); handleExportPdf(); }}>
-                <Typography fontSize={14} fontWeight={500} color="error">Export PDF</Typography>
+
+              <MenuItem 
+                onClick={() => { setExportMenuAnchor(null); handleExportPdf(); }}
+                sx={{ py: 1, px: 1.5, borderRadius: 1.5, '&:hover': { bgcolor: '#fef2f2' } }}
+              >
+                <PictureAsPdfIcon sx={{ color: '#dc2626', mr: 1.5, fontSize: 20 }} />
+                <Typography fontSize={13.5} fontWeight={600} color="#b91c1c">
+                  Export PDF (.pdf)
+                </Typography>
+              </MenuItem>
+
+              <MenuItem 
+                onClick={() => { setExportMenuAnchor(null); handleExportPpt(); }}
+                sx={{ py: 1, px: 1.5, borderRadius: 1.5, '&:hover': { bgcolor: '#fffbeb' } }}
+              >
+                <SlideshowIcon sx={{ color: '#d97706', mr: 1.5, fontSize: 20 }} />
+                <Typography fontSize={13.5} fontWeight={600} color="#b45309">
+                  Export PPT (.pptx)
+                </Typography>
               </MenuItem>
             </Menu>
 
@@ -1124,7 +1638,7 @@ const ProductListPage: React.FC = () => {
           {t('rdMaterial.toggle_columns', 'Toggle Columns')}
         </Typography>
         <Divider sx={{ my: 0.5 }} />
-        {columns.map((col) => (
+        {columns.filter(col => col.id !== 'Select').map((col) => (
           <MenuItem key={col.id} onClick={() => setVisibleColumns(prev => ({ ...prev, [col.id]: prev[col.id] === false }))} sx={{ py: 0.5, borderRadius: 1 }}>
             <Checkbox size="small" checked={visibleColumns[col.id] !== false} onChange={() => {}} sx={{ mr: 1, p: 0, pointerEvents: 'none' }} />
             <Typography fontSize={13} fontWeight={500} sx={{ pointerEvents: 'none' }}>{col.label}</Typography>
@@ -1304,10 +1818,43 @@ const ProductListPage: React.FC = () => {
                 <TableRow>
                   {filteredCols.map((col) => {
                     const stickyStyle = getStickyHeaderStyle(col.id, filteredCols);
-                    const widthStyle = col.id === 'Image' ? { width: 80, minWidth: 80, maxWidth: 80 }
+                    const widthStyle = col.id === 'Select' ? { width: 44, minWidth: 44, maxWidth: 44 }
+                                     : col.id === 'Image' ? { width: 80, minWidth: 80, maxWidth: 80 }
                                      : col.id === 'Project' ? { width: 200, minWidth: 200, maxWidth: 200 }
-                                     : col.id === 'Item Code' ? { width: 150, minWidth: 150, maxWidth: 150 }
+                                     : col.id === 'Item Code' ? { width: 240, minWidth: 240, maxWidth: 240 }
                                      : {};
+
+                    if (col.id === 'Select') {
+                      const isAllChecked = items.length > 0 && selectedIds.length === items.length;
+                      const isIndeterminate = selectedIds.length > 0 && selectedIds.length < items.length;
+                      return (
+                        <TableCell
+                          key={col.id}
+                          align="center"
+                          sx={{
+                            py: 1, px: 0.5,
+                            bgcolor: '#F9FAFA',
+                            borderBottom: '1px solid #e1e3e4',
+                            ...stickyStyle,
+                            ...widthStyle,
+                          }}
+                        >
+                          <Checkbox
+                            size="small"
+                            checked={isAllChecked}
+                            indeterminate={isIndeterminate}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setSelectedIds(items.map(i => i.id!).filter(Boolean));
+                              } else {
+                                setSelectedIds([]);
+                              }
+                            }}
+                            sx={{ p: 0.5 }}
+                          />
+                        </TableCell>
+                      );
+                    }
                     return (
                       <TableCell
                         key={col.id}

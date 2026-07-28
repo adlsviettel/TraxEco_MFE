@@ -16,10 +16,10 @@ export function useMaterialDateEditor(
     setSavingDate(true);
     try {
       const dateStr = format(newDate, 'yyyy-MM-dd');
-      await tccService.updateMaterialSentDate(editingRow.requestId, dateStr);
+      await tccService.updateFabricDeliveryDate(editingRow.requestId, dateStr);
       setRequests((prev) =>
         prev.map((r) =>
-          r.requestId === editingRow.requestId ? { ...r, materialSentDate: dateStr } : r
+          r.requestId === editingRow.requestId ? { ...r, fabricDeliveryDate: dateStr } : r
         )
       );
       setEditingRow(null);

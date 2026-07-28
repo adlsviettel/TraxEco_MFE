@@ -74,7 +74,10 @@
     "noData": "No data imported yet"
   },
   "stockOpname": {
-    "title": "Stock Opname",
+    "title": "Stock Opname Inventory",
+    "subtitle": "Manage & Push Stock Opname Data to INSW",
+    "syncErp": "Sync Stock Opname from ERP",
+    "pushInsw": "Push to INSW (kdKegiatan: 32)",
     "uploadPdf": "Upload PDF",
     "dragDrop": "Drag & drop PDF files here, or click to browse",
     "supportedFormat": "Supported format: PDF",
@@ -89,10 +92,13 @@
     "import": "Import",
     "processing": "Processing...",
     "success": "Import successful",
-    "noData": "No data imported yet"
+    "noData": "No Stock Opname records found for this date"
   },
   "adjustment": {
-    "title": "Adjustment",
+    "title": "Inventory Adjustment",
+    "subtitle": "Manage & Push Inventory Adjustment Data to INSW",
+    "syncErp": "Sync Adjustments from ERP",
+    "pushInsw": "Push to INSW (kdKegiatan: 33)",
     "uploadPdf": "Upload PDF",
     "dragDrop": "Drag & drop PDF files here, or click to browse",
     "supportedFormat": "Supported format: PDF",
@@ -107,23 +113,42 @@
     "import": "Import",
     "processing": "Processing...",
     "success": "Import successful",
-    "noData": "No data imported yet"
+    "noData": "No Adjustment records found for this date"
   },
   "masterData": {
-    "title": "Master Data",
-    "items": "Items",
+    "title": "Daftar Barang Master (Customs Item Master)",
+    "subtitle": "PER-24/BC/2023 Compliant Aggregated Master Item List",
+    "items": "Master Items",
     "categories": "Categories",
+    "allCategories": "All Kategori (1-8)",
     "vendors": "Vendors",
     "locations": "Locations",
     "add": "Add",
     "edit": "Edit",
     "delete": "Delete",
-    "search": "Search...",
+    "search": "Search Kode Barang, Description, HS...",
     "name": "Name",
     "code": "Code",
     "description": "Description",
     "status": "Status",
-    "action": "Action"
+    "action": "Action",
+    "occurrenceCount": "Total Transactions",
+    "latestDocNo": "Latest Document"
+  },
+  "table": {
+    "docNo": "Doc No / Ref",
+    "actualTimestamp": "Actual Timestamp",
+    "cutoffDate": "5AM Cutoff Date",
+    "itemCode": "Item Code",
+    "description": "Item Description",
+    "qty": "Quantity",
+    "uom": "UOM",
+    "value": "Value (Rp)",
+    "warehouse": "Warehouse",
+    "status": "INSW Status",
+    "hsCode": "HS Code (Tariff)",
+    "kategori": "Kategori INSW",
+    "country": "Origin"
   },
   "erpData": {
     "title": "ERP Data",
@@ -179,7 +204,7 @@
     "search": "Search",
     "filter": "Filter",
     "export": "Export",
-    "loading": "Loading…",
+    "loading": "Loading...",
     "noData": "No data available",
     "success": "Success",
     "error": "Error",
@@ -192,9 +217,18 @@
     "actions": "Actions",
     "viewDetail": "View Detail",
     "confirmDelete": "Confirm Delete",
-    "confirmDeleteMsg": "Are you sure you want to delete this file? This will also remove the physical file and all parsed data.",
+    "confirmDeleteMsg": "Are you sure you want to delete this file? This will delete both the file and parsed data.",
     "deleteFailed": "Delete failed",
-    "action": "Action"
+    "action": "Action",
+    "cutoff5amDate": "Cut-off 5:00 AM Date:",
+    "rowsPerPage": "Rows per page:",
+    "showing": "Showing",
+    "items": "items",
+    "records": "records",
+    "syncing": "Syncing...",
+    "pushing": "Pushing...",
+    "pushed": "Pushed",
+    "pending": "Pending"
   },
   "settings": {
     "inswConfig": "INSW API Configuration",

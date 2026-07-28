@@ -15,7 +15,14 @@ export interface TccRequest {
   productType: string;
   sampleStage: string;
   factory: string;
-  materialSentDate: string | null;
+  fabricDeliveryDate: string | null;
+  fabricNoNeed: boolean;
+  paperPatternDeliveryDate: string | null;
+  paperPatternNoNeed: boolean;
+  trimDeliveryDate: string | null;
+  trimNoNeed: boolean;
+  sampleSketchDeliveryDate: string | null;
+  sampleSketchNoNeed: boolean;
   processType: string;
   operationDescription: string;
   machineType: string;
@@ -27,6 +34,11 @@ export interface TccRequest {
   lineQuantity: string;
 
   materialReceivedDate: string | null;
+  materialSentDate?: string | null;
+  fabricReceivedDate?: string | null;
+  paperPatternReceivedDate?: string | null;
+  trimReceivedDate?: string | null;
+  sampleSketchReceivedDate?: string | null;
   startDate: string | null;
   finishedDate: string | null;
   status: string;
@@ -34,6 +46,7 @@ export interface TccRequest {
   templateQty: number | null;
   templateType: string;
   releasedDate: string | null;
+  queueStatus?: string;
   developerName: string;
   comments: string;
   remarks: string;
@@ -91,7 +104,14 @@ export interface CreateRequestPayload {
   productType: string;
   sampleStage: string;
   factory: string;
-  materialSentDate: string | null;
+  fabricDeliveryDate: string | null;
+  fabricNoNeed?: boolean;
+  paperPatternDeliveryDate: string | null;
+  paperPatternNoNeed?: boolean;
+  trimDeliveryDate: string | null;
+  trimNoNeed?: boolean;
+  sampleSketchDeliveryDate: string | null;
+  sampleSketchNoNeed?: boolean;
   processType: string;
   operationDescription: string;
   machineType: string;
@@ -107,6 +127,12 @@ export interface CreateRequestPayload {
 
 export interface UpdateProgressPayload {
   materialReceivedDate?: string | null;
+  materialSentDate?: string | null;
+  clearMaterialSentDate?: boolean;
+  fabricReceivedDate?: string | null;
+  paperPatternReceivedDate?: string | null;
+  trimReceivedDate?: string | null;
+  sampleSketchReceivedDate?: string | null;
   startDate?: string | null;
   finishedDate?: string | null;
   expectedDeliveryDate?: string | null;
@@ -133,8 +159,18 @@ export interface UpdateProgressPayload {
   productType?: string;
   sampleStage?: string;
   factory?: string;
-  materialSentDate?: string | null;
-  clearMaterialSentDate?: boolean;
+  fabricDeliveryDate?: string | null;
+  paperPatternDeliveryDate?: string | null;
+  trimDeliveryDate?: string | null;
+  sampleSketchDeliveryDate?: string | null;
+  fabricNoNeed?: boolean;
+  paperPatternNoNeed?: boolean;
+  trimNoNeed?: boolean;
+  sampleSketchNoNeed?: boolean;
+  clearFabricDeliveryDate?: boolean;
+  clearPaperPatternDeliveryDate?: boolean;
+  clearTrimDeliveryDate?: boolean;
+  clearSampleSketchDeliveryDate?: boolean;
   processType?: string;
   operationDescription?: string;
   machineType?: string;
@@ -142,6 +178,7 @@ export interface UpdateProgressPayload {
   sizesRequired?: string;
   isPriority?: boolean;
   priorityReason?: string;
+  queueStatus?: string;
 }
 
 export interface RequestFilters {
@@ -281,8 +318,8 @@ export const tccService = {
     return res.json();
   },
 
-  async updateMaterialSentDate(requestId: string, date: string): Promise<TccRequest> {
-    const res = await authFetch(`/tcc/requests/${requestId}/material-sent-date`, {
+  async updateFabricDeliveryDate(requestId: string, date: string): Promise<TccRequest> {
+    const res = await authFetch(`/tcc/requests/${requestId}/fabric-delivery-date`, {
       method: 'PATCH',
       body: JSON.stringify({ date })
     });
@@ -405,13 +442,640 @@ export const tccService = {
     return json.data;
   },
 
-  async updateConfig(key: string, value: string): Promise<any> {
-    const res = await authFetch(`/tcc/config/${key}`, {
+  async updateConfig(key: string, value: string): Promise<void> {
+    await authFetch(`/tcc/config/${key}`, {
       method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ configValue: value })
     });
-    if (!res.ok) throw new Error('API error: ' + res.status);
-    const json = await res.json();
-    return json.data;
   },
+
+  // Capacity Management
+  getCapacityConfigs: async (): Promise<any[]> => {
+    const res = await authFetch('/tcc/capacity');
+    if (!res.ok) throw new Error('API error: ' + res.status);
+    return res.json();
+  },
+  getCapacityGroups: async (): Promise<any[]> => {
+    try {
+      const res = await authFetch('/tcc/config/CAPACITY_GROUPS');
+      if (res.ok) {
+        const json = await res.json();
+        const configVal = json?.data?.configValue || json?.configValue;
+        if (configVal) {
+          return JSON.parse(configVal);
+        }
+      }
+    } catch (e) {
+      console.warn('Failed to load CAPACITY_GROUPS config, falling back to legacy capacity', e);
+    }
+    // Fallback to old capacity endpoint
+    try {
+      const res = await authFetch('/tcc/capacity');
+      if (res.ok) {
+        const list = await res.json();
+        return (Array.isArray(list) ? list : (list?.data || [])).map((c: any) => ({
+          id: c.id,
+          groupName: c.factoryName,
+          factories: [c.factoryName],
+          maxDailySmv: c.maxDailyRequests
+        }));
+      }
+    } catch (e) {
+      console.error(e);
+    }
+    return [];
+  },
+  saveCapacityGroups: async (groups: any[]): Promise<any> => {
+    const res = await authFetch('/tcc/config/CAPACITY_GROUPS', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ configValue: JSON.stringify(groups) })
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.message || 'API error: ' + res.status);
+    }
+    return res.json();
+  },
+  addCapacityConfig: async (config: any): Promise<any> => {
+    const res = await authFetch('/tcc/capacity', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(config)
+    });
+    if (!res.ok) {
+        const err = await res.json().catch(()=>({}));
+        throw new Error(err.message || 'API error: ' + res.status);
+    }
+    return res.json();
+  },
+  updateCapacityConfig: async (id: number, config: any): Promise<any> => {
+    const res = await authFetch(`/tcc/capacity/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(config)
+    });
+    if (!res.ok) {
+        const err = await res.json().catch(()=>({}));
+        throw new Error(err.message || 'API error: ' + res.status);
+    }
+    return res.json();
+  },
+  deleteCapacityConfig: async (id: number): Promise<void> => {
+    await authFetch(`/tcc/capacity/${id}`, { method: 'DELETE' });
+  },
+  getFactoryCapacityUsage: async (factory: string, date: string): Promise<any> => {
+    const res = await authFetch(`/tcc/capacity/usage?factory=${encodeURIComponent(factory)}&date=${encodeURIComponent(date)}`);
+    if (!res.ok) throw new Error('API error: ' + res.status);
+    return res.json();
+  },
+
+  // Queue Management
+  getQueuedRequests: async (): Promise<any[]> => {
+    const res = await authFetch('/tcc/queue');
+    if (!res.ok) throw new Error('API error: ' + res.status);
+    return res.json();
+  },
+  approveQueuedRequest: async (requestId: string): Promise<any> => {
+    const res = await authFetch(`/tcc/queue/${encodeURIComponent(requestId)}/approve`, { method: 'POST' });
+    if (!res.ok) throw new Error('API error: ' + res.status);
+    return res.json();
+  },
+  rescheduleQueuedRequest: async (requestId: string, newDate: string, remarks?: string): Promise<any> => {
+    const res = await authFetch(`/tcc/queue/${encodeURIComponent(requestId)}/reschedule`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ newDate, remarks })
+    });
+    if (!res.ok) {
+        const err = await res.json().catch(()=>({}));
+        throw new Error(err.message || 'API error: ' + res.status);
+    }
+    return res.json();
+  },
+  rejectQueuedRequest: async (requestId: string, remarks?: string): Promise<any> => {
+    const res = await authFetch(`/tcc/queue/${encodeURIComponent(requestId)}/reject`, { 
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ remarks })
+    });
+    if (!res.ok) throw new Error('API error: ' + res.status);
+    return res.json();
+  },
+
+  // SMV Config Management
+  getSmvConfigs: async (): Promise<SmvConfigRule[]> => {
+    try {
+      const res = await authFetch('/tcc/config/SMV_CONFIG');
+      if (res.ok) {
+        const json = await res.json();
+        const configVal = json?.data?.configValue || json?.configValue;
+        if (configVal) return JSON.parse(configVal);
+      }
+    } catch (e) {
+      console.warn('Failed to fetch SMV_CONFIG from API, checking local storage', e);
+    }
+    const local = localStorage.getItem('TCC_SMV_CONFIG');
+    if (local) {
+      try {
+        return JSON.parse(local);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    // Default seed rules if empty
+    const seedRules: SmvConfigRule[] = [
+      { id: 1, commonOperation: 'Attach collar', sampleStage: 'P2', templateCategory: 'Easy', sam: 30 },
+      { id: 2, commonOperation: 'Attach collar', sampleStage: 'SMS', templateCategory: 'Medium', sam: 50 },
+      { id: 3, commonOperation: 'Hemming', sampleStage: 'SMS', templateCategory: 'Easy', sam: 20 },
+      { id: 4, commonOperation: 'Sewing pocket', sampleStage: 'PP', templateCategory: 'Hard', sam: 65 }
+    ];
+    localStorage.setItem('TCC_SMV_CONFIG', JSON.stringify(seedRules));
+    return seedRules;
+  },
+
+  saveSmvConfigs: async (rules: SmvConfigRule[]): Promise<any> => {
+    localStorage.setItem('TCC_SMV_CONFIG', JSON.stringify(rules));
+    try {
+      const res = await authFetch('/tcc/config/SMV_CONFIG', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ configValue: JSON.stringify(rules) })
+      });
+      if (res.ok) return res.json();
+    } catch (e) {
+      console.warn('Saved SMV_CONFIG to localStorage (API unavailable)', e);
+    }
+    return { success: true };
+  },
+
+  // Operation Config Management
+  getOperationConfigs: async (): Promise<OperationItem[]> => {
+    try {
+      const res = await authFetch('/tcc/config/OPERATION_CONFIG');
+      if (res.ok) {
+        const json = await res.json();
+        const configVal = json?.data?.configValue || json?.configValue;
+        if (configVal) return JSON.parse(configVal);
+      }
+    } catch (e) {
+      console.warn('Failed to fetch OPERATION_CONFIG from API, checking local storage', e);
+    }
+    const local = localStorage.getItem('TCC_OPERATION_CONFIG');
+    if (local) {
+      try {
+        return JSON.parse(local);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    // Default seed rules if empty
+    const seedOperations: OperationItem[] = [
+  {
+    "id": "op_1",
+    "group": "Polo",
+    "name": "1. Attach plastic + join inner /outer collar  /Cổ lá 2 có miếng nhựa",
+    "difficulty": "Medium"
+  },
+  {
+    "id": "op_2",
+    "group": "Polo",
+    "name": "2. Attach collar stand to collar  /Cổ lá 3",
+    "difficulty": "Medium"
+  },
+  {
+    "id": "op_3",
+    "group": "Polo",
+    "name": "3. Attach placket  / Trụ cổ",
+    "difficulty": "Medium"
+  },
+  {
+    "id": "op_4",
+    "group": "Polo",
+    "name": "4.Trim flatknit collar  / Gọt cổ",
+    "difficulty": "Easy"
+  },
+  {
+    "id": "op_5",
+    "group": "Polo",
+    "name": "5. Trim Flatknit insert front collar  / Gọt phối cổ",
+    "difficulty": "Easy"
+  },
+  {
+    "id": "op_6",
+    "group": "Polo",
+    "name": "6. Attach halfmoon  / Đính bán nguyệt",
+    "difficulty": "Complex"
+  },
+  {
+    "id": "op_7",
+    "group": "Polo",
+    "name": "7. Attack logo  /Đính - diễu logo",
+    "difficulty": "Easy"
+  },
+  {
+    "id": "op_8",
+    "group": "Polo",
+    "name": "8. Others / New / Khác / Mới",
+    "difficulty": "Medium"
+  },
+  {
+    "id": "op_9",
+    "group": "Pants / Shorts / Skirt",
+    "name": "1. Set pocket opening with zipper + welt +  lower bag + cut laser pocket opening  /Túi cơi dây kéo - Đính dây kéo + cơi + lót túi dưới + cắt laser",
+    "difficulty": "Complex"
+  },
+  {
+    "id": "op_10",
+    "group": "Pants / Shorts / Skirt",
+    "name": "2. Set pocket opening with zipper +  lower bag + cut laser pocket opening  / Túi dây kéo - Dính dây kéo + lót túi dưới + cắt laser",
+    "difficulty": "Complex"
+  },
+  {
+    "id": "op_11",
+    "group": "Pants / Shorts / Skirt",
+    "name": "3. set side pocket opening with zipper + upper bag / Túi xếp có dây kéo - Đính dây kéo + lót túi trên",
+    "difficulty": "Complex"
+  },
+  {
+    "id": "op_12",
+    "group": "Pants / Shorts / Skirt",
+    "name": "4. Set side pocket with zipper +welt +  upper bag / Túi cơi dây kéo - Đính dây kéo + cơi + lót túi trên",
+    "difficulty": "Medium"
+  },
+  {
+    "id": "op_13",
+    "group": "Pants / Shorts / Skirt",
+    "name": "5. Set side pocket self welt + upper bag / Túi xếp - Đính lót túi trên",
+    "difficulty": "Easy"
+  },
+  {
+    "id": "op_14",
+    "group": "Pants / Shorts / Skirt",
+    "name": "6. Set pocket opening + upper & lower bag + cut laser pocket opening / Đính lót túi trên + dưới + cắt laser",
+    "difficulty": "Medium"
+  },
+  {
+    "id": "op_15",
+    "group": "Pants / Shorts / Skirt",
+    "name": "7. Set back pocket with welt +zipper   lower bag + cut laser pocket opening / Túi sau có cơi - Đính cơi + dây kéo + lót túi dưới + cắt laser",
+    "difficulty": "Medium"
+  },
+  {
+    "id": "op_16",
+    "group": "Pants / Shorts / Skirt",
+    "name": "8. Set back pocket with lower & upper bag + cut laser pocket opening / May túi sau - Đính lót túi trên + dưới + cắt laser",
+    "difficulty": "Medium"
+  },
+  {
+    "id": "op_17",
+    "group": "Pants / Shorts / Skirt",
+    "name": "9. Set back pocket with zipper + lower bag + cut laser pocket opening  /May túi sau có dây kéo - Đính lót túi dưới + cắt laser",
+    "difficulty": "Complex"
+  },
+  {
+    "id": "op_18",
+    "group": "Pants / Shorts / Skirt",
+    "name": "10. Sew dart  / May pen",
+    "difficulty": "Easy"
+  },
+  {
+    "id": "op_19",
+    "group": "Pants / Shorts / Skirt",
+    "name": "11. Attach fold topstitch lower facing pocket bag  / Đính đáp túi + lược",
+    "difficulty": "Easy"
+  },
+  {
+    "id": "op_20",
+    "group": "Pants / Shorts / Skirt",
+    "name": "12. Attach Patch pocket  /Túi đắp - Đính túi đắp",
+    "difficulty": "Complex"
+  },
+  {
+    "id": "op_21",
+    "group": "Pants / Shorts / Skirt",
+    "name": "13. attach concealled zipper /Tra dây kéo",
+    "difficulty": "Medium"
+  },
+  {
+    "id": "op_22",
+    "group": "Pants / Shorts / Skirt",
+    "name": "14. J design / Diễu J",
+    "difficulty": "Medium"
+  },
+  {
+    "id": "op_23",
+    "group": "Pants / Shorts / Skirt",
+    "name": "15. Attach logo / Đính - diễu logo",
+    "difficulty": "Easy"
+  },
+  {
+    "id": "op_24",
+    "group": "Pants / Shorts / Skirt",
+    "name": "16. Join Flaps  / Ráp nắp",
+    "difficulty": "Easy"
+  },
+  {
+    "id": "op_25",
+    "group": "Pants / Shorts / Skirt",
+    "name": "17. Attach leg zipper  / Đính dây kéo ống",
+    "difficulty": "Medium"
+  },
+  {
+    "id": "op_26",
+    "group": "Pants / Shorts / Skirt",
+    "name": "18. Others / New / Khác / Mới",
+    "difficulty": "Medium"
+  },
+  {
+    "id": "op_27",
+    "group": "Jacket / Vest",
+    "name": "1. Set pocket opening with zipper + welt +  lower bag + cut laser pocket opening  / Túi cơi dây kéo - Đính dây kéo + cơi + lót túi dưới + cắt laser",
+    "difficulty": "Complex"
+  },
+  {
+    "id": "op_28",
+    "group": "Jacket / Vest",
+    "name": "2. Set pocket opening + upper & lower bag + cut laser pocket opening  / Túi xếp - Đính lót túi trên + dưới + cắt laser",
+    "difficulty": "Complex"
+  },
+  {
+    "id": "op_29",
+    "group": "Jacket / Vest",
+    "name": "3. set side pocket opening with zipper + upper bag / Túi xếp có dây kéo - Đính dây kéo + lót túi trên",
+    "difficulty": "Medium"
+  },
+  {
+    "id": "op_30",
+    "group": "Jacket / Vest",
+    "name": "4. Set side pocket with zipper +welt +  upper bag / Túi cơi dây kéo - Đính dây kéo + cơi + lót túi trên",
+    "difficulty": "Medium"
+  },
+  {
+    "id": "op_31",
+    "group": "Jacket / Vest",
+    "name": "5. Set pocket opening + upper bag +cut laser pocket opening  /Túi xếp - Đính lót túi trên + cắt laser",
+    "difficulty": "Medium"
+  },
+  {
+    "id": "op_32",
+    "group": "Jacket / Vest",
+    "name": "6.Set side pocket Self welt + upper bag / Túi xếp - Đính lót túi trên",
+    "difficulty": "Easy"
+  },
+  {
+    "id": "op_33",
+    "group": "Jacket / Vest",
+    "name": "7. Sew dart /May pen",
+    "difficulty": "Easy"
+  },
+  {
+    "id": "op_34",
+    "group": "Jacket / Vest",
+    "name": "8. Attach fold topstitch lower facing pocket bag  /Đính - diễu đáp túi vào lót túi dưới",
+    "difficulty": "Medium"
+  },
+  {
+    "id": "op_35",
+    "group": "Jacket / Vest",
+    "name": "9. Attach Patch pocket /Túi đắp - Đính túi đắp",
+    "difficulty": "Complex"
+  },
+  {
+    "id": "op_36",
+    "group": "Jacket / Vest",
+    "name": "10. attach logo / Đính - diễu logo",
+    "difficulty": "Medium"
+  },
+  {
+    "id": "op_37",
+    "group": "Jacket / Vest",
+    "name": "11. Join inner & outer collar  / Cổ lá 2 - Ráp cổ trong + ngoài",
+    "difficulty": "Medium"
+  },
+  {
+    "id": "op_38",
+    "group": "Jacket / Vest",
+    "name": "12. Attach Front Zipper + stormflaps or garage  / Tra dây kéo thân trước + che dây kéo",
+    "difficulty": "Complex"
+  },
+  {
+    "id": "op_39",
+    "group": "Jacket / Vest",
+    "name": "13. Trim collar Flatknit / Gọt cổ phụ liệu",
+    "difficulty": "Easy"
+  },
+  {
+    "id": "op_40",
+    "group": "Jacket / Vest",
+    "name": "14. Attach placket  / Đính trụ",
+    "difficulty": "Medium"
+  },
+  {
+    "id": "op_41",
+    "group": "Jacket / Vest",
+    "name": "15. attach halfmoon  / Đính bán nguyệt",
+    "difficulty": "Complex"
+  },
+  {
+    "id": "op_42",
+    "group": "Jacket / Vest",
+    "name": "16, Attach half zipper  / Tra dây kéo 1/4",
+    "difficulty": "Medium"
+  },
+  {
+    "id": "op_43",
+    "group": "Jacket / Vest",
+    "name": "17. Attach storm flap To zipper  / Đính che dây kéo vào dây kéo",
+    "difficulty": "Medium"
+  },
+  {
+    "id": "op_44",
+    "group": "Jacket / Vest",
+    "name": "18. Join inner& outer collar stand  / Ráp chân cổ trong + ngoài",
+    "difficulty": "Medium"
+  },
+  {
+    "id": "op_45",
+    "group": "Jacket / Vest",
+    "name": "19. Others / New /Khác / Mới",
+    "difficulty": "Medium"
+  },
+  {
+    "id": "op_46",
+    "group": "Dress / Sleeveless",
+    "name": "1. Set pocket opening with zipper + welt +  lower bag + cut laser pocket opening  / Túi cơi dây kéo - Đính dây kéo + cơi + lót túi dưới + cắt laser",
+    "difficulty": "Complex"
+  },
+  {
+    "id": "op_47",
+    "group": "Dress / Sleeveless",
+    "name": "2. Set pocket opening + upper & lower bag + cut laser pocket opening  /Túi xếp - Đính lót túi trên + dưới + cắt laser",
+    "difficulty": "Complex"
+  },
+  {
+    "id": "op_48",
+    "group": "Dress / Sleeveless",
+    "name": "3. set side pocket opening with zipper + upper bag + cut laser pocket opening  /Túi sườn dây kéo - Đính dây kéo + lót túi trên + cắt laser",
+    "difficulty": "Medium"
+  },
+  {
+    "id": "op_49",
+    "group": "Dress / Sleeveless",
+    "name": "4. Set pocket opening + upper bag + cut laser pocket opening  /Túi xếp - Đính lót túi trên + cắt laser",
+    "difficulty": "Medium"
+  },
+  {
+    "id": "op_50",
+    "group": "Dress / Sleeveless",
+    "name": "5. Set back pocket with lower & upper bag + cut laser pocket opening / May túi sau - Đính lót túi trên + dưới + cắt laser",
+    "difficulty": "Medium"
+  },
+  {
+    "id": "op_51",
+    "group": "Dress / Sleeveless",
+    "name": "6. Set back pocket with zipper + lower bag + cut laser pocket opening   /May túi sau có dây kéo - Đính lót túi dưới + cắt laser",
+    "difficulty": "Medium"
+  },
+  {
+    "id": "op_52",
+    "group": "Dress / Sleeveless",
+    "name": "7. Sew dart  / May pen",
+    "difficulty": "Easy"
+  },
+  {
+    "id": "op_53",
+    "group": "Dress / Sleeveless",
+    "name": "8. Attach fold T/S lower facing pocket bag /  Đính - diễu đáp túi vào lót túi dưới",
+    "difficulty": "Medium"
+  },
+  {
+    "id": "op_54",
+    "group": "Dress / Sleeveless",
+    "name": "9. Attach Patch pocket / Túi đắp - Đính túi đắp",
+    "difficulty": "Complex"
+  },
+  {
+    "id": "op_55",
+    "group": "Dress / Sleeveless",
+    "name": "10. Attach logo / Đính - diễu logo",
+    "difficulty": "Medium"
+  },
+  {
+    "id": "op_56",
+    "group": "Dress / Sleeveless",
+    "name": "11. Attach halfmoon  /Đính bán nguyệt",
+    "difficulty": "Complex"
+  },
+  {
+    "id": "op_57",
+    "group": "Dress / Sleeveless",
+    "name": "12. Attach half front zipper + garage  /Đính dây kéo 1/4",
+    "difficulty": "Complex"
+  },
+  {
+    "id": "op_58",
+    "group": "Dress / Sleeveless",
+    "name": "13. Trim flatknit /Gọt cổ phụ liệu",
+    "difficulty": "Easy"
+  },
+  {
+    "id": "op_59",
+    "group": "Dress / Sleeveless",
+    "name": "14. Attach placket /  Đính trụ",
+    "difficulty": "Medium"
+  },
+  {
+    "id": "op_60",
+    "group": "Dress / Sleeveless",
+    "name": "15. join inner &outer collar   /Ráp cổ trong + ngoài",
+    "difficulty": "Medium"
+  },
+  {
+    "id": "op_61",
+    "group": "Dress / Sleeveless",
+    "name": "16. Others / New  Khác / Mới",
+    "difficulty": "Medium"
+  },
+  {
+    "id": "op_62",
+    "group": "Tshirt / Long/short sleeve",
+    "name": "1. Trim flatknit collar  / Gọt cổ phụ liệu",
+    "difficulty": "Easy"
+  },
+  {
+    "id": "op_63",
+    "group": "Tshirt / Long/short sleeve",
+    "name": "2. Attach logo  / Đính - diễu logo",
+    "difficulty": "Easy"
+  },
+  {
+    "id": "op_64",
+    "group": "Tshirt / Long/short sleeve",
+    "name": "3. attach placket  / Đính trụ",
+    "difficulty": "Medium"
+  },
+  {
+    "id": "op_65",
+    "group": "Tshirt / Long/short sleeve",
+    "name": "4. Attach collar to front panel / Lược cổ vào thân",
+    "difficulty": "Easy"
+  },
+  {
+    "id": "op_66",
+    "group": "Tshirt / Long/short sleeve",
+    "name": "5. attach patch pocket  /Túi đắp - Đính túi đắp",
+    "difficulty": "Complex"
+  },
+  {
+    "id": "op_67",
+    "group": "Tshirt / Long/short sleeve",
+    "name": "6. join inner outer collar  /Ráp cổ trong + ngoài",
+    "difficulty": "Medium"
+  },
+  {
+    "id": "op_68",
+    "group": "Tshirt / Long/short sleeve",
+    "name": "7. Others / New / Khác / Mới",
+    "difficulty": "Medium"
+  }
+];
+    localStorage.setItem('TCC_OPERATION_CONFIG', JSON.stringify(seedOperations));
+    return seedOperations;
+  },
+
+  saveOperationConfigs: async (items: OperationItem[]): Promise<any> => {
+    localStorage.setItem('TCC_OPERATION_CONFIG', JSON.stringify(items));
+    try {
+      const res = await authFetch('/tcc/config/OPERATION_CONFIG', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ configValue: JSON.stringify(items) })
+      });
+      if (res.ok) return res.json();
+    } catch (e) {
+      console.warn('Saved OPERATION_CONFIG to localStorage (API unavailable)', e);
+    }
+    return { success: true };
+  }
+
 };
+
+export interface SmvConfigRule {
+  id: number | string;
+  commonOperation: string;
+  sampleStage: string;
+  templateCategory: string;
+  sam: number;
+}
+
+
+export interface OperationItem {
+  id: string;
+  group: string;
+  name: string;
+  difficulty: 'Easy' | 'Medium' | 'Complex';
+  sam?: number;
+  stage?: string;
+}

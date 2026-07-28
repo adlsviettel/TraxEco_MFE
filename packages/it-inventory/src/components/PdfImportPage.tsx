@@ -9,7 +9,7 @@ import Header from './Header.tsx';
 import { parsePPKEKPDF } from '../utils/pdfParser.ts';
 import { getFiles, getFileDetail, uploadFile, saveParsedData, savePushLog, deleteFile as deleteFileApi } from '../services/api.ts';
 import type { PushLogDto } from '../services/api.ts';
-import { pushToInsw, buildInswRequestBody, getMappings } from '../services/inswApi.ts';
+import { pushToInsw, buildInswRequestBody, getMappings, detectKategoriBarang } from '../services/inswApi.ts';
 import type { FileEntry, ParsedDataSuccess } from '../types/index.ts';
 import { DataEvents } from '../utils/dataEvents.ts';
 import { usePush, getKdKegiatan } from '../contexts/PushContext.tsx';
@@ -48,21 +48,10 @@ function ParsedDataModal({ file, kdKegiatan, onClose, onPushSelected }: ParsedDa
       const m = await getMappings();
       if (data?.items) {
         const mappedItems = data.items.map(item => {
-          let mappedCode = '';
-          const textKategori = (item.kategoriBarang || '').toLowerCase();
-          const textUraian = (item.uraianBarang || '').toLowerCase();
-          
-          if (textUraian) {
-            const found = m.find(x => textUraian.includes(x.keyword.toLowerCase()) || textUraian === x.description.toLowerCase());
-            if (found) mappedCode = found.inswCode;
-          }
-          if (!mappedCode && textKategori) {
-            const found = m.find(x => textKategori.includes(x.keyword.toLowerCase()) || textKategori === x.description.toLowerCase() || textKategori === x.inswCode.toLowerCase());
-            if (found) mappedCode = found.inswCode;
-          }
+          const autoCode = detectKategoriBarang(item, m);
           return {
             ...item,
-            kategoriBarang: mappedCode || '',
+            kategoriBarang: autoCode,
           };
         });
         setLocalItems(mappedItems);

@@ -22,7 +22,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { columnFilterStore } from './ColumnFilterContext';
+import { columnFilterStore } from '@traxeco/shared';
 import { useTranslation } from 'react-i18next';
 
 export interface FilterableField {

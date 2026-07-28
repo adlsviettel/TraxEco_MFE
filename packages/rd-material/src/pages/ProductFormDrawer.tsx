@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
   Box, Button, Dialog, DialogTitle, Drawer, DialogContent, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, DialogActions, IconButton, TextField, Typography, Card, CardHeader, CardContent,
-  Divider, Stack, Snackbar, Alert, CircularProgress, Autocomplete, Collapse, ToggleButton, ToggleButtonGroup, Grid, Tooltip, MenuItem, Chip
+  Divider, Stack, Snackbar, Alert, CircularProgress, Autocomplete, Collapse, ToggleButton, ToggleButtonGroup, Grid, Tooltip, MenuItem, Chip, FormControlLabel, Checkbox
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -71,6 +71,7 @@ const ProductFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSav
   const [allocationOpts, setAllocationOpts] = useState<string[]>(['Puma SR', 'Adidas SR', 'R&D']);
   const [patternMarkerOpts] = useState<string[]>(['Puma', 'Adidas', 'R&D Arben']);
   const [sizeOpts] = useState<string[]>(['S', 'M', 'L', 'XL']);
+  const [colorOpts, setColorOpts] = useState<string[]>(['Black', 'White', 'Navy', 'Grey', 'Red', 'Blue', 'Green', 'Yellow']);
   const [usageOpts, setUsageOpts] = useState<string[]>(['Main Fabric', 'Lining Fabric', 'Accessory']);
 
   // Fabrics & Accessories for Lookups
@@ -175,6 +176,7 @@ const ProductFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSav
       loadOptions('sampleStage', setSampleStageOpts);
       loadOptions('allocation', setAllocationOpts);
       loadOptions('usage', setUsageOpts);
+      loadOptions('color', setColorOpts);
     }
   }, [open]);
 
@@ -204,6 +206,7 @@ const ProductFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSav
         mainComposition: item.product?.mainComposition,
         liningComposition: item.product?.liningComposition,
         fobPrice: item.product?.fobPrice,
+        garmentTest: item.product?.garmentTest ?? false,
       });
     } else {
       setBomList([]);
@@ -214,6 +217,7 @@ const ProductFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSav
         name: '',
         gender: '',
         fobPrice: undefined,
+        garmentTest: false,
       } as any);
     }
     setPendingMainImages([]);
@@ -245,10 +249,6 @@ const ProductFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSav
   const handleImageCapture = async (e: React.ChangeEvent<HTMLInputElement>, targetField: 'mainImage' | 'stickerImage') => {
     if (!e.target.files?.length) return;
     const files = Array.from(e.target.files);
-    
-    if (files.some(f => f.size > 5 * 1024 * 1024)) {
-      return setSnackbar({ open: true, message: t('rdMaterial.image_too_large', 'Image size > 5MB'), severity: 'warning' });
-    }
 
     if (targetField === 'mainImage') {
       setPendingMainImages(prev => [...prev, ...files]);
@@ -381,6 +381,7 @@ const ProductFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSav
           mainComposition: JSON.stringify(bomList),
           liningComposition: form.liningComposition || undefined,
           fobPrice: toNum(form.fobPrice),
+          garmentTest: Boolean(form.garmentTest),
         },
         priceHistory: currentHistory.length > 0 ? JSON.stringify(currentHistory) : undefined,
       };
@@ -420,10 +421,6 @@ const ProductFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSav
     }
 
     if (files.length === 0) return;
-    
-    if (files.some(f => f.size > 5 * 1024 * 1024)) {
-      return setSnackbar({ open: true, message: t('rdMaterial.image_too_large', 'Image size > 5MB'), severity: 'warning' });
-    }
 
     // Open dialog to let user choose target
     setPastedFiles(files);
@@ -728,7 +725,34 @@ const ProductFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSav
                         />
                         <AppTextField label={t('rdMaterial.style_name', 'Style Name')} size="small" value={form.styleName ?? ''} debounceMs={200} onDebounceChange={(val) => set('styleName', val ? val.toUpperCase() : val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
                         <Autocomplete componentsProps={{ popper: { style: { zIndex: 10000 } } }} forcePopupIcon options={sampleStageOpts} freeSolo size="small" value={form.sampleStage ?? ''} onChange={(_, val) => set('sampleStage', val)} onInputChange={(_, val, reason) => { if (reason === 'input' || reason === 'clear') set('sampleStage', val); }} renderInput={(params) => <TextField {...params} label={t('rdMaterial.stage', 'Sample Stage')} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />} />
-                        <AppTextField label={t('rdMaterial.color', 'Color')} size="small" value={form.color ?? ''} debounceMs={200} onDebounceChange={(val) => set('color', val ? val.charAt(0).toUpperCase() + val.slice(1) : val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
+                        <Autocomplete
+                          componentsProps={{ popper: { style: { zIndex: 10000 } } }}
+                          forcePopupIcon
+                          options={colorOpts}
+                          freeSolo
+                          size="small"
+                          value={form.color ?? ''}
+                          onChange={(_, val) => set('color', val ? val.charAt(0).toUpperCase() + val.slice(1) : val)}
+                          onInputChange={(_, val, reason) => {
+                            if (reason === 'input' || reason === 'clear') {
+                              set('color', val ? val.charAt(0).toUpperCase() + val.slice(1) : val);
+                            }
+                          }}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label={t('rdMaterial.color', 'Color')}
+                              sx={{
+                                '& .MuiOutlinedInput-root': {
+                                  bgcolor: '#f8fafc',
+                                  borderRadius: 1,
+                                  '&:hover': { bgcolor: '#f1f5f9' },
+                                  '&.Mui-focused': { bgcolor: '#fff' }
+                                }
+                              }}
+                            />
+                          )}
+                        />
                         <Box sx={{ gridColumn: '1 / -1', display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr 1fr' }, gap: 2.5 }}>
                           <AppTextField
                             select
@@ -820,10 +844,20 @@ const ProductFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSav
                             }} 
                           />
                         </Box>
-                        <Box sx={{ gridColumn: '1 / -1', display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr 1fr' }, gap: 2.5 }}>
+                        <Box sx={{ gridColumn: '1 / -1', display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr 1fr 1fr' }, gap: 2.5, alignItems: 'center' }}>
                           <Autocomplete componentsProps={{ popper: { style: { zIndex: 10000 } } }} forcePopupIcon options={patternMarkerOpts} freeSolo size="small" value={form.patternMarker ?? ''} onChange={(_, val) => set('patternMarker', val)} onInputChange={(_, val, reason) => { if (reason === 'input' || reason === 'clear') set('patternMarker', val); }} renderInput={(params) => <TextField {...params} label={t('rdMaterial.pattern_marker', 'Pattern Marker')} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />} />
                           <Autocomplete componentsProps={{ popper: { style: { zIndex: 10000 } } }} forcePopupIcon options={allocationOpts} freeSolo size="small" value={form.allocation ?? ''} onChange={(_, val) => set('allocation', val)} onInputChange={(_, val, reason) => { if (reason === 'input' || reason === 'clear') set('allocation', val); }} renderInput={(params) => <TextField {...params} label={t('rdMaterial.allocation', 'Allocation')} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />} />
                           <AppTextField label={t('rdMaterial.location', 'Location')} size="small" value={form.location ?? ''} debounceMs={200} onDebounceChange={(val) => set('location', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
+                          <FormControlLabel
+                            control={
+                              <Checkbox 
+                                checked={Boolean(form.garmentTest)} 
+                                onChange={(e) => setForm((prev: any) => ({ ...prev, garmentTest: e.target.checked }))} 
+                                color="primary" 
+                              />
+                            }
+                            label={<Typography fontWeight={600} fontSize={13} color="#1e293b">Garment Test</Typography>}
+                          />
                         </Box>
                       </Box>
                     </Box>
@@ -1123,6 +1157,7 @@ const ProductFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSav
                       <InfoRow label="Fabric Name (EN)" value={popupItem.fabric?.fabricName} />
                       <InfoRow label="Composition" value={popupItem.fabric?.composition} />
                       <InfoRow label="Function" value={popupItem.fabric?.function} />
+                      <InfoRow label="Technology" value={popupItem.fabric?.technology} />
                       <InfoRow label="GSM" value={popupItem.fabric?.weightGsm ? `${popupItem.fabric.weightGsm} gsm` : undefined} />
                       <InfoRow 
                         label="Cuttable Width" 

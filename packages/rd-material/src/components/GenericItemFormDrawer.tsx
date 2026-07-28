@@ -160,7 +160,6 @@ const GenericItemFormDrawer: React.FC<Props> = ({ open, item, isCopy, itemType, 
   const handleImageCapture = async (e: React.ChangeEvent<HTMLInputElement>, targetField: 'mainImage' | 'stickerImage') => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 5 * 1024 * 1024) return setSnackbar({ open: true, message: t('rdMaterial.image_too_large', 'Image size > 5MB'), severity: 'warning' });
     setUploading(true);
     try {
       const url = await rdItemApi.uploadImage(file);
@@ -291,7 +290,6 @@ const GenericItemFormDrawer: React.FC<Props> = ({ open, item, isCopy, itemType, 
       if (!file) return;
       
       e.preventDefault();
-      if (file.size > 5 * 1024 * 1024) return setSnackbar({ open: true, message: t('rdMaterial.image_too_large', 'Image size > 5MB'), severity: 'warning' });
       setUploading(true);
       try {
         const url = await rdItemApi.uploadImage(file);

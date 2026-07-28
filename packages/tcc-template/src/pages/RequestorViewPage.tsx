@@ -1,9 +1,7 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { format } from 'date-fns';
-import ExcelJS from 'exceljs';
-import { saveAs } from 'file-saver';
+// ExcelJS and file-saver are dynamically imported in handleExport to avoid loading ~1MB on page mount
 import { 
   Box, Typography, Paper, IconButton, Dialog, DialogTitle, DialogContent, 
   DialogActions, CircularProgress, InputAdornment, Tooltip, Snackbar, Alert, Chip,
@@ -59,6 +57,8 @@ import RequestFormDialog from '../components/RequestFormDialog';
 
 const getStatusStyle = (status: string) => {
   switch (status) {
+    case 'Queued':
+      return { bgcolor: '#fff7ed', color: '#c2410c', border: '1px solid #ffedd5', fontWeight: 600 };
     case 'Work in Progress':
       return { bgcolor: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', fontWeight: 600 };
     case 'Completed':
@@ -96,11 +96,23 @@ const formatDateTime = (val: any) => {
   }
 };
 
-export default function RequestorViewPage() {
+const InlineDateCell = ({ params, noNeedField, isForceNoNeed }: any) => {
+  const value = params.value;
+
+  if (params.row[noNeedField] || isForceNoNeed) {
+    return <Typography variant="body2">—</Typography>;
+  }
+
+  return (
+    <Typography variant="body2" sx={{ fontSize: 13, color: value ? 'inherit' : 'text.disabled' }}>
+      {value ? formatDate(value) : 'Loading'}
+    </Typography>
+  );
+};
+
+export default function RequestorViewPage({ isActive = true }: any) {
   const { t } = useTranslation();
   const mainApiRef = useGridApiRef();
-  const location = useLocation();
-  const navigate = useNavigate();
   
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -140,11 +152,6 @@ export default function RequestorViewPage() {
     updatedAt: false,
   });
 
-  // 5. Date Row Editor Hook
-  const {
-    editingRow, setEditingRow, newDate, setNewDate, savingDate, handleDateSave
-  } = useMaterialDateEditor(setRequests, showSnackbar, t);
-
   // 6. Delete & Cancel Actions Hook
   const {
     deleteConfirmRow, setDeleteConfirmRow, deleting, handleDeleteConfirm,
@@ -160,26 +167,47 @@ export default function RequestorViewPage() {
     return authService.isSuperAdmin() || authService.isAdmin() || authService.hasAction('tcc_tracking', 'canEdit');
   }, []);
 
+  const currentUserInfo = useMemo(() => {
+    try {
+      return authService.getUserInfo();
+    } catch {
+      return { employeeCode: '', employeeName: '' };
+    }
+  }, []);
+  const isCurrentUserSuperAdmin = useMemo(() => authService.isSuperAdmin(), []);
+  const isCurrentUserAdmin = useMemo(() => authService.isAdmin(), []);
+  const hasDeletePermission = useMemo(() => authService.hasAction('tcc_tracking', 'canDelete'), []);
+  const hasAddPermission = useMemo(() => authService.hasAction('tcc_tracking', 'canAdd'), []);
+
+  const checkCanEdit = useCallback((row: any) => {
+    if (row.status === 'Rejected' || row.status === 'Canceled' || row.status === 'Cancelled') return false;
+    const reqLower = (row.requesterName || '').trim().toLowerCase();
+    const codeLower = (currentUserInfo.employeeCode || '').trim().toLowerCase();
+    const nameLower = (currentUserInfo.employeeName || '').trim().toLowerCase();
+    const isMyRequest = reqLower === codeLower || reqLower === nameLower || reqLower.startsWith(codeLower + ' -');
+    return isCurrentUserSuperAdmin || isCurrentUserAdmin || (isMyRequest && canEditTracking);
+  }, [currentUserInfo, isCurrentUserSuperAdmin, isCurrentUserAdmin, canEditTracking]);
+
   const canCancelAll = useMemo(() => {
     return authService.isSuperAdmin() || authService.isAdmin() || authService.hasAction('tcc_tracking', 'canCancel');
   }, []);
 
   const activeFiltersCount = (filters.factory ? 1 : 0) + (filters.season ? 1 : 0) + (filters.status ? 1 : 0);
 
-  // Auto open details drawer if requestId query param is in URL
+  // Auto open details drawer if requestId query param is in URL (uses window.location to avoid React Router re-render subscription)
   useEffect(() => {
     if (requests.length === 0) return;
-    const params = new URLSearchParams(location.search);
+    const params = new URLSearchParams(window.location.search);
     const reqIdParam = params.get('requestId');
     if (reqIdParam) {
       const exists = requests.some(r => r.requestId === reqIdParam);
       if (exists) {
         setSelectedDetailId(reqIdParam);
         setDetailOpen(true);
-        navigate(location.pathname, { replace: true });
+        window.history.replaceState({}, '', window.location.pathname);
       }
     }
-  }, [requests, location.search, navigate]);
+  }, [requests]);
 
   // Lock parent main element scroll on mobile to keep headers/footers sticky
   useEffect(() => {
@@ -205,6 +233,8 @@ export default function RequestorViewPage() {
   const handleExport = async () => {
     setExporting(true);
     try {
+      const ExcelJS = (await import('exceljs')).default;
+      const { saveAs } = await import('file-saver');
       const workbook = new ExcelJS.Workbook();
       const worksheet = workbook.addWorksheet('TCC Template Requests');
 
@@ -238,7 +268,7 @@ export default function RequestorViewPage() {
         const rowData: any = {};
         visibleCols.forEach(col => {
           const val = (req as any)[col.field];
-          if (col.field === 'createdAt' || col.field === 'materialSentDate' || col.field === 'materialReceivedDate' || col.field === 'startDate' || col.field === 'expectedDeliveryDate' || col.field === 'confirmDeliveryDate' || col.field === 'finishedDate' || col.field === 'releasedDate') {
+          if (col.field === 'createdAt' || col.field === 'fabricDeliveryDate' || col.field === 'paperPatternDeliveryDate' || col.field === 'trimDeliveryDate' || col.field === 'sampleSketchDeliveryDate' || col.field === 'materialReceivedDate' || col.field === 'startDate' || col.field === 'expectedDeliveryDate' || col.field === 'confirmDeliveryDate' || col.field === 'finishedDate' || col.field === 'releasedDate') {
             rowData[col.field] = val ? format(new Date(val), 'yyyy-MM-dd') : '';
           } else if (col.field === 'isPriority') {
             rowData[col.field] = val ? 'Yes' : 'No';
@@ -269,6 +299,8 @@ export default function RequestorViewPage() {
 
   const getStatusLabel = (status: string) => {
     switch (status) {
+      case 'Queued':
+        return 'Queued (Pending Approval)';
       case 'Work in Progress':
         return t('tcc.statusWip');
       case 'Completed':
@@ -325,6 +357,7 @@ export default function RequestorViewPage() {
       field: 'createdAt', 
       headerName: 'Request Creation Date ®', 
       width: 125,
+      valueFormatter: (value: any) => formatDate(value),
       renderCell: (params) => formatDate(params.value)
     },
     { field: 'customer', headerName: 'Customer (R)', width: 120 },
@@ -334,37 +367,28 @@ export default function RequestorViewPage() {
     { field: 'sampleStage', headerName: 'Sample  stage ®', width: 140 },
     { field: 'factory', headerName: 'Factory ®', width: 120 },
     {
-      field: 'materialSentDate',
-      headerName: 'Material sent date ®',
+      field: 'paperPatternDeliveryDate',
+      headerName: t('tcc.paperPatternSendDate', 'Paper Pattern Send Date'),
+      width: 170,
+      renderCell: (params: GridRenderCellParams) => <InlineDateCell params={params} field="paperPatternDeliveryDate" noNeedField="paperPatternNoNeed" apiRef={mainApiRef} canEdit={checkCanEdit(params.row)} />
+    },
+    {
+      field: 'trimDeliveryDate',
+      headerName: t('tcc.trimSendDate', 'Trim Send Date'),
+      width: 160,
+      renderCell: (params: GridRenderCellParams) => <InlineDateCell params={params} field="trimDeliveryDate" noNeedField="trimNoNeed" apiRef={mainApiRef} canEdit={checkCanEdit(params.row)} />
+    },
+    {
+      field: 'fabricDeliveryDate',
+      headerName: t('tcc.fabricSendDate', 'Fabric Send Date'),
+      width: 160,
+      renderCell: (params: GridRenderCellParams) => <InlineDateCell params={params} field="fabricDeliveryDate" noNeedField="fabricNoNeed" isForceNoNeed={params.row.processType === 'Light Process'} apiRef={mainApiRef} canEdit={checkCanEdit(params.row)} />
+    },
+    {
+      field: 'sampleSketchDeliveryDate',
+      headerName: t('tcc.sampleSketchSendDate', 'Sample/Sketch Send Date'),
       width: 180,
-      renderCell: (params: GridRenderCellParams) => {
-        const isCancelled = params.row.status === 'Cancelled';
-        const userInfo = authService.getUserInfo();
-        const reqLower = (params.row.requesterName || '').trim().toLowerCase();
-        const codeLower = userInfo.employeeCode.trim().toLowerCase();
-        const nameLower = userInfo.employeeName.trim().toLowerCase();
-        const isMyRequest = reqLower === codeLower || reqLower === nameLower || reqLower.startsWith(codeLower + ' -');
-        const canEditThisRow = authService.isSuperAdmin() || authService.isAdmin() || (isMyRequest && canEditTracking);
-
-        return (
-          <Box display="flex" alignItems="center" gap={0.5} justifyContent="space-between" width="100%">
-            <Typography variant="body2" sx={{ fontSize: 13 }}>
-              {params.value ? formatDate(params.value) : t('tcc.notSet')}
-            </Typography>
-            <IconButton
-              size="small"
-              disabled={!canEditThisRow || isCancelled}
-              onClick={() => {
-                setEditingRow(params.row as TccRequest);
-                setNewDate(params.value ? new Date(params.value) : null);
-              }}
-              sx={{ p: 0.5 }}
-            >
-              <EditIcon fontSize="small" sx={{ fontSize: 16 }} />
-            </IconButton>
-          </Box>
-        );
-      },
+      renderCell: (params: GridRenderCellParams) => <InlineDateCell params={params} field="sampleSketchDeliveryDate" noNeedField="sampleSketchNoNeed" isForceNoNeed={params.row.processType === 'Light Process'} apiRef={mainApiRef} canEdit={checkCanEdit(params.row)} />
     },
     { 
       field: 'processType', 
@@ -385,11 +409,29 @@ export default function RequestorViewPage() {
         );
       }
     },
-    { 
-      field: 'materialReceivedDate', 
-      headerName: 'Material received date (TCC)', 
-      width: 140,
-      renderCell: (params) => formatDate(params.value)
+    {
+      field: 'paperPatternReceivedDate',
+      headerName: t('tcc.paperPatternReceivedDate', 'Paper Pattern Received Date (TCC)'),
+      width: 180,
+      renderCell: (params: GridRenderCellParams) => <InlineDateCell params={params} field="paperPatternReceivedDate" noNeedField="paperPatternNoNeed" apiRef={mainApiRef} canEdit={false} />
+    },
+    {
+      field: 'trimReceivedDate',
+      headerName: t('tcc.trimReceivedDate', 'Trim Received Date (TCC)'),
+      width: 170,
+      renderCell: (params: GridRenderCellParams) => <InlineDateCell params={params} field="trimReceivedDate" noNeedField="trimNoNeed" apiRef={mainApiRef} canEdit={false} />
+    },
+    {
+      field: 'fabricReceivedDate',
+      headerName: t('tcc.fabricReceivedDate', 'Fabric Received Date (TCC)'),
+      width: 170,
+      renderCell: (params: GridRenderCellParams) => <InlineDateCell params={params} field="fabricReceivedDate" noNeedField="fabricNoNeed" isForceNoNeed={params.row.processType === 'Light Process'} apiRef={mainApiRef} canEdit={false} />
+    },
+    {
+      field: 'sampleSketchReceivedDate',
+      headerName: t('tcc.sampleSketchReceivedDate', 'Sample/Sketch Received Date (TCC)'),
+      width: 190,
+      renderCell: (params: GridRenderCellParams) => <InlineDateCell params={params} field="sampleSketchReceivedDate" noNeedField="sampleSketchNoNeed" isForceNoNeed={params.row.processType === 'Light Process'} apiRef={mainApiRef} canEdit={false} />
     },
     { field: 'operationDescription', headerName: 'Operation Description ®', width: 180 },
     { field: 'machineType', headerName: 'Machine type®', width: 120 },
@@ -433,13 +475,25 @@ export default function RequestorViewPage() {
       field: 'startDate', 
       headerName: 'Start Date (TCC)', 
       width: 120,
+      valueFormatter: (value: any) => formatDate(value),
       renderCell: (params) => formatDate(params.value)
     },
     { 
       field: 'expectedDeliveryDate', 
       headerName: 'Request Delivery Date', 
       width: 140,
+      valueFormatter: (value: any) => formatDate(value),
       renderCell: (params) => formatDate(params.value)
+    },
+    {
+      field: 'queueStatus',
+      headerName: 'Queue Status',
+      width: 120,
+      renderCell: (params) => {
+        if (!params.value) return <Typography variant="body2">-</Typography>;
+        const color = params.value === 'Pending' ? 'warning' : params.value === 'Approved' ? 'success' : 'error';
+        return <Chip label={params.value} color={color as any} size="small" />;
+      }
     },
     {
       field: 'confirmDeliveryDate',
@@ -473,6 +527,7 @@ export default function RequestorViewPage() {
       field: 'finishedDate', 
       headerName: 'Finished Date (TCC)', 
       width: 120,
+      valueFormatter: (value: any) => formatDate(value),
       renderCell: (params) => formatDate(params.value)
     },
     {
@@ -480,6 +535,7 @@ export default function RequestorViewPage() {
       headerName: 'Status (Auto)',
       width: 140,
       valueGetter: (value: any, row: any) => {
+        if (row.queueStatus === 'Pending' && (!value || value === 'Not Started')) return 'Queued';
         return row.releasedDate ? 'Released' : (value || 'Not Started');
       },
       renderCell: (params: GridRenderCellParams) => {
@@ -497,6 +553,7 @@ export default function RequestorViewPage() {
       field: 'releasedDate', 
       headerName: 'Released Date (TCC)', 
       width: 140,
+      valueFormatter: (value: any) => formatDate(value),
       renderCell: (params) => formatDate(params.value)
     },
     { field: 'delayRemakeReason', headerName: 'reason for remake/ Delay (TCC)', width: 180 },
@@ -518,13 +575,11 @@ export default function RequestorViewPage() {
       sortable: false,
       renderCell: (params: GridRenderCellParams) => {
         const isNotStarted = (params.row.status || 'Not Started') === 'Not Started';
-        const userInfo = authService.getUserInfo();
         const reqLower = (params.row.requesterName || '').trim().toLowerCase();
-        const codeLower = userInfo.employeeCode.trim().toLowerCase();
-        const nameLower = userInfo.employeeName.trim().toLowerCase();
+        const codeLower = (currentUserInfo.employeeCode || '').trim().toLowerCase();
+        const nameLower = (currentUserInfo.employeeName || '').trim().toLowerCase();
         const isMyRequest = reqLower === codeLower || reqLower === nameLower || reqLower.startsWith(codeLower + ' -');
-        const isSuperOrAdmin = authService.isSuperAdmin() || authService.isAdmin();
-        const hasDeletePermission = authService.hasAction('tcc_tracking', 'canDelete');
+        const isSuperOrAdmin = isCurrentUserSuperAdmin || isCurrentUserAdmin;
         const canDeleteRow = isSuperOrAdmin || (isMyRequest && hasDeletePermission);
         
         return (
@@ -576,7 +631,7 @@ export default function RequestorViewPage() {
             )}
           </Box>
         );
-      }
+      },
     }
   ], [t, canEditTracking, canCancelAll]);
 
@@ -618,17 +673,33 @@ export default function RequestorViewPage() {
             justifyContent: col.headerAlign === 'center' ? 'center' : 'flex-start',
             gap: '4px',
             width: '100%',
-            cursor: 'grab'
-          }}
-          draggable
-          onDragStart={() => {
-            draggedFieldRef.current = col.field;
-          }}
-          onDragEnd={() => {
-            draggedFieldRef.current = null;
+            height: '100%',
+            userSelect: 'none',
           }}
         >
-          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          <span
+            draggable
+            onMouseDown={(e) => e.stopPropagation()}
+            onDragStart={(e) => {
+              e.dataTransfer.effectAllowed = 'move';
+              draggedFieldRef.current = col.field;
+            }}
+            onDragEnd={() => {
+              draggedFieldRef.current = null;
+            }}
+            style={{
+              cursor: 'grab',
+              display: 'inline-flex',
+              alignItems: 'center',
+              color: '#94a3b8',
+              marginRight: '2px',
+              fontSize: '14px',
+              fontWeight: 'bold',
+            }}
+          >
+            ⠿
+          </span>
+          <span style={{ fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
             {col.headerName || col.field}
           </span>
           {columnFilters[col.field] && columnFilters[col.field].length > 0 && (
@@ -647,7 +718,11 @@ export default function RequestorViewPage() {
   }, [reorderOpen, sortedColumns, setLocalFields]);
 
   // Auto register local filters with context
-  columnFilterStore.register(window.location.pathname, columnFilters, setColumnFilters, requests);
+  useEffect(() => {
+    if (window.location.pathname.includes('/tracking') || window.location.pathname === '/tcc-template') {
+      columnFilterStore.register(window.location.pathname, columnFilters, setColumnFilters, requests);
+    }
+  }, [columnFilters, setColumnFilters, requests]);
 
   const detailRow = requests.find(r => r.requestId === selectedDetailId) || null;
 
@@ -788,7 +863,7 @@ export default function RequestorViewPage() {
               {exporting ? t('tcc.exporting', 'Exporting...') : t('tcc.export', 'Export')}
             </AppButton>
 
-            {authService.hasAction('tcc_tracking', 'canAdd') && (
+            {hasAddPermission && (
               <AppButton 
                 variant="contained" customVariant="primary" 
                 startIcon={<AddIcon />}
@@ -808,8 +883,8 @@ export default function RequestorViewPage() {
           loading={loading}
           filters={filters}
           canEditTracking={canEditTracking}
-          setEditingRow={setEditingRow}
-          setNewDate={setNewDate}
+          setEditingRow={() => {}}
+          setNewDate={() => {}}
           getStatusLabel={getStatusLabel}
           getStatusStyle={getStatusStyle}
           formatDate={formatDate}
@@ -817,7 +892,7 @@ export default function RequestorViewPage() {
           setDetailOpen={setDetailOpen}
           t={t}
         />
-      ) : (
+      ) : isActive ? (
         <Paper elevation={0} sx={{ flex: 1, minHeight: 400, height: 'calc(100vh - 200px)', borderRadius: '8px', border: '1px solid #e1e3e4', boxShadow: '0px 4px 20px rgba(0,0,0,0.05)', bgcolor: '#ffffff', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
           <DataGrid
             apiRef={mainApiRef}
@@ -849,50 +924,10 @@ export default function RequestorViewPage() {
             }}
           />
         </Paper>
+      ) : (
+        <Box sx={{ flex: 1, minHeight: 400, height: 'calc(100vh - 200px)' }} />
       )}
 
-      {/* Date Editor Dialog */}
-      <Dialog open={!!editingRow} onClose={() => !savingDate && setEditingRow(null)}>
-        <DialogTitle>{t('tcc.updateMaterialSent')}</DialogTitle>
-        <DialogContent sx={{ pt: 2 }}>
-          <DatePicker format="dd/MM/yyyy"
-            label={t('tcc.materialSentDate')}
-            value={newDate}
-            onChange={(val) => setNewDate(val)}
-            slotProps={{ 
-              field: { clearable: true },
-              textField: { 
-                fullWidth: true,
-                size: 'small',
-                sx: {
-                  mt: 1,
-                  '& .MuiOutlinedInput-root': { 
-                    borderRadius: '8px', 
-                    height: 40, 
-                    fontSize: 13, 
-                    bgcolor: '#fff', 
-                    '& fieldset': { borderColor: '#bfc9c4' }, 
-                    '&:hover fieldset': { borderColor: '#3ba55c' }, 
-                    '&.Mui-focused fieldset': { borderColor: '#3ba55c' } 
-                  },
-                  '& .MuiInputLabel-root': {
-                    fontSize: 13,
-                    mt: 1
-                  }
-                }
-              } 
-            }}
-          />
-        </DialogContent>
-        <DialogActions>
-          <AppButton onClick={() => setEditingRow(null)} disabled={savingDate} variant="outlined" customVariant="secondary">
-            {t('tcc.cancel')}
-          </AppButton>
-          <AppButton onClick={handleDateSave} variant="contained" customVariant="primary" disabled={!newDate || savingDate}>
-            {savingDate ? <CircularProgress size={20} /> : t('tcc.save')}
-          </AppButton>
-        </DialogActions>
-      </Dialog>
 
       {/* Delete Confirmation Dialog */}
       <ConfirmActionDialog
@@ -999,7 +1034,7 @@ export default function RequestorViewPage() {
               slotProps={{ select: { displayEmpty: true } }}
             >
               <MenuItem value="">{t('tcc.allStatus', 'All Statuses')}</MenuItem>
-              {['Not Started', 'Work in Progress', 'Completed', 'Released', 'Remake', 'Cancelled', 'Rejected', 'Deleted'].map((st) => (
+              {['Queued', 'Not Started', 'Work in Progress', 'Completed', 'Released', 'Remake', 'Cancelled', 'Rejected', 'Deleted'].map((st) => (
                 <MenuItem key={st} value={st}>{getStatusLabel(st)}</MenuItem>
               ))}
             </AppTextField>
@@ -1013,17 +1048,19 @@ export default function RequestorViewPage() {
         onClose={() => setDetailOpen(false)}
         request={detailRow}
         canEditTracking={canEditTracking}
-        setEditingRow={setEditingRow}
-        setNewDate={setNewDate}
       />
 
-      {/* Add New Request Form Dialog */}
       <RequestFormDialog
         open={formOpen}
         onClose={() => setFormOpen(false)}
-        onSuccess={() => {
+        onSuccess={(req) => {
           setFormOpen(false);
           fetchRequests();
+          if (req && req.queueStatus === 'Pending') {
+            showSnackbar(`Warning: Factory capacity reached! Request ${req.requestId} is put in Queue pending admin approval.`, 'warning');
+          } else {
+            showSnackbar('Request submitted successfully', 'success');
+          }
         }}
       />
 
@@ -1114,7 +1151,7 @@ export default function RequestorViewPage() {
       </Snackbar>
 
       {/* R&D Material Style FAB for Add New on Mobile */}
-      {isMobile && authService.hasAction('tcc_tracking', 'canAdd') && (
+      {isMobile && hasAddPermission && (
         <DraggableFab onClick={() => setFormOpen(true)} />
       )}
     </Box>

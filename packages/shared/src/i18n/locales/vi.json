@@ -1062,6 +1062,7 @@
     "dataRefreshed": "Đã làm mới dữ liệu và tải lại danh sách chờ xuất!"
   },
   "rdMaterial": {
+    "textile_engineer_note": "Chỉ có Textile Engineer mới thao tác phần này",
     "dashboard": "Bảng điều khiển",
     "fabricHanger": "Vải Hanger",
     "accessory": "Phụ Liệu",
@@ -1504,6 +1505,11 @@
     },
     "selectAll": "Chọn tất cả",
     "noValuesMatch": "Không có giá trị trùng khớp",
+    "capacityFullTitle": "Capacity đã đầy!",
+    "capacityFullMessage": "Factory hiện tại đã hết slot cho ngày này.",
+    "capacityFullDesc": "Request này có Urgent không? Nếu Urgent, request sẽ được đưa vào Queue chờ Admin duyệt.",
+    "confirmUrgent": "Có, Urgent!",
+    "notUrgent": "Không, hủy request",
     "notification": {
       "bellHeader": "Thông báo TCC",
       "markAllRead": "Đánh dấu đã đọc tất cả",

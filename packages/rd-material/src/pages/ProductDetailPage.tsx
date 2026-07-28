@@ -398,6 +398,7 @@ const ProductDetailPage: React.FC = () => {
                     <InfoRow label="Gender" value={item.product?.gender} />
                     <InfoRow label="Pattern Marker" value={item.product?.patternMarker} />
                     <InfoRow label="Allocation" value={item.product?.allocation} />
+                    <InfoRow label="Garment Test" value={item.product?.garmentTest ? 'Yes' : 'No'} />
                     <InfoRow label="Location" value={item.location} />
                     <InfoRow label="FOB Price" value={item.product?.fobPrice ? <>{item.product.fobPrice} USD <Typography component="span" fontSize={14} color="#6b7280" fontWeight={400}>/ pcs</Typography></> : undefined} />
                     <Box sx={{ gridColumn: '1/-1', pt: 3, borderTop: '1px solid #f3f4f6' }}>
@@ -652,6 +653,7 @@ const ProductDetailPage: React.FC = () => {
                       <InfoRow label="Fabric Name (EN)" value={popupItem.fabric?.fabricName} />
                       <InfoRow label="Composition" value={popupItem.fabric?.composition} />
                       <InfoRow label="Function" value={popupItem.fabric?.function} />
+                      <InfoRow label="Technology" value={popupItem.fabric?.technology} />
                       <InfoRow label="GSM" value={popupItem.fabric?.weightGsm ? `${popupItem.fabric.weightGsm} gsm` : undefined} />
                       <InfoRow 
                         label="Cuttable Width" 

@@ -74,6 +74,7 @@ export interface ItemFabric {
   composition?: string;        // 3 options: Synthetic, Natural, Natural blend
   compositionDetail?: string;
   function?: string;
+  technology?: string;
   weightGsm?: number;
   cuttableWidth?: number;
   colorName?: string;
@@ -105,6 +106,7 @@ export interface ItemProduct {
   mainComposition?: string;
   liningComposition?: string;
   fobPrice?: number;
+  garmentTest?: boolean;
 }
 
 export interface ItemPattern {

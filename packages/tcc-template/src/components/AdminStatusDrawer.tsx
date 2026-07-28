@@ -68,7 +68,7 @@ interface AdminStatusDrawerProps {
   developers: string[];
   customers: string[];
   factories: string[];
-  templateTypes: string[];
+  templateTypes?: string[];
   onSaveSuccess: () => void;
   onRefreshData: () => void;
 }
@@ -82,7 +82,7 @@ export function AdminStatusDrawer({
   developers,
   customers,
   factories,
-  templateTypes,
+  templateTypes = [],
   onSaveSuccess,
   onRefreshData
 }: AdminStatusDrawerProps) {

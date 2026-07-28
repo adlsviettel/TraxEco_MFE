@@ -46,6 +46,10 @@ export function useAdminDrawerForm(
     if (open && selectedRow) {
       setEditForm({
         materialReceivedDate: selectedRow.materialReceivedDate,
+        fabricReceivedDate: selectedRow.fabricReceivedDate || null,
+        paperPatternReceivedDate: selectedRow.paperPatternReceivedDate || null,
+        trimReceivedDate: selectedRow.trimReceivedDate || null,
+        sampleSketchReceivedDate: selectedRow.sampleSketchReceivedDate || null,
         startDate: selectedRow.startDate,
         finishedDate: selectedRow.finishedDate,
         status: selectedRow.status || 'Not Started',
@@ -68,7 +72,10 @@ export function useAdminDrawerForm(
         factory: selectedRow.factory || '',
         processType: selectedRow.processType || '',
         lineQuantity: selectedRow.lineQuantity || '',
-        materialSentDate: selectedRow.materialSentDate || null,
+        fabricDeliveryDate: selectedRow.fabricDeliveryDate || null,
+        paperPatternDeliveryDate: selectedRow.paperPatternDeliveryDate || null,
+        trimDeliveryDate: selectedRow.trimDeliveryDate || null,
+        sampleSketchDeliveryDate: selectedRow.sampleSketchDeliveryDate || null,
         expectedDeliveryDate: selectedRow.expectedDeliveryDate || null,
         operationDescription: selectedRow.operationDescription || '',
         machineType: selectedRow.machineType || '',

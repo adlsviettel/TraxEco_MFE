@@ -77,3 +77,21 @@ ALTER TABLE COO_ConsumptionData ADD
 [MaterialCode2] NVARCHAR(500),
 [EngnameFG] NVARCHAR(500),
 [POCustomsCode] NVARCHAR(500);
+
+-- Fabric Hanger Technology Field
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[RD_Fabric]') AND type in (N'U'))
+BEGIN
+    IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[RD_Fabric]') AND name = 'Technology')
+    BEGIN
+        ALTER TABLE [dbo].[RD_Fabric] ADD [Technology] NVARCHAR(500) NULL;
+    END
+END
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[RD_Items]') AND type in (N'U'))
+BEGIN
+    IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[RD_Items]') AND name = 'Technology')
+    BEGIN
+        ALTER TABLE [dbo].[RD_Items] ADD [Technology] NVARCHAR(500) NULL;
+    END
+END
+

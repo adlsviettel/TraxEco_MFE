@@ -46,7 +46,7 @@ const getStickyHeaderStyle = (colId: string, filteredCols: any[]) => {
     if (stickyIds.includes(c.id)) {
       if (c.id === 'Image') left += 80;
       else if (c.id === 'Name') left += 200;
-      else if (c.id === 'Item Code') left += 150;
+      else if (c.id === 'Item Code') left += 240;
     }
   }
   
@@ -69,7 +69,7 @@ const getStickyBodyStyle = (colId: string, filteredCols: any[], rowBgColor: stri
     if (stickyIds.includes(c.id)) {
       if (c.id === 'Image') left += 80;
       else if (c.id === 'Name') left += 200;
-      else if (c.id === 'Item Code') left += 150;
+      else if (c.id === 'Item Code') left += 240;
     }
   }
   
@@ -335,15 +335,28 @@ const AccessoryListPage: React.FC = () => {
           <TableCell key={colId} sx={{
             py: 1.5, fontSize: 13, fontFamily: 'monospace',
             ...getStickyBodyStyle('Item Code', filteredCols, rowBgColor),
-            width: 150, minWidth: 150, maxWidth: 150
+            minWidth: 180, width: 220,
+            overflow: 'hidden'
           } as any}>
-            <Typography 
-              component="span" 
-              onClick={() => React.startTransition(() => navigate(`${BASE}/accessory/${item.id}`))}
-              sx={{ fontSize: 13, color: '#1a73e8', fontWeight: 500, cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
-            >
-              {item.itemCode || '—'}
-            </Typography>
+            <Tooltip title={item.itemCode || '—'} arrow placement="top">
+              <Typography 
+                component="div" 
+                onClick={() => React.startTransition(() => navigate(`${BASE}/accessory/${item.id}`))}
+                sx={{ 
+                  fontSize: 13, 
+                  color: '#1a73e8', 
+                  fontWeight: 500, 
+                  cursor: 'pointer', 
+                  wordBreak: 'break-word',
+                  overflowWrap: 'anywhere',
+                  lineHeight: 1.35,
+                  display: 'block',
+                  '&:hover': { textDecoration: 'underline' } 
+                }}
+              >
+                {item.itemCode || '—'}
+              </Typography>
+            </Tooltip>
           </TableCell>
         );
       case 'Supplier':
@@ -1009,7 +1022,7 @@ const AccessoryListPage: React.FC = () => {
                     const stickyStyle = getStickyHeaderStyle(col.id, filteredCols);
                     const widthStyle = col.id === 'Image' ? { width: 80, minWidth: 80, maxWidth: 80 }
                                      : col.id === 'Name' ? { width: 200, minWidth: 200, maxWidth: 200 }
-                                     : col.id === 'Item Code' ? { width: 150, minWidth: 150, maxWidth: 150 }
+                                     : col.id === 'Item Code' ? { width: 240, minWidth: 240, maxWidth: 240 }
                                      : {};
                     return (
                       <TableCell

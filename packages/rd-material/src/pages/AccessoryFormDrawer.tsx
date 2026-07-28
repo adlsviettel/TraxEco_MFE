@@ -165,10 +165,6 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
   const handleImageCapture = async (e: React.ChangeEvent<HTMLInputElement>, targetField: 'mainImage' | 'stickerImage') => {
     if (!e.target.files?.length) return;
     const files = Array.from(e.target.files);
-    
-    if (files.some(f => f.size > 5 * 1024 * 1024)) {
-      return setSnackbar({ open: true, message: t('rdMaterial.image_too_large', 'Image size > 5MB'), severity: 'warning' });
-    }
 
     if (targetField === 'mainImage') {
       setPendingMainImages(prev => [...prev, ...files]);
@@ -365,10 +361,6 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
     }
 
     if (files.length === 0) return;
-    
-    if (files.some(f => f.size > 5 * 1024 * 1024)) {
-      return setSnackbar({ open: true, message: t('rdMaterial.image_too_large', 'Image size > 5MB'), severity: 'warning' });
-    }
 
     // Open dialog to let user choose target
     setPastedFiles(files);

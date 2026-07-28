@@ -234,3 +234,19 @@ export function getAuditLogs(): Promise<ApiResponse<AuditLogDto[]>> {
 export function getDashboardStats(): Promise<ApiResponse<DashboardStatsDto>> {
   return request('/dashboard/stats');
 }
+
+// ─── ERP Stock Opname & Adjustment APIs ─────────────────────
+
+export function fetchErpStockOpname(category: string, targetDate?: string): Promise<ApiResponse<any[]>> {
+  const query = new URLSearchParams();
+  if (category) query.append('category', category);
+  if (targetDate) query.append('targetDate', targetDate);
+  return request(`/insw/erp/stock-opname?${query.toString()}`);
+}
+
+export function fetchErpAdjustment(targetDate?: string): Promise<ApiResponse<any[]>> {
+  const query = new URLSearchParams();
+  if (targetDate) query.append('targetDate', targetDate);
+  return request(`/insw/erp/adjustment?${query.toString()}`);
+}
+

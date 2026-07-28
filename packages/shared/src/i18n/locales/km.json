@@ -966,6 +966,7 @@
     "qtyLabel": "បរិមាណ:"
   },
   "rdMaterial": {
+    "textile_engineer_note": "មានតែ Textile Engineer ប៉ុណ្ណោះដែលដំណើរការផ្នែកនេះ",
     "dashboard": "ផ្ទាំងគ្រាប់គ្រង",
     "fabricHanger": "មាស់ដែលក្រើត",
     "accessory": "គ្រឿងបាញ់ណាក់",
@@ -1278,7 +1279,12 @@
     "addColumnFilter": "បន្ថែមតម្រងជួរឈរ",
     "selectColumn": "ជ្រើសរើសជួរឈរដើម្បីបន្ថែម",
     "selectAll": "ជ្រើសរើសទាំងអស់",
-    "noValuesMatch": "រកមិនឃើញតម្លៃដែលស្វែងរកទេ",
+    "noValuesMatch": "គ្មានតម្លៃត្រូវគ្នា",
+    "capacityFullTitle": "Capacity ពេញហើយ!",
+    "capacityFullMessage": "រោងចក្រនេះមិនមានកន្លែងទំនេរសម្រាប់ថ្ងៃនេះទេ។",
+    "capacityFullDesc": "តើ Request នេះ Urgent ទេ? បើ Urgent វានឹងចូលក្នុង Queue រង់ចាំ Admin អនុម័ត។",
+    "confirmUrgent": "បាទ/ចាស Urgent!",
+    "notUrgent": "ទេ បោះបង់ request",
     "notification": {
       "bellHeader": "ការជូនដំណឹង TCC",
       "markAllRead": "សម្គាល់ថាបានអានទាំងអស់",

@@ -1,4 +1,4 @@
-import React, { ReactNode, useMemo, useEffect, useState } from 'react';
+import React, { ReactNode, useMemo, useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
@@ -11,6 +11,27 @@ import {
 } from '@mui/icons-material';
 import { authService } from '../services/authService';
 import HeaderActions from './HeaderActions';
+
+// Memoized container that prevents page re-renders when only the route changes.
+// Without this, every AppShell re-render (triggered by useLocation) cascades
+// into re-rendering ALL mounted page components including hidden ones.
+const PageContainer = React.memo(({ isActive, children }: { isActive: boolean; children: ReactNode }) => (
+  <div style={{ 
+    display: 'flex', 
+    visibility: isActive ? 'visible' : 'hidden',
+    position: isActive ? 'relative' : 'absolute',
+    top: 0, left: 0, right: 0, bottom: 0,
+    zIndex: isActive ? 1 : -1,
+    flexDirection: 'column', 
+    width: '100%', 
+    height: '100%',
+    flex: 1, 
+    minHeight: 0,
+    overflow: 'hidden'
+  }}>
+    {children}
+  </div>
+));
 
 export interface NavItem {
   text: string;
@@ -68,6 +89,9 @@ export default function AppShell({
     const saved = localStorage.getItem(storageKey);
     return saved !== null ? saved === 'true' : true;
   });
+
+  // Track which pages have been mounted (visited at least once)
+  const mountedPagesRef = useRef<Set<string>>(new Set());
 
   const toggleDrawer = () => {
     setOpen(prev => {
@@ -270,10 +294,16 @@ export default function AppShell({
         <Box sx={{ width: '100%', flexGrow: 1, minHeight: 0, display: 'flex', flexDirection: 'column', position: 'relative' }} className="animate-slide-up">
           {pages.map(({ path, component }) => {
             const isActive = currentPath === path || currentPath.startsWith(path + '/');
+            // Lazy mount: track which pages have been visited
+            if (isActive && !mountedPagesRef.current.has(path)) {
+              mountedPagesRef.current.add(path);
+            }
+            // Only render pages that have been visited at least once
+            if (!mountedPagesRef.current.has(path)) return null;
             return (
-              <div key={path} style={{ display: isActive ? 'flex' : 'none', flexDirection: 'column', width: '100%', flex: 1, minHeight: 0 }}>
-                {component}
-              </div>
+              <PageContainer key={path} isActive={isActive}>
+                {React.isValidElement(component) ? React.cloneElement(component as React.ReactElement, { isActive }) : component}
+              </PageContainer>
             );
           })}
         </Box>

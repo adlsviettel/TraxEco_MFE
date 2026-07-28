@@ -346,9 +346,9 @@ const YardageDetailPage: React.FC = () => {
                           <InfoRow label="Composition" value={item.fabric?.composition} />
                           <InfoRow label="Weight (GSM)" value={item.fabric?.weightGsm ? `${item.fabric.weightGsm} gsm` : undefined} />
                           <InfoRow label="Cuttable Width" value={item.fabric?.cuttableWidth ? `${item.fabric.cuttableWidth} inch` : undefined} />
-                          <InfoRow label="Supplier" value={item.supplierName} />
                           <InfoRow label="Origin" value={item.origin} />
                           <InfoRow label="Function" value={item.fabric?.function} />
+                          <InfoRow label="Technology" value={item.fabric?.technology} />
                         </Box>
                       </Box>
 

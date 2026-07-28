@@ -132,9 +132,6 @@ export function useAdminRequests(
         if (data.factory && data.factory.length > 0) {
           setFactories(data.factory);
         }
-        if (data.templateType && data.templateType.length > 0) {
-          setTemplateTypes(data.templateType);
-        }
       } catch (error) {
         console.error('Failed to fetch metadata for filters', error);
       }

@@ -1,6 +1,19 @@
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 import type { Item } from '../types';
+import { saveFileWithPicker } from './fileSaveHelper';
+
+const saveFile = async (blob: Blob, defaultName: string) => {
+  const saved = await saveFileWithPicker(
+    blob,
+    defaultName,
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'xlsx'
+  );
+  if (!saved) {
+    saveAs(blob, defaultName);
+  }
+};
 
 const getTimestampString = (): string => {
   const now = new Date();
@@ -34,7 +47,8 @@ const formatMaterialInfo = (compStr?: string): string => {
 export const exportRdItemsToExcel = async (
   items: Item[],
   type: 'FABRIC' | 'ACCESSORY' | 'PRODUCT' | 'YARDAGE',
-  t: (key: string, defaultText: string) => string
+  t: (key: string, defaultText: string) => string,
+  fileHandle?: any
 ): Promise<void> => {
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet(`${type} List`);
@@ -201,7 +215,15 @@ export const exportRdItemsToExcel = async (
   const buffer = await workbook.xlsx.writeBuffer();
   const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
   const filePrefix = type === 'PRODUCT' ? 'Garment_Mockup' : type;
-  saveAs(blob, `${filePrefix}_List_${getTimestampString()}.xlsx`);
+  const fileName = `${filePrefix}_List_${getTimestampString()}.xlsx`;
+
+  if (fileHandle) {
+    const writable = await fileHandle.createWritable();
+    await writable.write(blob);
+    await writable.close();
+  } else {
+    await saveFile(blob, fileName);
+  }
 };
 
 export const exportScanLogsToExcel = async (
@@ -259,7 +281,7 @@ export const exportScanLogsToExcel = async (
 
   const buffer = await workbook.xlsx.writeBuffer();
   const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-  saveAs(blob, `ScanHistory_${getTimestampString()}.xlsx`);
+  await saveFile(blob, `ScanHistory_${getTimestampString()}.xlsx`);
 };
 
 export const exportFabricSubmissionToExcel = async (
@@ -326,6 +348,7 @@ export const exportFabricSubmissionToExcel = async (
     t('rdMaterial.fabricName', 'Fabric name'),
     t('rdMaterial.composition', 'Composition'),
     t('rdMaterial.function', 'Function'),
+    t('rdMaterial.technology', 'Technology'),
     t('rdMaterial.weight_gsm', 'Weight (GSM)'),
     t('rdMaterial.width', 'Cuttable width (inch)'),
     t('rdMaterial.supplier', 'Supplier'),
@@ -406,15 +429,16 @@ export const exportFabricSubmissionToExcel = async (
     row.getCell(4).value = item.fabric?.fabricName || '';
     row.getCell(5).value = item.fabric?.compositionDetail || item.fabric?.composition || '';
     row.getCell(6).value = item.fabric?.function || '';
-    row.getCell(7).value = item.fabric?.weightGsm !== undefined ? Number(item.fabric.weightGsm) : '';
-    row.getCell(8).value = item.fabric?.cuttableWidth !== undefined ? Number(item.fabric.cuttableWidth) : '';
-    row.getCell(9).value = item.supplierName || '';
-    row.getCell(10).value = item.origin || '';
-    row.getCell(11).value = priceValue;
-    row.getCell(12).value = moqMcqValue;
-    row.getCell(13).value = surchargeValue;
-    row.getCell(14).value = leadtimeWithGreigeValue;
-    row.getCell(15).value = leadtimeWithoutGreigeValue;
+    row.getCell(7).value = item.fabric?.technology || '';
+    row.getCell(8).value = item.fabric?.weightGsm !== undefined ? Number(item.fabric.weightGsm) : '';
+    row.getCell(9).value = item.fabric?.cuttableWidth !== undefined ? Number(item.fabric.cuttableWidth) : '';
+    row.getCell(10).value = item.supplierName || '';
+    row.getCell(11).value = item.origin || '';
+    row.getCell(12).value = priceValue;
+    row.getCell(13).value = moqMcqValue;
+    row.getCell(14).value = surchargeValue;
+    row.getCell(15).value = leadtimeWithGreigeValue;
+    row.getCell(16).value = leadtimeWithoutGreigeValue;
 
     row.eachCell((cell) => {
       cell.border = {
@@ -433,7 +457,7 @@ export const exportFabricSubmissionToExcel = async (
   const fileName = customer 
     ? `Fabric_Submission_${customer.replace(/[^a-zA-Z0-9]/g, '_')}_${getTimestampString()}.xlsx`
     : `Fabric_Submission_All_${getTimestampString()}.xlsx`;
-  saveAs(blob, fileName);
+  await saveFile(blob, fileName);
 };
 
 export const exportYardageInventoryToExcel = async (
@@ -550,6 +574,6 @@ export const exportYardageInventoryToExcel = async (
 
   const buffer = await workbook.xlsx.writeBuffer();
   const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-  saveAs(blob, `Yardage_Inventory_${getTimestampString()}.xlsx`);
+  await saveFile(blob, `Yardage_Inventory_${getTimestampString()}.xlsx`);
 };
 
