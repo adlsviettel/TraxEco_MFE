@@ -34,7 +34,7 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import { DatePicker } from '@mui/x-date-pickers';
 import { useTranslation } from 'react-i18next';
-import { tccService, type TccRequest, type CreateRequestPayload, type TccMachineTemplate, type TccLeadTimeConfig, type SmvConfigRule } from '../services/tccService';
+import { tccService, type TccRequest, type CreateRequestPayload, type TccMachineTemplate, type TccLeadTimeConfig, type SmvConfigRule, type OperationItem } from '../services/tccService';
 import { format, addDays, getDay } from 'date-fns';
 
 const CUSTOMERS = ['Adidas', 'Puma', 'NB', 'Swannies', 'Bomber', 'Rhone'];
@@ -77,6 +77,23 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
   const [smvConfigs, setSmvConfigs] = useState<SmvConfigRule[]>([]);
   const [matchedSmv, setMatchedSmv] = useState<SmvConfigRule | null>(null);
 
+  const [operationConfigs, setOperationConfigs] = useState<OperationItem[]>([]);
+  const [selectedOpGroup, setSelectedOpGroup] = useState<string>('');
+  const [selectedOpName, setSelectedOpName] = useState<string>('');
+  const [matchedOpItem, setMatchedOpItem] = useState<OperationItem | null>(null);
+
+  const operationGroups = useMemo(() => {
+    const groups = operationConfigs.map(o => o.group).filter(Boolean);
+    return Array.from(new Set(groups));
+  }, [operationConfigs]);
+
+  const availableOperationNames = useMemo(() => {
+    if (!selectedOpGroup) return [];
+    return operationConfigs
+      .filter(o => o.group === selectedOpGroup)
+      .map(o => o.name);
+  }, [selectedOpGroup, operationConfigs]);
+
   const commonOperationOptions = useMemo(() => {
     const ops = smvConfigs.map(c => c.commonOperation).filter(Boolean);
     return Array.from(new Set(ops));
@@ -111,6 +128,19 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
   };
 
   const [form, setForm] = useState<CreateRequestPayload>(initialFormState);
+
+  // Auto-match OperationItem based on selectedOpName & form.sampleStage
+  useEffect(() => {
+    if (selectedOpName && operationConfigs.length > 0) {
+      const op = operationConfigs.find(o => 
+        o.name === selectedOpName && 
+        (!o.stage || !form.sampleStage || o.stage.toLowerCase() === form.sampleStage.toLowerCase() || form.sampleStage.toLowerCase().includes(o.stage.toLowerCase()))
+      ) || operationConfigs.find(o => o.name === selectedOpName);
+      setMatchedOpItem(op || null);
+    } else {
+      setMatchedOpItem(null);
+    }
+  }, [selectedOpName, form.sampleStage, operationConfigs]);
 
   useEffect(() => {
     if (form.operationDescription && form.sampleStage && smvConfigs.length > 0) {
@@ -213,6 +243,14 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
             setSmvConfigs(smvRules);
           } catch (e) {
             console.error('Failed to load SMV rules', e);
+          }
+          try {
+            const opConfigs = await tccService.getOperationConfigs();
+            if (Array.isArray(opConfigs)) {
+              setOperationConfigs(opConfigs);
+            }
+          } catch (e) {
+            console.error('Failed to load operation configs', e);
           }
           const templates = await tccService.getMachineTemplates();
           if (Array.isArray(templates)) {
@@ -862,59 +900,100 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
                   <Divider />
                   <CardContent sx={{ pt: isMobile ? 2 : 3, px: isMobile ? 2 : 3, pb: isMobile ? 2 : 3 }}>
                     <Grid container spacing={isMobile ? 2 : 2.5}>
-                      <Grid size={{ xs: 12, sm: 12 }}>
-                        <Typography variant="caption" sx={{ display: 'block', mb: 1, color: '#475569', fontWeight: 600, fontSize: 12 }}>
-                          * Select common operation or type custom description:
-                        </Typography>
-                        <Autocomplete
-                          freeSolo
-                          options={commonOperationOptions}
-                          value={form.operationDescription || ''}
-                          onInputChange={(_, newValue) => handleChange('operationDescription', newValue || '')}
-                          onChange={(_, newValue) => handleChange('operationDescription', typeof newValue === 'string' ? newValue : (newValue || ''))}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              label={t('tcc.operationDescription')}
-                              required
-                              size="small"
-                              fullWidth
-                              placeholder="Select or enter operation..."
-                            />
-                          )}
-                        />
-                        {matchedSmv && (
-                          <Box sx={{ mt: 1.5, p: 1.5, bgcolor: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '8px', display: 'flex', flexDirection: 'column', gap: 1 }}>
+                      <Grid size={{ xs: 12, sm: 6 }}>
+                        <FormControl fullWidth required size="small">
+                          <InputLabel sx={{ fontSize: 13, '& .MuiFormLabel-asterisk': { color: '#dc2626' } }}>
+                            Group Công Đoạn *
+                          </InputLabel>
+                          <Select
+                            value={selectedOpGroup}
+                            label="Group Công Đoạn *"
+                            onChange={(e) => {
+                              const grp = e.target.value;
+                              setSelectedOpGroup(grp);
+                              setSelectedOpName('');
+                              handleChange('operationDescription', '');
+                            }}
+                            sx={{
+                              borderRadius: '8px', 
+                              height: 40, 
+                              fontSize: 13, 
+                              bgcolor: '#fff', 
+                              '& fieldset': { borderColor: '#bfc9c4' }, 
+                              '&:hover fieldset': { borderColor: '#2e7d32' }, 
+                              '&.Mui-focused fieldset': { borderColor: '#2e7d32' } 
+                            }}
+                          >
+                            {(operationGroups.length > 0 ? operationGroups : ['Polo', 'T-Shirt', 'Jacket', 'Pants', 'Shorts']).map((grp) => (
+                              <MenuItem key={grp} value={grp}>{grp}</MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </Grid>
+
+                      <Grid size={{ xs: 12, sm: 6 }}>
+                        <FormControl fullWidth required size="small" disabled={!selectedOpGroup}>
+                          <InputLabel sx={{ fontSize: 13, '& .MuiFormLabel-asterisk': { color: '#dc2626' } }}>
+                            Tên Công Đoạn *
+                          </InputLabel>
+                          <Select
+                            value={selectedOpName}
+                            label="Tên Công Đoạn *"
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              setSelectedOpName(val);
+                              handleChange('operationDescription', val);
+                            }}
+                            sx={{
+                              borderRadius: '8px', 
+                              height: 40, 
+                              fontSize: 13, 
+                              bgcolor: '#fff', 
+                              '& fieldset': { borderColor: '#bfc9c4' }, 
+                              '&:hover fieldset': { borderColor: '#2e7d32' }, 
+                              '&.Mui-focused fieldset': { borderColor: '#2e7d32' } 
+                            }}
+                          >
+                            {availableOperationNames.map((opName) => (
+                              <MenuItem key={opName} value={opName}>{opName}</MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </Grid>
+
+                      {(selectedOpName || matchedOpItem || matchedSmv) && (
+                        <Grid size={{ xs: 12 }}>
+                          <Box sx={{ p: 1.5, bgcolor: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '8px', display: 'flex', flexDirection: 'column', gap: 1 }}>
                             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 1 }}>
                               <Typography variant="caption" sx={{ fontWeight: 700, color: '#15803d', display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                                ⚡ Automatic SMV Matched:
+                                ⚡ Automatic SAM Matched ({form.sampleStage || 'Chưa chọn Stage'}):
                               </Typography>
                               <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', flexWrap: 'wrap' }}>
                                 <Chip
-                                  label={`Category: ${matchedSmv.templateCategory}`}
+                                  label={`Độ khó: ${matchedOpItem?.difficulty || matchedSmv?.templateCategory || 'Medium'}`}
                                   size="small"
                                   sx={{
                                     fontWeight: 700,
                                     fontSize: 11,
-                                    bgcolor: matchedSmv.templateCategory === 'Easy' ? '#dcfce7' : matchedSmv.templateCategory === 'Medium' ? '#fef9c3' : '#fee2e2',
-                                    color: matchedSmv.templateCategory === 'Easy' ? '#15803d' : matchedSmv.templateCategory === 'Medium' ? '#a16207' : '#b91c1c'
+                                    bgcolor: (matchedOpItem?.difficulty || matchedSmv?.templateCategory) === 'Easy' ? '#dcfce7' : (matchedOpItem?.difficulty || matchedSmv?.templateCategory) === 'Medium' ? '#fef9c3' : '#fee2e2',
+                                    color: (matchedOpItem?.difficulty || matchedSmv?.templateCategory) === 'Easy' ? '#15803d' : (matchedOpItem?.difficulty || matchedSmv?.templateCategory) === 'Medium' ? '#a16207' : '#b91c1c'
                                   }}
                                 />
                                 <Chip
-                                  label={`Base SAM: ${matchedSmv.sam} min`}
+                                  label={`Base SAM: ${matchedOpItem?.sam !== undefined && matchedOpItem?.sam !== null ? matchedOpItem.sam : (matchedSmv?.sam ? Number(matchedSmv.sam) : 0)} min`}
                                   size="small"
                                   sx={{ fontWeight: 700, fontSize: 11, bgcolor: '#e0f2fe', color: '#0369a1' }}
                                 />
                                 <Chip
-                                  label={`Total SAM: ${Number(matchedSmv.sam) * Number(form.templateQty || 1)} min`}
+                                  label={`Total SAM: ${(matchedOpItem?.sam !== undefined && matchedOpItem?.sam !== null ? matchedOpItem.sam : (matchedSmv?.sam ? Number(matchedSmv.sam) : 0)) * Number(form.templateQty || 1)} min`}
                                   size="small"
                                   sx={{ fontWeight: 800, fontSize: 11, bgcolor: '#15803d', color: '#fff' }}
                                 />
                               </Box>
                             </Box>
                           </Box>
-                        )}
-                      </Grid>
+                        </Grid>
+                      )}
 
                       <Grid size={{ xs: 12, sm: 6 }}>
                         <FormControl fullWidth required size="small" disabled={!form.factory}>
@@ -1160,29 +1239,29 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
         PaperProps={{ sx: { borderRadius: 3, p: 1 } }}
       >
         <DialogTitle sx={{ fontWeight: 'bold', pb: 1, color: '#dc2626' }}>
-          {t('tcc.urgentConfirmTitle', 'Capacity Full')}
+          {t('tcc.urgentConfirmTitle', '⚠️ Thông báo: Capacity Đã Vượt Ngưỡng (Over Capacity)')}
         </DialogTitle>
         <DialogContent>
           <Typography variant="body2" color="text.secondary">
-            {t('tcc.urgentConfirmMessage', 'The requested factory capacity for this delivery date is full. Do you want to submit this request as URGENT? It will be placed in the queue for approval.')}
+            {t('tcc.urgentConfirmMessage', 'Capacity của xưởng vào ngày giao yêu cầu này đã đầy (Over capacity). Bạn có muốn đánh dấu Yêu cầu KHẨN CẤP (Urgent) để đưa vào Queue cho TCC xem xét duyệt không?')}
           </Typography>
         </DialogContent>
-        <DialogActions sx={{ px: 3, pb: 2, display: 'flex', gap: 1 }}>
+        <DialogActions sx={{ px: 3, pb: 2, display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
           <Button
-            variant="text"
+            variant="outlined"
             color="inherit"
             onClick={handleUrgentCancel}
-            sx={{ fontWeight: 'bold', textTransform: 'none' }}
+            sx={{ fontWeight: 'bold', textTransform: 'none', borderRadius: 2 }}
           >
-            {t('tcc.no', 'No')}
+            {t('tcc.no', 'Không (Hủy đơn)')}
           </Button>
           <Button
             variant="contained"
             color="error"
             onClick={handleUrgentConfirm}
-            sx={{ fontWeight: 'bold', textTransform: 'none' }}
+            sx={{ fontWeight: 'bold', textTransform: 'none', borderRadius: 2 }}
           >
-            {t('tcc.yesUrgent', 'Yes, Submit as Urgent')}
+            {t('tcc.yesUrgent', 'Có (Gửi Khẩn Cấp vào Queue)')}
           </Button>
         </DialogActions>
       </Dialog>
