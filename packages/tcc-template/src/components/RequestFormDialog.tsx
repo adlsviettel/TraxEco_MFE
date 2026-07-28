@@ -81,6 +81,14 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
   const [selectedOpGroup, setSelectedOpGroup] = useState<string>('');
   const [selectedOpName, setSelectedOpName] = useState<string>('');
   const [matchedOpItem, setMatchedOpItem] = useState<OperationItem | null>(null);
+  const [groupCapacityInfo, setGroupCapacityInfo] = useState<{
+    groupName: string;
+    factories: string[];
+    maxDailySmv: number;
+    usedSmv: number;
+    availableSmv: number;
+    requestedSmv: number;
+  } | null>(null);
 
   const operationGroups = useMemo(() => {
     const groups = operationConfigs.map(o => o.group).filter(Boolean);
@@ -427,27 +435,34 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
     setConfirmOpen(false);
     setPendingShouldSave(shouldSave);
 
-    // Pre-check capacity before creating request
+    // Pre-check Capacity Group SAM before creating request
     if (form.factory && form.expectedDeliveryDate && !form.isPriority) {
       try {
         const dateStr = format(new Date(form.expectedDeliveryDate), 'yyyy-MM-dd');
-        const usage = await tccService.getFactoryCapacityUsage(form.factory, dateStr);
+        const groupCap = await tccService.getGroupCapacityUsage(form.factory, dateStr);
 
-        console.log('[Capacity Check]', { factory: form.factory, date: dateStr, usage });
+        const activeBaseSam = matchedOpItem?.sam !== undefined && matchedOpItem?.sam !== null 
+          ? matchedOpItem.sam 
+          : (matchedSmv?.sam ? Number(matchedSmv.sam) : 0);
+        const activeTotalSam = activeBaseSam * Number(form.templateQty || 1);
 
-        const used = usage?.used ?? usage?.currentUsage ?? 0;
-        const max = usage?.max ?? usage?.maxCapacity ?? 0;
-        const available = usage?.available ?? (max > 0 ? max - used : 999);
+        console.log('[Group Capacity Check]', { factory: form.factory, date: dateStr, groupCap, activeTotalSam });
 
-        console.log('[Capacity Calc]', { used, max, available });
+        const max = groupCap.maxDailySmv;
+        const available = groupCap.availableSmv;
 
-        if (max > 0 && available <= 0) {
+        setGroupCapacityInfo({
+          ...groupCap,
+          requestedSmv: activeTotalSam
+        });
+
+        if (max > 0 && (available <= 0 || (activeTotalSam > 0 && available < activeTotalSam))) {
           // Capacity full → show urgent popup, do NOT create request yet
           setUrgentConfirmOpen(true);
           return;
         }
       } catch (err) {
-        console.warn('Capacity check failed, proceeding with request:', err);
+        console.warn('Group Capacity check failed, proceeding with request:', err);
       }
     }
 
@@ -1242,8 +1257,25 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
           {t('tcc.urgentConfirmTitle', '⚠️ Thông báo: Capacity Đã Vượt Ngưỡng (Over Capacity)')}
         </DialogTitle>
         <DialogContent>
-          <Typography variant="body2" color="text.secondary">
-            {t('tcc.urgentConfirmMessage', 'Capacity của xưởng vào ngày giao yêu cầu này đã đầy (Over capacity). Bạn có muốn đánh dấu Yêu cầu KHẨN CẤP (Urgent) để đưa vào Queue cho TCC xem xét duyệt không?')}
+          <Typography variant="body2" color="text.secondary" component="div" sx={{ lineHeight: 1.6 }}>
+            {groupCapacityInfo ? (
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                <Typography variant="body2" color="error.main" sx={{ fontWeight: 700 }}>
+                  Dung lượng Capacity của Group "{groupCapacityInfo.groupName}" vào ngày {form.expectedDeliveryDate ? format(new Date(form.expectedDeliveryDate), 'dd/MM/yyyy') : ''} đã vượt quá giới hạn:
+                </Typography>
+                <Box sx={{ bgcolor: '#fef2f2', p: 1.5, borderRadius: 2, border: '1px solid #fecaca', fontSize: 13 }}>
+                  <div>• Các xưởng trong Group: <strong>{groupCapacityInfo.factories.join(', ')}</strong></div>
+                  <div>• Tối đa Group: <strong>{groupCapacityInfo.maxDailySmv} phút (SAM)</strong></div>
+                  <div>• Đã dùng: <strong>{groupCapacityInfo.usedSmv} phút (SAM)</strong></div>
+                  <div>• Yêu cầu đơn này: <strong>{groupCapacityInfo.requestedSmv} phút (SAM)</strong></div>
+                </Box>
+                <Typography variant="body2" color="text.primary" sx={{ mt: 0.5 }}>
+                  Bạn có muốn đánh dấu Yêu cầu <strong>KHẨN CẤP (Urgent)</strong> để đưa vào Queue cho TCC xem xét duyệt không?
+                </Typography>
+              </Box>
+            ) : (
+              t('tcc.urgentConfirmMessage', 'Capacity của xưởng vào ngày giao yêu cầu này đã đầy (Over capacity). Bạn có muốn đánh dấu Yêu cầu KHẨN CẤP (Urgent) để đưa vào Queue cho TCC xem xét duyệt không?')
+            )}
           </Typography>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2, display: 'flex', gap: 1, justifyContent: 'flex-end' }}>

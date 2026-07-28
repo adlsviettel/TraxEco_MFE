@@ -530,6 +530,48 @@ export const tccService = {
     if (!res.ok) throw new Error('API error: ' + res.status);
     return res.json();
   },
+  getGroupCapacityUsage: async (factory: string, date: string): Promise<{
+    groupName: string;
+    factories: string[];
+    maxDailySmv: number;
+    usedSmv: number;
+    availableSmv: number;
+  }> => {
+    let groups: any[] = [];
+    try {
+      groups = await tccService.getCapacityGroups();
+    } catch (e) {
+      console.warn('Could not fetch capacity groups', e);
+    }
+    const matchedGroup = groups.find((g: any) => 
+      Array.isArray(g.factories) && g.factories.some((f: string) => f.toLowerCase() === factory.toLowerCase())
+    );
+
+    const groupFactories: string[] = matchedGroup?.factories && matchedGroup.factories.length > 0 
+      ? matchedGroup.factories 
+      : [factory];
+    const maxDailySmv = Number(matchedGroup?.maxDailySmv ?? matchedGroup?.maxDailyRequests ?? 0);
+
+    let totalUsedSmv = 0;
+    for (const f of groupFactories) {
+      try {
+        const usage = await tccService.getFactoryCapacityUsage(f, date);
+        const factoryUsed = Number(usage?.usedSmv ?? usage?.used ?? usage?.currentUsage ?? 0);
+        totalUsedSmv += factoryUsed;
+      } catch (e) {
+        console.warn(`Failed capacity usage fetch for factory ${f}`, e);
+      }
+    }
+
+    const availableSmv = maxDailySmv > 0 ? Math.max(0, maxDailySmv - totalUsedSmv) : 999999;
+    return {
+      groupName: matchedGroup?.groupName || factory,
+      factories: groupFactories,
+      maxDailySmv,
+      usedSmv: totalUsedSmv,
+      availableSmv
+    };
+  },
 
   // Queue Management
   getQueuedRequests: async (): Promise<any[]> => {
