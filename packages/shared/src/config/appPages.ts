@@ -89,5 +89,9 @@ export const EXTRA_PAGES: PageDef[] = [
   { code: 'clinic_maternity', label: 'Thai sản', appCode: 'CLINIC' },
   { code: 'clinic_report', label: 'Báo cáo', appCode: 'CLINIC' },
   { code: 'clinic_master_data', label: 'Danh mục', appCode: 'CLINIC' },
-  { code: 'clinic_admin', label: 'Admin', appCode: 'CLINIC' }
+  { code: 'clinic_admin', label: 'Admin', appCode: 'CLINIC' },
+  // COO
+  { code: 'coo_dashboard', label: 'Dashboard', appCode: 'COO' },
+  { code: 'coo_import', label: 'Data Sync', appCode: 'COO' },
+  { code: 'coo_admin', label: 'Admin', appCode: 'COO' }
 ];

@@ -47,7 +47,7 @@ export default function Adjustment() {
             kdBarang: '70005507-58',
             uraianBarang: 'VẢI THUN 100% RECYCLE POLYESTER KHỔ 58"',
             jumlah: 38,
-            kdSatuan: 'YDS',
+            kdSatuan: 'YRD',
             nilai: 190000,
             kho: 'F2-FB-REP',
             statusPush: 'idle'
@@ -61,7 +61,7 @@ export default function Adjustment() {
             kdBarang: '62584799-60',
             uraianBarang: 'VẢI THUN 100% RECYCLE POLYESTER KHỔ 60"',
             jumlah: -12.5,
-            kdSatuan: 'YDS',
+            kdSatuan: 'YRD',
             nilai: 37500,
             kho: 'SF2-FB-BK',
             statusPush: 'idle'

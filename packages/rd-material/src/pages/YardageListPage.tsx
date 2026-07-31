@@ -6,7 +6,7 @@ import {
   TableHead, TableRow, TextField, Tooltip, Typography,
   Menu, Checkbox, Divider, useTheme, useMediaQuery, Autocomplete,
   Dialog, DialogTitle, DialogContent, DialogActions, Button, Snackbar, Alert,
-  Chip
+  Chip, Pagination
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import ViewWeekIcon from '@mui/icons-material/ViewWeek';
@@ -224,6 +224,14 @@ const YardageListPage: React.FC = () => {
     }
     return result;
   }, [items, columnFilters, sortConfig, getFieldValueForFilter]);
+
+  const pagedItems = useMemo(() => {
+    return filteredItems.slice(page * rowsPerPage, (page + 1) * rowsPerPage);
+  }, [filteredItems, page, rowsPerPage]);
+
+  useEffect(() => {
+    setPage(0);
+  }, [columnFilters, keyword, parentId, itemCode, supplierName, color, origin, location, holder]);
 
   columnFilterStore.register(window.location.pathname, columnFilters, setColumnFilters, items);
 
@@ -472,29 +480,29 @@ const YardageListPage: React.FC = () => {
         origin: origin.join(','), 
         location: location.join(','), 
         holder: holder.join(','), 
-        page, 
-        size: rowsPerPage 
+        page: 0, 
+        size: 10000 
       });
       setItems(data.content ?? []);
-      setTotal(data.totalElements ?? 0);
+      setTotal(data.content ? data.content.length : 0);
     } catch (err: unknown) {
       console.error('GET /rd-items error:', err);
       if (!silent) setItems([]);
     } finally {
       if (!silent) setLoading(false);
     }
-  }, [keyword, parentId, itemCode, supplierName, color, origin, location, holder, page, rowsPerPage, hasSearched, items.length]);
+  }, [keyword, parentId, itemCode, supplierName, color, origin, location, holder, hasSearched]);
 
   const currentParamsRef = useRef('');
 
   useEffect(() => { 
-    const currentParams = JSON.stringify({ keyword, parentId, itemCode, supplierName, color, origin, location, holder, page, rowsPerPage, hasSearched });
+    const currentParams = JSON.stringify({ keyword, parentId, itemCode, supplierName, color, origin, location, holder, hasSearched });
     if (currentParams === currentParamsRef.current && items.length > 0) {
       return;
     }
     currentParamsRef.current = currentParams;
     load(); 
-  }, [load, keyword, parentId, itemCode, supplierName, color, origin, location, holder, page, rowsPerPage, hasSearched, items.length]);
+  }, [load, keyword, parentId, itemCode, supplierName, color, origin, location, holder, hasSearched, items.length]);
 
   useEffect(() => {
     if (stateParentId !== undefined) {
@@ -893,7 +901,7 @@ const YardageListPage: React.FC = () => {
                 </Typography>
               </Box>
             ) : (
-              filteredItems.map((item) => {
+              pagedItems.map((item) => {
                 const rightActions = [];
                 if (canEdit) {
                   rightActions.push({
@@ -1158,7 +1166,7 @@ const YardageListPage: React.FC = () => {
                     </Box>
                   </TableCell></TableRow>
                 ) : (
-                  filteredItems.map((item) => {
+                  pagedItems.map((item) => {
                     const rowBgColor = (item.quantity ?? 0) <= 0 ? '#fef2f2' : '#fff';
                     return (
                       <TableRow 
@@ -1183,6 +1191,45 @@ const YardageListPage: React.FC = () => {
             </Table>
           </TableContainer>
         )}
+
+        {/* Table Footer / Pagination */}
+        <Box sx={{ 
+          borderTop: '1px solid #e1e3e4', 
+          px: { xs: 1, sm: 3 }, 
+          py: 1, 
+          bgcolor: '#fff', 
+          display: 'flex', 
+          flexDirection: 'row',
+          alignItems: 'center', 
+          gap: { xs: 0.5, sm: 2 },
+          justifyContent: 'space-between', 
+          flexShrink: 0 
+        }}>
+          <Typography variant="body2" color="#3f4945" fontWeight={500} fontSize={{ xs: 11, sm: 13 }} sx={{ whiteSpace: 'nowrap', flexShrink: 0 }}>
+            {isMobile ? `Total: ${filteredItems.length}` : `Showing ${filteredItems.length === 0 ? 0 : page * rowsPerPage + 1} - ${Math.min((page + 1) * rowsPerPage, filteredItems.length)} of ${filteredItems.length}`}
+          </Typography>
+          <Pagination
+            count={Math.ceil(filteredItems.length / rowsPerPage) || 1}
+            page={page + 1}
+            onChange={(_, p) => { setPage(p - 1); }}
+            color="primary" 
+            shape="rounded"
+            size={isMobile ? 'small' : 'medium'}
+            siblingCount={0}
+            boundaryCount={1}
+            sx={{ 
+              flexShrink: 1,
+              '& .MuiPaginationItem-root': { 
+                color: '#3f4945', 
+                fontSize: isMobile ? 11 : 14,
+                height: isMobile ? 24 : 32,
+                minWidth: isMobile ? 24 : 32,
+                borderRadius: '6px'
+              },
+              '& .Mui-selected': { bgcolor: '#2e7d32 !important', color: '#fff' }
+            }}
+          />
+        </Box>
       </Paper>
 
       <GenericItemFormDrawer

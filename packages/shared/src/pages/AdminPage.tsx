@@ -44,7 +44,8 @@ const APP_ADMIN_PAGES: Record<string, string> = {
   RD_MATERIAL: 'rd_admin',
   TCC_TEMPLATE: 'tcc_admin',
   F2S_DELIVERY: 'f2s_admin',
-  IT_INVENTORY: 'it_admin'
+  IT_INVENTORY: 'it_admin',
+  COO: 'coo_admin'
 };
 
 const THEME_COLORS = {
@@ -54,6 +55,7 @@ const THEME_COLORS = {
   RD_MATERIAL: { main: '#3ba55c', dark: '#2e7d32', light: '#e8f5e9' },
   F2S_DELIVERY: { main: '#2e7d32', dark: '#1b5e20', light: '#e8f5e9' },
   F2S: { main: '#2e7d32', dark: '#1b5e20', light: '#e8f5e9' },
+  COO: { main: '#3ba55c', dark: '#2e7d32', light: '#e8f5e9' },
 };
 
 export default function AdminPage() {

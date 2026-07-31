@@ -38,6 +38,7 @@ export interface ParsedHeader {
   nomorPendaftaran: string;
   tanggalPendaftaran: string;
   penerimaBarang: string;
+  pengirimBarang?: string;
   jenisTransaksi: string;
 }
 

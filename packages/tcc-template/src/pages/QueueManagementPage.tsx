@@ -29,7 +29,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { useWebSocket } from '../hooks/useWebSocket';
 import { useTranslation } from 'react-i18next';
 
-import { tccService, TccRequest } from '../services/tccService';
+import { tccService, isQueuedRequest, TccRequest } from '../services/tccService';
 import { useSnackbar } from '../hooks/useSnackbar';
 import { AdvancedFilterDrawer, AppTextField, AppButton } from '@traxeco/shared';
 
@@ -47,16 +47,17 @@ const GRID_SX = {
 };
 
 const RejectDialog = ({ open, onClose, onSubmit }: any) => {
+  const { t } = useTranslation();
   const [remarks, setRemarks] = React.useState('');
   React.useEffect(() => {
     if (open) setRemarks('');
   }, [open]);
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>Reject Request</DialogTitle>
+      <DialogTitle>{t('tcc.rejectTitle', 'Từ Chối Yêu Cầu Queue')}</DialogTitle>
       <DialogContent>
         <Box mt={2} display="flex" flexDirection="column" gap={0.5}>
-          <Typography variant="body2" mb={1}>Please provide a reason for rejecting this request. This will be shown to the user.</Typography>
+          <Typography variant="body2" mb={1}>{t('tcc.rejectReasonDesc', 'Vui lòng cung cấp lý do từ chối yêu cầu này.')}</Typography>
           <textarea
             rows={4}
             value={remarks}
@@ -74,14 +75,14 @@ const RejectDialog = ({ open, onClose, onSubmit }: any) => {
             }}
             onFocus={(e) => e.target.style.borderColor = '#1976d2'}
             onBlur={(e) => e.target.style.borderColor = '#c4c4c4'}
-            placeholder="Reject Reason"
+            placeholder={t('tcc.deleteReasonPlaceholder', 'Nhập lý do...')}
           />
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
+        <Button onClick={onClose}>{t('common.cancel', 'Hủy')}</Button>
         <Button onClick={() => onSubmit(remarks)} variant="contained" color="error" disabled={!remarks.trim()}>
-          Confirm Reject
+          {t('tcc.reject', 'Từ chối')}
         </Button>
       </DialogActions>
     </Dialog>
@@ -89,6 +90,7 @@ const RejectDialog = ({ open, onClose, onSubmit }: any) => {
 };
 
 const RescheduleDialog = ({ open, onClose, onSubmit, selectedReq }: any) => {
+  const { t } = useTranslation();
   const [newDate, setNewDate] = React.useState<Date | null>(null);
   const [remarks, setRemarks] = React.useState('');
   const [checkingCapacity, setCheckingCapacity] = React.useState(false);
@@ -121,19 +123,19 @@ const RescheduleDialog = ({ open, onClose, onSubmit, selectedReq }: any) => {
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>Reschedule Request</DialogTitle>
+      <DialogTitle>{t('tcc.rescheduleTitle', 'Xếp Lại Lịch Sản Xuất')}</DialogTitle>
       <DialogContent>
         <Box mt={2}>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DatePicker
-              label="New Request Delivery Date"
+              label={t('tcc.newTargetDate', 'Ngày hoàn thành mới dự kiến')}
               value={newDate}
               onChange={(v) => setNewDate(v)}
               slotProps={{ textField: { fullWidth: true } }}
             />
           </LocalizationProvider>
           <Box mt={3} display="flex" flexDirection="column" gap={0.5}>
-            <Typography variant="caption" color="textSecondary" sx={{ ml: 0.5, fontWeight: 500 }}>Remarks (Reason for reschedule)</Typography>
+            <Typography variant="caption" color="textSecondary" sx={{ ml: 0.5, fontWeight: 500 }}>{t('tcc.remarks', 'Ghi chú')} ({t('tcc.priorityReason', 'Lý do xếp lại lịch')})</Typography>
             <textarea
               rows={3}
               value={remarks}
@@ -151,27 +153,27 @@ const RescheduleDialog = ({ open, onClose, onSubmit, selectedReq }: any) => {
               }}
               onFocus={(e) => e.target.style.borderColor = '#1976d2'}
               onBlur={(e) => e.target.style.borderColor = '#c4c4c4'}
-              placeholder="Enter remarks..."
+              placeholder={t('tcc.deleteReasonPlaceholder', 'Nhập ghi chú...')}
             />
           </Box>
           {checkingCapacity ? (
             <Box mt={2} display="flex" alignItems="center" gap={1}>
-              <CircularProgress size={16} /> <Typography variant="caption">Checking capacity...</Typography>
+              <CircularProgress size={16} /> <Typography variant="caption">{t('common.processing', 'Đang kiểm tra công suất...')}</Typography>
             </Box>
           ) : capacityInfo ? (
             <Box mt={2} p={2} bgcolor={capacityInfo.max > 0 && capacityInfo.available === 0 ? 'error.light' : 'success.light'} borderRadius={1}>
               <Typography variant="body2" color={capacityInfo.max > 0 && capacityInfo.available === 0 ? 'error.contrastText' : 'success.contrastText'}>
-                Capacity on Request Delivery Date ({newDate ? format(newDate, 'dd/MM/yyyy') : ''}): {capacityInfo.used} / {capacityInfo.max === -1 ? 'Unlimited' : capacityInfo.max} requests
-                {capacityInfo.max > 0 && capacityInfo.available === 0 && ' (Factory Full)'}
+                {t('tcc.capacityInfoText', 'Công suất ngày')} ({newDate ? format(newDate, 'dd/MM/yyyy') : ''}): {capacityInfo.used} / {capacityInfo.max === -1 ? t('tcc.unlimited', 'Không giới hạn') : capacityInfo.max} requests
+                {capacityInfo.max > 0 && capacityInfo.available === 0 && ` (${t('tcc.factoryFull', 'Nhà máy đầy')})`}
               </Typography>
             </Box>
           ) : null}
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
+        <Button onClick={onClose}>{t('common.cancel', 'Hủy')}</Button>
         <Button onClick={() => onSubmit(newDate, remarks)} variant="contained" disabled={checkingCapacity || !newDate}>
-          Confirm & Approve
+          {t('tcc.approve', 'Xác nhận & Duyệt')}
         </Button>
       </DialogActions>
     </Dialog>
@@ -259,6 +261,9 @@ export default function QueueManagementPage({ isActive = true }: any) {
         return false;
       }
       
+      // Only show queued requests
+      if (!isQueuedRequest(req)) return false;
+
       // Advanced Filters
       if (filters.customer && req.customer !== filters.customer) return false;
       if (filters.factory && req.factory !== filters.factory) return false;
@@ -379,18 +384,25 @@ export default function QueueManagementPage({ isActive = true }: any) {
     {
       field: 'queueStatus',
       headerName: 'Queue Status',
-      width: 120,
+      width: 130,
+      valueGetter: (value: any, row: any) => {
+        if (isQueuedRequest(row)) return 'InQueue';
+        if (value) return value;
+        return 'InQueue';
+      },
       renderCell: (params: GridRenderCellParams) => {
-        if (!params.value) return '—';
-        const isPending = params.value === 'Pending';
-        const color = isPending ? 'warning' : params.value === 'Approved' ? 'success' : 'error';
+        const val = params.value || 'InQueue';
+        const isPending = val === 'InQueue' || val === 'Pending';
+        const label = isPending ? 'InQueue' : val;
+        const color = isPending ? 'warning' : val === 'Approved' ? 'success' : 'error';
         return (
           <Chip 
-            label={params.value} 
+            label={label} 
             color={color as any} 
             size="small" 
             sx={{ 
-              fontWeight: 600,
+              fontWeight: 700,
+              fontSize: 11,
               ...(isPending && {
                 animation: 'pulsePending 2s infinite',
                 '@keyframes pulsePending': {
@@ -410,9 +422,13 @@ export default function QueueManagementPage({ isActive = true }: any) {
       field: 'status',
       headerName: 'Status (Auto)',
       width: 140,
+      valueGetter: (value: any, row: any) => {
+        if (isQueuedRequest(row)) return 'Pending';
+        return value || 'Pending';
+      },
       renderCell: (params: GridRenderCellParams) => {
-        const displayStatus = params.value || 'Not Started';
-        return <Chip label={displayStatus} size="small" sx={{ fontWeight: 600 }} />;
+        const displayStatus = params.value || 'Pending';
+        return <Chip label={displayStatus} color="warning" size="small" sx={{ fontWeight: 700, fontSize: 11 }} />;
       }
     },
     { field: 'releasedDate', headerName: 'Released Date (TCC)', width: 160, renderCell: (params: GridRenderCellParams) => formatDate(params.value) },

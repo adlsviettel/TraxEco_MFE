@@ -300,6 +300,14 @@ const ProductListPage: React.FC = () => {
     return result;
   }, [items, columnFilters, sortConfig, getFieldValueForFilter]);
 
+  const pagedItems = useMemo(() => {
+    return filteredItems.slice(page * rowsPerPage, (page + 1) * rowsPerPage);
+  }, [filteredItems, page, rowsPerPage]);
+
+  useEffect(() => {
+    setPage(0);
+  }, [columnFilters, keyword, categoryFilter, garmentCategory, sportCategory, styleNo, sampleStage]);
+
   columnFilterStore.register(window.location.pathname, columnFilters, setColumnFilters, items);
 
   const columns = [
@@ -589,11 +597,11 @@ const ProductListPage: React.FC = () => {
         sportCategory: sportCategory.join(','),
         styleNo: styleNo.join(','),
         sampleStage: sampleStage.join(','),
-        page, 
-        size: rowsPerPage 
+        page: 0, 
+        size: 10000 
       });
       setItems(data.content ?? []);
-      setTotal(data.totalElements ?? 0);
+      setTotal(data.content ? data.content.length : 0);
       setSelectedIds([]);
     } catch (err: unknown) {
       console.error('GET /rd-items error:', err);
@@ -601,7 +609,7 @@ const ProductListPage: React.FC = () => {
     } finally {
       if (!silent) setLoading(false);
     }
-  }, [keyword, garmentCategory, sportCategory, styleNo, sampleStage, categoryFilter, page, rowsPerPage, hasSearched]);
+  }, [keyword, garmentCategory, sportCategory, styleNo, sampleStage, categoryFilter, hasSearched]);
 
   const currentParamsRef = useRef('');
 
@@ -620,13 +628,13 @@ const ProductListPage: React.FC = () => {
   }, []);
 
   useEffect(() => { 
-    const currentParams = JSON.stringify({ keyword, garmentCategory, sportCategory, styleNo, sampleStage, categoryFilter, page, rowsPerPage, hasSearched });
+    const currentParams = JSON.stringify({ keyword, garmentCategory, sportCategory, styleNo, sampleStage, categoryFilter, hasSearched });
     if (currentParams === currentParamsRef.current && items.length > 0) {
       return;
     }
     currentParamsRef.current = currentParams;
     load(); 
-  }, [load, keyword, garmentCategory, sportCategory, styleNo, sampleStage, categoryFilter, page, rowsPerPage, hasSearched, items.length]);
+  }, [load, keyword, garmentCategory, sportCategory, styleNo, sampleStage, categoryFilter, hasSearched, items.length]);
 
   const handleDelete = (id: number) => {
     setDeleteId(id);
@@ -1962,7 +1970,7 @@ const ProductListPage: React.FC = () => {
                       </Typography>
                     </Box>
                   </TableCell></TableRow>
-                ) : filteredItems.map((item) => {
+                ) : pagedItems.map((item) => {
                   const rowBgColor = '#fff';
                   return (
                     <TableRow
@@ -2000,10 +2008,10 @@ const ProductListPage: React.FC = () => {
           flexShrink: 0 
         }}>
           <Typography variant="body2" color="#3f4945" fontWeight={500} fontSize={{ xs: 11, sm: 13 }} sx={{ whiteSpace: 'nowrap', flexShrink: 0 }}>
-            {isMobile ? `Total: ${total}` : `Showing ${page * rowsPerPage + 1} - ${Math.min((page + 1) * rowsPerPage, total)} of ${total}`}
+            {isMobile ? `Total: ${filteredItems.length}` : `Showing ${filteredItems.length === 0 ? 0 : page * rowsPerPage + 1} - ${Math.min((page + 1) * rowsPerPage, filteredItems.length)} of ${filteredItems.length}`}
           </Typography>
           <Pagination
-            count={Math.ceil(total / rowsPerPage) || 1}
+            count={Math.ceil(filteredItems.length / rowsPerPage) || 1}
             page={page + 1}
             onChange={(_, p) => { setPage(p - 1); }}
             color="primary" 

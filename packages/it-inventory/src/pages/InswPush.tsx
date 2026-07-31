@@ -237,7 +237,7 @@ export default function InswPush() {
         <div className="modal-overlay" onClick={() => setViewResponse(null)}>
           <div className="modal" onClick={e => e.stopPropagation()} style={{ maxWidth: 680 }}>
             <div className="modal-header">
-              <h3>{t('inswPush.responseDetail')}</h3>
+              <h3>{t('inswPush.responseDetail', 'Chi Tiết Phản Hồi Push')}</h3>
               <button className="icon-btn" onClick={() => setViewResponse(null)}><X size={20} /></button>
             </div>
             <div style={{ padding: 20 }}>
@@ -262,10 +262,10 @@ export default function InswPush() {
                       isAlreadySent ? (
                         <><CheckCircle size={18} /> {t('inswPush.alreadySent', 'Data already sent to INSW')}</>
                       ) : (
-                        <><CheckCircle size={18} /> {t('inswPush.pushSuccessful')}</>
+                        <><CheckCircle size={18} /> {t('inswPush.pushSuccessful', 'Đẩy Thành Công')}</>
                       )
                     ) : (
-                      <><XCircle size={18} /> {t('inswPush.pushFailed')}</>
+                      <><XCircle size={18} /> {t('inswPush.pushFailed', 'Đẩy Thất Bại')}</>
                     )}
                   </div>
                 );
@@ -280,45 +280,49 @@ export default function InswPush() {
                 fontSize: 13,
               }}>
                 <div>
-                  <span style={{ color: 'var(--text-muted)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{t('inswPush.pushId')}</span>
+                  <span style={{ color: 'var(--text-muted)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{t('inswPush.pushId', 'Push ID')}</span>
                   <p style={{ margin: '2px 0', fontWeight: 500 }}>#{viewResponse.pushId}</p>
                 </div>
                 <div>
-                  <span style={{ color: 'var(--text-muted)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{t('inswPush.httpStatus')}</span>
+                  <span style={{ color: 'var(--text-muted)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{t('inswPush.httpStatus', 'HTTP Status')}</span>
                   <p style={{ margin: '2px 0', fontWeight: 500 }}>{viewResponse.httpStatus || '—'}</p>
                 </div>
                 <div>
-                  <span style={{ color: 'var(--text-muted)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{t('inswPush.pushedBy')}</span>
+                  <span style={{ color: 'var(--text-muted)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{t('inswPush.pushedBy', 'Pushed By')}</span>
                   <p style={{ margin: '2px 0', fontWeight: 500 }}>{viewResponse.pushedBy}</p>
                 </div>
                 <div>
-                  <span style={{ color: 'var(--text-muted)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{t('inswPush.duration')}</span>
+                  <span style={{ color: 'var(--text-muted)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{t('inswPush.duration', 'Duration')}</span>
                   <p style={{ margin: '2px 0', fontWeight: 500 }}>{viewResponse.duration ? `${(viewResponse.duration / 1000).toFixed(1)}s` : '—'}</p>
                 </div>
                 <div style={{ gridColumn: '1 / -1' }}>
-                  <span style={{ color: 'var(--text-muted)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{t('inswPush.pushedAt')}</span>
+                  <span style={{ color: 'var(--text-muted)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{t('inswPush.pushedAt', 'Pushed At')}</span>
                   <p style={{ margin: '2px 0', fontWeight: 500 }}>{viewResponse.pushedAt ? new Date(viewResponse.pushedAt).toLocaleString() : '—'}</p>
                 </div>
               </div>
 
               {/* Error message */}
-              {viewResponse.errorMessage && (
-                <div style={{ marginBottom: 16 }}>
-                  <span style={{ color: 'var(--text-muted)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{t('inswPush.errorMessage')}</span>
-                  <div style={{
-                    marginTop: 4,
-                    padding: '8px 12px',
-                    background: '#fff3f3',
-                    borderRadius: 6,
-                    border: '1px solid #ffcdd2',
-                    color: '#c62828',
-                    fontSize: 13,
-                    wordBreak: 'break-word',
-                  }}>
-                    {viewResponse.errorMessage}
+              {(() => {
+                const displayError = viewResponse.errorMessage || (viewResponse.status !== 'success' ? (viewResponse.responseBody || `HTTP ${viewResponse.httpStatus || 400}: Push failed`) : null);
+                if (!displayError) return null;
+                return (
+                  <div style={{ marginBottom: 16 }}>
+                    <span style={{ color: 'var(--text-muted)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{t('inswPush.errorMessage', 'Error Message')}</span>
+                    <div style={{
+                      marginTop: 4,
+                      padding: '8px 12px',
+                      background: '#fff3f3',
+                      borderRadius: 6,
+                      border: '1px solid #ffcdd2',
+                      color: '#c62828',
+                      fontSize: 13,
+                      wordBreak: 'break-word',
+                    }}>
+                      {displayError}
+                    </div>
                   </div>
-                </div>
-              )}
+                );
+              })()}
 
               {/* Response body */}
               {viewResponse.responseBody && (

@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo, useEffect } from 'react';
 import { format } from 'date-fns';
-import { tccService, type TccRequest, type RequestFilters } from '../services/tccService';
+import { tccService, isQueuedRequest, type TccRequest, type RequestFilters } from '../services/tccService';
 import { authService } from '@traxeco/shared';
 
 export function useRequestData(
@@ -94,8 +94,8 @@ export function useRequestData(
         if (!allowedValues || allowedValues.length === 0) return true;
         let val: any;
         if (field === 'status') {
-          if (row.queueStatus === 'Pending' && (!row.status || row.status === 'Not Started')) {
-            val = 'Queued';
+          if (isQueuedRequest(row)) {
+            val = 'Pending';
           } else {
             val = row.releasedDate ? 'Released' : (row.status || 'Not Started');
           }
@@ -107,7 +107,7 @@ export function useRequestData(
             } catch { /* fallback */ }
           }
         }
-        val = (val !== undefined && val !== null && val !== '') ? String(val) : '(Blanks)';
+        val = (val !== undefined && val !== null && val !== '') ? String(val).trim() : '(Blanks)';
         return allowedValues.includes(val);
       });
     });

@@ -50,7 +50,7 @@ export default function ExcelStyleColumnMenu(props: GridColumnMenuProps) {
       try {
         const rawVal = row[field];
         const computed = (colDefForField.valueGetter as any)(rawVal, row, colDefForField, apiRef);
-        return (computed !== undefined && computed !== null && computed !== '') ? String(computed) : '(Blanks)';
+        return (computed !== undefined && computed !== null && computed !== '') ? String(computed).trim() : '(Blanks)';
       } catch { /* fallback */ }
     }
     const val = row[field];
@@ -59,7 +59,7 @@ export default function ExcelStyleColumnMenu(props: GridColumnMenuProps) {
         return format(new Date(val), 'dd/MM/yyyy');
       } catch { /* fallback */ }
     }
-    return (val !== undefined && val !== null && val !== '') ? String(val) : '(Blanks)';
+    return (val !== undefined && val !== null && val !== '') ? String(val).trim() : '(Blanks)';
   };
 
   // Cross-filter: apply all OTHER column filters (exclude current column)

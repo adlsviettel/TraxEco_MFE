@@ -24,7 +24,7 @@ export const ImportPage = () => {
     const [fabricLoading, setFabricLoading] = useState(false);
     const [fabricMessage, setFabricMessage] = useState<{type: 'success' | 'error', text: string} | null>(null);
 
-    const handleUploadCoo = async () => {
+    const handleUploadCoo = React.useCallback(async () => {
         if (cooFiles.length === 0) return;
         setCooLoading(true); setCooMessage(null);
         try {
@@ -52,9 +52,9 @@ export const ImportPage = () => {
         } finally {
             setCooLoading(false);
         }
-    };
+    }, [cooFiles]);
 
-    const handleUploadFabric = async () => {
+    const handleUploadFabric = React.useCallback(async () => {
         if (fabricFiles.length === 0) return;
         setFabricLoading(true); setFabricMessage(null);
         try {
@@ -82,7 +82,7 @@ export const ImportPage = () => {
         } finally {
             setFabricLoading(false);
         }
-    };
+    }, [fabricFiles]);
 
     return (
         <Box sx={{ p: { xs: 2, md: 4 }, minHeight: '100%', bgcolor: '#f8fafc', display: 'flex', justifyContent: 'center' }}>

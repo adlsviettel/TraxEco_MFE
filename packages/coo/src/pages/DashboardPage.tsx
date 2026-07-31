@@ -207,11 +207,12 @@ export const DashboardPage = () => {
         });
     }, [rows, columnFilters]);
 
-    const handleSearch = async () => {
+    const handleSearch = React.useCallback(async () => {
         if (!poNumber.trim()) return;
         setLoading(true);
         try {
-            const res = await authFetch(`coo/erp-materials?poNumber=${encodeURIComponent(poNumber)}`);
+            const cleanPo = poNumber.replace(/[\r\n]+/g, ',');
+            const res = await authFetch(`coo/erp-materials?poNumber=${encodeURIComponent(cleanPo)}`);
             if (res.ok) {
                 const rawData = await res.json();
                 
@@ -223,35 +224,121 @@ export const DashboardPage = () => {
                     }
                 });
 
-                const data = rawData.map((row: any) => {
-                    let formType = '';
-                    let remark = '';
+                // Fallback: If a PO doesn't have a main fabric from backend, select best candidate (first non-FOC fabric or first non-FOC row)
+                rawData.forEach((row: any) => {
+                    const po = row.customerReference;
+                    if (!po) return;
+                    if (!mainFabricsByPo[po]) {
+                        const isFOC = row.serialNumber && row.serialNumber.toLowerCase().includes('foc');
+                        if (!isFOC) {
+                            const nameLower = (row.materialName || '').toLowerCase();
+                            const classLower = (row.matrClass || '').toLowerCase();
+                            const customCode = (row.customCode || '').toLowerCase();
+                            const isFabric = nameLower.includes('fabric') || nameLower.includes('fab') || classLower.includes('fab') || customCode.startsWith('t');
+                            
+                            if (isFabric || !mainFabricsByPo[po + '_candidate']) {
+                                mainFabricsByPo[po + '_candidate'] = row;
+                            }
+                        }
+                    }
+                });
+
+                // Finalize fallback main fabric assignment
+                rawData.forEach((row: any) => {
+                    const po = row.customerReference;
+                    if (po && !mainFabricsByPo[po]) {
+                        const candidate = mainFabricsByPo[po + '_candidate'];
+                        if (candidate) {
+                            candidate.isMainFabric = true;
+                            mainFabricsByPo[po] = candidate;
+                        }
+                    }
+                });
+
+                // Find best Declaration Number and Country per PO to fill any remaining blanks
+                const declNoByPo: Record<string, string> = {};
+                const countryByPo: Record<string, string> = {};
+                rawData.forEach((row: any) => {
+                    const po = row.customerReference;
+                    if (!po) return;
+                    if (row.declarationNumber && row.declarationNumber.trim() && !declNoByPo[po]) {
+                        declNoByPo[po] = row.declarationNumber.trim();
+                    }
+                    if (row.countryRegion && row.countryRegion.trim() && !countryByPo[po]) {
+                        countryByPo[po] = row.countryRegion.trim();
+                    }
+                });
+
+                // Check which POs have main fabric from backend/consumption data
+                const poHasBackendMainFabric: Record<string, boolean> = {};
+                rawData.forEach((row: any) => {
+                    if (row.isMainFabric && row.customerReference) {
+                        poHasBackendMainFabric[row.customerReference] = true;
+                    }
+                });
+
+                const data = rawData.map((row: any, index: number) => {
+                    row.id = `row-${index}`;
+                    let formType = row.formType || '';
+                    let remark = row.remark || '';
                     
-                    // Lấy countryRegion của Main Fabric (nếu có), nếu không có thì lấy của chính nó
                     const mainFabric = mainFabricsByPo[row.customerReference];
-                    const countryToUse = (mainFabric && mainFabric.countryRegion) ? mainFabric.countryRegion : row.countryRegion;
                     const hasMainFabric = !!mainFabric;
+                    const po = row.customerReference;
                     
+                    const declarationToUse = (row.declarationNumber && row.declarationNumber.trim())
+                        ? row.declarationNumber.trim()
+                        : (mainFabric && mainFabric.declarationNumber && mainFabric.declarationNumber.trim())
+                            ? mainFabric.declarationNumber.trim()
+                            : declNoByPo[po] || '';
+
+                    let countryToUse = (row.countryRegion && row.countryRegion.trim())
+                        ? row.countryRegion.trim()
+                        : (mainFabric && mainFabric.countryRegion && mainFabric.countryRegion.trim())
+                            ? mainFabric.countryRegion.trim()
+                            : countryByPo[po] || '';
+
+                    if (countryToUse.toUpperCase() === 'THAILND') {
+                        countryToUse = 'THAILAND';
+                    }
+
                     const rawCountry = (countryToUse || '').trim();
+                    const rawDecl = (declarationToUse || '').trim();
+                    
+                    // Status logic: Check for missing Main Fabric from Excel & missing Declaration from Weekly
+                    const missingItems: string[] = [];
+                    if (!poHasBackendMainFabric[po]) {
+                        missingItems.push('Missing Main Fabric');
+                    }
+                    if (!rawDecl || !rawCountry) {
+                        missingItems.push('Missing Declaration');
+                    }
+
+                    const status = missingItems.join(', ');
+
                     if (rawCountry) {
                         const countryLower = rawCountry.toLowerCase();
                         if (countryLower === 'vietnam' || countryLower === 'vn' || countryLower === 'vnm' || countryLower === 'việt nam') {
                             formType = 'FORM EUR.1';
-                            remark = '';
                         } else {
                             formType = 'FORM EUR.1-NO';
                             let formattedCountry = rawCountry.split(' ').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
-                            if (formattedCountry.toUpperCase() === 'THAILND') {
+                            if (formattedCountry.toUpperCase() === 'THAILND' || formattedCountry.toUpperCase() === 'THAILAND') {
                                 formattedCountry = 'Thailand';
                             }
                             remark = hasMainFabric ? `Main Fabric Import from ${formattedCountry}` : `Import from ${formattedCountry}`;
                         }
-                    } else {
-                        remark = '';
-                        row.missingFromWeekly = 'Missing Declaration';
                     }
                     
-                    return { ...row, formType, remark };
+                    return { 
+                        ...row, 
+                        customerOrderNo: row.customerOrderNo || row.customerReference || '',
+                        declarationNumber: declarationToUse, 
+                        countryRegion: countryToUse, 
+                        formType, 
+                        remark,
+                        missingFromWeekly: status
+                    };
                 });
                 setRows(data);
             }
@@ -260,73 +347,9 @@ export const DashboardPage = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [poNumber]);
 
-    const handleExportExcel = async () => {
-        if (filteredRows.length === 0) return;
-        
-        const workbook = new ExcelJS.Workbook();
-        const worksheet = workbook.addWorksheet('ERP Data Sync');
-        
-        // Add header row
-        const headerRow = worksheet.addRow(columns.map(c => c.headerName));
-        headerRow.font = { bold: true, color: { argb: 'FFFFFFFF' } };
-        headerRow.fill = {
-            type: 'pattern',
-            pattern: 'solid',
-            fgColor: { argb: 'FF15803D' }
-        };
-        
-        // Adjust column widths
-        columns.forEach((col, idx) => {
-            worksheet.getColumn(idx + 1).width = (col.width || 100) / 7;
-        });
-
-        // Add data rows
-        filteredRows.forEach(row => {
-            const rowData = columns.map(col => {
-                if (col.valueGetter) {
-                    return (col.valueGetter as any)(row[col.field as keyof ErpMaterial], row);
-                }
-                let val = row[col.field as keyof ErpMaterial];
-                if (val === null || val === undefined) return '';
-                return val;
-            });
-            
-            const addedRow = worksheet.addRow(rowData);
-            
-            // Apply formatting for Main Fabric
-            if (row.isMainFabric) {
-                const materialCodeIdx = columns.findIndex(c => c.field === 'materialCode') + 1;
-                if (materialCodeIdx > 0) {
-                    const cell = addedRow.getCell(materialCodeIdx);
-                    cell.font = { bold: true, color: { argb: 'FFD32F2F' } }; // Red color
-                }
-            }
-            
-            // Highlight missing from weekly
-            if (row.missingFromWeekly) {
-                addedRow.eachCell((cell) => {
-                    cell.fill = {
-                        type: 'pattern',
-                        pattern: 'solid',
-                        fgColor: { argb: 'FFFEF08A' } // Yellow color (#fef08a)
-                    };
-                });
-            }
-        });
-        
-        const buffer = await workbook.xlsx.writeBuffer();
-        const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = `ERP_Data_Sync_${new Date().toISOString().slice(0,10)}.xlsx`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    };
-
-    const columns: GridColDef[] = [
+    const columns: GridColDef[] = React.useMemo(() => [
         { field: 'company', headerName: 'Company', width: 100 },
         { field: 'salesOrder', headerName: 'Sales order', width: 130 },
         { field: 'productionNumber', headerName: 'Production number', width: 150 },
@@ -418,12 +441,89 @@ export const DashboardPage = () => {
         { 
             field: 'missingFromWeekly', 
             headerName: 'Status', 
-            width: 250,
-            renderCell: (params) => (
-                params.value ? <Chip label={params.value} color="warning" size="small" /> : null
-            )
+            width: 260,
+            renderCell: (params) => {
+                if (!params.value) return null;
+                const isError = params.value.includes('Missing Main Fabric');
+                return (
+                    <Chip 
+                        label={params.value} 
+                        color={isError ? "error" : "warning"} 
+                        size="small" 
+                        sx={{ fontWeight: 600 }}
+                    />
+                );
+            }
         }
-    ];
+    ], []);
+
+    const handleExportExcel = React.useCallback(async () => {
+        if (filteredRows.length === 0) return;
+        
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('ERP Data Sync');
+        
+        // Add header row
+        const headerRow = worksheet.addRow(columns.map(c => c.headerName));
+        headerRow.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+        headerRow.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: 'FF15803D' }
+        };
+        
+        // Adjust column widths
+        columns.forEach((col, idx) => {
+            worksheet.getColumn(idx + 1).width = (col.width || 100) / 7;
+        });
+
+        // Add data rows
+        filteredRows.forEach(row => {
+            const rowData = columns.map(col => {
+                if (col.valueGetter) {
+                    return (col.valueGetter as any)(row[col.field as keyof ErpMaterial], row);
+                }
+                let val = row[col.field as keyof ErpMaterial];
+                if (val === null || val === undefined) return '';
+                return val;
+            });
+            
+            const addedRow = worksheet.addRow(rowData);
+            
+            // Apply formatting for Main Fabric
+            if (row.isMainFabric) {
+                const materialCodeIdx = columns.findIndex(c => c.field === 'materialCode') + 1;
+                if (materialCodeIdx > 0) {
+                    const cell = addedRow.getCell(materialCodeIdx);
+                    cell.font = { bold: true, color: { argb: 'FFD32F2F' } }; // Red color
+                }
+            }
+            
+            // Highlight missing items
+            if (row.missingFromWeekly) {
+                const isMissingMain = row.missingFromWeekly.includes('Missing Main Fabric');
+                const bgHex = isMissingMain ? 'FFFECACA' : 'FFFEF08A'; // Red/Pink if missing main fabric, Yellow if missing decl
+                addedRow.eachCell((cell) => {
+                    cell.fill = {
+                        type: 'pattern',
+                        pattern: 'solid',
+                        fgColor: { argb: bgHex }
+                    };
+                });
+            }
+        });
+        
+        const buffer = await workbook.xlsx.writeBuffer();
+        const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `ERP_Data_Sync_${new Date().toISOString().slice(0,10)}.xlsx`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }, [filteredRows, columns]);
+
+
 
     return (
         <Box sx={{ px: 2, pb: 2, pt: 0, height: '100%', display: 'flex', flexDirection: 'column', bgcolor: '#f8fafc' }}>
@@ -463,10 +563,14 @@ export const DashboardPage = () => {
                 <DataGrid 
                     rows={filteredRows} 
                     columns={columns} 
-                    getRowId={(r) => (r.materialCode || '') + (r.location || '') + (r.declarationNumber || '') + Math.random()}
+                    getRowId={(r) => (r as any).id}
                     disableRowSelectionOnClick
                     density="compact"
-                    getRowClassName={(params) => params.row.missingFromWeekly ? 'missing-weekly-row' : ''}
+                    getRowClassName={(params) => {
+                        if (!params.row.missingFromWeekly) return '';
+                        if (params.row.missingFromWeekly.includes('Missing Main Fabric')) return 'missing-main-fabric-row';
+                        return 'missing-weekly-row';
+                    }}
                     loading={loading}
                     slots={{
                         footer: CustomFooter,
@@ -489,7 +593,9 @@ export const DashboardPage = () => {
                         '& .MuiDataGrid-cell': { borderColor: '#e2e8f0', fontSize: '13px', color: '#3f4945', '&:focus': { outline: 'none !important' }, '&:focus-within': { outline: 'none !important' } },
                         '& .MuiDataGrid-row:hover': { bgcolor: '#F9FAFA !important' },
                         '& .missing-weekly-row': { bgcolor: '#fef08a !important' },
-                        '& .missing-weekly-row:hover': { bgcolor: '#fde047 !important' }
+                        '& .missing-weekly-row:hover': { bgcolor: '#fde047 !important' },
+                        '& .missing-main-fabric-row': { bgcolor: '#fecaca !important' },
+                        '& .missing-main-fabric-row:hover': { bgcolor: '#fca5a5 !important' }
                     }}
                 />
             </Paper>

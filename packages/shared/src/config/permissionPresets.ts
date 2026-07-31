@@ -275,5 +275,28 @@ export const PERMISSION_PRESETS: Record<string, AppPresets> = {
         tcc_admin: { canView: true, canAdd: true, canEdit: true }
       }
     }
+  },
+  COO: {
+    4: {
+      label: 'Worker',
+      pages: {
+        coo_dashboard: { canView: true }
+      }
+    },
+    3: {
+      label: 'Staff',
+      pages: {
+        coo_dashboard: { canView: true },
+        coo_import: { canView: true, canAdd: true, canEdit: true }
+      }
+    },
+    2: {
+      label: 'Supervisor',
+      pages: {
+        coo_dashboard: { canView: true, canExport: true },
+        coo_import: { canView: true, canAdd: true, canEdit: true, canDelete: true, canExport: true },
+        coo_admin: { canView: true, canAdd: true, canEdit: true }
+      }
+    }
   }
 };

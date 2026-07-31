@@ -139,7 +139,12 @@ function handleSessionExpired(customMsg?: string) {
  * If the response matches { code, message, data }, it returns a new Response containing just 'data'.
  */
 async function unwrapIfApiResponse(res: Response): Promise<Response> {
-  if (!res.ok) return res;
+  if (!res.ok) {
+    try {
+      const cloneStr = await res.clone().text();
+      console.error('API Error Response Body:', cloneStr);
+    } catch (e) {}
+  }
   try {
     const clone = res.clone();
     const json = await clone.json();

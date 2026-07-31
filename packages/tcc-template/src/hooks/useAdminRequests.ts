@@ -91,7 +91,7 @@ export function useAdminRequests(
             } catch { /* fallback */ }
           }
         }
-        val = (val !== undefined && val !== null && val !== '') ? String(val) : '(Blanks)';
+        val = (val !== undefined && val !== null && val !== '') ? String(val).trim() : '(Blanks)';
         return allowedValues.includes(val);
       });
     });

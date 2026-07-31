@@ -85,7 +85,24 @@ export async function getMappings(): Promise<InswCategoryMapping[]> {
  */
 export function detectKategoriBarang(item: { kodeHS?: string; kategoriBarang?: string; uraianBarang?: string; kodeBarang?: string }, mappings: InswCategoryMapping[] = []): string {
   const rawCat = (item.kategoriBarang || '').trim();
+  
+  // 0. FIRST & FOREMOST: If rawCat is explicitly set by user, ALWAYS RESPECT IT!
   if (/^[1-8]$/.test(rawCat)) return rawCat;
+
+  const numMatch = rawCat.match(/^([1-8])\s*[\-\:\.\s]/);
+  if (numMatch) return numMatch[1];
+
+  const catLower = rawCat.toLowerCase();
+  if (catLower) {
+    if (catLower.includes('mesin') || catLower.includes('peralatan') || catLower.includes('modal')) return '1';
+    if (catLower.includes('hasil produksi') || catLower.includes('thành phẩm') || catLower.includes('finished')) return '2';
+    if (catLower.includes('bahan baku') || catLower.includes('penolong') || catLower.includes('raw material')) return '3';
+    if (catLower.includes('pengemas') || catLower.includes('packaging')) return '4';
+    if (catLower.includes('sisa') || catLower.includes('scrap') || catLower.includes('waste')) return '5';
+    if (catLower.includes('sampul') || catLower.includes('contoh')) return '6';
+    if (catLower.includes('bangunan') || catLower.includes('konstruksi')) return '7';
+    if (catLower.includes('wip') || catLower.includes('bán thành')) return '8';
+  }
 
   const uraian = (item.uraianBarang || '').toLowerCase();
   const hs = (item.kodeHS || '').replace(/[^0-9]/g, '');
@@ -163,50 +180,129 @@ function mapKdSatuan(rawSatuan: string, itemNo: string | number): string {
     console.warn(`⚠️ [INSW] Mặt hàng số ${itemNo} thiếu Đơn vị tính (Satuan), mặc định dùng PCE`);
     return 'PCE';
   }
-  const s = rawSatuan.toUpperCase().replace(/[^A-Z]/g, '');
-  if (s.includes('KGM') || s === 'KG' || s.includes('KILO')) return 'KGM';
-  if (s.includes('PCS') || s.includes('PCE') || s.includes('PIECE')) return 'PCE';
-  if (s.includes('MTR') || s.includes('METER')) return 'MTR';
-  if (s.includes('YRD') || s.includes('YARD')) return 'YRD';
+  const s = rawSatuan.toUpperCase().replace(/[^A-Z0-9]/g, '');
+
+  if (s.includes('KGM') || s === 'KG' || s === 'KGS' || s.includes('KILO') || s === 'KILOGRAM') return 'KGM';
+  if (s.includes('PCS') || s.includes('PCE') || s.includes('PIECE') || s === 'PC' || s === 'PIECES' || s === 'PK' || s === 'PACK' || s === 'BAG' || s === 'BOX' || s === 'BT' || s === 'BTL' || s === 'BOT' || s === 'CAN' || s === 'TUBE') return 'PCE';
+  if (s.includes('MTR') || s.includes('METER') || s === 'MT' || s === 'M') return 'MTR';
+  if (s.includes('YRD') || s.includes('YARD') || s === 'YDS' || s === 'YD') return 'YRD';
   if (s.includes('SET')) return 'SET';
-  if (s.includes('ROLL') || s.includes('ROL') || s === 'RO') return 'ROL';
+  if (s.includes('ROLL') || s.includes('ROL') || s === 'RO' || s === 'RL') return 'ROL';
   if (s.includes('CONE') || s.includes('CNE') || s === 'CN') return 'CNE';
-  if (s.includes('CARTON') || s.includes('CTN') || s === 'CT') return 'CT';
-  if (s.includes('LTR') || s.includes('LITER')) return 'LTR';
-  if (s.includes('MTQ')) return 'MTQ';
-  if (s.includes('GRM') || s.includes('GRAM')) return 'GRM';
-  if (s.includes('BALE') || s.includes('BAL')) return 'BL';
-  
-  // If we have a 2-3 letter code, just use it and hope INSW accepts it
-  if (s.length >= 2 && s.length <= 3) return s;
-  
-  // Truncate to 3 chars for INSW
-  return s.substring(0, 3);
+  if (s.includes('CARTON') || s.includes('CTN') || s === 'CT' || s === 'BX') return 'CT';
+  if (s.includes('LTR') || s.includes('LITER') || s === 'L') return 'LTR';
+  if (s.includes('MTQ') || s === 'M3') return 'MTQ';
+  if (s.includes('GRM') || s.includes('GRAM') || s === 'GR' || s === 'G') return 'GRM';
+  if (s.includes('BALE') || s.includes('BAL') || s === 'BL') return 'BL';
+  if (s.includes('PAIR') || s.includes('PAR') || s === 'PRS' || s === 'PR') return 'PRS';
+  if (s.includes('DOZ') || s.includes('DZN') || s === 'DZ') return 'DZN';
+
+  // Standard INSW (Indonesian Customs) allowed unit codes
+  const allowedInswUnits = ['PCE', 'KGM', 'MTR', 'YRD', 'SET', 'ROL', 'CNE', 'CT', 'LTR', 'MTQ', 'GRM', 'BL', 'PRS', 'DZN'];
+  if (allowedInswUnits.includes(s)) {
+    return s;
+  }
+
+  // Fallback to PCE if unknown to guarantee INSW API validation pass
+  console.warn(`⚠️ [INSW] Đơn vị tính "${rawSatuan}" của mặt hàng số ${itemNo} không thuộc danh mục INSW chuẩn, tự động quy đổi về PCE`);
+  return 'PCE';
+}
+
+function formatInswDate(dateStr: string): string {
+  if (!dateStr || !dateStr.trim()) {
+    return new Date().toISOString().slice(0, 10);
+  }
+  const s = dateStr.trim();
+  if (/^\d{4}-\d{2}-\d{2}/.test(s)) {
+    return s.slice(0, 10);
+  }
+  const matchDmy = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
+  if (matchDmy) {
+    const day = matchDmy[1].padStart(2, '0');
+    const month = matchDmy[2].padStart(2, '0');
+    const year = matchDmy[3];
+    return `${year}-${month}-${day}`;
+  }
+  const parsed = new Date(s);
+  if (!isNaN(parsed.getTime())) {
+    return parsed.toISOString().slice(0, 10);
+  }
+  return new Date().toISOString().slice(0, 10);
 }
 
 export async function buildInswRequestBody(parsedData: ParsedDataSuccess, kdKegiatan: string = '30'): Promise<InswRequestBody> {
   const barangTransaksi: InswBarang[] = [];
-  for (const item of parsedData.items) {
+  
+  // Filter out garbage header rows accidentally captured during PDF parsing
+  const filteredItems = (parsedData.items || []).filter(item => {
+    const uraian = (item.uraianBarang || '').toLowerCase().trim();
+    const kode = (item.kodeBarang || '').toLowerCase().trim();
+    
+    if (uraian.includes('uraian barang secara') || 
+        uraian.includes('kategori barang') || 
+        uraian.includes('pos tarif') || 
+        uraian.includes('jenis transaksi') ||
+        kode.includes('kategori') ||
+        kode.includes('uraian') ||
+        kode.includes('secara lengkap')) {
+      return false;
+    }
+    return true;
+  });
+
+  const rawItems = filteredItems.length > 0 ? filteredItems : [{
+    no: '1',
+    kodeHS: '',
+    uraianBarang: parsedData.fileName || 'Barang Transaksi',
+    kodeBarang: 'ITEM-001',
+    jumlah: '1',
+    satuan: 'PCE',
+    harga: '0',
+    amount: '0',
+    nilaiPabean: '0',
+    negara: 'ID'
+  }];
+
+  for (const item of rawItems) {
+    const jumlahNum = parseNumber(item.jumlah);
+    const nilaiNum = parseNumber(item.nilaiPabean || item.amount || item.harga);
+
+    let cleanKdBarang = (item.kodeBarang || '').trim();
+    let cleanUraian = (item.uraianBarang || '').trim();
+
+    // If kdBarang is just an item index like "1", "2", "33" or contains header labels, use uraianBarang instead
+    if (!cleanKdBarang || /^\d{1,3}(\.)?$/.test(cleanKdBarang) || cleanKdBarang.toLowerCase().includes('kategori')) {
+      cleanKdBarang = cleanUraian || 'ITEM-001';
+    }
+
+    if (!cleanUraian || cleanUraian.toLowerCase().includes('uraian barang secara')) {
+      cleanUraian = cleanKdBarang || 'Barang Transaksi';
+    }
+
     barangTransaksi.push({
-      kdKategoriBarang: await mapKategoriBarangAsync(item.kategoriBarang, item.uraianBarang),
-      kdBarang: item.kodeBarang || '',
-      uraianBarang: item.uraianBarang || '',
-      jumlah: parseNumber(item.jumlah),
+      kdKategoriBarang: await mapKategoriBarangAsync(item.kategoriBarang, cleanUraian),
+      kdBarang: cleanKdBarang.replace(/[\r\n]+/g, ' ').trim(),
+      uraianBarang: cleanUraian.replace(/[\r\n]+/g, ' ').trim(),
+      jumlah: jumlahNum > 0 ? jumlahNum : 1,
       kdSatuan: mapKdSatuan(item.satuan, item.no),
-      nilai: parseNumber(item.nilaiPabean),
+      nilai: nilaiNum >= 0 ? nilaiNum : 0,
       dokumen: [],
     });
   }
 
+  const rawNomor = (parsedData.header?.nomorPengajuan || parsedData.header?.nomorPendaftaran || parsedData.fileName || 'DOK-001').trim();
+  const rawTanggal = parsedData.header?.tanggalPengajuan || parsedData.header?.tanggalPendaftaran || parsedData.importedAt || '';
+  const rawEntitas = (parsedData.header?.penerimaBarang || parsedData.header?.pengirimBarang || 'PT. TRAX APPAREL INDONESIA').trim();
+
   return {
     data: [
       {
-        kdKegiatan,
+        kdKegiatan: kdKegiatan || '30',
         dokumenKegiatan: [
           {
-            nomorDokKegiatan: parsedData.header.nomorPengajuan || '',
-            tanggalKegiatan: parsedData.header.tanggalPengajuan || '',
-            namaEntitas: '',
+            nomorDokKegiatan: rawNomor || 'DOK-001',
+            tanggalKegiatan: formatInswDate(rawTanggal),
+            namaEntitas: rawEntitas || 'PT. TRAX APPAREL INDONESIA',
             barangTransaksi,
           },
         ],
@@ -218,13 +314,27 @@ export async function buildInswRequestBody(parsedData: ParsedDataSuccess, kdKegi
 // ─── Push to INSW API ────────────────────────────────────────────────────────
 
 export async function pushToInsw(parsedData: ParsedDataSuccess, kdKegiatan: string = '30'): Promise<InswResponse> {
+  // BC 2.7 files are internal TPB declarations managed on CEISA, not INSW
+  const isBc27 = parsedData.fileName?.toLowerCase().includes('2.7') ||
+                 parsedData.header?.nomorPengajuan?.includes('2.7') ||
+                 (parsedData as any).docFormat === 'bc27';
+
+  if (isBc27) {
+    return {
+      success: false,
+      status: 400,
+      data: null,
+      error: 'Tờ khai BC 2.7 là chứng từ giao dịch nội bộ TPB được quản lý trên hệ thống CEISA. Chứng từ này không thuộc quy trình Push lên INSW API.',
+    };
+  }
+
   try {
     const body = await buildInswRequestBody(parsedData, kdKegiatan);
     const config = await getInswConfig();
 
     console.log('--- INSW PUSH API URL:', 'https://api.insw.go.id/api-prod/inventory/temp/transaksi');
     console.log('--- INSW PUSH PROXY URL:', `/insw/proxy/transaksi`);
-    console.log('--- INSW PUSH PAYLOAD BODY:', body);
+    console.log('--- INSW PUSH PAYLOAD BODY (JSON STRING):\n' + JSON.stringify(body, null, 2));
 
     const BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
     const token = localStorage.getItem('token');
@@ -250,8 +360,21 @@ export async function pushToInsw(parsedData: ParsedDataSuccess, kdKegiatan: stri
     if (res.ok) {
       return { success: true, status: res.status, data: responseData };
     } else {
-      const errMsg = responseData?.message || `HTTP ${res.status}: ${res.statusText}`;
-      const isAlreadySent = responseData?.message?.toLowerCase().includes('sudah pernah dikirim');
+      let errMsg = responseData?.message || responseData?.error || responseData?.detail || '';
+      if (!errMsg && responseData) {
+        if (typeof responseData === 'string') {
+          errMsg = responseData;
+        } else if (Array.isArray(responseData)) {
+          errMsg = responseData.map(e => typeof e === 'object' ? (e.message || e.detail || JSON.stringify(e)) : String(e)).join('; ');
+        } else if (typeof responseData === 'object') {
+          errMsg = JSON.stringify(responseData);
+        }
+      }
+      if (!errMsg) {
+        errMsg = `HTTP ${res.status}: ${res.statusText || 'Bad Request'}`;
+      }
+
+      const isAlreadySent = errMsg.toLowerCase().includes('sudah pernah dikirim');
       
       if (isAlreadySent) {
         return {

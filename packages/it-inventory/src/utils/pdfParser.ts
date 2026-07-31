@@ -94,6 +94,7 @@ function detectFormat(pages: PdfTextItem[][]): DocFormat {
     if (title.includes('3.0')) return 'bc30';
     if (title.includes('4.0')) return 'bc40';
     if (title.includes('4.1')) return 'bc41';
+    if (title.includes('ppkek') || title.includes('tlddp')) return 'ppkek';
   }
 
   // Fallback: check subtitle/description text on the first page
@@ -101,7 +102,7 @@ function detectFormat(pages: PdfTextItem[][]): DocFormat {
     return 'bc23';
   if (firstPageText.includes('PEMASUKAN BARANG ASAL TEMPAT LAIN DALAM DAERAH PABEAN'))
     return 'bc40';
-  if (firstPageText.includes('PPKEK') || firstPageText.includes('KAWASAN EKONOMI KHUSUS'))
+  if (firstPageText.includes('PPKEK') || firstPageText.includes('KAWASAN EKONOMI KHUSUS') || firstPageText.includes('TLDDP'))
     return 'ppkek';
 
   console.warn('── [DETECT] Could not detect format! Full text sample:', allText.substring(0, 2000));
@@ -115,14 +116,16 @@ function detectFormat(pages: PdfTextItem[][]): DocFormat {
 interface HeaderPattern { key: keyof ParsedHeader; re: RegExp; }
 
 const PPKEK_HEADER_PATTERNS: HeaderPattern[] = [
-  { key: 'nomorPengajuan', re: /1\.\s*NOMOR\s+PENGAJUAN/i },
-  { key: 'tanggalPengajuan', re: /2\.\s*TANGGAL\s+PENGAJUAN/i },
-  { key: 'nomorPendaftaran', re: /3\.\s*NOMOR\s+PENDAFTARAN/i },
-  { key: 'tanggalPendaftaran', re: /4\.\s*TANGGAL\s+PENDAFTARAN/i },
+  { key: 'nomorPengajuan', re: /1\.\s*NOMOR\s+PENGAJUAN|NOMOR\s+PENGAJUAN/i },
+  { key: 'tanggalPengajuan', re: /2\.\s*TANGGAL\s+PENGAJUAN|TANGGAL\s+PENGAJUAN/i },
+  { key: 'nomorPendaftaran', re: /3\.\s*NOMOR\s+PENDAFTARAN|NOMOR\s+PENDAFTARAN/i },
+  { key: 'tanggalPendaftaran', re: /4\.\s*TANGGAL\s+PENDAFTARAN|TANGGAL\s+PENDAFTARAN/i },
+  { key: 'penerimaBarang', re: /PENERIMA\s+BARANG|PENGUSAHA\s+TPB|NAMA\s+PENERIMA|NAMA\s+ENTITAS|PEMBELI/i },
+  { key: 'pengirimBarang', re: /PENGIRIM\s+BARANG|NAMA\s+PENGIRIM|PENJUAL/i },
 ];
 
 function extractHeaderPPKEK(pages: PdfTextItem[][]): ParsedHeader {
-  const result: ParsedHeader = { nomorPengajuan: '', tanggalPengajuan: '', nomorPendaftaran: '', tanggalPendaftaran: '', penerimaBarang: '', jenisTransaksi: '' };
+  const result: ParsedHeader = { nomorPengajuan: '', tanggalPengajuan: '', nomorPendaftaran: '', tanggalPendaftaran: '', penerimaBarang: '', pengirimBarang: '', jenisTransaksi: '' };
   const yTol = 4;
   for (const pageItems of pages) {
     let found = 0;

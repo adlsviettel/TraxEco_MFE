@@ -118,14 +118,14 @@ export default function InswMappingManager() {
                 onChange={e => setEditForm(prev => ({...prev, inswCode: e.target.value}))}
                 style={{ padding: '8px 12px', width: '100%', borderRadius: 6, border: '1px solid var(--border-color)', background: 'var(--bg-primary)' }}
               >
-                <option value="1">1 - Bahan Baku</option>
-                <option value="2">2 - Bahan Penolong</option>
-                <option value="3">3 - Bahan Habis Pakai</option>
-                <option value="4">4 - Barang Dagangan</option>
-                <option value="5">5 - Mesin dan Peralatan</option>
-                <option value="6">6 - Barang dalam proses</option>
-                <option value="7">7 - Barang Jadi</option>
-                <option value="8">8 - Barang Reject & Scrap</option>
+                <option value="1">1 - Mesin / Asset / Peralatan</option>
+                <option value="2">2 - Hasil Produksi (Garment / Thành phẩm)</option>
+                <option value="3">3 - Bahan Baku / Penolong (Nguyên phụ liệu)</option>
+                <option value="4">4 - Pengemas (Packaging / Bao bì)</option>
+                <option value="5">5 - Sisa / Scrap / Waste (Phế liệu)</option>
+                <option value="6">6 - Barang Contoh (Sample / Hàng mẫu)</option>
+                <option value="7">7 - Bangunan / Konstruksi</option>
+                <option value="8">8 - Barang Dalam Proses (WIP / Bán thành phẩm)</option>
               </select>
             </div>
             <div className="form-group" style={{ margin: 0, flex: 2, minWidth: 200 }}>

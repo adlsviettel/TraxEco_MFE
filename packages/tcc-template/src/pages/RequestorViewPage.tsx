@@ -30,7 +30,7 @@ import SyncIcon from '@mui/icons-material/Sync';
 import FilterAltOffIcon from '@mui/icons-material/FilterAltOff';
 
 // Services & Shared
-import { tccService, type TccRequest, type RequestFilters } from '../services/tccService';
+import { tccService, isQueuedRequest, type TccRequest, type RequestFilters } from '../services/tccService';
 import { authService, AppButton, AppTextField, AdvancedFilterDrawer } from '@traxeco/shared';
 
 // Column Context
@@ -488,11 +488,23 @@ export default function RequestorViewPage({ isActive = true }: any) {
     {
       field: 'queueStatus',
       headerName: 'Queue Status',
-      width: 120,
+      width: 130,
+      valueGetter: (value: any, row: any) => {
+        const item = row || value;
+        if (isQueuedRequest(item)) return 'InQueue';
+        if (value === 'Approved' || item?.queueStatus === 'Approved') return 'Approved';
+        return '-';
+      },
       renderCell: (params) => {
-        if (!params.value) return <Typography variant="body2">-</Typography>;
-        const color = params.value === 'Pending' ? 'warning' : params.value === 'Approved' ? 'success' : 'error';
-        return <Chip label={params.value} color={color as any} size="small" />;
+        const row = params.row;
+        if (isQueuedRequest(row)) {
+          return <Chip label="InQueue" color="warning" size="small" sx={{ fontWeight: 700, fontSize: 11 }} />;
+        }
+        const val = params.value || row?.queueStatus;
+        if (val === 'Approved') {
+          return <Chip label="Approved" color="success" size="small" sx={{ fontWeight: 700, fontSize: 11 }} />;
+        }
+        return <Typography variant="body2" color="text.secondary">-</Typography>;
       }
     },
     {
@@ -535,11 +547,16 @@ export default function RequestorViewPage({ isActive = true }: any) {
       headerName: 'Status (Auto)',
       width: 140,
       valueGetter: (value: any, row: any) => {
-        if (row.queueStatus === 'Pending' && (!value || value === 'Not Started')) return 'Queued';
-        return row.releasedDate ? 'Released' : (value || 'Not Started');
+        const item = row || value;
+        if (isQueuedRequest(item)) return 'Pending';
+        return item?.releasedDate ? 'Released' : (value || 'Not Started');
       },
       renderCell: (params: GridRenderCellParams) => {
-        const displayStatus = params.value || 'Not Started';
+        const row = params.row;
+        if (isQueuedRequest(row)) {
+          return <Chip label="Pending" color="warning" size="small" sx={{ fontWeight: 700, fontSize: 11 }} />;
+        }
+        const displayStatus = params.value || row?.status || 'Not Started';
         return (
           <Chip
             label={getStatusLabel(displayStatus)}
@@ -547,7 +564,7 @@ export default function RequestorViewPage({ isActive = true }: any) {
             sx={getStatusStyle(displayStatus)}
           />
         );
-      },
+      }
     },
     { 
       field: 'releasedDate', 
@@ -574,14 +591,16 @@ export default function RequestorViewPage({ isActive = true }: any) {
       width: 120,
       sortable: false,
       renderCell: (params: GridRenderCellParams) => {
-        const isNotStarted = (params.row.status || 'Not Started') === 'Not Started';
+        const statusLower = (params.row.status || 'not started').toLowerCase();
+        const queueLower = (params.row.queueStatus || '').toLowerCase();
+        const isNotStarted = statusLower === 'not started' || statusLower === 'pending' || statusLower === 'queued' || queueLower === 'pending';
         const reqLower = (params.row.requesterName || '').trim().toLowerCase();
         const codeLower = (currentUserInfo.employeeCode || '').trim().toLowerCase();
         const nameLower = (currentUserInfo.employeeName || '').trim().toLowerCase();
         const isMyRequest = reqLower === codeLower || reqLower === nameLower || reqLower.startsWith(codeLower + ' -');
         const isSuperOrAdmin = isCurrentUserSuperAdmin || isCurrentUserAdmin;
         const canDeleteRow = isSuperOrAdmin || (isMyRequest && hasDeletePermission);
-        
+
         return (
           <Box display="flex" alignItems="center" justifyContent="center" gap={1} width="100%">
             {(canCancelAll || isMyRequest) && (

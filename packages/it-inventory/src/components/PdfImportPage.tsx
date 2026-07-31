@@ -3,7 +3,7 @@ import { usePageVisible } from '../hooks/usePageVisible.ts';
 import { useTranslation } from 'react-i18next';
 import {
   Upload, FileText, Eye, Trash2, CheckCircle,
-  Clock, XCircle, X, AlertCircle, Loader, Send, Code,
+  Clock, XCircle, X, AlertCircle, Loader, Send, Code, Info,
 } from 'lucide-react';
 import Header from './Header.tsx';
 import { parsePPKEKPDF } from '../utils/pdfParser.ts';
@@ -40,6 +40,10 @@ function ParsedDataModal({ file, kdKegiatan, onClose, onPushSelected }: ParsedDa
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set(data?.items?.map((_, i) => i) || []));
   const [pushing, setPushing] = useState(false);
   const [localItems, setLocalItems] = useState<any[]>([]);
+
+  const isBc27 = file.fileName?.toLowerCase().includes('2.7') ||
+                 (data as ParsedDataSuccess)?.header?.nomorPengajuan?.includes('2.7') ||
+                 ((data as any)?._debug?.colRanges?.[0]?.xEnd === 'bc27');
 
   const allSelected = data?.items?.length > 0 && selectedRows.size === data.items.length;
 
@@ -102,6 +106,26 @@ function ParsedDataModal({ file, kdKegiatan, onClose, onPushSelected }: ParsedDa
           </div>
           <button className="icon-btn" onClick={onClose}><X size={20} /></button>
         </div>
+
+        {isBc27 && (
+          <div style={{
+            margin: '12px 20px 0',
+            padding: '10px 14px',
+            background: '#eff6ff',
+            border: '1px solid #bfdbfe',
+            borderRadius: 8,
+            color: '#1e40af',
+            fontSize: 13,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 10
+          }}>
+            <Info size={18} style={{ flexShrink: 0, color: '#2563eb' }} />
+            <div>
+              <strong>Thông báo Chứng từ CEISA (BC 2.7):</strong> Tờ khai BC 2.7 là chứng từ giao dịch nội bộ TPB được quản lý trực tiếp trên hệ thống <strong>CEISA</strong> của Hải quan. Chứng từ này <strong>không thuộc quy trình Push lên hệ thống INSW</strong>. Dữ liệu đã được lưu kho IT Inventory đầy đủ.
+            </div>
+          </div>
+        )}
 
         {!data ? (
           <div className="modal-body">
@@ -214,14 +238,14 @@ function ParsedDataModal({ file, kdKegiatan, onClose, onPushSelected }: ParsedDa
                                 }}
                               >
                                 <option value="">{t('inswPush.selectCategory', '-- Select Category --')}</option>
-                                <option value="1">1 - Bahan Baku</option>
-                                <option value="2">2 - Bahan Penolong</option>
-                                <option value="3">3 - Bahan Habis Pakai</option>
-                                <option value="4">4 - Barang Dagangan</option>
-                                <option value="5">5 - Mesin dan Peralatan</option>
-                                <option value="6">6 - Barang dalam proses</option>
-                                <option value="7">7 - Barang Jadi</option>
-                                <option value="8">8 - Barang Reject & Scrap</option>
+                                <option value="1">1 - Mesin / Asset / Peralatan</option>
+                                <option value="2">2 - Hasil Produksi (Garment / Thành phẩm)</option>
+                                <option value="3">3 - Bahan Baku / Penolong (Nguyên phụ liệu)</option>
+                                <option value="4">4 - Pengemas (Packaging / Bao bì)</option>
+                                <option value="5">5 - Sisa / Scrap / Waste (Phế liệu)</option>
+                                <option value="6">6 - Barang Contoh (Sample / Hàng mẫu)</option>
+                                <option value="7">7 - Bangunan / Konstruksi</option>
+                                <option value="8">8 - Barang Dalam Proses (WIP / Bán thành phẩm)</option>
                               </select>
                             </td>
                             <td>{row.kondisiBarang}</td>
@@ -257,14 +281,14 @@ function ParsedDataModal({ file, kdKegiatan, onClose, onPushSelected }: ParsedDa
                         }}
                       >
                         <option value="">{t('inswPush.bulkSetCategory', '-- Bulk Set Category --')}</option>
-                        <option value="1">1 - Bahan Baku</option>
-                        <option value="2">2 - Bahan Penolong</option>
-                        <option value="3">3 - Bahan Habis Pakai</option>
-                        <option value="4">4 - Barang Dagangan</option>
-                        <option value="5">5 - Mesin dan Peralatan</option>
-                        <option value="6">6 - Barang dalam proses</option>
-                        <option value="7">7 - Barang Jadi</option>
-                        <option value="8">8 - Barang Reject & Scrap</option>
+                        <option value="1">1 - Mesin / Asset / Peralatan</option>
+                        <option value="2">2 - Hasil Produksi (Garment / Thành phẩm)</option>
+                        <option value="3">3 - Bahan Baku / Penolong (Nguyên phụ liệu)</option>
+                        <option value="4">4 - Pengemas (Packaging / Bao bì)</option>
+                        <option value="5">5 - Sisa / Scrap / Waste (Phế liệu)</option>
+                        <option value="6">6 - Barang Contoh (Sample / Hàng mẫu)</option>
+                        <option value="7">7 - Bangunan / Konstruksi</option>
+                        <option value="8">8 - Barang Dalam Proses (WIP / Bán thành phẩm)</option>
                       </select>
                       <button
                         className="btn-secondary"
@@ -284,10 +308,16 @@ function ParsedDataModal({ file, kdKegiatan, onClose, onPushSelected }: ParsedDa
                       </button>
                     </div>
                     <span style={{ fontSize: 13, marginRight: 8 }}>Selected: <strong>{selectedRows.size}</strong> / {data.items.length}</span>
-                    <button className="btn-primary" disabled={selectedRows.size === 0 || pushing} onClick={handlePush}>
-                      {pushing ? <Loader size={16} className="spin" /> : <Send size={16} />}
-                      Push Selected
-                    </button>
+                    {isBc27 ? (
+                      <span className="status-badge" style={{ padding: '6px 14px', background: '#e0f2fe', color: '#0369a1', border: '1px solid #bae6fd', fontSize: 13, fontWeight: 600 }} title="Chứng từ BC 2.7 thuộc hệ thống CEISA, không cần Push INSW.">
+                        🔒 Chứng từ CEISA (Không thuộc INSW)
+                      </span>
+                    ) : (
+                      <button className="btn-primary" disabled={selectedRows.size === 0 || pushing} onClick={handlePush}>
+                        {pushing ? <Loader size={16} className="spin" /> : <Send size={16} />}
+                        Push Selected
+                      </button>
+                    )}
                     <button className="btn-secondary" disabled={pushing} onClick={onClose}>Close</button>
                   </div>
                 </div>
@@ -857,6 +887,20 @@ export default function PdfImportPage({ titleKey, sectionKey, fileType, pagePath
                   </td>
                   <td>
                     {file.status === 'processed' ? (() => {
+                      const isBc27 = file.fileName?.toLowerCase().includes('2.7') ||
+                                     file.parsedData?.header?.nomorPengajuan?.includes('2.7') ||
+                                     ((file.parsedData as any)?._debug?.colRanges?.[0]?.xEnd === 'bc27');
+
+                      if (isBc27) {
+                        return (
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                            <span className="status-badge" style={{ background: '#e0f2fe', color: '#0369a1', border: '1px solid #bae6fd' }} title="Tờ khai BC 2.7 thuộc hệ thống CEISA (Giao dịch chuyển tiếp TPB). Dữ liệu đã lưu IT Inventory, không cần Push INSW.">
+                              🔒 CEISA (Non-INSW)
+                            </span>
+                          </div>
+                        );
+                      }
+
                       const ps = pushStates[file.id];
                       const isPushable = !ps || ps.status === 'idle' || ps.status === 'failed';
                       return (
@@ -999,7 +1043,7 @@ export default function PdfImportPage({ titleKey, sectionKey, fileType, pagePath
         <div className="modal-overlay" onClick={() => setViewPushResponse(null)}>
           <div className="modal" onClick={e => e.stopPropagation()} style={{ maxWidth: 680 }}>
             <div className="modal-header">
-              <h3>{t('inswPush.responseDetail')}</h3>
+              <h3>{t('inswPush.responseDetail', 'Chi Tiết Phản Hồi Push')}</h3>
               <button className="icon-btn" onClick={() => setViewPushResponse(null)}><X size={20} /></button>
             </div>
             <div style={{ padding: 20 }}>
@@ -1018,10 +1062,10 @@ export default function PdfImportPage({ titleKey, sectionKey, fileType, pagePath
                       isAlreadySent ? (
                         <><CheckCircle size={18} /> {t('inswPush.alreadySent', 'Data already sent to INSW')}</>
                       ) : (
-                        <><CheckCircle size={18} /> {t('inswPush.pushSuccessful')}</>
+                        <><CheckCircle size={18} /> {t('inswPush.pushSuccessful', 'Đẩy Thành Công')}</>
                       )
                     ) : (
-                      <><XCircle size={18} /> {t('inswPush.pushFailed')}</>
+                      <><XCircle size={18} /> {t('inswPush.pushFailed', 'Đẩy Thất Bại')}</>
                     )}
                   </div>
                 );
@@ -1029,35 +1073,39 @@ export default function PdfImportPage({ titleKey, sectionKey, fileType, pagePath
               {/* Info grid */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px 20px', marginBottom: 16, fontSize: 13 }}>
                 <div>
-                  <span style={{ color: 'var(--text-muted)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{t('inswPush.pushId')}</span>
+                  <span style={{ color: 'var(--text-muted)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{t('inswPush.pushId', 'Push ID')}</span>
                   <p style={{ margin: '2px 0', fontWeight: 500 }}>#{viewPushResponse.pushId}</p>
                 </div>
                 <div>
-                  <span style={{ color: 'var(--text-muted)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{t('inswPush.httpStatus')}</span>
+                  <span style={{ color: 'var(--text-muted)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{t('inswPush.httpStatus', 'HTTP Status')}</span>
                   <p style={{ margin: '2px 0', fontWeight: 500 }}>{viewPushResponse.httpStatus || '—'}</p>
                 </div>
                 <div>
-                  <span style={{ color: 'var(--text-muted)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{t('inswPush.pushedBy')}</span>
+                  <span style={{ color: 'var(--text-muted)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{t('inswPush.pushedBy', 'Pushed By')}</span>
                   <p style={{ margin: '2px 0', fontWeight: 500 }}>{viewPushResponse.pushedBy}</p>
                 </div>
                 <div>
-                  <span style={{ color: 'var(--text-muted)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{t('inswPush.duration')}</span>
+                  <span style={{ color: 'var(--text-muted)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{t('inswPush.duration', 'Duration')}</span>
                   <p style={{ margin: '2px 0', fontWeight: 500 }}>{viewPushResponse.duration ? `${(viewPushResponse.duration / 1000).toFixed(1)}s` : '—'}</p>
                 </div>
                 <div style={{ gridColumn: '1 / -1' }}>
-                  <span style={{ color: 'var(--text-muted)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{t('inswPush.pushedAt')}</span>
+                  <span style={{ color: 'var(--text-muted)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{t('inswPush.pushedAt', 'Pushed At')}</span>
                   <p style={{ margin: '2px 0', fontWeight: 500 }}>{viewPushResponse.pushedAt ? new Date(viewPushResponse.pushedAt).toLocaleString() : '—'}</p>
                 </div>
               </div>
               {/* Error message */}
-              {viewPushResponse.errorMessage && (
-                <div style={{ marginBottom: 16 }}>
-                  <span style={{ color: 'var(--text-muted)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{t('inswPush.errorMessage')}</span>
-                  <div style={{ marginTop: 4, padding: '8px 12px', background: '#fff3f3', borderRadius: 6, border: '1px solid #ffcdd2', color: '#c62828', fontSize: 13, wordBreak: 'break-word' }}>
-                    {viewPushResponse.errorMessage}
+              {(() => {
+                const displayError = viewPushResponse.errorMessage || (viewPushResponse.status !== 'success' ? (viewPushResponse.responseBody || `HTTP ${viewPushResponse.httpStatus || 400}: Push failed`) : null);
+                if (!displayError) return null;
+                return (
+                  <div style={{ marginBottom: 16 }}>
+                    <span style={{ color: 'var(--text-muted)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{t('inswPush.errorMessage', 'Error Message')}</span>
+                    <div style={{ marginTop: 4, padding: '8px 12px', background: '#fff3f3', borderRadius: 6, border: '1px solid #ffcdd2', color: '#c62828', fontSize: 13, wordBreak: 'break-word' }}>
+                      {displayError}
+                    </div>
                   </div>
-                </div>
-              )}
+                );
+              })()}
               {/* Response body */}
               {viewPushResponse.responseBody && (
                 <details style={{ marginBottom: 12 }}>

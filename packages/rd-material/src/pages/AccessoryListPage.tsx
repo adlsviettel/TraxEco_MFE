@@ -212,6 +212,14 @@ const AccessoryListPage: React.FC = () => {
     return result;
   }, [items, columnFilters, sortConfig, getFieldValueForFilter]);
 
+  const pagedItems = useMemo(() => {
+    return filteredItems.slice(page * rowsPerPage, (page + 1) * rowsPerPage);
+  }, [filteredItems, page, rowsPerPage]);
+
+  useEffect(() => {
+    setPage(0);
+  }, [columnFilters, keyword, itemCode, supplierName, color, origin, location, holder]);
+
   columnFilterStore.register(window.location.pathname, columnFilters, setColumnFilters, items);
 
   const activeFiltersCount = (itemCode.length > 0 ? 1 : 0) + (supplierName.length > 0 ? 1 : 0) + (color.length > 0 ? 1 : 0) + (origin.length > 0 ? 1 : 0) + (location.length > 0 ? 1 : 0) + (holder.length > 0 ? 1 : 0);
@@ -481,27 +489,27 @@ const AccessoryListPage: React.FC = () => {
     
     if (!silent) setLoading(true);
     try {
-      const data = await rdItemApi.getAll({ itemType: 'ACCESSORY', keyword, itemCode: itemCode.join(','), supplierName: supplierName.join(','), color: color.join(','), origin: origin.join(','), location: location.join(','), holder: holder.join(','), page, size: rowsPerPage });
+      const data = await rdItemApi.getAll({ itemType: 'ACCESSORY', keyword, itemCode: itemCode.join(','), supplierName: supplierName.join(','), color: color.join(','), origin: origin.join(','), location: location.join(','), holder: holder.join(','), page: 0, size: 10000 });
       setItems(data.content ?? []);
-      setTotal(data.totalElements ?? 0);
+      setTotal(data.content ? data.content.length : 0);
     } catch (err: unknown) {
       console.error('GET /rd-items error:', err);
       if (!silent) setItems([]);
     } finally {
       if (!silent) setLoading(false);
     }
-  }, [keyword, itemCode, supplierName, color, origin, location, holder, page, rowsPerPage, hasSearched]);
+  }, [keyword, itemCode, supplierName, color, origin, location, holder, hasSearched]);
 
   const currentParamsRef = useRef('');
 
   useEffect(() => { 
-    const currentParams = JSON.stringify({ keyword, itemCode, supplierName, color, origin, location, holder, page, rowsPerPage, hasSearched });
+    const currentParams = JSON.stringify({ keyword, itemCode, supplierName, color, origin, location, holder, hasSearched });
     if (currentParams === currentParamsRef.current && items.length > 0) {
       return;
     }
     currentParamsRef.current = currentParams;
     load(); 
-  }, [load, keyword, itemCode, supplierName, color, origin, location, holder, page, rowsPerPage, hasSearched, items.length]);
+  }, [load, keyword, itemCode, supplierName, color, origin, location, holder, hasSearched, items.length]);
 
   const handleDelete = (id: number) => {
     setDeleteId(id);
@@ -1110,7 +1118,7 @@ const AccessoryListPage: React.FC = () => {
                       </Typography>
                     </Box>
                   </TableCell></TableRow>
-                ) : filteredItems.map((item) => {
+                ) : pagedItems.map((item) => {
                   const rowBgColor = (item.quantity ?? 0) <= 0 ? '#fef2f2' : '#fff';
                   return (
                     <TableRow
@@ -1149,10 +1157,10 @@ const AccessoryListPage: React.FC = () => {
           flexShrink: 0 
         }}>
           <Typography variant="body2" color="#3f4945" fontWeight={500} fontSize={{ xs: 11, sm: 13 }} sx={{ whiteSpace: 'nowrap', flexShrink: 0 }}>
-            {isMobile ? `Total: ${total}` : `Showing ${page * rowsPerPage + 1} - ${Math.min((page + 1) * rowsPerPage, total)} of ${total}`}
+            {isMobile ? `Total: ${filteredItems.length}` : `Showing ${filteredItems.length === 0 ? 0 : page * rowsPerPage + 1} - ${Math.min((page + 1) * rowsPerPage, filteredItems.length)} of ${filteredItems.length}`}
           </Typography>
           <Pagination
-            count={Math.ceil(total / rowsPerPage) || 1}
+            count={Math.ceil(filteredItems.length / rowsPerPage) || 1}
             page={page + 1}
             onChange={(_, p) => { setPage(p - 1); }}
             color="primary" 

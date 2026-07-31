@@ -4,6 +4,29 @@
  */
 import { authFetch } from '@traxeco/shared';
 
+export const isQueuedRequest = (r: any): boolean => {
+  if (!r) return false;
+  const statusLower = (r.status || '').toLowerCase();
+  const queueLower = (r.queueStatus || '').toLowerCase();
+
+  // 1. If already approved, released, finished, in progress, rejected or cancelled -> NOT in queue
+  if (
+    queueLower === 'approved' || 
+    statusLower === 'approved' || 
+    statusLower === 'in progress' || 
+    statusLower === 'finished' || 
+    statusLower === 'released' || 
+    statusLower === 'rejected' || 
+    statusLower === 'cancelled' ||
+    r.releasedDate
+  ) {
+    return false;
+  }
+
+  // 2. MUST have explicit pending queue status from backend
+  return queueLower === 'pending' || statusLower === 'queued';
+};
+
 export interface TccRequest {
   requestId: string;
   createdAt: string;
@@ -123,6 +146,8 @@ export interface CreateRequestPayload {
   lineQuantity: string;
   templateQty?: number | string | null;
   confirmDeliveryDate?: string | null;
+  queueStatus?: string | null;
+  status?: string | null;
 }
 
 export interface UpdateProgressPayload {
@@ -550,16 +575,23 @@ export const tccService = {
     const groupFactories: string[] = matchedGroup?.factories && matchedGroup.factories.length > 0 
       ? matchedGroup.factories 
       : [factory];
-    const maxDailySmv = Number(matchedGroup?.maxDailySmv ?? matchedGroup?.maxDailyRequests ?? 0);
+
+    // If capacity data is not found or invalid, default to Unlimited (-1)
+    const rawMax = matchedGroup?.maxDailySmv ?? matchedGroup?.maxDailyRequests;
+    const maxDailySmv = matchedGroup && rawMax !== undefined && rawMax !== null && Number(rawMax) > 0
+      ? Number(rawMax)
+      : -1; // -1 = Unlimited capacity
 
     let totalUsedSmv = 0;
-    for (const f of groupFactories) {
-      try {
-        const usage = await tccService.getFactoryCapacityUsage(f, date);
-        const factoryUsed = Number(usage?.usedSmv ?? usage?.used ?? usage?.currentUsage ?? 0);
-        totalUsedSmv += factoryUsed;
-      } catch (e) {
-        console.warn(`Failed capacity usage fetch for factory ${f}`, e);
+    if (maxDailySmv > 0) {
+      for (const f of groupFactories) {
+        try {
+          const usage = await tccService.getFactoryCapacityUsage(f, date);
+          const factoryUsed = Number(usage?.usedSmv ?? usage?.used ?? usage?.currentUsage ?? 0);
+          totalUsedSmv += factoryUsed;
+        } catch (e) {
+          console.warn(`Failed capacity usage fetch for factory ${f}`, e);
+        }
       }
     }
 
@@ -575,13 +607,24 @@ export const tccService = {
 
   // Queue Management
   getQueuedRequests: async (): Promise<any[]> => {
-    const res = await authFetch('/tcc/queue');
-    if (!res.ok) throw new Error('API error: ' + res.status);
-    return res.json();
+    try {
+      const res = await authFetch('/tcc/requests');
+      if (res.ok) {
+        const allList = await res.json();
+        const all: TccRequest[] = Array.isArray(allList) ? allList : (allList?.data || []);
+        return all.filter(isQueuedRequest);
+      }
+    } catch (e) {
+      console.error('Failed to load queued requests', e);
+    }
+    return [];
   },
   approveQueuedRequest: async (requestId: string): Promise<any> => {
     const res = await authFetch(`/tcc/queue/${encodeURIComponent(requestId)}/approve`, { method: 'POST' });
-    if (!res.ok) throw new Error('API error: ' + res.status);
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.message || 'API error: ' + res.status);
+    }
     return res.json();
   },
   rescheduleQueuedRequest: async (requestId: string, newDate: string, remarks?: string): Promise<any> => {

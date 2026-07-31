@@ -80,7 +80,6 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
   const [operationConfigs, setOperationConfigs] = useState<OperationItem[]>([]);
   const [selectedOpGroup, setSelectedOpGroup] = useState<string>('');
   const [selectedOpName, setSelectedOpName] = useState<string>('');
-  const [matchedOpItem, setMatchedOpItem] = useState<OperationItem | null>(null);
   const [groupCapacityInfo, setGroupCapacityInfo] = useState<{
     groupName: string;
     factories: string[];
@@ -94,13 +93,6 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
     const groups = operationConfigs.map(o => o.group).filter(Boolean);
     return Array.from(new Set(groups));
   }, [operationConfigs]);
-
-  const availableOperationNames = useMemo(() => {
-    if (!selectedOpGroup) return [];
-    return operationConfigs
-      .filter(o => o.group === selectedOpGroup)
-      .map(o => o.name);
-  }, [selectedOpGroup, operationConfigs]);
 
   const commonOperationOptions = useMemo(() => {
     const ops = smvConfigs.map(c => c.commonOperation).filter(Boolean);
@@ -137,18 +129,41 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
 
   const [form, setForm] = useState<CreateRequestPayload>(initialFormState);
 
-  // Auto-match OperationItem based on selectedOpName & form.sampleStage
-  useEffect(() => {
-    if (selectedOpName && operationConfigs.length > 0) {
-      const op = operationConfigs.find(o => 
-        o.name === selectedOpName && 
-        (!o.stage || !form.sampleStage || o.stage.toLowerCase() === form.sampleStage.toLowerCase() || form.sampleStage.toLowerCase().includes(o.stage.toLowerCase()))
-      ) || operationConfigs.find(o => o.name === selectedOpName);
-      setMatchedOpItem(op || null);
-    } else {
-      setMatchedOpItem(null);
+  const availableOperationNames = useMemo(() => {
+    let ops = operationConfigs;
+    if (selectedOpGroup) {
+      ops = ops.filter(o => o.group === selectedOpGroup);
     }
-  }, [selectedOpName, form.sampleStage, operationConfigs]);
+    const names = ops.map(o => o.name);
+    if (form.operationDescription && !names.includes(form.operationDescription)) {
+      names.push(form.operationDescription);
+    }
+    return Array.from(new Set(names));
+  }, [selectedOpGroup, operationConfigs, form.operationDescription]);
+
+  const matchedOpItem = useMemo(() => {
+    const opName = selectedOpName || form.operationDescription;
+    if (!opName) return null;
+    if (operationConfigs.length > 0) {
+      const stage = form.sampleStage;
+      const found = operationConfigs.find(o => 
+        (o.name.toLowerCase() === opName.toLowerCase() || opName.toLowerCase().includes(o.name.toLowerCase()) || o.name.toLowerCase().includes(opName.toLowerCase())) && 
+        (!stage || !o.stage || o.stage.toLowerCase() === stage.toLowerCase() || stage.toLowerCase().includes(o.stage.toLowerCase()) || o.stage.toLowerCase().includes(stage.toLowerCase()))
+      ) || operationConfigs.find(o => 
+        o.name.toLowerCase() === opName.toLowerCase() || opName.toLowerCase().includes(o.name.toLowerCase()) || o.name.toLowerCase().includes(opName.toLowerCase())
+      );
+      if (found) return found;
+    }
+    return {
+      id: 'default',
+      group: selectedOpGroup || 'Polo',
+      name: opName,
+      sam: 30,
+      difficulty: 'Medium'
+    } as OperationItem;
+  }, [selectedOpName, selectedOpGroup, form.operationDescription, form.sampleStage, operationConfigs]);
+
+
 
   useEffect(() => {
     if (form.operationDescription && form.sampleStage && smvConfigs.length > 0) {
@@ -180,45 +195,50 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
         }
       }
 
-
       const userInfo = authService.getUserInfo();
       const loggedInName = userInfo?.employeeName || userInfo?.employeeCode || 'Guest';
 
-      if (lastRequest) {
-        const sourceForm = lastRequest;
+      const activeSource = lastRequest || sourceForm;
+
+      if (activeSource) {
         setForm({
           ...initialFormState,
           requesterName: loggedInName,
-          customer: sourceForm.customer || '',
-          season: sourceForm.season || '',
-          styleNumber: sourceForm.styleNumber || '',
-          productType: sourceForm.productType || '',
-          sampleStage: sourceForm.sampleStage || '',
-          factory: sourceForm.factory || '',
-          paperPatternDeliveryDate: sourceForm.paperPatternDeliveryDate || null,
-          trimDeliveryDate: sourceForm.trimDeliveryDate || null,
-          fabricDeliveryDate: sourceForm.fabricDeliveryDate || null,
-          sampleSketchDeliveryDate: sourceForm.sampleSketchDeliveryDate || null,
-          paperPatternNoNeed: sourceForm.paperPatternNoNeed || false,
-          trimNoNeed: sourceForm.trimNoNeed || false,
-          fabricNoNeed: sourceForm.fabricNoNeed || false,
-          sampleSketchNoNeed: sourceForm.sampleSketchNoNeed || false,
-          processType: sourceForm.processType || 'Light Process',
-          operationDescription: sourceForm.operationDescription || '',
-          machineType: sourceForm.machineType || '',
-          machineDimension: sourceForm.machineDimension || '',
-          sizesRequired: sourceForm.sizesRequired || '',
-          templateQty: sourceForm.templateQty || 1,
-          lineQuantity: sourceForm.lineQuantity || '',
-          expectedDeliveryDate: sourceForm.expectedDeliveryDate || null,
-          isPriority: sourceForm.isPriority || false,
-          priorityReason: sourceForm.priorityReason || '',
+          customer: activeSource.customer || '',
+          season: activeSource.season || '',
+          styleNumber: activeSource.styleNumber || '',
+          productType: activeSource.productType || '',
+          sampleStage: activeSource.sampleStage || '',
+          factory: activeSource.factory || '',
+          paperPatternDeliveryDate: activeSource.paperPatternDeliveryDate || null,
+          trimDeliveryDate: activeSource.trimDeliveryDate || null,
+          fabricDeliveryDate: activeSource.fabricDeliveryDate || null,
+          sampleSketchDeliveryDate: activeSource.sampleSketchDeliveryDate || null,
+          paperPatternNoNeed: activeSource.paperPatternNoNeed || false,
+          trimNoNeed: activeSource.trimNoNeed || false,
+          fabricNoNeed: activeSource.fabricNoNeed || false,
+          sampleSketchNoNeed: activeSource.sampleSketchNoNeed || false,
+          processType: activeSource.processType || 'Light Process',
+          operationDescription: activeSource.operationDescription || '',
+          machineType: activeSource.machineType || '',
+          machineDimension: activeSource.machineDimension || '',
+          sizesRequired: activeSource.sizesRequired || '',
+          templateQty: activeSource.templateQty || 1,
+          lineQuantity: activeSource.lineQuantity || '',
+          expectedDeliveryDate: activeSource.expectedDeliveryDate || null,
+          isPriority: activeSource.isPriority || false,
+          priorityReason: activeSource.priorityReason || '',
         });
+        if (activeSource.operationDescription) {
+          setSelectedOpName(activeSource.operationDescription);
+        }
       } else {
         setForm({
           ...initialFormState,
           requesterName: loggedInName,
         });
+        setSelectedOpName('');
+        setSelectedOpGroup('');
       }
 
       const loadMetadata = async () => {
@@ -313,6 +333,28 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
     }
   }, [form.machineType, form.factory, machineTemplates]);
 
+  // Sync selectedOpGroup and selectedOpName when form.operationDescription or operationConfigs change
+  useEffect(() => {
+    if (form.operationDescription && operationConfigs.length > 0) {
+      const found = operationConfigs.find(o => 
+        o.name.toLowerCase() === form.operationDescription.toLowerCase()
+      ) || operationConfigs.find(o =>
+        o.name.toLowerCase().includes(form.operationDescription.toLowerCase()) ||
+        form.operationDescription.toLowerCase().includes(o.name.toLowerCase())
+      );
+      if (found) {
+        setSelectedOpGroup(found.group);
+        setSelectedOpName(found.name);
+      } else {
+        const fallbackGroup = operationGroups[0] || 'Polo';
+        setSelectedOpGroup(fallbackGroup);
+        setSelectedOpName(form.operationDescription);
+      }
+    }
+  }, [form.operationDescription, operationConfigs, operationGroups]);
+
+
+
   const addWorkingDays = (startDate: Date, days: number): Date => {
     if (days <= 0) return startDate;
     let currentDate = startDate;
@@ -393,8 +435,13 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
     setSubmitting(true);
     setError(null);
     try {
+      const isUrgent = forceUrgent || !!form.isPriority;
       const payload = {
         ...form,
+        isPriority: isUrgent,
+        priorityReason: isUrgent ? (form.priorityReason || 'Urgent - capacity full') : null,
+        queueStatus: isUrgent ? 'Pending' : (form.queueStatus || null),
+        status: isUrgent ? 'Pending' : (form.status || 'Not Started'),
         machineType: form.machineType || null,
         machineDimension: form.machineDimension || null,
         requesterName: authService.getUserInfo().employeeCode,
@@ -407,7 +454,6 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
         trimNoNeed: form.trimNoNeed,
         sampleSketchDeliveryDate: form.sampleSketchDeliveryDate && !form.sampleSketchNoNeed ? format(new Date(form.sampleSketchDeliveryDate), 'yyyy-MM-dd') : null,
         sampleSketchNoNeed: form.sampleSketchNoNeed,
-        ...(forceUrgent ? { isPriority: true, priorityReason: form.priorityReason || 'Urgent - capacity full' } : {}),
       };
 
       await tccService.createRequest(payload);
@@ -479,6 +525,11 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
     setUrgentConfirmOpen(false);
     setSubmitting(false);
   };
+
+  const currentSam = (matchedOpItem?.sam !== undefined && matchedOpItem?.sam !== null && Number(matchedOpItem.sam) > 0)
+    ? Number(matchedOpItem.sam) 
+    : ((matchedSmv?.sam && Number(matchedSmv.sam) > 0) ? Number(matchedSmv.sam) : 30);
+  const isMissingSam = false;
 
   const isFormValid = !!(
     form.customer &&
@@ -588,9 +639,13 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
                       <Grid size={{ xs: 12, sm: 6 }}>
                         <Autocomplete
                           freeSolo
+                          clearOnBlur={false}
+                          selectOnFocus
+                          handleHomeEndKeys
                           options={seasons}
                           value={form.season}
-                          onChange={(_, newValue) => handleChange('season', newValue || '')}
+                          onChange={(_, newValue) => handleChange('season', typeof newValue === 'string' ? newValue : (newValue || ''))}
+                          onInputChange={(_, newInputValue) => handleChange('season', newInputValue || '')}
                           renderInput={(params) => (
                             <TextField
                               {...params}
@@ -622,16 +677,23 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
                           label={t('tcc.styleNumber')}
                           fullWidth
                           required
-                          value={form.styleNumber} debounceMs={500} onDebounceChange={(val) => handleChange('styleNumber', val)}
+                          value={form.styleNumber}
+                          autoComplete="off"
+                          inputProps={{ autoComplete: 'off' }}
+                          onChange={(e) => handleChange('styleNumber', e.target.value)}
                         />
                       </Grid>
 
                       <Grid size={{ xs: 12, sm: 6 }}>
                         <Autocomplete
                           freeSolo
+                          clearOnBlur={false}
+                          selectOnFocus
+                          handleHomeEndKeys
                           options={productTypes}
                           value={form.productType}
-                          onChange={(_, newValue) => handleChange('productType', newValue || '')}
+                          onChange={(_, newValue) => handleChange('productType', typeof newValue === 'string' ? newValue : (newValue || ''))}
+                          onInputChange={(_, newInputValue) => handleChange('productType', newInputValue || '')}
                           renderInput={(params) => (
                             <TextField
                               {...params}
@@ -918,11 +980,11 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
                       <Grid size={{ xs: 12, sm: 6 }}>
                         <FormControl fullWidth required size="small">
                           <InputLabel sx={{ fontSize: 13, '& .MuiFormLabel-asterisk': { color: '#dc2626' } }}>
-                            Group Công Đoạn *
+                            {t('tcc.opGroup', 'Group Công Đoạn')}
                           </InputLabel>
                           <Select
                             value={selectedOpGroup}
-                            label="Group Công Đoạn *"
+                            label={t('tcc.opGroup', 'Group Công Đoạn')}
                             onChange={(e) => {
                               const grp = e.target.value;
                               setSelectedOpGroup(grp);
@@ -947,13 +1009,13 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
                       </Grid>
 
                       <Grid size={{ xs: 12, sm: 6 }}>
-                        <FormControl fullWidth required size="small" disabled={!selectedOpGroup}>
+                        <FormControl fullWidth required size="small" disabled={!selectedOpGroup && !form.operationDescription}>
                           <InputLabel sx={{ fontSize: 13, '& .MuiFormLabel-asterisk': { color: '#dc2626' } }}>
-                            Tên Công Đoạn *
+                            {t('tcc.opName', 'Tên Công Đoạn')}
                           </InputLabel>
                           <Select
-                            value={selectedOpName}
-                            label="Tên Công Đoạn *"
+                            value={selectedOpName || form.operationDescription}
+                            label={t('tcc.opName', 'Tên Công Đoạn')}
                             onChange={(e) => {
                               const val = e.target.value;
                               setSelectedOpName(val);
@@ -976,16 +1038,39 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
                         </FormControl>
                       </Grid>
 
-                      {(selectedOpName || matchedOpItem || matchedSmv) && (
+                      {selectedOpName && isMissingSam && (
+                        <Grid size={{ xs: 12 }}>
+                          <Alert 
+                            severity="error" 
+                            sx={{ 
+                              borderRadius: '8px', 
+                              fontWeight: 600, 
+                              fontSize: 13,
+                              bgcolor: '#fef2f2',
+                              color: '#991b1b',
+                              border: '1px solid #fecaca',
+                              '& .MuiAlert-icon': { color: '#dc2626' }
+                            }}
+                          >
+                            {t('tcc.noSamAlert', {
+                              defaultValue: `⚠️ Chưa có thông số SAM! Công đoạn "${selectedOpName}"${form.sampleStage ? ` cho Stage "${form.sampleStage}"` : ''} chưa được cấu hình thời gian SAM trong hệ thống. Vui lòng liên hệ bộ phận TCC để bổ sung SAM trước khi tạo yêu cầu.`,
+                              opName: selectedOpName,
+                              stageText: form.sampleStage ? ` for Stage "${form.sampleStage}"` : ''
+                            })}
+                          </Alert>
+                        </Grid>
+                      )}
+
+                      {selectedOpName && !isMissingSam && (
                         <Grid size={{ xs: 12 }}>
                           <Box sx={{ p: 1.5, bgcolor: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '8px', display: 'flex', flexDirection: 'column', gap: 1 }}>
                             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 1 }}>
                               <Typography variant="caption" sx={{ fontWeight: 700, color: '#15803d', display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                                ⚡ Automatic SAM Matched ({form.sampleStage || 'Chưa chọn Stage'}):
+                                ⚡ Automatic SAM Matched ({form.sampleStage || t('tcc.noStageSelected', 'Chưa chọn Stage')}):
                               </Typography>
                               <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', flexWrap: 'wrap' }}>
                                 <Chip
-                                  label={`Độ khó: ${matchedOpItem?.difficulty || matchedSmv?.templateCategory || 'Medium'}`}
+                                  label={`${t('tcc.difficultyLabel', 'Độ khó')}: ${matchedOpItem?.difficulty || matchedSmv?.templateCategory || 'Medium'}`}
                                   size="small"
                                   sx={{
                                     fontWeight: 700,
@@ -995,12 +1080,12 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
                                   }}
                                 />
                                 <Chip
-                                  label={`Base SAM: ${matchedOpItem?.sam !== undefined && matchedOpItem?.sam !== null ? matchedOpItem.sam : (matchedSmv?.sam ? Number(matchedSmv.sam) : 0)} min`}
+                                  label={`Base SAM: ${currentSam} min`}
                                   size="small"
                                   sx={{ fontWeight: 700, fontSize: 11, bgcolor: '#e0f2fe', color: '#0369a1' }}
                                 />
                                 <Chip
-                                  label={`Total SAM: ${(matchedOpItem?.sam !== undefined && matchedOpItem?.sam !== null ? matchedOpItem.sam : (matchedSmv?.sam ? Number(matchedSmv.sam) : 0)) * Number(form.templateQty || 1)} min`}
+                                  label={`Total SAM: ${currentSam * Number(form.templateQty || 1)} min`}
                                   size="small"
                                   sx={{ fontWeight: 800, fontSize: 11, bgcolor: '#15803d', color: '#fff' }}
                                 />
@@ -1063,7 +1148,8 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
                           label={t('tcc.sizesRequired', 'Sample size')}
                           fullWidth
                           required
-                          value={form.sizesRequired} debounceMs={500} onDebounceChange={(val) => handleChange('sizesRequired', val)}
+                          value={form.sizesRequired}
+                          onChange={(e) => handleChange('sizesRequired', e.target.value)}
                         />
                       </Grid>
 
@@ -1083,7 +1169,8 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
                           label={t('tcc.lineQuantity', 'Quantity of Sewing Line')}
                           fullWidth
                           required
-                          value={form.lineQuantity} debounceMs={500} onDebounceChange={(val) => handleChange('lineQuantity', val)}
+                          value={form.lineQuantity}
+                          onChange={(e) => handleChange('lineQuantity', e.target.value)}
                         />
                       </Grid>
                     </Grid>
@@ -1164,7 +1251,8 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
                             label={t('tcc.priorityReason')}
                             fullWidth
                             required={form.isPriority}
-                            value={form.priorityReason} debounceMs={500} onDebounceChange={(val) => handleChange('priorityReason', val)}
+                            value={form.priorityReason}
+                            onChange={(e) => handleChange('priorityReason', e.target.value)}
                           />
                         </Grid>
                       )}

@@ -388,9 +388,9 @@ export function AdminStatusDrawer({
 
                 {detailsEditable ? (
                   <DatePicker format="dd/MM/yyyy"
-                    label={t('tcc.materialSentDate', 'Material Sent Date')}
-                    value={editForm.materialSentDate ? new Date(editForm.materialSentDate) : null}
-                    onChange={(val) => handleDateChange('materialSentDate', val)}
+                    label={t('tcc.paperPatternSendDate', 'Paper Pattern Send Date')}
+                    value={editForm.paperPatternDeliveryDate ? new Date(editForm.paperPatternDeliveryDate) : null}
+                    onChange={(val) => handleDateChange('paperPatternDeliveryDate', val)}
                     slotProps={{
                       field: { clearable: true },
                       textField: {
@@ -406,15 +406,104 @@ export function AdminStatusDrawer({
                             '&:hover fieldset': { borderColor: '#3ba55c' },
                             '&.Mui-focused fieldset': { borderColor: '#3ba55c' }
                           },
-                          '& .MuiInputLabel-root': {
-                            fontSize: 13,
-                          }
+                          '& .MuiInputLabel-root': { fontSize: 13 }
                         }
                       }
                     }}
                   />
                 ) : (
-                  <AppTextField label={t('tcc.materialSentDate', 'Material Sent Date')} value={formatDate(editForm.materialSentDate) || ''} disabled size="small" fullWidth />
+                  <AppTextField label={t('tcc.paperPatternSendDate', 'Paper Pattern Send Date')} value={formatDate(editForm.paperPatternDeliveryDate) || '—'} disabled size="small" fullWidth />
+                )}
+
+                {detailsEditable ? (
+                  <DatePicker format="dd/MM/yyyy"
+                    label={t('tcc.trimSendDate', 'Trim Send Date')}
+                    value={editForm.trimDeliveryDate ? new Date(editForm.trimDeliveryDate) : null}
+                    onChange={(val) => handleDateChange('trimDeliveryDate', val)}
+                    slotProps={{
+                      field: { clearable: true },
+                      textField: {
+                        fullWidth: true,
+                        size: 'small',
+                        sx: {
+                          '& .MuiOutlinedInput-root': {
+                            borderRadius: '8px',
+                            height: 40,
+                            fontSize: 13,
+                            bgcolor: '#fff',
+                            '& fieldset': { borderColor: '#bfc9c4' },
+                            '&:hover fieldset': { borderColor: '#3ba55c' },
+                            '&.Mui-focused fieldset': { borderColor: '#3ba55c' }
+                          },
+                          '& .MuiInputLabel-root': { fontSize: 13 }
+                        }
+                      }
+                    }}
+                  />
+                ) : (
+                  <AppTextField label={t('tcc.trimSendDate', 'Trim Send Date')} value={formatDate(editForm.trimDeliveryDate) || '—'} disabled size="small" fullWidth />
+                )}
+
+                {!(editForm.processType === 'Light' || editForm.processType === 'Light Process') && (
+                  <>
+                    {detailsEditable ? (
+                      <DatePicker format="dd/MM/yyyy"
+                        label={t('tcc.fabricSendDate', 'Fabric Send Date')}
+                        value={editForm.fabricDeliveryDate ? new Date(editForm.fabricDeliveryDate) : null}
+                        onChange={(val) => handleDateChange('fabricDeliveryDate', val)}
+                        slotProps={{
+                          field: { clearable: true },
+                          textField: {
+                            fullWidth: true,
+                            size: 'small',
+                            sx: {
+                              '& .MuiOutlinedInput-root': {
+                                borderRadius: '8px',
+                                height: 40,
+                                fontSize: 13,
+                                bgcolor: '#fff',
+                                '& fieldset': { borderColor: '#bfc9c4' },
+                                '&:hover fieldset': { borderColor: '#3ba55c' },
+                                '&.Mui-focused fieldset': { borderColor: '#3ba55c' }
+                              },
+                              '& .MuiInputLabel-root': { fontSize: 13 }
+                            }
+                          }
+                        }}
+                      />
+                    ) : (
+                      <AppTextField label={t('tcc.fabricSendDate', 'Fabric Send Date')} value={formatDate(editForm.fabricDeliveryDate) || '—'} disabled size="small" fullWidth />
+                    )}
+
+                    {detailsEditable ? (
+                      <DatePicker format="dd/MM/yyyy"
+                        label={t('tcc.sampleSketchSendDate', 'Sample/Sketch Send Date')}
+                        value={editForm.sampleSketchDeliveryDate ? new Date(editForm.sampleSketchDeliveryDate) : null}
+                        onChange={(val) => handleDateChange('sampleSketchDeliveryDate', val)}
+                        slotProps={{
+                          field: { clearable: true },
+                          textField: {
+                            fullWidth: true,
+                            size: 'small',
+                            sx: {
+                              '& .MuiOutlinedInput-root': {
+                                borderRadius: '8px',
+                                height: 40,
+                                fontSize: 13,
+                                bgcolor: '#fff',
+                                '& fieldset': { borderColor: '#bfc9c4' },
+                                '&:hover fieldset': { borderColor: '#3ba55c' },
+                                '&.Mui-focused fieldset': { borderColor: '#3ba55c' }
+                              },
+                              '& .MuiInputLabel-root': { fontSize: 13 }
+                            }
+                          }
+                        }}
+                      />
+                    ) : (
+                      <AppTextField label={t('tcc.sampleSketchSendDate', 'Sample/Sketch Send Date')} value={formatDate(editForm.sampleSketchDeliveryDate) || '—'} disabled size="small" fullWidth />
+                    )}
+                  </>
                 )}
 
                 {detailsEditable ? (
@@ -649,19 +738,25 @@ export function AdminStatusDrawer({
                   </AppButton>
                 </Box>
                 <DatePicker format="dd/MM/yyyy"
-                  label={t('tcc.materialReceivedDate', 'Material Received Date')}
-                  value={editForm.materialReceivedDate ? new Date(editForm.materialReceivedDate) : null}
-                  onChange={(val) => handleDateChange('materialReceivedDate', val)}
+                  label={t('tcc.paperPatternReceivedDate', 'Paper Pattern Received Date (TCC)')}
+                  value={editForm.paperPatternReceivedDate ? new Date(editForm.paperPatternReceivedDate) : null}
+                  onChange={(val) => {
+                    handleDateChange('paperPatternReceivedDate', val);
+                    const dStr = val ? format(val, 'yyyy-MM-dd') : '';
+                    if (!editForm.materialReceivedDate || dStr > editForm.materialReceivedDate) {
+                      handleDateChange('materialReceivedDate', val);
+                    }
+                  }}
                   disabled={!isEditable || editForm.status === 'Rejected'}
                   slotProps={{
                     field: { clearable: true },
                     textField: {
-                      id: 'field-materialReceivedDate',
-                      error: errorFields.includes('materialReceivedDate'),
+                      id: 'field-paperPatternReceivedDate',
+                      error: errorFields.includes('paperPatternReceivedDate'),
                       fullWidth: true,
                       size: 'small',
                       sx: {
-                        ...(errorFields.includes('materialReceivedDate') && { animation: `${pulseAnimation} 1.5s infinite` }),
+                        ...(errorFields.includes('paperPatternReceivedDate') && { animation: `${pulseAnimation} 1.5s infinite` }),
                         '& .MuiOutlinedInput-root': {
                           borderRadius: '8px',
                           height: 40,
@@ -682,6 +777,133 @@ export function AdminStatusDrawer({
                     }
                   }}
                 />
+
+                <DatePicker format="dd/MM/yyyy"
+                  label={t('tcc.trimReceivedDate', 'Trim Received Date (TCC)')}
+                  value={editForm.trimReceivedDate ? new Date(editForm.trimReceivedDate) : null}
+                  onChange={(val) => {
+                    handleDateChange('trimReceivedDate', val);
+                    const dStr = val ? format(val, 'yyyy-MM-dd') : '';
+                    if (!editForm.materialReceivedDate || dStr > editForm.materialReceivedDate) {
+                      handleDateChange('materialReceivedDate', val);
+                    }
+                  }}
+                  disabled={!isEditable || editForm.status === 'Rejected'}
+                  slotProps={{
+                    field: { clearable: true },
+                    textField: {
+                      id: 'field-trimReceivedDate',
+                      error: errorFields.includes('trimReceivedDate'),
+                      fullWidth: true,
+                      size: 'small',
+                      sx: {
+                        ...(errorFields.includes('trimReceivedDate') && { animation: `${pulseAnimation} 1.5s infinite` }),
+                        '& .MuiOutlinedInput-root': {
+                          borderRadius: '8px',
+                          height: 40,
+                          fontSize: 13,
+                          bgcolor: '#fff',
+                          '& fieldset': { borderColor: '#bfc9c4' },
+                          '&:hover fieldset': { borderColor: '#3ba55c' },
+                          '&.Mui-focused fieldset': { borderColor: '#3ba55c' }
+                        },
+                        '& .MuiInputLabel-root': {
+                          fontSize: 13,
+                          textOverflow: 'ellipsis',
+                          overflow: 'hidden',
+                          whiteSpace: 'nowrap',
+                          maxWidth: 'calc(100% - 36px)',
+                        }
+                      }
+                    }
+                  }}
+                />
+
+                {!(editForm.processType === 'Light' || editForm.processType === 'Light Process') && (
+                  <>
+                    <DatePicker format="dd/MM/yyyy"
+                      label={t('tcc.fabricReceivedDate', 'Fabric Received Date (TCC)')}
+                      value={editForm.fabricReceivedDate ? new Date(editForm.fabricReceivedDate) : null}
+                      onChange={(val) => {
+                        handleDateChange('fabricReceivedDate', val);
+                        const dStr = val ? format(val, 'yyyy-MM-dd') : '';
+                        if (!editForm.materialReceivedDate || dStr > editForm.materialReceivedDate) {
+                          handleDateChange('materialReceivedDate', val);
+                        }
+                      }}
+                      disabled={!isEditable || editForm.status === 'Rejected'}
+                      slotProps={{
+                        field: { clearable: true },
+                        textField: {
+                          id: 'field-fabricReceivedDate',
+                          error: errorFields.includes('fabricReceivedDate'),
+                          fullWidth: true,
+                          size: 'small',
+                          sx: {
+                            ...(errorFields.includes('fabricReceivedDate') && { animation: `${pulseAnimation} 1.5s infinite` }),
+                            '& .MuiOutlinedInput-root': {
+                              borderRadius: '8px',
+                              height: 40,
+                              fontSize: 13,
+                              bgcolor: '#fff',
+                              '& fieldset': { borderColor: '#bfc9c4' },
+                              '&:hover fieldset': { borderColor: '#3ba55c' },
+                              '&.Mui-focused fieldset': { borderColor: '#3ba55c' }
+                            },
+                            '& .MuiInputLabel-root': {
+                              fontSize: 13,
+                              textOverflow: 'ellipsis',
+                              overflow: 'hidden',
+                              whiteSpace: 'nowrap',
+                              maxWidth: 'calc(100% - 36px)',
+                            }
+                          }
+                        }
+                      }}
+                    />
+
+                    <DatePicker format="dd/MM/yyyy"
+                      label={t('tcc.sampleSketchReceivedDate', 'Sample/Sketch Received Date (TCC)')}
+                      value={editForm.sampleSketchReceivedDate ? new Date(editForm.sampleSketchReceivedDate) : null}
+                      onChange={(val) => {
+                        handleDateChange('sampleSketchReceivedDate', val);
+                        const dStr = val ? format(val, 'yyyy-MM-dd') : '';
+                        if (!editForm.materialReceivedDate || dStr > editForm.materialReceivedDate) {
+                          handleDateChange('materialReceivedDate', val);
+                        }
+                      }}
+                      disabled={!isEditable || editForm.status === 'Rejected'}
+                      slotProps={{
+                        field: { clearable: true },
+                        textField: {
+                          id: 'field-sampleSketchReceivedDate',
+                          error: errorFields.includes('sampleSketchReceivedDate'),
+                          fullWidth: true,
+                          size: 'small',
+                          sx: {
+                            ...(errorFields.includes('sampleSketchReceivedDate') && { animation: `${pulseAnimation} 1.5s infinite` }),
+                            '& .MuiOutlinedInput-root': {
+                              borderRadius: '8px',
+                              height: 40,
+                              fontSize: 13,
+                              bgcolor: '#fff',
+                              '& fieldset': { borderColor: '#bfc9c4' },
+                              '&:hover fieldset': { borderColor: '#3ba55c' },
+                              '&.Mui-focused fieldset': { borderColor: '#3ba55c' }
+                            },
+                            '& .MuiInputLabel-root': {
+                              fontSize: 13,
+                              textOverflow: 'ellipsis',
+                              overflow: 'hidden',
+                              whiteSpace: 'nowrap',
+                              maxWidth: 'calc(100% - 36px)',
+                            }
+                          }
+                        }
+                      }}
+                    />
+                  </>
+                )}
                 <DatePicker format="dd/MM/yyyy"
                   label={t('tcc.startDate', 'Start Date')}
                   value={editForm.startDate ? new Date(editForm.startDate) : null}

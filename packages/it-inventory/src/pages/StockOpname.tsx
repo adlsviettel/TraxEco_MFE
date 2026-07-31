@@ -46,16 +46,16 @@ export interface StockItem {
 const GENERATE_MOCK_DATA = (cat: string, dateStr: string): StockItem[] => {
   const baseItems: Record<string, Array<Omit<StockItem, 'id' | 'statusPush'>>> = {
     wip: [
-      { nomorDokKegiatan: 'A1A25486721', tanggalKegiatan: dateStr, thoiGianThucTe: `${dateStr} 01:48:36`, ngayBaoCaoCutoff5AM: dateStr, kdBarang: 'RE-POLYBAG_PUMA-30CMX40CM', uraianBarang: 'POLYBAG PUMA 30CM X 40CM', jumlah: 455, kdSatuan: 'PCS', nilai: 13650, kho: 'SF1-AC-BK' },
+      { nomorDokKegiatan: 'A1A25486721', tanggalKegiatan: dateStr, thoiGianThucTe: `${dateStr} 01:48:36`, ngayBaoCaoCutoff5AM: dateStr, kdBarang: 'RE-POLYBAG_PUMA-30CMX40CM', uraianBarang: 'POLYBAG PUMA 30CM X 40CM', jumlah: 455, kdSatuan: 'PCE', nilai: 13650, kho: 'SF1-AC-BK' },
       { nomorDokKegiatan: 'A1A25462843', tanggalKegiatan: dateStr, thoiGianThucTe: `${dateStr} 02:15:10`, ngayBaoCaoCutoff5AM: dateStr, kdBarang: '96000353', uraianBarang: 'ELASTIC TAPE 2.5CM BLACK', jumlah: 120, kdSatuan: 'MTR', nilai: 4800, kho: 'SF2-AC-BK' },
-      { nomorDokKegiatan: 'TAN-084616', tanggalKegiatan: dateStr, thoiGianThucTe: `${dateStr} 04:30:00`, ngayBaoCaoCutoff5AM: dateStr, kdBarang: 'FB-CAJ24837', uraianBarang: 'VẢI THUN SINGLE JERSEY 100% COTTON', jumlah: 77.28, kdSatuan: 'YDS', nilai: 386400, kho: 'F2-FB-REP' },
-      { nomorDokKegiatan: 'A1A25462850', tanggalKegiatan: dateStr, thoiGianThucTe: `${dateStr} 06:10:00`, ngayBaoCaoCutoff5AM: dateStr, kdBarang: '62782692', uraianBarang: 'SEWING THREAD 100% POLYESTER 40/2', jumlah: 50, kdSatuan: 'CONE', nilai: 7500, kho: 'SF1-AC-BK' },
+      { nomorDokKegiatan: 'TAN-084616', tanggalKegiatan: dateStr, thoiGianThucTe: `${dateStr} 04:30:00`, ngayBaoCaoCutoff5AM: dateStr, kdBarang: 'FB-CAJ24837', uraianBarang: 'VẢI THUN SINGLE JERSEY 100% COTTON', jumlah: 77.28, kdSatuan: 'YRD', nilai: 386400, kho: 'F2-FB-REP' },
+      { nomorDokKegiatan: 'A1A25462850', tanggalKegiatan: dateStr, thoiGianThucTe: `${dateStr} 06:10:00`, ngayBaoCaoCutoff5AM: dateStr, kdBarang: '62782692', uraianBarang: 'SEWING THREAD 100% POLYESTER 40/2', jumlah: 50, kdSatuan: 'CNE', nilai: 7500, kho: 'SF1-AC-BK' },
       { nomorDokKegiatan: 'A1A25462860', tanggalKegiatan: dateStr, thoiGianThucTe: `${dateStr} 07:15:00`, ngayBaoCaoCutoff5AM: dateStr, kdBarang: 'SF2-FB-BK', uraianBarang: 'RIBBON TAPE WOVEN PUMA 1.5CM', jumlah: 300, kdSatuan: 'MTR', nilai: 15000, kho: 'SF2-FB-BK' },
     ],
     finished: [
-      { nomorDokKegiatan: 'A1A25424072', tanggalKegiatan: dateStr, thoiGianThucTe: `${dateStr} 01:20:00`, ngayBaoCaoCutoff5AM: dateStr, kdBarang: 'S2706GHTM640Y', uraianBarang: 'MEN ATHLETIC T-SHIRT FIT S2706', jumlah: 180, kdSatuan: 'PCS', nilai: 216000, kho: 'CEN-WFG' },
-      { nomorDokKegiatan: 'A1A25424088', tanggalKegiatan: dateStr, thoiGianThucTe: `${dateStr} 03:45:00`, ngayBaoCaoCutoff5AM: dateStr, kdBarang: 'S2706GHTM640M', uraianBarang: 'MEN ATHLETIC T-SHIRT FIT S2706 MEDIUM', jumlah: 240, kdSatuan: 'PCS', nilai: 288000, kho: 'CEN-WFG' },
-      { nomorDokKegiatan: 'A1A25425100', tanggalKegiatan: dateStr, thoiGianThucTe: `${dateStr} 08:30:00`, ngayBaoCaoCutoff5AM: dateStr, kdBarang: 'PUMA-JKT-2026-BLK', uraianBarang: 'PUMA TRACK JACKET BLACK XL', jumlah: 95, kdSatuan: 'PCS', nilai: 237500, kho: 'CEN-WFG' },
+      { nomorDokKegiatan: 'A1A25424072', tanggalKegiatan: dateStr, thoiGianThucTe: `${dateStr} 01:20:00`, ngayBaoCaoCutoff5AM: dateStr, kdBarang: 'S2706GHTM640Y', uraianBarang: 'MEN ATHLETIC T-SHIRT FIT S2706', jumlah: 180, kdSatuan: 'PCE', nilai: 216000, kho: 'CEN-WFG' },
+      { nomorDokKegiatan: 'A1A25424088', tanggalKegiatan: dateStr, thoiGianThucTe: `${dateStr} 03:45:00`, ngayBaoCaoCutoff5AM: dateStr, kdBarang: 'S2706GHTM640M', uraianBarang: 'MEN ATHLETIC T-SHIRT FIT S2706 MEDIUM', jumlah: 240, kdSatuan: 'PCE', nilai: 288000, kho: 'CEN-WFG' },
+      { nomorDokKegiatan: 'A1A25425100', tanggalKegiatan: dateStr, thoiGianThucTe: `${dateStr} 08:30:00`, ngayBaoCaoCutoff5AM: dateStr, kdBarang: 'PUMA-JKT-2026-BLK', uraianBarang: 'PUMA TRACK JACKET BLACK XL', jumlah: 95, kdSatuan: 'PCE', nilai: 237500, kho: 'CEN-WFG' },
     ],
     scrap: [
       { nomorDokKegiatan: 'SCR-2026-0012', tanggalKegiatan: dateStr, thoiGianThucTe: `${dateStr} 02:05:00`, ngayBaoCaoCutoff5AM: dateStr, kdBarang: '62584799-60', uraianBarang: 'VẢI VỤN THUN 100% RECYCLE POLYESTER', jumlah: 105.5, kdSatuan: 'KGM', nilai: 15825, kho: 'F5-SCRAP' },
@@ -66,8 +66,8 @@ const GENERATE_MOCK_DATA = (cat: string, dateStr: string): StockItem[] => {
       { nomorDokKegiatan: 'EQ-2026-0092', tanggalKegiatan: dateStr, thoiGianThucTe: `${dateStr} 11:30:00`, ngayBaoCaoCutoff5AM: dateStr, kdBarang: 'MC-EASTMAN-629X', uraianBarang: 'MÁY CẮT ĐỨNG EASTMAN 629X 8 INCH', jumlah: 1, kdSatuan: 'SET', nilai: 1800000, kho: 'MC-WH' },
     ],
     auxiliary: [
-      { nomorDokKegiatan: 'POAD000085227', tanggalKegiatan: dateStr, thoiGianThucTe: `${dateStr} 01:10:00`, ngayBaoCaoCutoff5AM: dateStr, kdBarang: '62584799-60', uraianBarang: 'VẢI THUN 100% RECYCLE POLYESTER KHỔ 60"', jumlah: 407, kdSatuan: 'YDS', nilai: 1221000, kho: 'SF2-FB-BK' },
-      { nomorDokKegiatan: 'POAD000085216', tanggalKegiatan: dateStr, thoiGianThucTe: `${dateStr} 03:00:00`, ngayBaoCaoCutoff5AM: dateStr, kdBarang: '60036235-58', uraianBarang: 'VẢI LƯỚI 100% RECYCLE POLYESTER KHỔ 58"', jumlah: 17.5, kdSatuan: 'YDS', nilai: 87500, kho: 'SF2-FB-BK' },
+      { nomorDokKegiatan: 'POAD000085227', tanggalKegiatan: dateStr, thoiGianThucTe: `${dateStr} 01:10:00`, ngayBaoCaoCutoff5AM: dateStr, kdBarang: '62584799-60', uraianBarang: 'VẢI THUN 100% RECYCLE POLYESTER KHỔ 60"', jumlah: 407, kdSatuan: 'YRD', nilai: 1221000, kho: 'SF2-FB-BK' },
+      { nomorDokKegiatan: 'POAD000085216', tanggalKegiatan: dateStr, thoiGianThucTe: `${dateStr} 03:00:00`, ngayBaoCaoCutoff5AM: dateStr, kdBarang: '60036235-58', uraianBarang: 'VẢI LƯỚI 100% RECYCLE POLYESTER KHỔ 58"', jumlah: 17.5, kdSatuan: 'YRD', nilai: 87500, kho: 'SF2-FB-BK' },
     ]
   };
 

@@ -26,7 +26,7 @@ import FilterAltOffIcon from '@mui/icons-material/FilterAltOff';
 import EditIcon from '@mui/icons-material/Edit';
 
 // Services & Shared
-import { tccService, type TccRequest, type RequestFilters } from '../services/tccService';
+import { tccService, isQueuedRequest, type TccRequest, type RequestFilters } from '../services/tccService';
 import { authService, AppButton, AppTextField, AdvancedFilterDrawer } from '@traxeco/shared';
 
 // Column Menu & Context
@@ -272,14 +272,19 @@ export default function AdminStatusPage({ isActive = true }: any) {
       width: 100,
       sortable: false,
       renderCell: (params: GridRenderCellParams) => {
+        const isQueued = isQueuedRequest(params.row);
         const status = params.row.status || 'Not Started';
         const isReleased = !!params.row.releasedDate;
-        const canEditRow = !isReleased && status !== 'Deleted' && status !== 'Cancelled';
+        const canEditRow = !isQueued && !isReleased && status !== 'Deleted' && status !== 'Cancelled';
 
         if (canEditAdmin) {
+          const editTooltip = isQueued 
+            ? t('tcc.cannotEditQueued', 'Đơn đang nằm trong hàng chờ Queue, bị khóa không thể thao tác cho đến khi TCC phê duyệt trong Queue Management')
+            : (isReleased ? t('tcc.cannotEditReleased', 'Released request cannot be edited') : t('tcc.edit', 'Edit'));
+
           return (
             <Box display="flex" alignItems="center" gap={0.5} justifyContent="center" width="100%">
-              <Tooltip title={isReleased ? t('tcc.cannotEditReleased', 'Released request cannot be edited') : t('tcc.edit', 'Edit')} arrow>
+              <Tooltip title={editTooltip} arrow>
                 <span>
                   <IconButton
                     size="small"
@@ -463,11 +468,23 @@ export default function AdminStatusPage({ isActive = true }: any) {
     {
       field: 'queueStatus',
       headerName: 'Queue Status',
-      width: 120,
+      width: 130,
+      valueGetter: (value: any, row: any) => {
+        const item = row || value;
+        if (isQueuedRequest(item)) return 'InQueue';
+        if (value === 'Approved' || item?.queueStatus === 'Approved') return 'Approved';
+        return '-';
+      },
       renderCell: (params) => {
-        if (!params.value) return <Typography variant="body2">-</Typography>;
-        const color = params.value === 'Pending' ? 'warning' : params.value === 'Approved' ? 'success' : 'error';
-        return <Chip label={params.value} color={color as any} size="small" />;
+        const row = params.row;
+        if (isQueuedRequest(row)) {
+          return <Chip label="InQueue" color="warning" size="small" sx={{ fontWeight: 700, fontSize: 11 }} />;
+        }
+        const val = params.value || row?.queueStatus;
+        if (val === 'Approved') {
+          return <Chip label="Approved" color="success" size="small" sx={{ fontWeight: 700, fontSize: 11 }} />;
+        }
+        return <Typography variant="body2" color="text.secondary">-</Typography>;
       }
     },
     {
@@ -509,11 +526,16 @@ export default function AdminStatusPage({ isActive = true }: any) {
       headerName: 'Status (Auto)',
       width: 140,
       valueGetter: (value: any, row: any) => {
-        if (row.queueStatus === 'Pending' && (!value || value === 'Not Started')) return 'Queued';
-        return row.releasedDate ? 'Released' : (value || 'Not Started');
+        const item = row || value;
+        if (isQueuedRequest(item)) return 'Pending';
+        return item?.releasedDate ? 'Released' : (value || 'Not Started');
       },
       renderCell: (params: GridRenderCellParams) => {
-        const displayStatus = params.value || 'Not Started';
+        const row = params.row;
+        if (isQueuedRequest(row)) {
+          return <Chip label="Pending" color="warning" size="small" sx={{ fontWeight: 700, fontSize: 11 }} />;
+        }
+        const displayStatus = params.value || row?.status || 'Not Started';
         return (
           <Chip
             label={getStatusLabel(displayStatus)}
@@ -878,7 +900,7 @@ export default function AdminStatusPage({ isActive = true }: any) {
             rows={filteredRequests}
             columns={sortedColumns}
             getRowId={(row) => row.requestId}
-            getRowClassName={(params) => params.row.status === 'Cancelled' ? 'row-cancelled' : ''}
+            getRowClassName={(params) => isQueuedRequest(params.row) ? 'row-queued-locked' : (params.row.status === 'Cancelled' ? 'row-cancelled' : '')}
             loading={loading}
             disableRowSelectionOnClick
             onRowDoubleClick={(params) => {
@@ -899,7 +921,8 @@ export default function AdminStatusPage({ isActive = true }: any) {
               '& .MuiDataGrid-columnHeaderTitle': { fontWeight: 700, whiteSpace: 'normal !important', lineHeight: '1.2 !important', wordBreak: 'normal' },
               '& .MuiDataGrid-cell': { borderColor: '#e1e3e4', fontSize: '13px', color: '#3f4945', '&:focus': { outline: 'none !important' }, '&:focus-within': { outline: 'none !important' } },
               '& .MuiDataGrid-row:hover': { bgcolor: '#F9FAFA !important' },
-              '& .row-cancelled': { opacity: 0.5 }
+              '& .row-cancelled': { opacity: 0.5 },
+              '& .row-queued-locked': { bgcolor: '#fffbeb !important', '&:hover': { bgcolor: '#fef3c7 !important' } }
             }}
           />
         </Paper>
@@ -1022,7 +1045,7 @@ export default function AdminStatusPage({ isActive = true }: any) {
         onClose={() => setDrawerOpen(false)}
         selectedRow={selectedRow}
         setSelectedRow={setSelectedRow}
-        canEdit={canEditAdmin}
+        canEdit={canEditAdmin && !isQueuedRequest(selectedRow)}
         developers={developers}
         customers={customers}
         factories={factories}

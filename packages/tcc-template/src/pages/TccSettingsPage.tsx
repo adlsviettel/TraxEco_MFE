@@ -584,18 +584,18 @@ export default function TccSettingsPage() {
         <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', flexWrap: 'wrap', gap: 1 }}>
           <Box>
             <Typography variant="h6" sx={{ fontSize: '1rem', fontWeight: 700, color: '#1e293b' }}>
-              🧵 Cấu Hình Công Đoạn & Độ Khó (Operation & Difficulty Config)
+              🧵 {t('tcc.settings.opConfigTitle', 'Cấu Hình Công Đoạn & Độ Khó')}
             </Typography>
             <Typography variant="caption" sx={{ color: '#64748b' }}>
-              Quản lý danh mục công đoạn may theo nhóm sản phẩm và thiết lập mức độ khó (Easy, Medium, Complex)
+              {t('tcc.settings.opConfigSubtitle', 'Quản lý danh mục công đoạn may theo nhóm sản phẩm và thiết lập mức độ khó (Easy, Medium, Complex)')}
             </Typography>
           </Box>
           <Box sx={{ display: 'flex', gap: 1 }}>
             <Button variant="outlined" size="small" startIcon={<AddIcon />} onClick={() => setAddGroupDialogOpen(true)}>
-              Thêm Nhóm Công Đoạn
+              {t('tcc.settings.btnAddOpGroup', 'Thêm Nhóm Công Đoạn')}
             </Button>
             <Button variant="contained" size="small" startIcon={<AddIcon />} sx={{ bgcolor: PRIMARY_COLOR, '&:hover': { bgcolor: '#1b5e20' } }} onClick={handleOpenAddOp}>
-              Thêm Công Đoạn
+              {t('tcc.settings.btnAddOp', 'Thêm Công Đoạn')}
             </Button>
           </Box>
         </Box>
@@ -604,7 +604,7 @@ export default function TccSettingsPage() {
         <Box sx={{ p: 2, bgcolor: '#ffffff', borderBottom: '1px solid #e2e8f0', display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 2, justifyContent: 'space-between', alignItems: { md: 'center' } }}>
           <Box sx={{ display: 'flex', gap: 1, overflowX: 'auto', pb: { xs: 1, md: 0 }, flexWrap: 'wrap' }}>
             <Chip
-              label={`Tất cả (${operations.length})`}
+              label={t('tcc.settings.allCount', { defaultValue: `Tất cả (${operations.length})`, count: operations.length })}
               onClick={() => setSelectedGroupFilter('ALL')}
               color={selectedGroupFilter === 'ALL' ? 'primary' : 'default'}
               variant={selectedGroupFilter === 'ALL' ? 'filled' : 'outlined'}
@@ -627,7 +627,7 @@ export default function TccSettingsPage() {
           </Box>
           <TextField
             size="small"
-            placeholder="Tìm kiếm công đoạn..."
+            placeholder={t('tcc.settings.searchOpPlaceholder', 'Tìm kiếm công đoạn...')}
             value={opSearchKeyword}
             onChange={(e) => setOpSearchKeyword(e.target.value)}
             sx={{ minWidth: 240 }}
@@ -639,13 +639,13 @@ export default function TccSettingsPage() {
           <Table size="small" stickyHeader>
             <TableHead>
               <TableRow sx={{ bgcolor: '#f1f5f9' }}>
-                <TableCell sx={{ fontWeight: 700, width: 50 }}>STT</TableCell>
-                <TableCell sx={{ fontWeight: 700, width: 140 }}>Group Công Đoạn</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Tên Công Đoạn (Operation Name)</TableCell>
-                <TableCell sx={{ fontWeight: 700, width: 130, textAlign: 'center' }}>Stage (Giai Đoạn)</TableCell>
-                <TableCell sx={{ fontWeight: 700, width: 130, textAlign: 'center' }}>Độ Khó (Difficulty)</TableCell>
-                <TableCell sx={{ fontWeight: 700, width: 120, textAlign: 'center' }}>SAM (Phút)</TableCell>
-                <TableCell align="center" sx={{ fontWeight: 700, width: 100 }}>Thao Tác</TableCell>
+                <TableCell sx={{ fontWeight: 700, width: 50 }}>{t('tcc.settings.seqNo', 'STT')}</TableCell>
+                <TableCell sx={{ fontWeight: 700, width: 140 }}>{t('tcc.settings.opGroup', 'Group Công Đoạn')}</TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>{t('tcc.settings.opName', 'Tên Công Đoạn')}</TableCell>
+                <TableCell sx={{ fontWeight: 700, width: 130, textAlign: 'center' }}>{t('tcc.settings.stage', 'Giai Đoạn')}</TableCell>
+                <TableCell sx={{ fontWeight: 700, width: 130, textAlign: 'center' }}>{t('tcc.settings.difficulty', 'Độ Khó')}</TableCell>
+                <TableCell sx={{ fontWeight: 700, width: 120, textAlign: 'center' }}>{t('tcc.settings.samMinutes', 'SAM (Phút)')}</TableCell>
+                <TableCell align="center" sx={{ fontWeight: 700, width: 100 }}>{t('tcc.settings.actions', 'Thao Tác')}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -1058,16 +1058,16 @@ export default function TccSettingsPage() {
             allowScrollButtonsMobile
             sx={{ '& .MuiTab-root': { fontWeight: 600 }, '& .Mui-selected': { color: `${PRIMARY_COLOR} !important` }, '& .MuiTabs-indicator': { backgroundColor: PRIMARY_COLOR } }}
           >
-            <Tab label={t('tcc.settings.tabCustomer', 'Khách Hàng (Customer)')} />
-            <Tab label={t('tcc.settings.tabFactory', 'Nhà Máy (Factory)')} />
-            <Tab label={t('tcc.settings.tabSampleStage', 'Giai Đoạn Mẫu (Sample Stage)')} />
-            <Tab label={t('tcc.settings.tabMachine', 'Loại Máy (Machine)')} />
-            <Tab label={t('tcc.settings.tabLeadTime', 'Thời Gian (Lead Time)')} />
+            <Tab label={t('tcc.settings.tabCustomer', 'Khách Hàng')} />
+            <Tab label={t('tcc.settings.tabFactory', 'Nhà Máy')} />
+            <Tab label={t('tcc.settings.tabSampleStage', 'Giai Đoạn Mẫu')} />
+            <Tab label={t('tcc.settings.tabMachine', 'Loại Máy')} />
+            <Tab label={t('tcc.settings.tabLeadTime', 'Thời Gian Lead Time')} />
             <Tab label={t('tcc.settings.tabSeason', 'Season')} />
-            <Tab label={t('tcc.settings.tabProductType', 'Loại Sản Phẩm (Product Type)')} />
-            <Tab label="Capacity" />
+            <Tab label={t('tcc.settings.tabProductType', 'Loại Sản Phẩm')} />
+            <Tab label={t('tcc.settings.tabCapacity', 'Capacity')} />
             <Tab label={t('tcc.settings.tabEmailTemplate', 'Email Template')} />
-            <Tab label="Operation Config (Công Đoạn)" />
+            <Tab label={t('tcc.settings.tabOperationConfig', 'Cấu Hình Công Đoạn')} />
           </Tabs>
         </Box>
         <CustomTabPanel value={tabIndex} index={0}>

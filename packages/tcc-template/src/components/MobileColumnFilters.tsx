@@ -92,7 +92,7 @@ function MobileColumnFilterItem({
         } else {
           val = row[f];
         }
-        val = (val !== undefined && val !== null && val !== '') ? String(val) : '(Blanks)';
+        val = (val !== undefined && val !== null && val !== '') ? String(val).trim() : '(Blanks)';
         return allowedValues.includes(val);
       });
     });

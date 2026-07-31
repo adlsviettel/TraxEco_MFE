@@ -99,6 +99,7 @@ export function PushProvider({ children }: { children: ReactNode }) {
           no: String(item.itemNo), kodeHS: item.kodeHS || '', uraianBarang: item.uraianBarang || '',
           kodeBarang: item.kodeBarang || '', jumlah: item.jumlah || '', satuan: item.satuan || '',
           harga: item.harga || '', amount: item.amount || '', nilaiPabean: item.nilaiPabean || '', negara: item.negara || '',
+          kategoriBarang: item.kategoriBarang || '', kondisiBarang: item.kondisiBarang || '',
         })),
         _debug: { totalPages: 0, totalItems: d.items?.length || 0, totalLines: 0, yTolerance: 0, colRanges: [], rawLines: [] },
       };
@@ -108,11 +109,14 @@ export function PushProvider({ children }: { children: ReactNode }) {
       const result = await pushToInsw(parsedData, kdKegiatan);
       const duration = Date.now() - start;
 
+      const responseStr = result.data ? (typeof result.data === 'string' ? result.data : JSON.stringify(result.data)) : null;
+      const errText = result.error || (!result.success ? (responseStr || `HTTP ${result.status}: Push failed`) : null);
+
       const logRes = await savePushLog({
         fileId, status: result.success ? 'success' : 'failed',
         httpStatus: result.status, requestBody: null,
-        responseBody: result.data ? JSON.stringify(result.data) : null,
-        errorMessage: result.error || null, duration,
+        responseBody: responseStr,
+        errorMessage: errText, duration,
       }, username);
 
       setPushStates(prev => ({
@@ -156,6 +160,7 @@ export function PushProvider({ children }: { children: ReactNode }) {
             no: String(item.itemNo), kodeHS: item.kodeHS || '', uraianBarang: item.uraianBarang || '',
             kodeBarang: item.kodeBarang || '', jumlah: item.jumlah || '', satuan: item.satuan || '',
             harga: item.harga || '', amount: item.amount || '', nilaiPabean: item.nilaiPabean || '', negara: item.negara || '',
+            kategoriBarang: item.kategoriBarang || '', kondisiBarang: item.kondisiBarang || '',
           })),
           _debug: { totalPages: 0, totalItems: d.items?.length || 0, totalLines: 0, yTolerance: 0, colRanges: [], rawLines: [] },
         };
@@ -166,11 +171,14 @@ export function PushProvider({ children }: { children: ReactNode }) {
         const result = await pushToInsw(parsedData, kdKegiatan);
         const duration = Date.now() - start;
 
+        const responseStr = result.data ? (typeof result.data === 'string' ? result.data : JSON.stringify(result.data)) : null;
+        const errText = result.error || (!result.success ? (responseStr || `HTTP ${result.status}: Push failed`) : null);
+
         const logRes = await savePushLog({
           fileId, status: result.success ? 'success' : 'failed',
           httpStatus: result.status, requestBody: null,
-          responseBody: result.data ? JSON.stringify(result.data) : null,
-          errorMessage: result.error || null, duration,
+          responseBody: responseStr,
+          errorMessage: errText, duration,
         }, username);
 
         setPushStates(prev => ({
