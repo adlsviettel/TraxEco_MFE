@@ -977,123 +977,32 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
                   <Divider />
                   <CardContent sx={{ pt: isMobile ? 2 : 3, px: isMobile ? 2 : 3, pb: isMobile ? 2 : 3 }}>
                     <Grid container spacing={isMobile ? 2 : 2.5}>
-                      <Grid size={{ xs: 12, sm: 6 }}>
-                        <FormControl fullWidth required size="small">
-                          <InputLabel sx={{ fontSize: 13, '& .MuiFormLabel-asterisk': { color: '#dc2626' } }}>
-                            {t('tcc.opGroup', 'Group Công Đoạn')}
-                          </InputLabel>
-                          <Select
-                            value={selectedOpGroup}
-                            label={t('tcc.opGroup', 'Group Công Đoạn')}
-                            onChange={(e) => {
-                              const grp = e.target.value;
-                              setSelectedOpGroup(grp);
-                              setSelectedOpName('');
-                              handleChange('operationDescription', '');
-                            }}
-                            sx={{
-                              borderRadius: '8px', 
-                              height: 40, 
-                              fontSize: 13, 
-                              bgcolor: '#fff', 
-                              '& fieldset': { borderColor: '#bfc9c4' }, 
-                              '&:hover fieldset': { borderColor: '#2e7d32' }, 
-                              '&.Mui-focused fieldset': { borderColor: '#2e7d32' } 
-                            }}
-                          >
-                            {(operationGroups.length > 0 ? operationGroups : ['Polo', 'T-Shirt', 'Jacket', 'Pants', 'Shorts']).map((grp) => (
-                              <MenuItem key={grp} value={grp}>{grp}</MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
+                      <Grid size={{ xs: 12 }}>
+                        <TextField
+                          label={t('tcc.operationDescription', 'Tên Công Đoạn / Mô Tả Công Đoạn')}
+                          value={form.operationDescription}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            handleChange('operationDescription', val);
+                            setSelectedOpName(val);
+                          }}
+                          fullWidth
+                          required
+                          size="small"
+                          placeholder={t('tcc.operationDescriptionPlaceholder', 'Nhập tên công đoạn hoặc mô tả công đoạn...')}
+                          sx={{
+                            '& .MuiOutlinedInput-root': {
+                              borderRadius: '8px',
+                              bgcolor: '#fff',
+                              '& fieldset': { borderColor: '#bfc9c4' },
+                              '&:hover fieldset': { borderColor: '#2e7d32' },
+                              '&.Mui-focused fieldset': { borderColor: '#2e7d32' }
+                            }
+                          }}
+                        />
                       </Grid>
 
-                      <Grid size={{ xs: 12, sm: 6 }}>
-                        <FormControl fullWidth required size="small" disabled={!selectedOpGroup && !form.operationDescription}>
-                          <InputLabel sx={{ fontSize: 13, '& .MuiFormLabel-asterisk': { color: '#dc2626' } }}>
-                            {t('tcc.opName', 'Tên Công Đoạn')}
-                          </InputLabel>
-                          <Select
-                            value={selectedOpName || form.operationDescription}
-                            label={t('tcc.opName', 'Tên Công Đoạn')}
-                            onChange={(e) => {
-                              const val = e.target.value;
-                              setSelectedOpName(val);
-                              handleChange('operationDescription', val);
-                            }}
-                            sx={{
-                              borderRadius: '8px', 
-                              height: 40, 
-                              fontSize: 13, 
-                              bgcolor: '#fff', 
-                              '& fieldset': { borderColor: '#bfc9c4' }, 
-                              '&:hover fieldset': { borderColor: '#2e7d32' }, 
-                              '&.Mui-focused fieldset': { borderColor: '#2e7d32' } 
-                            }}
-                          >
-                            {availableOperationNames.map((opName) => (
-                              <MenuItem key={opName} value={opName}>{opName}</MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
-                      </Grid>
 
-                      {selectedOpName && isMissingSam && (
-                        <Grid size={{ xs: 12 }}>
-                          <Alert 
-                            severity="error" 
-                            sx={{ 
-                              borderRadius: '8px', 
-                              fontWeight: 600, 
-                              fontSize: 13,
-                              bgcolor: '#fef2f2',
-                              color: '#991b1b',
-                              border: '1px solid #fecaca',
-                              '& .MuiAlert-icon': { color: '#dc2626' }
-                            }}
-                          >
-                            {t('tcc.noSamAlert', {
-                              defaultValue: `⚠️ Chưa có thông số SAM! Công đoạn "${selectedOpName}"${form.sampleStage ? ` cho Stage "${form.sampleStage}"` : ''} chưa được cấu hình thời gian SAM trong hệ thống. Vui lòng liên hệ bộ phận TCC để bổ sung SAM trước khi tạo yêu cầu.`,
-                              opName: selectedOpName,
-                              stageText: form.sampleStage ? ` for Stage "${form.sampleStage}"` : ''
-                            })}
-                          </Alert>
-                        </Grid>
-                      )}
-
-                      {selectedOpName && !isMissingSam && (
-                        <Grid size={{ xs: 12 }}>
-                          <Box sx={{ p: 1.5, bgcolor: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '8px', display: 'flex', flexDirection: 'column', gap: 1 }}>
-                            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 1 }}>
-                              <Typography variant="caption" sx={{ fontWeight: 700, color: '#15803d', display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                                ⚡ Automatic SAM Matched ({form.sampleStage || t('tcc.noStageSelected', 'Chưa chọn Stage')}):
-                              </Typography>
-                              <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', flexWrap: 'wrap' }}>
-                                <Chip
-                                  label={`${t('tcc.difficultyLabel', 'Độ khó')}: ${matchedOpItem?.difficulty || matchedSmv?.templateCategory || 'Medium'}`}
-                                  size="small"
-                                  sx={{
-                                    fontWeight: 700,
-                                    fontSize: 11,
-                                    bgcolor: (matchedOpItem?.difficulty || matchedSmv?.templateCategory) === 'Easy' ? '#dcfce7' : (matchedOpItem?.difficulty || matchedSmv?.templateCategory) === 'Medium' ? '#fef9c3' : '#fee2e2',
-                                    color: (matchedOpItem?.difficulty || matchedSmv?.templateCategory) === 'Easy' ? '#15803d' : (matchedOpItem?.difficulty || matchedSmv?.templateCategory) === 'Medium' ? '#a16207' : '#b91c1c'
-                                  }}
-                                />
-                                <Chip
-                                  label={`Base SAM: ${currentSam} min`}
-                                  size="small"
-                                  sx={{ fontWeight: 700, fontSize: 11, bgcolor: '#e0f2fe', color: '#0369a1' }}
-                                />
-                                <Chip
-                                  label={`Total SAM: ${currentSam * Number(form.templateQty || 1)} min`}
-                                  size="small"
-                                  sx={{ fontWeight: 800, fontSize: 11, bgcolor: '#15803d', color: '#fff' }}
-                                />
-                              </Box>
-                            </Box>
-                          </Box>
-                        </Grid>
-                      )}
 
                       <Grid size={{ xs: 12, sm: 6 }}>
                         <FormControl fullWidth required size="small" disabled={!form.factory}>
