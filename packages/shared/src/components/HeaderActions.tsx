@@ -9,9 +9,12 @@ import {
   User as UserIconLucide,
   Home as HomeIconLucide,
   LogOut as LogoutIconLucide,
-  Key as KeyIconLucide
+  Key as KeyIconLucide,
+  Sun as SunIconLucide,
+  Moon as MoonIconLucide
 } from 'lucide-react';
 import { authService } from '../services/authService';
+import { useColorMode } from '../contexts/ColorModeContext';
 import ConfirmDialog, { defaultConfirmDialog } from './ConfirmDialog';
 import type { ConfirmDialogState } from './ConfirmDialog';
 import ChangePasswordDialog from './ChangePasswordDialog';
@@ -37,6 +40,7 @@ export default function HeaderActions({
 }: HeaderActionsProps) {
   const { t, i18n } = useTranslation();
   const theme = useTheme();
+  const { mode, toggleColorMode } = useColorMode();
   
   // Robust mobile detection: combine media query, screen width, and user agent.
   const isMobileMediaQuery = useMediaQuery(theme.breakpoints.down('md'));
@@ -112,6 +116,8 @@ export default function HeaderActions({
       : name.substring(0, 2).toUpperCase();
   };
 
+  const isDark = theme.palette.mode === 'dark';
+
   const accountMenu = (
     <Menu
       anchorEl={accountAnchorEl}
@@ -122,58 +128,70 @@ export default function HeaderActions({
       PaperProps={{
         sx: {
           mt: 1,
-          borderRadius: 1,
-          minWidth: 240,
-          boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+          borderRadius: 2,
+          minWidth: 260,
+          bgcolor: isDark ? '#1e293b' : '#ffffff',
+          color: theme.palette.text.primary,
+          border: `1px solid ${isDark ? '#334155' : '#e2e8f0'}`,
+          boxShadow: isDark ? '0 12px 32px rgba(0,0,0,0.6)' : '0 12px 32px rgba(0,0,0,0.1)',
           overflow: 'hidden',
           padding: 0
         }
       }}
       MenuListProps={{ sx: { padding: 0 } }}
     >
-      <Box sx={{ padding: '16px', display: 'flex', alignItems: 'center', gap: 1.5, borderBottom: '1px solid #eee' }}>
-        <Avatar sx={{ width: 44, height: 44, background: 'linear-gradient(135deg, #3ba55c 0%, #2e7d32 100%)', boxShadow: '0 4px 10px rgba(59, 165, 92,0.25)', fontSize: '1rem', fontWeight: 700, color: '#fff' }}>
+      <Box sx={{ padding: '16px', display: 'flex', alignItems: 'center', gap: 1.5, borderBottom: `1px solid ${theme.palette.divider}` }}>
+        <Avatar sx={{ width: 44, height: 44, background: 'linear-gradient(135deg, #3ba55c 0%, #2e7d32 100%)', boxShadow: '0 4px 10px rgba(59, 165, 92,0.3)', fontSize: '1rem', fontWeight: 700, color: '#fff' }}>
           {getInitials(userInfo.employeeName || userInfo.employeeCode)}
         </Avatar>
         <Box>
-          <Typography sx={{ fontWeight: 700, fontSize: 14, color: '#333', lineHeight: 1.2 }}>
+          <Typography sx={{ fontWeight: 700, fontSize: 14, color: theme.palette.text.primary, lineHeight: 1.2 }}>
             {userInfo.employeeName || userInfo.employeeCode || 'Unknown'}
           </Typography>
-          <Typography sx={{ fontSize: 12, color: '#888', mt: 0.5 }}>
+          <Typography sx={{ fontSize: 12, color: theme.palette.text.secondary, mt: 0.5 }}>
             {userInfo.roleLabel || userInfo.section || 'Staff'}
           </Typography>
         </Box>
       </Box>
-      <Box sx={{ padding: '8px 16px', borderBottom: '1px solid #eee' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2, py: 0.75, fontSize: 13, color: '#555' }}>
-          <UserIconLucide size={15} color="#888" />
-          <span>Username: <b>{userInfo.employeeCode || '—'}</b></span>
+      <Box sx={{ padding: '10px 16px', borderBottom: `1px solid ${theme.palette.divider}` }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2, py: 0.75, fontSize: 13, color: theme.palette.text.secondary }}>
+          <UserIconLucide size={15} color={isDark ? '#94a3b8' : '#64748b'} />
+          <span>Username: <b style={{ color: theme.palette.text.primary }}>{userInfo.employeeCode || '—'}</b></span>
         </Box>
         {userInfo.factory && (
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2, py: 0.75, fontSize: 13, color: '#555' }}>
-            <HomeIconLucide size={15} color="#888" />
-            <span>Factory: <b>{userInfo.factory}</b></span>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2, py: 0.75, fontSize: 13, color: theme.palette.text.secondary }}>
+            <HomeIconLucide size={15} color={isDark ? '#94a3b8' : '#64748b'} />
+            <span>Factory: <b style={{ color: theme.palette.text.primary }}>{userInfo.factory}</b></span>
           </Box>
         )}
       </Box>
       <Box sx={{ py: 1 }}>
-        <MenuItem onClick={() => { handleAccountMenuClose(); handleOpenChangePassword(); }} sx={{ py: 1.2, px: 2, gap: 1.5 }}>
-          <KeyIconLucide size={16} color="#555" />
-          <Typography sx={{ fontSize: 14, fontWeight: 500, color: '#333' }}>
+        <MenuItem 
+          onClick={() => { handleAccountMenuClose(); handleOpenChangePassword(); }} 
+          sx={{ py: 1.2, px: 2, gap: 1.5, '&:hover': { bgcolor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)' } }}
+        >
+          <KeyIconLucide size={16} color={isDark ? '#cbd5e1' : '#475569'} />
+          <Typography sx={{ fontSize: 14, fontWeight: 500, color: theme.palette.text.primary }}>
             {t('changePassword.menuItem', 'Change Password')}
           </Typography>
         </MenuItem>
         {showHome && (
-          <MenuItem onClick={() => { handleAccountMenuClose(); navigate(homePath); }} sx={{ py: 1.2, px: 2, gap: 1.5 }}>
-            <HomeIconLucide size={16} color="#555" />
-            <Typography sx={{ fontSize: 14, fontWeight: 500, color: '#333' }}>
+          <MenuItem 
+            onClick={() => { handleAccountMenuClose(); navigate(homePath); }} 
+            sx={{ py: 1.2, px: 2, gap: 1.5, '&:hover': { bgcolor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)' } }}
+          >
+            <HomeIconLucide size={16} color={isDark ? '#cbd5e1' : '#475569'} />
+            <Typography sx={{ fontSize: 14, fontWeight: 500, color: theme.palette.text.primary }}>
               {t('nav.home', 'Home')}
             </Typography>
           </MenuItem>
         )}
-        <MenuItem onClick={handleLogout} sx={{ py: 1.2, px: 2, gap: 1.5, color: '#ef4444' }}>
-          <LogoutIconLucide size={16} color="#ef4444" />
-          <Typography sx={{ fontSize: 14, fontWeight: 500 }}>
+        <MenuItem 
+          onClick={handleLogout} 
+          sx={{ py: 1.2, px: 2, gap: 1.5, color: '#f87171', '&:hover': { bgcolor: isDark ? 'rgba(239, 68, 68, 0.15)' : '#fef2f2' } }}
+        >
+          <LogoutIconLucide size={16} color="#f87171" />
+          <Typography sx={{ fontSize: 14, fontWeight: 600, color: '#f87171' }}>
             {t('nav.logout', 'Logout')}
           </Typography>
         </MenuItem>
@@ -189,8 +207,11 @@ export default function HeaderActions({
       PaperProps={{
         sx: {
           mt: 1,
-          borderRadius: 1,
-          boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+          borderRadius: 2,
+          bgcolor: isDark ? '#1e293b' : '#ffffff',
+          color: theme.palette.text.primary,
+          border: `1px solid ${isDark ? '#334155' : '#e2e8f0'}`,
+          boxShadow: isDark ? '0 12px 32px rgba(0,0,0,0.6)' : '0 8px 24px rgba(0,0,0,0.1)'
         }
       }}
     >
@@ -199,7 +220,14 @@ export default function HeaderActions({
           key={lang.code}
           selected={i18n.language === lang.code}
           onClick={() => handleLangMenuClose(lang.code)}
-          sx={{ px: 3, py: 1.5, display: 'flex', gap: 1.5, alignItems: 'center' }}
+          sx={{ 
+            px: 3, 
+            py: 1.5, 
+            display: 'flex', 
+            gap: 1.5, 
+            alignItems: 'center',
+            '&:hover': { bgcolor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)' } 
+          }}
         >
           <img
             loading="lazy"

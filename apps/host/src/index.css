@@ -464,3 +464,199 @@ body {
     display: none !important;
   }
 }
+
+/* ── Universal Dark Mode Overrides for All Micro Frontends ── */
+html.dark,
+[data-theme="dark"],
+.dark {
+  color-scheme: dark;
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+}
+
+html.dark body,
+[data-theme="dark"] body,
+.dark body {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+}
+
+/* MUI Paper, Cards, Containers, Boxes with inline white styles */
+html.dark .MuiPaper-root,
+[data-theme="dark"] .MuiPaper-root,
+.dark .MuiPaper-root {
+  background-color: #1e293b;
+  color: #f8fafc;
+}
+
+html.dark .MuiCard-root,
+[data-theme="dark"] .MuiCard-root,
+.dark .MuiCard-root {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+  border-color: #334155 !important;
+}
+
+html.dark .MuiDialog-paper,
+[data-theme="dark"] .MuiDialog-paper,
+.dark .MuiDialog-paper {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+html.dark .MuiDrawer-paper,
+[data-theme="dark"] .MuiDrawer-paper,
+.dark .MuiDrawer-paper {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+  border-color: #334155 !important;
+}
+
+html.dark .MuiAccordion-root,
+[data-theme="dark"] .MuiAccordion-root,
+.dark .MuiAccordion-root,
+html.dark .MuiAccordionSummary-root,
+[data-theme="dark"] .MuiAccordionSummary-root,
+.dark .MuiAccordionSummary-root {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+  border-color: #334155 !important;
+}
+
+html.dark .MuiTable-root,
+[data-theme="dark"] .MuiTable-root,
+.dark .MuiTable-root {
+  background-color: #1e293b !important;
+}
+
+html.dark .MuiTableHead-root,
+[data-theme="dark"] .MuiTableHead-root,
+.dark .MuiTableHead-root,
+html.dark .MuiTableCell-head,
+[data-theme="dark"] .MuiTableCell-head,
+.dark .MuiTableCell-head {
+  background-color: #0f172a !important;
+  color: #94a3b8 !important;
+  border-bottom-color: #334155 !important;
+}
+
+html.dark .MuiTableCell-body,
+[data-theme="dark"] .MuiTableCell-body,
+.dark .MuiTableCell-body {
+  color: #f8fafc !important;
+  border-bottom-color: #334155 !important;
+}
+
+html.dark .MuiTableRow-root:hover,
+[data-theme="dark"] .MuiTableRow-root:hover,
+.dark .MuiTableRow-root:hover {
+  background-color: rgba(255, 255, 255, 0.04) !important;
+}
+
+/* Force override inline style bgcolor/background #fff / white / light-grey & light linear-gradients */
+html.dark [style*="background-color: rgb(255, 255, 255)"],
+html.dark [style*="background-color: #fff"],
+html.dark [style*="background-color: #ffffff"],
+html.dark [style*="background-color: #f8fafc"],
+html.dark [style*="background-color: #f6f9fc"],
+html.dark [style*="background-color: #f5f7fa"],
+html.dark [style*="background: rgb(255, 255, 255)"],
+html.dark [style*="background: #fff"],
+html.dark [style*="background: #ffffff"],
+html.dark [style*="background: #f8fafc"],
+html.dark [style*="background: #f6f9fc"],
+html.dark [style*="background: #f5f7fa"],
+html.dark [style*="linear-gradient"][style*="#fff"],
+html.dark [style*="linear-gradient"][style*="#ffffff"],
+html.dark [style*="linear-gradient"][style*="#f8faf8"],
+html.dark [style*="linear-gradient"][style*="#f8fafc"],
+html.dark [style*="linear-gradient"][style*="#f1f5f9"],
+html.dark [style*="linear-gradient"][style*="#f0fdf4"],
+[data-theme="dark"] [style*="background-color: rgb(255, 255, 255)"],
+[data-theme="dark"] [style*="background-color: #fff"],
+[data-theme="dark"] [style*="background-color: #ffffff"],
+[data-theme="dark"] [style*="background-color: #f8fafc"],
+[data-theme="dark"] [style*="background-color: #f6f9fc"],
+[data-theme="dark"] [style*="background-color: #f5f7fa"],
+[data-theme="dark"] [style*="background: rgb(255, 255, 255)"],
+[data-theme="dark"] [style*="background: #fff"],
+[data-theme="dark"] [style*="background: #ffffff"],
+[data-theme="dark"] [style*="background: #f8fafc"],
+[data-theme="dark"] [style*="background: #f6f9fc"],
+[data-theme="dark"] [style*="background: #f5f5f5"],
+[data-theme="dark"] [style*="linear-gradient"][style*="#fff"],
+[data-theme="dark"] [style*="linear-gradient"][style*="#ffffff"],
+[data-theme="dark"] [style*="linear-gradient"][style*="#f8faf8"],
+[data-theme="dark"] [style*="linear-gradient"][style*="#f8fafc"],
+[data-theme="dark"] [style*="linear-gradient"][style*="#f1f5f9"],
+[data-theme="dark"] [style*="linear-gradient"][style*="#f0fdf4"] {
+  background: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+/* Force override inline border colors */
+html.dark [style*="border: 1px solid #e2e8f0"],
+html.dark [style*="border: 1px solid #f1f5f9"],
+html.dark [style*="border-bottom: 1px solid #e2e8f0"],
+html.dark [style*="border-bottom: 1px solid #f1f5f9"],
+html.dark [style*="border-top: 1px solid #e2e8f0"],
+html.dark [style*="border-top: 1px solid #f1f5f9"],
+[data-theme="dark"] [style*="border: 1px solid #e2e8f0"],
+[data-theme="dark"] [style*="border-bottom: 1px solid #e2e8f0"],
+[data-theme="dark"] [style*="border-top: 1px solid #e2e8f0"] {
+  border-color: #334155 !important;
+}
+
+/* MUI OutlinedInput / TextField in dark mode */
+html.dark .MuiOutlinedInput-root,
+[data-theme="dark"] .MuiOutlinedInput-root,
+.dark .MuiOutlinedInput-root {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+}
+
+html.dark .MuiOutlinedInput-notchedOutline,
+[data-theme="dark"] .MuiOutlinedInput-notchedOutline,
+.dark .MuiOutlinedInput-notchedOutline {
+  border-color: #334155 !important;
+}
+
+html.dark .MuiInputLabel-root,
+[data-theme="dark"] .MuiInputLabel-root,
+.dark .MuiInputLabel-root {
+  color: #94a3b8 !important;
+}
+
+/* DataGrid overrides */
+html.dark .MuiDataGrid-root,
+[data-theme="dark"] .MuiDataGrid-root,
+.dark .MuiDataGrid-root {
+  --header-bg: #0f172a !important;
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+  border-color: #334155 !important;
+}
+
+html.dark .MuiDataGrid-cell,
+[data-theme="dark"] .MuiDataGrid-cell,
+.dark .MuiDataGrid-cell {
+  border-bottom-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
+html.dark .MuiDataGrid-columnHeaders,
+[data-theme="dark"] .MuiDataGrid-columnHeaders,
+.dark .MuiDataGrid-columnHeaders {
+  background-color: #0f172a !important;
+  border-bottom-color: #334155 !important;
+}
+
+html.dark .MuiDataGrid-footerContainer,
+[data-theme="dark"] .MuiDataGrid-footerContainer,
+.dark .MuiDataGrid-footerContainer {
+  background-color: #0f172a !important;
+  border-top-color: #334155 !important;
+  color: #94a3b8 !important;
+}
+
+

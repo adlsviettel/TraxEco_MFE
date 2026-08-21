@@ -146,9 +146,9 @@ export default function FabricSearchFilter({ fields, onSearch, loading, onClear,
           }
           sx={{ 
             height: 32, borderRadius: 1.5, fontWeight: 600, fontSize: '0.8rem', color: '#475569',
-            borderColor: '#cbd5e1', backgroundColor: '#fff', textTransform: 'none', px: 2,
+            borderColor: '#cbd5e1', backgroundColor: 'background.paper', textTransform: 'none', px: 2,
             boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
-            '&:hover': { backgroundColor: '#f1f5f9', borderColor: '#94a3b8' }
+            '&:hover': { backgroundColor: 'background.default', borderColor: '#94a3b8' }
           }}
         >
           {t('common.filter', 'Filter')} {activeFiltersCount > 0 ? `(${activeFiltersCount})` : ''}
@@ -180,7 +180,7 @@ export default function FabricSearchFilter({ fields, onSearch, loading, onClear,
         PaperProps={{ sx: { width: { xs: '100%', sm: 380 }, p: 0, display: 'block', overflowY: 'auto' } }}
       >
         {/* Header */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', px: 2.5, py: 2, backgroundColor: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', px: 2.5, py: 2, backgroundColor: 'background.default', borderBottom: '1px solid', borderColor: 'divider' }}>
           <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#1e293b', display: 'flex', alignItems: 'center', gap: 1 }}>
             <FilterIcon sx={{ color: '#2e7d32', fontSize: 20 }} /> {t('common.filter', 'Filter')}
           </Typography>
@@ -257,8 +257,8 @@ export default function FabricSearchFilter({ fields, onSearch, loading, onClear,
         </Box>
 
         {/* Footer Actions */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', '& > *:not(:last-child)': { mr: 1.5 }, p: 1.5, borderTop: '1px solid #e2e8f0', backgroundColor: '#fff' }}>
-          <Button variant="outlined" size="small" onClick={handleClear} startIcon={<RefreshIcon sx={{ fontSize: '18px !important' }} />} sx={{ borderRadius: 1.5, height: 32, minWidth: 90, fontWeight: 600, fontSize: '0.8rem', color: '#475569', borderColor: '#cbd5e1', textTransform: 'none', px: 2, '&:hover': { backgroundColor: '#f1f5f9', color: '#ef4444', borderColor: '#fca5a5' } }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', '& > *:not(:last-child)': { mr: 1.5 }, p: 1.5, borderTop: '1px solid', borderColor: 'divider', backgroundColor: 'background.paper' }}>
+          <Button variant="outlined" size="small" onClick={handleClear} startIcon={<RefreshIcon sx={{ fontSize: '18px !important' }} />} sx={{ borderRadius: 1.5, height: 32, minWidth: 90, fontWeight: 600, fontSize: '0.8rem', color: '#475569', borderColor: '#cbd5e1', textTransform: 'none', px: 2, '&:hover': { backgroundColor: 'background.default', color: '#ef4444', borderColor: '#fca5a5' } }}>
             {t('common.reset', 'Default')}
           </Button>
           <Button variant="contained" size="small" onClick={handleApply} disableElevation sx={{ borderRadius: 1.5, height: 32, flexGrow: 1, fontWeight: 700, fontSize: '0.8rem', textTransform: 'none', px: 3, background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', '&:hover': { background: 'linear-gradient(135deg, #34d399 0%, #10b981 100%)', transform: 'translateY(-1px)', boxShadow: '0 4px 12px rgba(16,185,129,0.25)' } }}>

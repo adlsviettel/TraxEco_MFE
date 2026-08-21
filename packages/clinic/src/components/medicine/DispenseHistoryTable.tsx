@@ -60,17 +60,17 @@ export default function DispenseHistoryTable({ records }: DispenseHistoryTablePr
       <Table stickyHeader size="small" sx={{ minWidth: 'max-content', width: '100%', tableLayout: 'auto' }}>
         <TableHead>
           <TableRow>
-            <TableCell sx={{ bgcolor: '#F9FAFA', borderBottom: '1px solid #e1e3e4', py: 2, px: 2, fontWeight: 700, fontSize: 11, color: '#707975', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('clinic.dispense.col.code', 'Mã phiếu')}</TableCell>
-            <TableCell sx={{ bgcolor: '#F9FAFA', borderBottom: '1px solid #e1e3e4', py: 2, px: 2, fontWeight: 700, fontSize: 11, color: '#707975', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('clinic.dispense.col.employee', 'Nhân viên')}</TableCell>
-            <TableCell sx={{ bgcolor: '#F9FAFA', borderBottom: '1px solid #e1e3e4', py: 2, px: 2, fontWeight: 700, fontSize: 11, color: '#707975', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('clinic.dispense.col.date', 'Thời gian')}</TableCell>
-            <TableCell sx={{ bgcolor: '#F9FAFA', borderBottom: '1px solid #e1e3e4', py: 2, px: 2, fontWeight: 700, fontSize: 11, color: '#707975', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('clinic.dispense.col.sickness', 'Triệu chứng')}</TableCell>
-            <TableCell sx={{ bgcolor: '#F9FAFA', borderBottom: '1px solid #e1e3e4', py: 2, px: 2, fontWeight: 700, fontSize: 11, color: '#707975', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('clinic.dispense.col.meds', 'Thuốc cấp phát')}</TableCell>
-            <TableCell sx={{ bgcolor: '#F9FAFA', borderBottom: '1px solid #e1e3e4', py: 2, px: 2, fontWeight: 700, fontSize: 11, color: '#707975', textTransform: 'uppercase', letterSpacing: '0.05em' }} align="center">{t('clinic.dispense.col.type', 'Loại')}</TableCell>
+            <TableCell sx={{ bgcolor: '#F9FAFA', borderBottom: '1px solid', borderColor: 'divider', py: 2, px: 2, fontWeight: 700, fontSize: 11, color: '#707975', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('clinic.dispense.col.code', 'Mã phiếu')}</TableCell>
+            <TableCell sx={{ bgcolor: '#F9FAFA', borderBottom: '1px solid', borderColor: 'divider', py: 2, px: 2, fontWeight: 700, fontSize: 11, color: '#707975', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('clinic.dispense.col.employee', 'Nhân viên')}</TableCell>
+            <TableCell sx={{ bgcolor: '#F9FAFA', borderBottom: '1px solid', borderColor: 'divider', py: 2, px: 2, fontWeight: 700, fontSize: 11, color: '#707975', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('clinic.dispense.col.date', 'Thời gian')}</TableCell>
+            <TableCell sx={{ bgcolor: '#F9FAFA', borderBottom: '1px solid', borderColor: 'divider', py: 2, px: 2, fontWeight: 700, fontSize: 11, color: '#707975', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('clinic.dispense.col.sickness', 'Triệu chứng')}</TableCell>
+            <TableCell sx={{ bgcolor: '#F9FAFA', borderBottom: '1px solid', borderColor: 'divider', py: 2, px: 2, fontWeight: 700, fontSize: 11, color: '#707975', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('clinic.dispense.col.meds', 'Thuốc cấp phát')}</TableCell>
+            <TableCell sx={{ bgcolor: '#F9FAFA', borderBottom: '1px solid', borderColor: 'divider', py: 2, px: 2, fontWeight: 700, fontSize: 11, color: '#707975', textTransform: 'uppercase', letterSpacing: '0.05em' }} align="center">{t('clinic.dispense.col.type', 'Loại')}</TableCell>
           </TableRow>
         </TableHead>
-        <TableBody sx={{ '& tr:nth-of-type(even)': { bgcolor: '#fff' }, '& tr:nth-of-type(odd)': { bgcolor: '#fff' } }}>
+        <TableBody sx={{ '& tr:nth-of-type(even)': { bgcolor: 'background.paper' }, '& tr:nth-of-type(odd)': { bgcolor: 'background.paper' } }}>
           {records.map((record) => (
-            <TableRow key={record.code} hover sx={{ '&:last-child td': { borderBottom: 0 }, bgcolor: '#fff', '&:hover': { bgcolor: '#F9FAFA !important' }, '&:hover td': { bgcolor: '#F9FAFA !important' } }}>
+            <TableRow key={record.code} hover sx={{ '&:last-child td': { borderBottom: 0 }, bgcolor: 'background.paper', '&:hover': { bgcolor: '#F9FAFA !important' }, '&:hover td': { bgcolor: '#F9FAFA !important' } }}>
               <TableCell sx={{ py: 1.5, fontSize: 13, fontFamily: 'monospace', color: '#1a73e8', fontWeight: 500 }}>{record.code}</TableCell>
               <TableCell sx={{ py: 1.5, fontSize: 13, color: '#191c1d' }}>
                 <Typography fontSize={13} color="#191c1d" fontWeight={700}>{record.fullName}</Typography>

@@ -431,8 +431,8 @@ export default function FinalInspectionPage() {
       
       {/* 1. Header Grid Row */}
       <Paper elevation={0} sx={{ 
-        p: '6px 12px', borderRadius: 2.5, mb: 1, border: '1px solid #e2e8f0', 
-        background: 'linear-gradient(135deg, #f8faf8 0%, #ffffff 100%)',
+        p: '6px 12px', borderRadius: 2.5, mb: 1, border: '1px solid', borderColor: 'divider', 
+        bgcolor: 'background.paper',
         display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'nowrap', flexShrink: 0
       }}>
 
@@ -453,9 +453,9 @@ export default function FinalInspectionPage() {
         </Box>
 
         {/* Search & Actions Section */}
-        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', flexShrink: 0, borderLeft: '1px solid #e2e8f0', pl: 2 }}>
+        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', flexShrink: 0, borderLeft: '1px solid', borderColor: 'divider', pl: 2 }}>
           <Select size="small" value={dateOrPkNo} onChange={e => setDateOrPkNo(e.target.value)}
-            sx={{ width: 100, borderRadius: 1.5, height: 32, fontSize: '0.8rem', bgcolor: '#fff' }}>
+            sx={{ width: 100, borderRadius: 1.5, height: 32, fontSize: '0.8rem', bgcolor: 'background.paper' }}>
             <MenuItem value="Date">By Date</MenuItem>
             <MenuItem value="PLNo">By PL No</MenuItem>
           </Select>
@@ -463,14 +463,14 @@ export default function FinalInspectionPage() {
             size="small" placeholder="Find PO..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} 
             onKeyDown={e => e.key === 'Enter' && handleSearch()}
             InputProps={{ startAdornment: <InputAdornment position="start"><SearchIcon sx={{ fontSize: 18, color: '#94a3b8' }} /></InputAdornment> }}
-            sx={{ width: { xs: 100, sm: 160, md: 200 }, '& .MuiOutlinedInput-root': { borderRadius: 1.5, height: 32, fontSize: '0.8rem', bgcolor: '#fff' } }}
+            sx={{ width: { xs: 100, sm: 160, md: 200 }, '& .MuiOutlinedInput-root': { borderRadius: 1.5, height: 32, fontSize: '0.8rem', bgcolor: 'background.paper' } }}
           />
           <Button variant="contained" disableElevation onClick={handleSearch}
             startIcon={loading ? <CircularProgress size={14} color="inherit" /> : <SearchIcon sx={{ fontSize: '18px !important' }} />}
             sx={{ borderRadius: 1.5, fontWeight: 700, height: 32, px: 2.5, fontSize: '0.8rem', textTransform: 'none', background: 'linear-gradient(135deg, #2e7d32 0%, #388e3c 100%)' }}>
             {loading ? '...' : 'Tìm Kiếm'}
           </Button>
-          <IconButton onClick={() => { setSearchTerm(''); handleSearch(); }} sx={{ width: 32, height: 32, border: '1px solid #cbd5e1', borderRadius: 1.5, bgcolor: '#fff' }}>
+          <IconButton onClick={() => { setSearchTerm(''); handleSearch(); }} sx={{ width: 32, height: 32, border: '1px solid', borderColor: 'divider', borderRadius: 1.5, bgcolor: 'background.paper' }}>
             <RefreshIcon sx={{ fontSize: 16, color: '#64748b' }} />
           </IconButton>
         </Box>
@@ -481,8 +481,8 @@ export default function FinalInspectionPage() {
         
         {/* Left Side: Packing List */}
         <Grid size={{ xs: 12, md: 5, lg: 5 }} sx={{ height: { xs: 'auto', md: '100%' }, display: 'flex', flexDirection: 'column' }}>
-        <Paper elevation={0} sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', borderRadius: 2, border: '1px solid #e0e0e0', minHeight: 0, overflow: 'hidden' }}>
-          <Box sx={{ bgcolor: '#f5f5f5', p: 1, borderBottom: '1px solid #e0e0e0', fontWeight: 600, flexShrink: 0 }}>
+        <Paper elevation={0} sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', borderRadius: 2, border: '1px solid', borderColor: 'divider', minHeight: 0, overflow: 'hidden' }}>
+          <Box sx={{ bgcolor: '#f5f5f5', p: 1, borderBottom: '1px solid', borderColor: 'divider', fontWeight: 600, flexShrink: 0 }}>
             Packing List ({filteredData.length})
           </Box>
           {loading && <LinearProgress sx={{ height: 3 }} />}
@@ -537,7 +537,7 @@ export default function FinalInspectionPage() {
               </TableBody>
             </Table>
           </TableContainer>
-          <Box sx={{ flexShrink: 0, p: 1.5, display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#fafafa', borderTop: '1px solid #e0e0e0' }}>
+          <Box sx={{ flexShrink: 0, p: 1.5, display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#fafafa', borderTop: '1px solid', borderColor: 'divider' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <Typography variant="body2" sx={{ color: '#475569', fontWeight: 500 }}>Dòng / trang:</Typography>
               <Select
@@ -547,7 +547,7 @@ export default function FinalInspectionPage() {
                   setRowsPerPage(Number(e.target.value));
                   setPage(0);
                 }}
-                sx={{ height: 32, fontSize: '0.875rem', bgcolor: '#fff' }}
+                sx={{ height: 32, fontSize: '0.875rem', bgcolor: 'background.paper' }}
               >
                 {[50, 100, 250].map(v => <MenuItem key={v} value={v}>{v}</MenuItem>)}
               </Select>
@@ -568,8 +568,8 @@ export default function FinalInspectionPage() {
 
         {/* Right Side: CTN Details */}
         <Grid size={{ xs: 12, md: 7, lg: 7 }} sx={{ height: { xs: 'auto', md: '100%' }, display: 'flex', flexDirection: 'column' }}>
-        <Paper elevation={0} sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', borderRadius: 2, border: '1px solid #e0e0e0', minHeight: 0, overflow: 'hidden' }}>
-          <Box sx={{ bgcolor: '#f5f5f5', p: 1, borderBottom: '1px solid #e0e0e0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
+        <Paper elevation={0} sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', borderRadius: 2, border: '1px solid', borderColor: 'divider', minHeight: 0, overflow: 'hidden' }}>
+          <Box sx={{ bgcolor: '#f5f5f5', p: 1, borderBottom: '1px solid', borderColor: 'divider', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
             <Typography variant="body2" sx={{ fontWeight: 600 }}>
               Carton Details {selectedPO ? `- PO: ${selectedPO.PONo}` : ''}
             </Typography>
@@ -650,7 +650,7 @@ export default function FinalInspectionPage() {
               </Table>
           </TableContainer>
           {detailData.length > 0 && (
-            <Box sx={{ flexShrink: 0, p: 1.5, display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#fafafa', borderTop: '1px solid #e0e0e0' }}>
+            <Box sx={{ flexShrink: 0, p: 1.5, display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#fafafa', borderTop: '1px solid', borderColor: 'divider' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <Typography variant="body2" sx={{ color: '#475569', fontWeight: 500 }}>Dòng / trang:</Typography>
                 <Select
@@ -660,7 +660,7 @@ export default function FinalInspectionPage() {
                     setDetailRowsPerPage(Number(e.target.value));
                     setDetailPage(0);
                   }}
-                  sx={{ height: 32, fontSize: '0.875rem', bgcolor: '#fff' }}
+                  sx={{ height: 32, fontSize: '0.875rem', bgcolor: 'background.paper' }}
                 >
                   {[50, 100, 200].map(v => <MenuItem key={v} value={v}>{v}</MenuItem>)}
                 </Select>

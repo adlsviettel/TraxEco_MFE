@@ -292,9 +292,9 @@ export default function BedManagementPage() {
             value={activeFactory} 
             onChange={(_, val) => setActiveFactory(val)} 
             sx={{
-              bgcolor: '#ffffff',
+              bgcolor: 'background.paper',
               borderRadius: '10px',
-              border: '1px solid #e2e8f0',
+              border: '1px solid', borderColor: 'divider',
               p: 0.5,
               minHeight: 0,
               '& .MuiTabs-indicator': { display: 'none' },
@@ -335,7 +335,7 @@ export default function BedManagementPage() {
         <Box sx={{ display: 'flex', gap: 1.5 }}>
           <Chip 
             label={`Tổng số giường: ${totalBedsCount}`} 
-            sx={{ bgcolor: '#ffffff', border: '1px solid #cbd5e1', fontWeight: 800, fontSize: 12.5, color: '#475569', borderRadius: '8px', px: 1 }} 
+            sx={{ bgcolor: 'background.paper', border: '1px solid', borderColor: 'divider', fontWeight: 800, fontSize: 12.5, color: '#475569', borderRadius: '8px', px: 1 }} 
           />
           <Chip 
             label={`Đang sử dụng: ${occupiedBedsCount}`} 
@@ -351,19 +351,19 @@ export default function BedManagementPage() {
           {/* Sơ đồ giường bệnh */}
           <Paper elevation={0} sx={{ 
             borderRadius: '12px', 
-            border: '1px solid #cbd5e1', 
+            border: '1px solid', borderColor: 'divider', 
             boxShadow: '0px 4px 20px -2px rgba(0,0,0,0.05)', 
-            bgcolor: '#fff',
+            bgcolor: 'background.paper',
             overflow: 'hidden',
             flexShrink: 0
           }}>
-            <Box sx={{ borderBottom: '1px solid #e2e8f0', py: 2, px: 3, bgcolor: '#f8fafc', display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Box sx={{ borderBottom: '1px solid', borderColor: 'divider', py: 2, px: 3, bgcolor: 'background.default', display: 'flex', alignItems: 'center', gap: 1 }}>
               <HospitalIcon sx={{ color: '#15803d', fontSize: 18 }} />
               <Typography variant="subtitle2" sx={{ fontWeight: 800, fontSize: '13px', color: '#0f172a', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                 Sơ đồ giường bệnh {activeFactory === 'Tất cả' ? 'các xưởng' : activeFactory} thời gian thực
               </Typography>
             </Box>
-            <Box sx={{ p: 3, bgcolor: '#fff' }}>
+            <Box sx={{ p: 3, bgcolor: 'background.paper' }}>
               <BedStatusGrid 
                 beds={filteredBeds} 
                 onAdmitClick={handleAdmitClick} 
@@ -379,13 +379,13 @@ export default function BedManagementPage() {
             flexGrow: 1, 
             minHeight: 250,
             borderRadius: '12px', 
-            border: '1px solid #cbd5e1', 
+            border: '1px solid', borderColor: 'divider', 
             boxShadow: '0px 4px 20px -2px rgba(0,0,0,0.05)', 
             display: 'flex', 
             flexDirection: 'column', 
-            bgcolor: '#fff' 
+            bgcolor: 'background.paper' 
           }}>
-            <Box sx={{ borderBottom: '1px solid #e2e8f0', py: 1.25, px: 3, bgcolor: '#f8fafc', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
+            <Box sx={{ borderBottom: '1px solid', borderColor: 'divider', py: 1.25, px: 3, bgcolor: 'background.default', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
               <Typography variant="subtitle2" sx={{ fontWeight: 800, fontSize: '13px', color: '#0f172a', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                 {t('clinic.bed.historyTitle', 'Lịch sử nằm giường bệnh')}
               </Typography>
@@ -408,7 +408,7 @@ export default function BedManagementPage() {
                       width: 165,
                       '& .MuiOutlinedInput-root': {
                         borderRadius: '8px',
-                        backgroundColor: '#ffffff',
+                        backgroundColor: 'background.paper',
                         fontSize: '12.5px',
                         fontWeight: 700,
                         color: '#334155',
@@ -438,7 +438,7 @@ export default function BedManagementPage() {
                       width: 165,
                       '& .MuiOutlinedInput-root': {
                         borderRadius: '8px',
-                        backgroundColor: '#ffffff',
+                        backgroundColor: 'background.paper',
                         fontSize: '12.5px',
                         fontWeight: 700,
                         color: '#334155',
@@ -458,12 +458,12 @@ export default function BedManagementPage() {
                 <Table size="small" stickyHeader>
                   <TableHead>
                     <TableRow>
-                      <TableCell sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', py: 1.75, px: 2.5, fontWeight: 800, fontSize: 11.5, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('clinic.bed.col.bed', 'Giường')}</TableCell>
-                      <TableCell sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', py: 1.75, px: 2.5, fontWeight: 800, fontSize: 11.5, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('clinic.bed.col.employee', 'Bệnh nhân')}</TableCell>
-                      <TableCell sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', py: 1.75, px: 2.5, fontWeight: 800, fontSize: 11.5, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Xưởng</TableCell>
-                      <TableCell sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', py: 1.75, px: 2.5, fontWeight: 800, fontSize: 11.5, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('clinic.bed.col.sickness', 'Triệu chứng')}</TableCell>
-                      <TableCell sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', py: 1.75, px: 2.5, fontWeight: 800, fontSize: 11.5, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em' }} align="center">{t('clinic.bed.col.admitTime', 'Thời gian vào')}</TableCell>
-                      <TableCell sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', py: 1.75, px: 2.5, fontWeight: 800, fontSize: 11.5, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em' }} align="center">{t('clinic.bed.col.dischargeTime', 'Thời gian ra')}</TableCell>
+                      <TableCell sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', py: 1.75, px: 2.5, fontWeight: 800, fontSize: 11.5, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('clinic.bed.col.bed', 'Giường')}</TableCell>
+                      <TableCell sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', py: 1.75, px: 2.5, fontWeight: 800, fontSize: 11.5, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('clinic.bed.col.employee', 'Bệnh nhân')}</TableCell>
+                      <TableCell sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', py: 1.75, px: 2.5, fontWeight: 800, fontSize: 11.5, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Xưởng</TableCell>
+                      <TableCell sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', py: 1.75, px: 2.5, fontWeight: 800, fontSize: 11.5, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('clinic.bed.col.sickness', 'Triệu chứng')}</TableCell>
+                      <TableCell sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', py: 1.75, px: 2.5, fontWeight: 800, fontSize: 11.5, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em' }} align="center">{t('clinic.bed.col.admitTime', 'Thời gian vào')}</TableCell>
+                      <TableCell sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', py: 1.75, px: 2.5, fontWeight: 800, fontSize: 11.5, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em' }} align="center">{t('clinic.bed.col.dischargeTime', 'Thời gian ra')}</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -482,7 +482,7 @@ export default function BedManagementPage() {
                               height: 20, 
                               fontSize: 10.5, 
                               fontWeight: 800, 
-                              bgcolor: '#f1f5f9', 
+                              bgcolor: 'background.default', 
                               color: '#475569',
                               borderRadius: '4px'
                             }} 
@@ -507,8 +507,8 @@ export default function BedManagementPage() {
               </TableContainer>
               {filteredHistory.length > 0 && (
                 <Box sx={{ 
-                  borderTop: '1px solid #e2e8f0', 
-                  backgroundColor: '#f8fafc', 
+                  borderTop: '1px solid', borderColor: 'divider', 
+                  backgroundColor: 'background.default', 
                   p: 1.25, 
                   px: 3,
                   display: 'flex', 
@@ -531,7 +531,7 @@ export default function BedManagementPage() {
                         height: 30, 
                         fontSize: '12.5px', 
                         fontWeight: 700, 
-                        backgroundColor: '#fff',
+                        backgroundColor: 'background.paper',
                         borderRadius: '6px',
                         '& .MuiOutlinedInput-notchedOutline': { borderColor: '#cbd5e1' }
                       }}

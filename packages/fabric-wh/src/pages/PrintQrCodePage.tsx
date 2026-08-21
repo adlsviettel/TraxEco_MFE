@@ -442,18 +442,18 @@ export default function PrintQrCodePage() {
 
       {error && <Alert severity="error">{error}</Alert>}
 
-      <Paper elevation={0} sx={{ flexGrow: 1, minHeight: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column', borderRadius: 2, border: '1px solid #e2e8f0' }}>
+      <Paper elevation={0} sx={{ flexGrow: 1, minHeight: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column', borderRadius: 2, border: '1px solid', borderColor: 'divider' }}>
         <TableContainer sx={{ flexGrow: 1 }}>
           <Table stickyHeader size="small" sx={{
             '& .MuiTableCell-root': { fontSize: '12px', py: 0.75, px: 1, borderColor: '#f0f0f0' },
-            '& .MuiTableBody-root .MuiTableRow-root': { bgcolor: '#fff' },
+            '& .MuiTableBody-root .MuiTableRow-root': { bgcolor: 'background.paper' },
             '& .MuiTableBody-root .MuiTableRow-root:nth-of-type(even)': { bgcolor: '#fafbfc' },
             '& .MuiTableBody-root .MuiTableRow-root:hover': { bgcolor: '#e8f5e9 !important' },
             '& .MuiTableBody-root .MuiTableRow-root:hover .sticky-cell': { bgcolor: '#e8f5e9 !important' }
           }}>
             <TableHead>
               <TableRow>
-                <TableCell padding="checkbox" sx={{ fontWeight: 700, bgcolor: '#f8fafc', whiteSpace: 'nowrap', position: 'sticky', left: 0, zIndex: 3, top: 0, borderBottom: '2px solid #e2e8f0' }}>
+                <TableCell padding="checkbox" sx={{ fontWeight: 700, bgcolor: 'background.default', whiteSpace: 'nowrap', position: 'sticky', left: 0, zIndex: 3, top: 0, borderBottom: '2px solid #e2e8f0' }}>
                   <Checkbox 
                     size="small"
                     checked={pageData.length > 0 && pageData.every(r => selectedRows.has(r.RecNo))}
@@ -470,7 +470,7 @@ export default function PrintQrCodePage() {
                   />
                 </TableCell>
                 {columns.map(col => (
-                  <TableCell key={col} sx={{ fontWeight: 700, bgcolor: '#f8fafc', whiteSpace: 'nowrap', borderBottom: '2px solid #e2e8f0', color: '#334155', letterSpacing: '0.02em' }}>
+                  <TableCell key={col} sx={{ fontWeight: 700, bgcolor: 'background.default', whiteSpace: 'nowrap', borderBottom: '2px solid #e2e8f0', color: '#334155', letterSpacing: '0.02em' }}>
                     <ColumnFilter colKey={col} label={col} value={colFilters[col] || ''} onChange={updateColFilter} />
                   </TableCell>
                 ))}
@@ -495,7 +495,7 @@ export default function PrintQrCodePage() {
           </Table>
         </TableContainer>
         {filteredData.length > 0 && (
-          <Box sx={{ p: 1, display: 'flex', justifyContent: 'flex-end', borderTop: '1px solid #e2e8f0' }}>
+          <Box sx={{ p: 1, display: 'flex', justifyContent: 'flex-end', borderTop: '1px solid', borderColor: 'divider' }}>
             <Pagination count={Math.ceil(filteredData.length / rowsPerPage)} page={page + 1} onChange={(_, v) => setPage(v - 1)} color="primary" />
           </Box>
         )}
@@ -532,14 +532,14 @@ export default function PrintQrCodePage() {
             <Table size="small" stickyHeader sx={{ '& .MuiTableCell-root': { fontSize: '11px', py: 0.5, px: 1 } }}>
               <TableHead>
                 <TableRow>
-                  <TableCell sx={{ fontWeight: 700, bgcolor: '#f8fafc' }}>Roll No</TableCell>
-                  <TableCell sx={{ fontWeight: 700, bgcolor: '#f8fafc' }}>QR Code</TableCell>
-                  <TableCell sx={{ fontWeight: 700, bgcolor: '#f8fafc' }}>Ship Length</TableCell>
-                  <TableCell sx={{ fontWeight: 700, bgcolor: '#f8fafc' }}>Item</TableCell>
-                  <TableCell sx={{ fontWeight: 700, bgcolor: '#f8fafc' }}>Color</TableCell>
-                  <TableCell sx={{ fontWeight: 700, bgcolor: '#f8fafc' }}>Batch No</TableCell>
-                  <TableCell sx={{ fontWeight: 700, bgcolor: '#f8fafc' }}>FoC_ExYrds</TableCell>
-                  <TableCell sx={{ fontWeight: 700, bgcolor: '#f8fafc', width: 40, textAlign: 'center' }}>Action</TableCell>
+                  <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default' }}>Roll No</TableCell>
+                  <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default' }}>QR Code</TableCell>
+                  <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default' }}>Ship Length</TableCell>
+                  <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default' }}>Item</TableCell>
+                  <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default' }}>Color</TableCell>
+                  <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default' }}>Batch No</TableCell>
+                  <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default' }}>FoC_ExYrds</TableCell>
+                  <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default', width: 40, textAlign: 'center' }}>Action</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -580,10 +580,10 @@ export default function PrintQrCodePage() {
             </Table>
           </TableContainer>
 
-          <Box sx={{ p: 2, bgcolor: '#f8fafc', borderTop: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+          <Box sx={{ p: 2, bgcolor: 'background.default', borderTop: '1px solid', borderColor: 'divider', display: 'flex', flexDirection: 'column', gap: 1.5 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 3, flexWrap: 'wrap' }}>
               {/* Print Mode Group */}
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, p: 1, pr: 2, bgcolor: '#fff', border: '1px solid #e2e8f0', borderRadius: 2 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, p: 1, pr: 2, bgcolor: 'background.paper', border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
                 <Typography sx={{ fontWeight: 700, color: '#475569', fontSize: '13px', display: 'flex', alignItems: 'center', gap: 0.5, pl: 1 }}>
                   <PrintIcon sx={{ fontSize: 16, color: '#64748b' }} /> {t('printQr.printConfig', 'Print Config')}:
                 </Typography>
@@ -594,7 +594,7 @@ export default function PrintQrCodePage() {
               </Box>
 
               {/* Label Type Group */}
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, p: 1, pr: 2, bgcolor: '#fff', border: '1px solid #e2e8f0', borderRadius: 2 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, p: 1, pr: 2, bgcolor: 'background.paper', border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
                 <Typography sx={{ fontWeight: 700, color: '#475569', fontSize: '13px', display: 'flex', alignItems: 'center', gap: 0.5, pl: 1 }}>
                   <PaletteIcon sx={{ fontSize: 16, color: '#64748b' }} /> Label Type:
                 </Typography>
@@ -606,7 +606,7 @@ export default function PrintQrCodePage() {
             </Box>
 
             {printMode === 'network' && (
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, p: 1, px: 2, bgcolor: '#fff', border: '1px solid #e2e8f0', borderRadius: 2, width: 'fit-content' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, p: 1, px: 2, bgcolor: 'background.paper', border: '1px solid', borderColor: 'divider', borderRadius: 2, width: 'fit-content' }}>
                 <Typography sx={{ fontWeight: 700, color: '#475569', fontSize: '13px' }}>Printer IP:</Typography>
                 <TextField 
                   size="small" 
@@ -619,7 +619,7 @@ export default function PrintQrCodePage() {
             )}
           </Box>
         </DialogContent>
-        <DialogActions sx={{ px: 3, pb: 2, bgcolor: '#f8fafc', display: 'flex', justifyContent: 'space-between' }}>
+        <DialogActions sx={{ px: 3, pb: 2, bgcolor: 'background.default', display: 'flex', justifyContent: 'space-between' }}>
           <Button onClick={triggerBrowserPrint} sx={{ fontWeight: 600, color: '#3b82f6' }}>{t('printQr.previewDemo', 'Preview (Demo)')}</Button>
           <Box>
             <Button onClick={() => setPreviewModalOpen(false)} sx={{ color: '#64748b', fontWeight: 600 }}>{t('common.cancel', 'Cancel')}</Button>
@@ -674,7 +674,7 @@ export default function PrintQrCodePage() {
             </Table>
           </TableContainer>
         </DialogContent>
-        <DialogActions sx={{ px: 3, pb: 2, bgcolor: '#f8fafc' }}>
+        <DialogActions sx={{ px: 3, pb: 2, bgcolor: 'background.default' }}>
           <Button onClick={() => setConflictModalOpen(false)} sx={{ color: '#64748b', fontWeight: 600 }}>{t('common.cancel', 'Cancel')}</Button>
           <Button onClick={handleConfirmConflicts} variant="contained" color="warning" sx={{ fontWeight: 700, px: 3 }}>
             {t('printQr.confirmAndPrint', 'Confirm & Print')}

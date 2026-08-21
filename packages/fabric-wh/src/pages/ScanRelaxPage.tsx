@@ -428,7 +428,7 @@ export default function ScanRelaxPage() {
                     </InputAdornment>
                   ),
                   sx: { 
-                    bgcolor: '#fff', 
+                    bgcolor: 'background.paper', 
                     borderRadius: 3, 
                     boxShadow: '0 4px 6px rgba(0,0,0,0.05)',
                     fontWeight: 700, 
@@ -525,7 +525,7 @@ export default function ScanRelaxPage() {
                      <WidthIcon fontSize="small"/> {t('relaxScan.measuringResult', 'KẾT QUẢ ĐO ĐẠC THỰC TẾ')}
                    </Typography>
 
-                   <Box sx={{ bgcolor: '#f8fafc', p: 2, borderRadius: 2, border: '1px solid #e2e8f0' }}>
+                   <Box sx={{ bgcolor: 'background.default', p: 2, borderRadius: 2, border: '1px solid', borderColor: 'divider' }}>
 
                       {/* AREA 1: WIDTH */}
                       <Box sx={{ mb: 3 }}>
@@ -539,21 +539,21 @@ export default function ScanRelaxPage() {
                                   value={widthBegin} onChange={(e) => setWidthBegin(e.target.value)}
                                   InputLabelProps={{ shrink: true }}
                                   inputProps={{ step: '0.01' }}
-                                  sx={{ bgcolor: '#fff' }} />
+                                  sx={{ bgcolor: 'background.paper' }} />
                             </Box>
                             <Box sx={{ flex: 1 }}>
                                <TextField fullWidth size="small" type="number" label="Giữa cuộn"
                                   value={widthMiddle} onChange={(e) => setWidthMiddle(e.target.value)}
                                   InputLabelProps={{ shrink: true }}
                                   inputProps={{ step: '0.01' }}
-                                  sx={{ bgcolor: '#fff' }} />
+                                  sx={{ bgcolor: 'background.paper' }} />
                             </Box>
                             <Box sx={{ flex: 1 }}>
                                <TextField fullWidth size="small" type="number" label="Cuối cuộn"
                                   value={widthEnd} onChange={(e) => setWidthEnd(e.target.value)}
                                   InputLabelProps={{ shrink: true }}
                                   inputProps={{ step: '0.01' }}
-                                  sx={{ bgcolor: '#fff' }} />
+                                  sx={{ bgcolor: 'background.paper' }} />
                             </Box>
                          </Box>
                       </Box>
@@ -576,7 +576,7 @@ export default function ScanRelaxPage() {
                                       }
                                   }}
                                   inputProps={{ step: '0.01' }}
-                                  sx={{ bgcolor: '#fff', '& .MuiInputBase-input': { fontWeight: 800, color: 'primary.main', fontSize: '1.2rem' } }} />
+                                  sx={{ bgcolor: 'background.paper', '& .MuiInputBase-input': { fontWeight: 800, color: 'primary.main', fontSize: '1.2rem' } }} />
                          </Box>
                       </Box>
                    </Box>
@@ -657,12 +657,12 @@ export default function ScanRelaxPage() {
                </Box>
            </Box>
            
-           <Paper sx={{ flexGrow: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', borderRadius: 2, border: '1px solid #e2e8f0', boxShadow: 'none' }}>
+           <Paper sx={{ flexGrow: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', borderRadius: 2, border: '1px solid', borderColor: 'divider', boxShadow: 'none' }}>
              <TableContainer sx={{ flexGrow: 1, maxHeight: 400 }}>
                <Table stickyHeader size="small" sx={{ '& .MuiTableCell-root': { py: 1.2, px: 2 } }}>
                  <TableHead>
                    <TableRow>
-                                           <TableCell padding="checkbox" sx={{ width: 40, bgcolor: '#f8fafc', py: 0 }}>
+                                           <TableCell padding="checkbox" sx={{ width: 40, bgcolor: 'background.default', py: 0 }}>
                          <Checkbox 
                             size="small" 
                             checked={completedRolls.length > 0 && selectedRolls.length === completedRolls.length}
@@ -672,14 +672,14 @@ export default function ScanRelaxPage() {
                             }}
                          />
                       </TableCell>
-                      <TableCell align="center" sx={{ fontWeight: 700, bgcolor: '#f8fafc', width: 50, borderBottom: '2px solid #e2e8f0', color: '#334155' }}>STT</TableCell>
-                     <TableCell sx={{ fontWeight: 700, bgcolor: '#f8fafc', borderBottom: '2px solid #e2e8f0', color: '#334155' }}>Roll No</TableCell>
-                     <TableCell sx={{ fontWeight: 700, bgcolor: '#f8fafc', borderBottom: '2px solid #e2e8f0', color: '#334155' }}>Invoice / Batch</TableCell>
-                     <TableCell sx={{ fontWeight: 700, bgcolor: '#f8fafc', borderBottom: '2px solid #e2e8f0', color: '#334155' }}>Item / Color</TableCell>
-                     <TableCell sx={{ fontWeight: 700, bgcolor: '#f8fafc', borderBottom: '2px solid #e2e8f0', color: '#334155' }}>PO</TableCell>
-                     <TableCell sx={{ fontWeight: 700, bgcolor: '#f8fafc', textAlign: 'right', borderBottom: '2px solid #e2e8f0', color: '#334155' }}>Yard</TableCell>
-                     <TableCell sx={{ fontWeight: 700, bgcolor: '#f8fafc', borderBottom: '2px solid #e2e8f0', color: '#334155' }}>Trạng thái</TableCell>
-                     <TableCell sx={{ fontWeight: 700, bgcolor: '#f8fafc', textAlign: 'right', borderBottom: '2px solid #e2e8f0', color: '#334155' }}>Thao tác</TableCell>
+                      <TableCell align="center" sx={{ fontWeight: 700, bgcolor: 'background.default', width: 50, borderBottom: '2px solid #e2e8f0', color: '#334155' }}>STT</TableCell>
+                     <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default', borderBottom: '2px solid #e2e8f0', color: '#334155' }}>Roll No</TableCell>
+                     <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default', borderBottom: '2px solid #e2e8f0', color: '#334155' }}>Invoice / Batch</TableCell>
+                     <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default', borderBottom: '2px solid #e2e8f0', color: '#334155' }}>Item / Color</TableCell>
+                     <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default', borderBottom: '2px solid #e2e8f0', color: '#334155' }}>PO</TableCell>
+                     <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default', textAlign: 'right', borderBottom: '2px solid #e2e8f0', color: '#334155' }}>Yard</TableCell>
+                     <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default', borderBottom: '2px solid #e2e8f0', color: '#334155' }}>Trạng thái</TableCell>
+                     <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default', textAlign: 'right', borderBottom: '2px solid #e2e8f0', color: '#334155' }}>Thao tác</TableCell>
                    </TableRow>
                  </TableHead>
                  <TableBody>

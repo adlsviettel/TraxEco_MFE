@@ -9,7 +9,7 @@ import Header from './Header.tsx';
 import { parsePPKEKPDF } from '../utils/pdfParser.ts';
 import { getFiles, getFileDetail, uploadFile, saveParsedData, savePushLog, deleteFile as deleteFileApi } from '../services/api.ts';
 import type { PushLogDto } from '../services/api.ts';
-import { pushToInsw, buildInswRequestBody, getMappings, detectKategoriBarang } from '../services/inswApi.ts';
+import { pushToInsw, buildInswRequestBody, getMappings, detectKategoriBarang, isCeisaDoc } from '../services/inswApi.ts';
 import type { FileEntry, ParsedDataSuccess } from '../types/index.ts';
 import { DataEvents } from '../utils/dataEvents.ts';
 import { usePush, getKdKegiatan } from '../contexts/PushContext.tsx';
@@ -41,9 +41,7 @@ function ParsedDataModal({ file, kdKegiatan, onClose, onPushSelected }: ParsedDa
   const [pushing, setPushing] = useState(false);
   const [localItems, setLocalItems] = useState<any[]>([]);
 
-  const isBc27 = file.fileName?.toLowerCase().includes('2.7') ||
-                 (data as ParsedDataSuccess)?.header?.nomorPengajuan?.includes('2.7') ||
-                 ((data as any)?._debug?.colRanges?.[0]?.xEnd === 'bc27');
+  const isCeisa = isCeisaDoc(file) || isCeisaDoc(data);
 
   const allSelected = data?.items?.length > 0 && selectedRows.size === data.items.length;
 
@@ -107,7 +105,7 @@ function ParsedDataModal({ file, kdKegiatan, onClose, onPushSelected }: ParsedDa
           <button className="icon-btn" onClick={onClose}><X size={20} /></button>
         </div>
 
-        {isBc27 && (
+        {isCeisa && (
           <div style={{
             margin: '12px 20px 0',
             padding: '10px 14px',
@@ -122,7 +120,7 @@ function ParsedDataModal({ file, kdKegiatan, onClose, onPushSelected }: ParsedDa
           }}>
             <Info size={18} style={{ flexShrink: 0, color: '#2563eb' }} />
             <div>
-              <strong>Thông báo Chứng từ CEISA (BC 2.7):</strong> Tờ khai BC 2.7 là chứng từ giao dịch nội bộ TPB được quản lý trực tiếp trên hệ thống <strong>CEISA</strong> của Hải quan. Chứng từ này <strong>không thuộc quy trình Push lên hệ thống INSW</strong>. Dữ liệu đã được lưu kho IT Inventory đầy đủ.
+              <strong>Thông báo Chứng từ CEISA 4.0 (BC 2.7, BC 4.1, BC 2.6.1, BC 2.5):</strong> Tờ khai loại này là chứng từ thuộc hệ thống <strong>CEISA 4.0</strong> của Hải quan. Chứng từ này <strong>chỉ import lưu trữ kho IT Inventory, không thuộc quy trình Push lên hệ thống INSW</strong>. Dữ liệu đã được lưu trữ đầy đủ.
             </div>
           </div>
         )}
@@ -308,9 +306,9 @@ function ParsedDataModal({ file, kdKegiatan, onClose, onPushSelected }: ParsedDa
                       </button>
                     </div>
                     <span style={{ fontSize: 13, marginRight: 8 }}>Selected: <strong>{selectedRows.size}</strong> / {data.items.length}</span>
-                    {isBc27 ? (
-                      <span className="status-badge" style={{ padding: '6px 14px', background: '#e0f2fe', color: '#0369a1', border: '1px solid #bae6fd', fontSize: 13, fontWeight: 600 }} title="Chứng từ BC 2.7 thuộc hệ thống CEISA, không cần Push INSW.">
-                        🔒 Chứng từ CEISA (Không thuộc INSW)
+                    {isCeisa ? (
+                      <span className="status-badge" style={{ padding: '6px 14px', background: '#e0f2fe', color: '#0369a1', border: '1px solid #bae6fd', fontSize: 13, fontWeight: 600 }} title={t('inswPush.ceisaTooltip', 'Tờ khai thuộc hệ thống CEISA 4.0 (BC 2.7, BC 4.1, BC 2.6.1, BC 2.5). Dữ liệu đã lưu IT Inventory, không cần Push INSW.')}>
+                        🔒 CEISA (Non-INSW)
                       </span>
                     ) : (
                       <button className="btn-primary" disabled={selectedRows.size === 0 || pushing} onClick={handlePush}>
@@ -478,7 +476,7 @@ export default function PdfImportPage({ titleKey, sectionKey, fileType, pagePath
     setSelected(new Set());
     setActionLoading(null);
     if (errCount > 0) {
-      alert(`Có ${errCount} file đẩy dữ liệu lên INSW bị lỗi.\nVui lòng bấm vào biểu tượng Info (i) ở cột INSW Push để xem chi tiết.`);
+      alert(t('inswPush.batchErrorAlert', 'Có một số file đẩy dữ liệu lên INSW bị lỗi. Vui lòng bấm vào biểu tượng Info ở cột INSW Push để xem chi tiết.'));
     }
   }
 
@@ -514,7 +512,7 @@ export default function PdfImportPage({ titleKey, sectionKey, fileType, pagePath
         }
       }
       if (!parsedData) {
-        alert('Không thể tải dữ liệu file để sinh JSON.');
+        alert(t('inswPush.cannotLoadJson', 'Không thể tải dữ liệu file để sinh JSON.'));
         return;
       }
       const body = await buildInswRequestBody(parsedData as ParsedDataSuccess, getKdKegiatan(fileType));
@@ -522,7 +520,7 @@ export default function PdfImportPage({ titleKey, sectionKey, fileType, pagePath
       setJsonModalTitle(file.fileName);
       setJsonModalOpen(true);
     } catch (err: any) {
-      alert(`Lỗi sinh JSON: ${err.message}`);
+      alert(`${t('inswPush.jsonError', 'Lỗi sinh JSON')}: ${err.message}`);
     }
   }
 
@@ -539,7 +537,7 @@ export default function PdfImportPage({ titleKey, sectionKey, fileType, pagePath
           uploadDate: f.importedAt ? new Date(f.importedAt).toLocaleString() : '',
           records: f.totalItems,
           status: f.parseStatus === 'success' ? 'processed' as const : 'failed' as const,
-          errorMessage: f.parseStatus === 'pending' ? 'Bị lỗi lưu file lúc Upload (Pending) - Vui lòng xoá và thử lại' : undefined,
+          errorMessage: f.parseStatus === 'pending' ? t('inswPush.pendingUploadError', 'Pending file upload error') : undefined,
           parsedData: null,
         }));
         setFiles(mapped);
@@ -802,6 +800,41 @@ export default function PdfImportPage({ titleKey, sectionKey, fileType, pagePath
           </div>
         )}
 
+        {/* Interactive Drag & Drop Box */}
+        <div 
+          className="dropzone-card"
+          onClick={() => !anyUploading && fileRef.current?.click()}
+          onDragOver={e => { e.preventDefault(); setDragging(true); }}
+          onDragLeave={() => setDragging(false)}
+          onDrop={handleDrop}
+          style={{
+            border: '2px dashed var(--primary)',
+            borderRadius: 12,
+            padding: '24px 20px',
+            textAlign: 'center',
+            background: 'var(--surface-hover, #f8fafc)',
+            cursor: anyUploading ? 'not-allowed' : 'pointer',
+            marginBottom: 20,
+            transition: 'all 0.2s ease',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
+          }}
+        >
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+            <div style={{ width: 48, height: 48, borderRadius: '50%', background: 'rgba(37, 99, 235, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary)' }}>
+              <Upload size={24} />
+            </div>
+            <div style={{ fontWeight: 600, fontSize: 15, color: 'var(--text-main)' }}>
+              {t(`${sectionKey}.dragDropPrompt`, t('pemasukan.dragDropPrompt', 'Kéo & Thả nhiều file PDF tờ khai vào đây hoặc'))}{' '}
+              <span style={{ color: 'var(--primary)', textDecoration: 'underline' }}>
+                {t(`${sectionKey}.clickToSelect`, t('pemasukan.clickToSelect', 'bấm để chọn file'))}
+              </span>
+            </div>
+            <div style={{ fontSize: 13, color: '#64748b' }}>
+              {t(`${sectionKey}.supportedTypes`, t('pemasukan.supportedTypes', 'Hỗ trợ tải lên cùng lúc nhiều tệp: BC 2.5, BC 2.6.1, BC 4.1, BC 2.3, BC 4.0, PPKEK'))}
+            </div>
+          </div>
+        </div>
+
         {/* Files table */}
         <div className="card">
           <div className="card-header responsive-header">
@@ -810,7 +843,7 @@ export default function PdfImportPage({ titleKey, sectionKey, fileType, pagePath
                 <h3 style={{ margin: 0 }}>{t(`${sectionKey}.importedData`)}</h3>
                 <span className="record-count">{files.length} {t('common.total').toLowerCase()}</span>
               </div>
-              {hintText && <div className="hint-text-badge">{hintText}</div>}
+              {(hintText || t(`${sectionKey}.hintText`, '')) && <div className="hint-text-badge">{hintText || t(`${sectionKey}.hintText`, '')}</div>}
             </div>
             <div className="header-actions">
               {selected.size > 0 && (
@@ -856,15 +889,31 @@ export default function PdfImportPage({ titleKey, sectionKey, fileType, pagePath
                   <td colSpan={8} className="empty-row">{t(`${sectionKey}.noData`)}</td>
                 </tr>
               )}
-              {files.map((file, _idx) => (
+              {files.map((file, _idx) => {
+                const lowerName = file.fileName.toLowerCase();
+                let docBadge = '';
+                if (lowerName.includes('2.5')) docBadge = 'BC 2.5';
+                else if (lowerName.includes('2.6.1')) docBadge = 'BC 2.6.1';
+                else if (lowerName.includes('4.1')) docBadge = 'BC 4.1';
+                else if (lowerName.includes('2.3')) docBadge = 'BC 2.3';
+                else if (lowerName.includes('4.0')) docBadge = 'BC 4.0';
+                else if (lowerName.includes('2.6.2')) docBadge = 'BC 2.6.2';
+                else if (lowerName.includes('2.7')) docBadge = 'BC 2.7';
+
+                return (
                 <tr key={file.id} style={selected.has(file.id) ? { background: 'rgba(37, 99, 235, 0.04)' } : undefined}>
                   <td>
                     <input type="checkbox" checked={selected.has(file.id)} onChange={() => toggleSelect(file.id)} />
                   </td>
                   <td>
-                    <div className="file-name-cell">
+                    <div className="file-name-cell" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                       <FileText size={16} className="file-icon" />
                       <span>{file.fileName}</span>
+                      {docBadge && (
+                        <span style={{ fontSize: 11, padding: '2px 6px', borderRadius: 4, background: 'background.default', color: '#475569', fontWeight: 600, border: '1px solid', borderColor: 'divider' }}>
+                          {docBadge}
+                        </span>
+                      )}
                     </div>
                   </td>
                   <td className="text-muted">{file.uploadDate}</td>
@@ -887,14 +936,12 @@ export default function PdfImportPage({ titleKey, sectionKey, fileType, pagePath
                   </td>
                   <td>
                     {file.status === 'processed' ? (() => {
-                      const isBc27 = file.fileName?.toLowerCase().includes('2.7') ||
-                                     file.parsedData?.header?.nomorPengajuan?.includes('2.7') ||
-                                     ((file.parsedData as any)?._debug?.colRanges?.[0]?.xEnd === 'bc27');
+                      const isCeisa = isCeisaDoc(file);
 
-                      if (isBc27) {
+                      if (isCeisa) {
                         return (
                           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                            <span className="status-badge" style={{ background: '#e0f2fe', color: '#0369a1', border: '1px solid #bae6fd' }} title="Tờ khai BC 2.7 thuộc hệ thống CEISA (Giao dịch chuyển tiếp TPB). Dữ liệu đã lưu IT Inventory, không cần Push INSW.">
+                            <span className="status-badge" style={{ background: '#e0f2fe', color: '#0369a1', border: '1px solid #bae6fd' }} title={t('inswPush.ceisaTooltip', 'Tờ khai thuộc hệ thống CEISA 4.0 (BC 2.7, BC 4.1, BC 2.6.1, BC 2.5). Dữ liệu đã lưu IT Inventory, không cần Push INSW.')}>
                               🔒 CEISA (Non-INSW)
                             </span>
                           </div>
@@ -1032,7 +1079,8 @@ export default function PdfImportPage({ titleKey, sectionKey, fileType, pagePath
                     </div>
                   </td>
                 </tr>
-              ))}
+                );
+              })}
             </tbody>
           </table>
         </div>
@@ -1043,7 +1091,7 @@ export default function PdfImportPage({ titleKey, sectionKey, fileType, pagePath
         <div className="modal-overlay" onClick={() => setViewPushResponse(null)}>
           <div className="modal" onClick={e => e.stopPropagation()} style={{ maxWidth: 680 }}>
             <div className="modal-header">
-              <h3>{t('inswPush.responseDetail', 'Chi Tiết Phản Hồi Push')}</h3>
+              <h3>{t('inswPush.responseDetail', 'Push Response Detail')}</h3>
               <button className="icon-btn" onClick={() => setViewPushResponse(null)}><X size={20} /></button>
             </div>
             <div style={{ padding: 20 }}>
@@ -1062,10 +1110,10 @@ export default function PdfImportPage({ titleKey, sectionKey, fileType, pagePath
                       isAlreadySent ? (
                         <><CheckCircle size={18} /> {t('inswPush.alreadySent', 'Data already sent to INSW')}</>
                       ) : (
-                        <><CheckCircle size={18} /> {t('inswPush.pushSuccessful', 'Đẩy Thành Công')}</>
+                        <><CheckCircle size={18} /> {t('inswPush.pushSuccessful', 'Push Successful')}</>
                       )
                     ) : (
-                      <><XCircle size={18} /> {t('inswPush.pushFailed', 'Đẩy Thất Bại')}</>
+                      <><XCircle size={18} /> {t('inswPush.pushFailed', 'Push Failed')}</>
                     )}
                   </div>
                 );
@@ -1246,7 +1294,7 @@ export default function PdfImportPage({ titleKey, sectionKey, fileType, pagePath
                   style={{ padding: '6px 12px', fontSize: 12 }}
                   onClick={() => {
                     navigator.clipboard.writeText(jsonModalContent);
-                    alert('Đã copy JSON Payload vào clipboard!');
+                    alert(t('inswPush.copiedClipboard', 'Đã copy JSON Payload vào clipboard!'));
                   }}
                 >
                   Copy JSON
@@ -1261,7 +1309,7 @@ export default function PdfImportPage({ titleKey, sectionKey, fileType, pagePath
                 overflowY: 'auto',
                 fontSize: '12px',
                 fontFamily: 'monospace',
-                border: '1px solid #e0e0e0',
+                border: '1px solid', borderColor: 'divider',
                 margin: 0
               }}>
                 {jsonModalContent}

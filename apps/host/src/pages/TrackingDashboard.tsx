@@ -93,22 +93,22 @@ export default function TrackingDashboard() {
       {/* Stats Cards */}
       {stats && (
         <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', '& > *:not(:last-child)': { mr: 2, mb: 2 }, mb: 3 }}>
-          <Paper elevation={0} sx={{ p: 2, borderRadius: 2, border: '1px solid #e0e0e0', textAlign: 'center', background: 'linear-gradient(135deg, #e8f5e9, #c8e6c9)' }}>
+          <Paper elevation={0} sx={{ p: 2, borderRadius: 2, border: '1px solid', borderColor: 'divider', textAlign: 'center', background: 'linear-gradient(135deg, #e8f5e9, #c8e6c9)' }}>
             <PeopleIcon sx={{ fontSize: 32, color: '#2e7d32', mb: 0.5 }} />
             <Typography variant="h4" sx={{ fontWeight: 800, color: '#2e7d32' }}>{onlineUsers.length}</Typography>
             <Typography variant="body2" color="text.secondary">Đang Online</Typography>
           </Paper>
-          <Paper elevation={0} sx={{ p: 2, borderRadius: 2, border: '1px solid #e0e0e0', textAlign: 'center', background: 'linear-gradient(135deg, #e3f2fd, #bbdefb)' }}>
+          <Paper elevation={0} sx={{ p: 2, borderRadius: 2, border: '1px solid', borderColor: 'divider', textAlign: 'center', background: 'linear-gradient(135deg, #e3f2fd, #bbdefb)' }}>
             <TimelineIcon sx={{ fontSize: 32, color: '#1565c0', mb: 0.5 }} />
             <Typography variant="h4" sx={{ fontWeight: 800, color: '#1565c0' }}>{stats.totalActivities || 0}</Typography>
             <Typography variant="body2" color="text.secondary">Tổng Hoạt Động</Typography>
           </Paper>
-          <Paper elevation={0} sx={{ p: 2, borderRadius: 2, border: '1px solid #e0e0e0', textAlign: 'center', background: 'linear-gradient(135deg, #fff3e0, #ffe0b2)' }}>
+          <Paper elevation={0} sx={{ p: 2, borderRadius: 2, border: '1px solid', borderColor: 'divider', textAlign: 'center', bgcolor: 'background.paper' }}>
             <LoginIcon sx={{ fontSize: 32, color: '#e65100', mb: 0.5 }} />
             <Typography variant="h4" sx={{ fontWeight: 800, color: '#e65100' }}>{stats.totalLogins || 0}</Typography>
             <Typography variant="body2" color="text.secondary">Lượt Đăng Nhập</Typography>
           </Paper>
-          <Paper elevation={0} sx={{ p: 2, borderRadius: 2, border: '1px solid #e0e0e0', textAlign: 'center', background: 'linear-gradient(135deg, #fce4ec, #f8bbd0)' }}>
+          <Paper elevation={0} sx={{ p: 2, borderRadius: 2, border: '1px solid', borderColor: 'divider', textAlign: 'center', background: 'linear-gradient(135deg, #fce4ec, #f8bbd0)' }}>
             <ActionIcon sx={{ fontSize: 32, color: '#c62828', mb: 0.5 }} />
             <Typography variant="h4" sx={{ fontWeight: 800, color: '#c62828' }}>{stats.uniqueUsers || 0}</Typography>
             <Typography variant="body2" color="text.secondary">Unique Users</Typography>
@@ -140,12 +140,12 @@ export default function TrackingDashboard() {
       </Paper>
 
       {/* Search Filters */}
-      <Paper elevation={0} sx={{ p: 2, borderRadius: 2, border: '1px solid #e0e0e0', mb: 3, background: '#fafafa' }}>
+      <Paper elevation={0} sx={{ p: 2, borderRadius: 2, border: '1px solid', borderColor: 'divider', mb: 3, background: '#fafafa' }}>
         <Box sx={{ display: 'flex', '& > *:not(:last-child)': { mr: 1.5, mb: 1.5 }, flexWrap: 'wrap', alignItems: 'center' }}>
           <TextField size="small" label="Username" value={filterUser} onChange={e => setFilterUser(e.target.value)}
-            sx={{ minWidth: 140, '& .MuiOutlinedInput-root': { borderRadius: 1.5, backgroundColor: '#fff' } }} />
+            sx={{ minWidth: 140, '& .MuiOutlinedInput-root': { borderRadius: 1.5, backgroundColor: 'background.paper' } }} />
           <TextField select size="small" label="Action" value={filterAction} onChange={e => setFilterAction(e.target.value)}
-            sx={{ minWidth: 140, '& .MuiOutlinedInput-root': { borderRadius: 1.5, backgroundColor: '#fff' } }}>
+            sx={{ minWidth: 140, '& .MuiOutlinedInput-root': { borderRadius: 1.5, backgroundColor: 'background.paper' } }}>
             <MenuItem value="">Tất cả</MenuItem>
             <MenuItem value="LOGIN">Login</MenuItem>
             <MenuItem value="LOGOUT">Logout</MenuItem>
@@ -153,7 +153,7 @@ export default function TrackingDashboard() {
             <MenuItem value="CRUD">CRUD</MenuItem>
           </TextField>
           <TextField select size="small" label="Module" value={filterModule} onChange={e => setFilterModule(e.target.value)}
-            sx={{ minWidth: 140, '& .MuiOutlinedInput-root': { borderRadius: 1.5, backgroundColor: '#fff' } }}>
+            sx={{ minWidth: 140, '& .MuiOutlinedInput-root': { borderRadius: 1.5, backgroundColor: 'background.paper' } }}>
             <MenuItem value="">Tất cả</MenuItem>
             <MenuItem value="FGS_WH">FGS WH</MenuItem>
             <MenuItem value="F2S_DELIVERY">F2S Delivery</MenuItem>
@@ -164,10 +164,10 @@ export default function TrackingDashboard() {
           </TextField>
           <TextField size="small" label="Từ ngày" type="date" value={fromDate} onChange={e => setFromDate(e.target.value)}
             InputLabelProps={{ shrink: true }}
-            sx={{ minWidth: 150, '& .MuiOutlinedInput-root': { borderRadius: 1.5, backgroundColor: '#fff' } }} />
+            sx={{ minWidth: 150, '& .MuiOutlinedInput-root': { borderRadius: 1.5, backgroundColor: 'background.paper' } }} />
           <TextField size="small" label="Đến ngày" type="date" value={toDate} onChange={e => setToDate(e.target.value)}
             InputLabelProps={{ shrink: true }}
-            sx={{ minWidth: 150, '& .MuiOutlinedInput-root': { borderRadius: 1.5, backgroundColor: '#fff' } }} />
+            sx={{ minWidth: 150, '& .MuiOutlinedInput-root': { borderRadius: 1.5, backgroundColor: 'background.paper' } }} />
           <Button variant="contained" startIcon={<RefreshIcon />} onClick={loadAll} disabled={loading}
             disableElevation sx={{ borderRadius: 1.5, fontWeight: 700, backgroundColor: '#1565c0' }}>
             Tìm
@@ -178,7 +178,7 @@ export default function TrackingDashboard() {
       {/* Top Users + By Module (side by side) */}
       {stats && (
         <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', '& > *:not(:last-child)': { mr: 2, mb: 2 }, mb: 3 }}>
-          <Paper elevation={0} sx={{ p: 2, borderRadius: 2, border: '1px solid #e0e0e0' }}>
+          <Paper elevation={0} sx={{ p: 2, borderRadius: 2, border: '1px solid', borderColor: 'divider' }}>
             <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1 }}>🏆 Top Active Users</Typography>
             {(stats.topUsers || []).map((u: any, i: number) => (
               <Box key={i} sx={{ display: 'flex', justifyContent: 'space-between', py: 0.5, borderBottom: '1px solid #f5f5f5' }}>
@@ -187,7 +187,7 @@ export default function TrackingDashboard() {
               </Box>
             ))}
           </Paper>
-          <Paper elevation={0} sx={{ p: 2, borderRadius: 2, border: '1px solid #e0e0e0' }}>
+          <Paper elevation={0} sx={{ p: 2, borderRadius: 2, border: '1px solid', borderColor: 'divider' }}>
             <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1 }}>📊 Theo Module</Typography>
             {(stats.byModule || []).map((m: any, i: number) => (
               <Box key={i} sx={{ display: 'flex', justifyContent: 'space-between', py: 0.5, borderBottom: '1px solid #f5f5f5' }}>
@@ -200,7 +200,7 @@ export default function TrackingDashboard() {
       )}
 
       {/* Activity Log Table */}
-      <Paper elevation={0} sx={{ borderRadius: 2, border: '1px solid #e0e0e0', overflow: 'hidden' }}>
+      <Paper elevation={0} sx={{ borderRadius: 2, border: '1px solid', borderColor: 'divider', overflow: 'hidden' }}>
         <Typography variant="subtitle1" sx={{ fontWeight: 700, p: 2, pb: 1, color: '#455a64' }}>
           📋 Activity Log ({activities.length} records)
         </Typography>

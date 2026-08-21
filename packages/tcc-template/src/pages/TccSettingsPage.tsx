@@ -579,9 +579,9 @@ export default function TccSettingsPage() {
     });
 
     return (
-      <Paper elevation={0} sx={{ border: '1px solid #e2e8f0', borderRadius: 2, overflow: 'hidden' }}>
+      <Paper elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2, overflow: 'hidden' }}>
         {/* Header Bar */}
-        <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', flexWrap: 'wrap', gap: 1 }}>
+        <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', flexWrap: 'wrap', gap: 1 }}>
           <Box>
             <Typography variant="h6" sx={{ fontSize: '1rem', fontWeight: 700, color: '#1e293b' }}>
               🧵 {t('tcc.settings.opConfigTitle', 'Cấu Hình Công Đoạn & Độ Khó')}
@@ -601,7 +601,7 @@ export default function TccSettingsPage() {
         </Box>
 
         {/* Group Filter & Search Bar */}
-        <Box sx={{ p: 2, bgcolor: '#ffffff', borderBottom: '1px solid #e2e8f0', display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 2, justifyContent: 'space-between', alignItems: { md: 'center' } }}>
+        <Box sx={{ p: 2, bgcolor: 'background.paper', borderBottom: '1px solid', borderColor: 'divider', display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 2, justifyContent: 'space-between', alignItems: { md: 'center' } }}>
           <Box sx={{ display: 'flex', gap: 1, overflowX: 'auto', pb: { xs: 1, md: 0 }, flexWrap: 'wrap' }}>
             <Chip
               label={t('tcc.settings.allCount', { defaultValue: `Tất cả (${operations.length})`, count: operations.length })}
@@ -638,7 +638,7 @@ export default function TccSettingsPage() {
         <TableContainer sx={{ maxHeight: 550 }}>
           <Table size="small" stickyHeader>
             <TableHead>
-              <TableRow sx={{ bgcolor: '#f1f5f9' }}>
+              <TableRow sx={{ bgcolor: 'background.default' }}>
                 <TableCell sx={{ fontWeight: 700, width: 50 }}>{t('tcc.settings.seqNo', 'STT')}</TableCell>
                 <TableCell sx={{ fontWeight: 700, width: 140 }}>{t('tcc.settings.opGroup', 'Group Công Đoạn')}</TableCell>
                 <TableCell sx={{ fontWeight: 700 }}>{t('tcc.settings.opName', 'Tên Công Đoạn')}</TableCell>
@@ -662,7 +662,7 @@ export default function TccSettingsPage() {
                         label={op.stage}
                         size="small"
                         variant="outlined"
-                        sx={{ fontWeight: 600, fontSize: '0.75rem', borderColor: '#94a3b8', color: '#334155', bgcolor: '#f8fafc' }}
+                        sx={{ fontWeight: 600, fontSize: '0.75rem', borderColor: '#94a3b8', color: '#334155', bgcolor: 'background.default' }}
                       />
                     ) : (
                       <Typography variant="caption" sx={{ color: '#94a3b8', fontStyle: 'italic' }}>
@@ -723,8 +723,8 @@ export default function TccSettingsPage() {
 
   const renderSmvList = () => {
     return (
-      <Paper elevation={0} sx={{ border: '1px solid #e2e8f0', borderRadius: 2, overflow: 'hidden' }}>
-        <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
+      <Paper elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2, overflow: 'hidden' }}>
+        <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider' }}>
           <Box>
             <Typography variant="h6" sx={{ fontSize: '1rem', fontWeight: 700, color: '#1e293b' }}>
               ⚙️ Cấu Hình SMV (SMV Rule Configuration)
@@ -742,16 +742,16 @@ export default function TccSettingsPage() {
         <TableContainer>
           <Table size="small">
             <TableHead>
-              <TableRow sx={{ bgcolor: '#f1f5f9' }}>
+              <TableRow sx={{ bgcolor: 'background.default' }}>
                 <TableCell colSpan={2} align="center" sx={{ fontWeight: 700, color: '#1e293b', borderRight: '2px solid #cbd5e1', bgcolor: '#e2e8f0' }}>
                   Requestor choose (Người yêu cầu chọn)
                 </TableCell>
                 <TableCell colSpan={2} align="center" sx={{ fontWeight: 700, color: '#15803d', borderRight: '2px solid #cbd5e1', bgcolor: '#e8f5e9' }}>
                   Automatic (Tự động tính toán)
                 </TableCell>
-                <TableCell align="center" sx={{ fontWeight: 700, bgcolor: '#f1f5f9' }}>Actions</TableCell>
+                <TableCell align="center" sx={{ fontWeight: 700, bgcolor: 'background.default' }}>Actions</TableCell>
               </TableRow>
-              <TableRow sx={{ bgcolor: '#f8fafc' }}>
+              <TableRow sx={{ bgcolor: 'background.default' }}>
                 <TableCell sx={{ fontWeight: 600, color: '#334155' }}>Common operation</TableCell>
                 <TableCell sx={{ fontWeight: 600, color: '#334155', borderRight: '2px solid #cbd5e1' }}>Sample Stage</TableCell>
                 <TableCell sx={{ fontWeight: 600, color: '#15803d' }}>Template categories</TableCell>
@@ -807,8 +807,8 @@ export default function TccSettingsPage() {
   const renderMetadataList = (category: string, label: string) => {
     const items = metadata?.[category] || [];
     return (
-      <Paper elevation={0} sx={{ border: '1px solid #e2e8f0', borderRadius: 2, overflow: 'hidden' }}>
-        <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
+      <Paper elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2, overflow: 'hidden' }}>
+        <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider' }}>
           <Typography variant="h6" sx={{ fontSize: '1rem', fontWeight: 600, color: '#334155' }}>
             {label}
           </Typography>
@@ -844,8 +844,8 @@ export default function TccSettingsPage() {
 
   const renderMachineList = () => {
     return (
-      <Paper elevation={0} sx={{ border: '1px solid #e2e8f0', borderRadius: 2, overflow: 'hidden' }}>
-        <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
+      <Paper elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2, overflow: 'hidden' }}>
+        <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider' }}>
           <Typography variant="h6" sx={{ fontSize: '1rem', fontWeight: 600, color: '#334155' }}>
             {t('tcc.settings.listMachine', 'Danh Sách Máy May')}
           </Typography>
@@ -885,8 +885,8 @@ export default function TccSettingsPage() {
 
   const renderLeadTimeList = () => {
     return (
-      <Paper elevation={0} sx={{ border: '1px solid #e2e8f0', borderRadius: 2, overflow: 'hidden' }}>
-        <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
+      <Paper elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2, overflow: 'hidden' }}>
+        <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider' }}>
           <Typography variant="h6" sx={{ fontSize: '1rem', fontWeight: 600, color: '#334155' }}>
             {t('tcc.settings.listLeadTime', 'Cấu Hình Thời Gian Thực Hiện (Lead Time)')}
           </Typography>
@@ -933,8 +933,8 @@ export default function TccSettingsPage() {
 
   const renderCapacityList = () => {
     return (
-      <Paper elevation={0} sx={{ border: '1px solid #e2e8f0', borderRadius: 2, overflow: 'hidden' }}>
-        <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
+      <Paper elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2, overflow: 'hidden' }}>
+        <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider' }}>
           <Box>
             <Typography variant="h6" sx={{ fontSize: '1rem', fontWeight: 700, color: '#1e293b' }}>
               Capacity Groups (Cấu hình SMV theo Group)
@@ -963,7 +963,7 @@ export default function TccSettingsPage() {
             const displaySmv = Number(smvVal) === -1 ? 'Unlimited (-1)' : `${smvVal} phút/ngày`;
 
             return (
-              <Paper key={cap.id || idx} elevation={0} sx={{ border: '1px solid #cbd5e1', borderRadius: 2, p: 2, bgcolor: '#ffffff' }}>
+              <Paper key={cap.id || idx} elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2, p: 2, bgcolor: 'background.paper' }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.5 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
                     <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#0f172a', fontSize: '1.05rem' }}>
@@ -1009,10 +1009,10 @@ export default function TccSettingsPage() {
                           label={f}
                           onDelete={() => handleRemoveFactoryFromGroup(cap, f)}
                           sx={{
-                            bgcolor: '#f1f5f9',
+                            bgcolor: 'background.default',
                             color: '#1e293b',
                             fontWeight: 600,
-                            border: '1px solid #cbd5e1',
+                            border: '1px solid', borderColor: 'divider',
                             '& .MuiChip-deleteIcon': { color: '#64748b', '&:hover': { color: '#ef4444' } }
                           }}
                         />
@@ -1028,7 +1028,7 @@ export default function TccSettingsPage() {
             );
           })}
           {capacityConfigs.length === 0 && (
-            <Box sx={{ p: 4, textAlign: 'center', color: '#94a3b8', bgcolor: '#fff', borderRadius: 2, border: '1px dashed #cbd5e1' }}>
+            <Box sx={{ p: 4, textAlign: 'center', color: '#94a3b8', bgcolor: 'background.paper', borderRadius: 2, border: '1px dashed #cbd5e1' }}>
               <Typography variant="body1" sx={{ fontWeight: 600 }}>Chưa tạo Capacity Group nào</Typography>
               <Typography variant="body2" sx={{ mt: 0.5 }}>Nhấn button "Tạo Group Mới" ở góc phải để tạo Group và gán các Factory vào.</Typography>
             </Box>
@@ -1043,13 +1043,13 @@ export default function TccSettingsPage() {
   }
 
   return (
-    <Box sx={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', bgcolor: '#f1f5f9', p: { xs: 1, md: 3 } }}>
+    <Box sx={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', bgcolor: 'background.default', p: { xs: 1, md: 3 } }}>
       <Typography variant="h5" sx={{ fontWeight: 800, color: '#1e293b', mb: 2 }}>
         {t('tcc.settings.title', 'Thiết Lập Dữ Liệu (Settings)')}
       </Typography>
       
       <Paper elevation={2} sx={{ flex: 1, display: 'flex', flexDirection: 'column', borderRadius: 3, overflow: 'hidden' }}>
-        <Box sx={{ borderBottom: 1, borderColor: 'divider', bgcolor: '#fff' }}>
+        <Box sx={{ borderBottom: 1, borderColor: 'divider', bgcolor: 'background.paper' }}>
           <Tabs 
             value={tabIndex} 
             onChange={(_, v) => setTabIndex(v)} 
@@ -1422,7 +1422,7 @@ export default function TccSettingsPage() {
           {editSmvId !== null ? 'Chỉnh Sửa Cấu Hình SMV' : 'Thêm Cấu Hình SMV Mới'}
         </DialogTitle>
         <DialogContent sx={{ pt: '16px !important', display: 'flex', flexDirection: 'column', gap: 2 }}>
-          <Box sx={{ bgcolor: '#f8fafc', p: 2, borderRadius: 2, border: '1px solid #e2e8f0' }}>
+          <Box sx={{ bgcolor: 'background.default', p: 2, borderRadius: 2, border: '1px solid', borderColor: 'divider' }}>
             <Typography variant="caption" sx={{ fontWeight: 700, color: '#334155', display: 'block', mb: 1.5 }}>
               1️⃣ Requestor choose (Người yêu cầu chọn)
             </Typography>

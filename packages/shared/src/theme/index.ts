@@ -167,7 +167,7 @@ const baseTheme: ThemeOptions = {
           "&:hover": {
             borderWidth: "1px",
             borderColor: tokens.slate[400],
-            backgroundColor: "#ffffff",
+            backgroundColor: 'background.paper',
           },
         },
         sizeLarge: { padding: "12px 28px", fontSize: "1rem", borderRadius: 10 },
@@ -208,7 +208,7 @@ const baseTheme: ThemeOptions = {
         root: {
           "& .MuiOutlinedInput-root": {
             borderRadius: 12,
-            backgroundColor: "#ffffff",
+            backgroundColor: 'background.paper',
             transition: "all 0.25s ease",
             "& fieldset": {
               borderColor: tokens.slate[300],
@@ -219,14 +219,14 @@ const baseTheme: ThemeOptions = {
               borderColor: tokens.slate[400],
             },
             "&:hover": {
-              backgroundColor: "#fff",
+              backgroundColor: 'background.paper',
             },
             "&.Mui-focused fieldset": {
               borderColor: tokens.primary[500],
               borderWidth: "1px",
             },
             "&.Mui-focused": {
-              backgroundColor: "#fff",
+              backgroundColor: 'background.paper',
               boxShadow: "0 0 0 3px rgba(21, 128, 61, 0.1)",
             },
           },
@@ -325,8 +325,14 @@ export const darkTheme = createTheme({
   ...baseTheme,
   palette: {
     mode: "dark",
-    primary: { main: tokens.primary[400] },
+    primary: { main: "#22c55e" },
     secondary: { main: tokens.slate[400] },
-    background: { default: tokens.dark.bg, paper: tokens.dark.surface },
+    background: { default: "#0f172a", paper: "#1e293b" },
+    text: { primary: "#f8fafc", secondary: "#94a3b8" },
+    divider: "#334155",
+    action: {
+      hover: "rgba(255, 255, 255, 0.06)",
+      selected: "rgba(255, 255, 255, 0.1)"
+    }
   },
 });

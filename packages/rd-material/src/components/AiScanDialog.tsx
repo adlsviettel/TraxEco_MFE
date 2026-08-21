@@ -150,7 +150,7 @@ export const AiScanDialog: React.FC<Props> = ({ open, onClose, onApply, itemType
                 borderRadius: 2,
                 p: 3,
                 textAlign: 'center',
-                backgroundColor: '#f8fafc',
+                backgroundColor: 'background.default',
                 minHeight: 250,
                 display: 'flex',
                 flexDirection: 'column',

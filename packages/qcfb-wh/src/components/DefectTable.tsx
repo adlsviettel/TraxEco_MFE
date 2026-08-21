@@ -47,12 +47,12 @@ export default function DefectTable({ defects, defectMasters, onAdd, onDelete, o
       borderRadius: 4, 
       display: 'flex', 
       flexDirection: 'column', 
-      bgcolor: '#ffffff', 
+      bgcolor: 'background.paper', 
       border: '1px solid rgba(0,0,0,0.04)',
       boxShadow: '0 8px 32px rgba(0,0,0,0.04)'
     }}>
       <CardContent sx={{ p: 3, display: 'flex', flexDirection: 'column', flexGrow: 1, overflow: 'hidden' }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, pb: 1.5, borderBottom: '1px solid #f1f5f9' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, pb: 1.5, borderBottom: '1px solid', borderColor: 'divider' }}>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Box sx={{ width: 4, height: 18, bgcolor: '#10b981', borderRadius: 1, mr: 1.5 }} />
             <Typography variant="subtitle1" fontWeight={700} sx={{ color: '#0f172a' }}>
@@ -69,7 +69,7 @@ export default function DefectTable({ defects, defectMasters, onAdd, onDelete, o
             displayEmpty
             sx={{ 
               flex: 2, fontSize: '0.875rem', borderRadius: 2, 
-              bgcolor: '#f1f5f9', color: '#1e293b',
+              bgcolor: 'background.default', color: '#1e293b',
               '& .MuiOutlinedInput-notchedOutline': { border: 'none' }
             }}
           >
@@ -86,7 +86,7 @@ export default function DefectTable({ defects, defectMasters, onAdd, onDelete, o
             onChange={(e) => setSelectedPoint(Number(e.target.value))}
             sx={{ 
               flex: 1, minWidth: '60px', borderRadius: 2, 
-              bgcolor: '#f1f5f9', color: '#1e293b',
+              bgcolor: 'background.default', color: '#1e293b',
               '& .MuiOutlinedInput-notchedOutline': { border: 'none' }
             }}
           >
@@ -117,10 +117,10 @@ export default function DefectTable({ defects, defectMasters, onAdd, onDelete, o
           <Table size="small" stickyHeader>
             <TableHead>
               <TableRow>
-                <TableCell sx={{ fontWeight: 700, color: '#475569', bgcolor: '#f8fafc', borderBottom: '1px solid rgba(0,0,0,0.05)' }}>Code</TableCell>
-                <TableCell align="center" sx={{ fontWeight: 700, color: '#475569', bgcolor: '#f8fafc', borderBottom: '1px solid rgba(0,0,0,0.05)' }}>Pt</TableCell>
-                <TableCell align="center" sx={{ fontWeight: 700, color: '#475569', bgcolor: '#f8fafc', borderBottom: '1px solid rgba(0,0,0,0.05)' }}>Qty</TableCell>
-                <TableCell align="right" sx={{ fontWeight: 700, color: '#475569', bgcolor: '#f8fafc', borderBottom: '1px solid rgba(0,0,0,0.05)' }}>Act</TableCell>
+                <TableCell sx={{ fontWeight: 700, color: '#475569', bgcolor: 'background.default', borderBottom: '1px solid rgba(0,0,0,0.05)' }}>Code</TableCell>
+                <TableCell align="center" sx={{ fontWeight: 700, color: '#475569', bgcolor: 'background.default', borderBottom: '1px solid rgba(0,0,0,0.05)' }}>Pt</TableCell>
+                <TableCell align="center" sx={{ fontWeight: 700, color: '#475569', bgcolor: 'background.default', borderBottom: '1px solid rgba(0,0,0,0.05)' }}>Qty</TableCell>
+                <TableCell align="right" sx={{ fontWeight: 700, color: '#475569', bgcolor: 'background.default', borderBottom: '1px solid rgba(0,0,0,0.05)' }}>Act</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -132,7 +132,7 @@ export default function DefectTable({ defects, defectMasters, onAdd, onDelete, o
                 </TableRow>
               ) : (
                 defects.map((d, i) => (
-                  <TableRow key={i} sx={{ '& td': { borderBottom: '1px solid rgba(0,0,0,0.05)' }, '&:last-child td': { border: 0 }, '&:hover': { bgcolor: '#f1f5f9' } }}>
+                  <TableRow key={i} sx={{ '& td': { borderBottom: '1px solid rgba(0,0,0,0.05)' }, '&:last-child td': { border: 0 }, '&:hover': { bgcolor: 'background.default' } }}>
                     <TableCell sx={{ fontSize: '0.8rem', fontWeight: 600, color: '#1e293b' }}>{d.DefectCode}</TableCell>
                     <TableCell align="center" sx={{ fontWeight: 600, color: '#1e293b' }}>{d.DefectPoint}</TableCell>
                     <TableCell align="center" sx={{ fontWeight: 600, color: '#1e293b' }}>{d.QtyDefect}</TableCell>

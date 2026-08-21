@@ -66,7 +66,7 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', bgcolor: '#f8fafc' }}>
+      <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', bgcolor: 'background.default' }}>
         <Box sx={{ textAlign: 'center' }}>
           <CircularProgress sx={{ color: '#2e7d32', mb: 2 }} />
           <Typography variant="body2" color="text.secondary" fontWeight={500}>
@@ -79,7 +79,7 @@ export default function DashboardPage() {
 
   if (error || !data) {
     return (
-      <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', bgcolor: '#f8fafc', p: 3 }}>
+      <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', bgcolor: 'background.default', p: 3 }}>
         <Paper sx={{ p: 4, textAlign: 'center', borderRadius: 1, maxWidth: 400, border: '1px solid #fee2e2' }}>
           <Typography color="error" variant="h6" gutterBottom>{t('tcc.dashboard.error', 'Failed to Load Data')}</Typography>
           <Typography color="text.secondary" variant="body2" sx={{ mb: 3 }}>{error || 'No analytics data available.'}</Typography>
@@ -92,7 +92,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', bgcolor: '#f8fafc', overflow: 'hidden', width: '100%' }}>
+    <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', bgcolor: 'background.default', overflow: 'hidden', width: '100%' }}>
       <Box sx={{ flex: 1, overflowY: 'auto', p: { xs: 2, md: 3 }, width: '100%' }}>
         <style>{`
           @media print {
@@ -198,7 +198,7 @@ export default function DashboardPage() {
                   content={({ active, payload, label }) => {
                     if (active && payload && payload.length) {
                       return (
-                        <Paper elevation={0} sx={{ p: 1.2, border: '1px solid #e2e8f0', borderRadius: '8px' }}>
+                        <Paper elevation={0} sx={{ p: 1.2, border: '1px solid', borderColor: 'divider', borderRadius: '8px' }}>
                           <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, display: 'block', mb: 0.2 }}>
                             {label}
                           </Typography>
@@ -250,7 +250,7 @@ export default function DashboardPage() {
                   content={({ active, payload, label }) => {
                     if (active && payload && payload.length) {
                       return (
-                        <Paper elevation={0} sx={{ p: 1.2, border: '1px solid #e2e8f0', borderRadius: '8px' }}>
+                        <Paper elevation={0} sx={{ p: 1.2, border: '1px solid', borderColor: 'divider', borderRadius: '8px' }}>
                           <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, display: 'block', mb: 0.2 }}>
                             {label}
                           </Typography>
@@ -296,7 +296,7 @@ export default function DashboardPage() {
                   content={({ active, payload, label }) => {
                     if (active && payload && payload.length) {
                       return (
-                        <Paper elevation={0} sx={{ p: 1.2, border: '1px solid #e2e8f0', borderRadius: '8px' }}>
+                        <Paper elevation={0} sx={{ p: 1.2, border: '1px solid', borderColor: 'divider', borderRadius: '8px' }}>
                           <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, display: 'block', mb: 0.2 }}>
                             {label}
                           </Typography>
@@ -349,7 +349,7 @@ export default function DashboardPage() {
                   content={({ active, payload, label }) => {
                     if (active && payload && payload.length) {
                       return (
-                        <Paper elevation={0} sx={{ p: 1.2, border: '1px solid #e2e8f0', borderRadius: '8px' }}>
+                        <Paper elevation={0} sx={{ p: 1.2, border: '1px solid', borderColor: 'divider', borderRadius: '8px' }}>
                           <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, display: 'block', mb: 0.2 }}>
                             {label}
                           </Typography>
@@ -402,7 +402,7 @@ export default function DashboardPage() {
                   content={({ active, payload, label }) => {
                     if (active && payload && payload.length) {
                       return (
-                        <Paper elevation={0} sx={{ p: 1.2, border: '1px solid #e2e8f0', borderRadius: '8px' }}>
+                        <Paper elevation={0} sx={{ p: 1.2, border: '1px solid', borderColor: 'divider', borderRadius: '8px' }}>
                           <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, display: 'block', mb: 0.2 }}>
                             {label}
                           </Typography>
@@ -440,7 +440,7 @@ export default function DashboardPage() {
           sx: {
             mt: 0.5,
             boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05)',
-            border: '1px solid #e2e8f0',
+            border: '1px solid', borderColor: 'divider',
             borderRadius: '8px',
           }
         }}

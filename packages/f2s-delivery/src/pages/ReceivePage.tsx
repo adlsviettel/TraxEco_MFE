@@ -323,7 +323,7 @@ export default function ReceivePage() {
     <Box sx={{ 
       display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, gap: 2, 
       px: { xs: 1.5, md: 1.5, lg: 2 }, pt: { xs: 2, md: 1 }, pb: { xs: 1, md: 0 },
-      background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
+      bgcolor: 'background.paper',
       '@keyframes fadeInRow': {
         '0%': { opacity: 0, transform: 'translateY(15px)' },
         '100%': { opacity: 1, transform: 'translateY(0)' }
@@ -341,20 +341,20 @@ export default function ReceivePage() {
         {/* Thể hiện các Tag lọc ra ngoài */}
         <Box sx={{ flexGrow: 1, display: 'flex', gap: 1, flexWrap: 'wrap', alignItems: 'center', justifyContent: { xs: 'flex-start', md: 'flex-end' } }}>
           {appliedFilters.po.split(',').filter(Boolean).map((t, i) => (
-            <Chip key={`po-${i}`} label={`PO: ${t.trim()}`} size="small" onDelete={() => handleRemoveFilter('po', t.trim())} color="primary" variant="outlined" sx={{ bgcolor: '#fff', fontWeight: 600 }} />
+            <Chip key={`po-${i}`} label={`PO: ${t.trim()}`} size="small" onDelete={() => handleRemoveFilter('po', t.trim())} color="primary" variant="outlined" sx={{ bgcolor: 'background.paper', fontWeight: 600 }} />
           ))}
           {appliedFilters.job.split(',').filter(Boolean).map((t, i) => (
-            <Chip key={`job-${i}`} label={`Job: ${t.trim()}`} size="small" onDelete={() => handleRemoveFilter('job', t.trim())} color="primary" variant="outlined" sx={{ bgcolor: '#fff', fontWeight: 600 }} />
+            <Chip key={`job-${i}`} label={`Job: ${t.trim()}`} size="small" onDelete={() => handleRemoveFilter('job', t.trim())} color="primary" variant="outlined" sx={{ bgcolor: 'background.paper', fontWeight: 600 }} />
           ))}
           {appliedFilters.line.split(',').filter(Boolean).map((t, i) => (
-            <Chip key={`line-${i}`} label={`Chuyền: ${t.trim()}`} size="small" onDelete={() => handleRemoveFilter('line', t.trim())} color="primary" variant="outlined" sx={{ bgcolor: '#fff', fontWeight: 600 }} />
+            <Chip key={`line-${i}`} label={`Chuyền: ${t.trim()}`} size="small" onDelete={() => handleRemoveFilter('line', t.trim())} color="primary" variant="outlined" sx={{ bgcolor: 'background.paper', fontWeight: 600 }} />
           ))}
         </Box>
 
         <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'center', flexWrap: 'wrap' }}>
           <Chip
             label={loading ? 'Đang tải...' : `Tổng số lô: ${totalItems}`}
-            sx={{ fontWeight: 700, bgcolor: '#f1f5f9', color: '#475569', borderRadius: 2, height: 36, px: 0.5, letterSpacing: '0.5px', display: { xs: 'none', sm: 'flex' } }}
+            sx={{ fontWeight: 700, bgcolor: 'background.default', color: '#475569', borderRadius: 2, height: 36, px: 0.5, letterSpacing: '0.5px', display: { xs: 'none', sm: 'flex' } }}
           />
           <Badge 
             color="error" 
@@ -366,10 +366,10 @@ export default function ReceivePage() {
               onClick={() => setFilterOpen(true)}
               startIcon={<FilterIcon />}
               sx={{ 
-                borderRadius: 2, bgcolor: '#ffffff', textTransform: 'none', fontWeight: 700, 
+                borderRadius: 2, bgcolor: 'background.paper', textTransform: 'none', fontWeight: 700, 
                 color: '#475569', borderColor: '#cbd5e1', boxShadow: '0 2px 4px rgba(0,0,0,0.02)',
                 transition: 'all 0.2s',
-                '&:hover': { transform: 'translateY(-1px)', boxShadow: '0 4px 6px rgba(0,0,0,0.04)', bgcolor: '#f8fafc' }
+                '&:hover': { transform: 'translateY(-1px)', boxShadow: '0 4px 6px rgba(0,0,0,0.04)', bgcolor: 'background.default' }
               }}
             >
               Bộ Lọc
@@ -384,7 +384,7 @@ export default function ReceivePage() {
             PaperProps={{ sx: { width: { xs: '85%', sm: 360 }, p: 0, borderRadius: '16px 0 0 16px', boxShadow: '-4px 0 24px rgba(0,0,0,0.1)' } }}
           >
             {/* Drawer Header */}
-            <Box sx={{ p: 2.5, display: 'flex', alignItems: 'center', justifyContent: 'space-between', bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
+            <Box sx={{ p: 2.5, display: 'flex', alignItems: 'center', justifyContent: 'space-between', bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <FilterIcon sx={{ color: '#3ba55c' }} />
                 <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#1e293b' }}>
@@ -407,7 +407,7 @@ export default function ReceivePage() {
                 renderTags={(value, getTagProps) =>
                   value.map((option, index) => {
                     const { key, ...tagProps } = getTagProps({ index });
-                    return <Chip variant="outlined" label={`PO: ${option}`} size="small" color="primary" key={key} {...tagProps} sx={{ bgcolor: '#fff', fontWeight: 600 }} />;
+                    return <Chip variant="outlined" label={`PO: ${option}`} size="small" color="primary" key={key} {...tagProps} sx={{ bgcolor: 'background.paper', fontWeight: 600 }} />;
                   })
                 }
                 renderInput={(params) => (
@@ -434,7 +434,7 @@ export default function ReceivePage() {
                 renderTags={(value, getTagProps) =>
                   value.map((option, index) => {
                     const { key, ...tagProps } = getTagProps({ index });
-                    return <Chip variant="outlined" label={`Job: ${option}`} size="small" color="primary" key={key} {...tagProps} sx={{ bgcolor: '#fff', fontWeight: 600 }} />;
+                    return <Chip variant="outlined" label={`Job: ${option}`} size="small" color="primary" key={key} {...tagProps} sx={{ bgcolor: 'background.paper', fontWeight: 600 }} />;
                   })
                 }
                 renderInput={(params) => (
@@ -461,7 +461,7 @@ export default function ReceivePage() {
                 renderTags={(value, getTagProps) =>
                   value.map((option, index) => {
                     const { key, ...tagProps } = getTagProps({ index });
-                    return <Chip variant="outlined" label={`Chuyền: ${option}`} size="small" color="primary" key={key} {...tagProps} sx={{ bgcolor: '#fff', fontWeight: 600 }} />;
+                    return <Chip variant="outlined" label={`Chuyền: ${option}`} size="small" color="primary" key={key} {...tagProps} sx={{ bgcolor: 'background.paper', fontWeight: 600 }} />;
                   })
                 }
                 renderInput={(params) => (
@@ -482,7 +482,7 @@ export default function ReceivePage() {
             </Box>
 
             {/* Drawer Actions */}
-            <Box sx={{ p: 2.5, display: 'flex', gap: 1.5, borderTop: '1px solid #e2e8f0', bgcolor: '#fff' }}>
+            <Box sx={{ p: 2.5, display: 'flex', gap: 1.5, borderTop: '1px solid', borderColor: 'divider', bgcolor: 'background.paper' }}>
               <Button 
                 fullWidth variant="outlined" size="large" 
                 onClick={() => {
@@ -505,7 +505,7 @@ export default function ReceivePage() {
             </Box>
           </Drawer>
 
-          <Box sx={{ display: 'flex', alignItems: 'center', bgcolor: '#fff', borderRadius: 2, border: '1px solid #cbd5e1', pl: 1.5, pr: 0.5, py: 0.5, boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', bgcolor: 'background.paper', borderRadius: 2, border: '1px solid', borderColor: 'divider', pl: 1.5, pr: 0.5, py: 0.5, boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', mr: 1 }}>
               {isAutoRefresh && (
                 <Box sx={{ 
@@ -540,11 +540,11 @@ export default function ReceivePage() {
             disableElevation
             sx={{ 
               borderRadius: 2, fontWeight: 700, textTransform: 'none',
-              background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
-              color: '#334155', border: '1px solid #cbd5e1',
+              bgcolor: 'background.paper',
+              color: '#334155', border: '1px solid', borderColor: 'divider',
               boxShadow: '0 2px 4px rgba(0,0,0,0.02)',
               transition: 'all 0.2s',
-              '&:hover': { transform: 'translateY(-1px)', boxShadow: '0 4px 6px rgba(0,0,0,0.04)', background: '#f1f5f9' }
+              '&:hover': { transform: 'translateY(-1px)', boxShadow: '0 4px 6px rgba(0,0,0,0.04)', background: 'background.default' }
             }}
           >
             Làm mới
@@ -580,7 +580,7 @@ export default function ReceivePage() {
               <Table stickyHeader size="small" sx={{ minWidth: 800 }}>
                 <TableHead>
                   <TableRow>
-                    <TableCell sx={{ bgcolor: '#f8fafc', p: 1, borderBottom: '2px solid #e2e8f0', minWidth: 140 }}>
+                    <TableCell sx={{ bgcolor: 'background.default', p: 1, borderBottom: '2px solid #e2e8f0', minWidth: 140 }}>
                       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: 1 }}>
                         <Typography sx={{ fontWeight: 800, color: '#475569', fontSize: '0.75rem', textTransform: 'uppercase' }}>PO Number</Typography>
                         <IconButton size="small" onClick={(e) => setPoFilterAnchorEl(e.currentTarget)} sx={{ color: filterPO ? '#10b981' : '#94a3b8', p: 0.5 }}>
@@ -603,7 +603,7 @@ export default function ReceivePage() {
                       </Popover>
                     </TableCell>
 
-                    <TableCell sx={{ bgcolor: '#f8fafc', p: 1, borderBottom: '2px solid #e2e8f0', minWidth: 140 }}>
+                    <TableCell sx={{ bgcolor: 'background.default', p: 1, borderBottom: '2px solid #e2e8f0', minWidth: 140 }}>
                       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: 1 }}>
                         <Typography sx={{ fontWeight: 800, color: '#475569', fontSize: '0.75rem', textTransform: 'uppercase' }}>Job No</Typography>
                         <IconButton size="small" onClick={(e) => setJobFilterAnchorEl(e.currentTarget)} sx={{ color: filterJob ? '#10b981' : '#94a3b8', p: 0.5 }}>
@@ -626,7 +626,7 @@ export default function ReceivePage() {
                       </Popover>
                     </TableCell>
 
-                    <TableCell sx={{ bgcolor: '#f8fafc', p: 1, borderBottom: '2px solid #e2e8f0', minWidth: 140 }}>
+                    <TableCell sx={{ bgcolor: 'background.default', p: 1, borderBottom: '2px solid #e2e8f0', minWidth: 140 }}>
                       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: 1 }}>
                         <Typography sx={{ fontWeight: 800, color: '#475569', fontSize: '0.75rem', textTransform: 'uppercase' }}>Chuyền</Typography>
                         <IconButton size="small" onClick={(e) => setLineFilterAnchorEl(e.currentTarget)} sx={{ color: filterLine ? '#10b981' : '#94a3b8', p: 0.5 }}>
@@ -648,19 +648,19 @@ export default function ReceivePage() {
                         </Box>
                       </Popover>
                     </TableCell>
-                    <TableCell sx={{ bgcolor: '#f8fafc', p: 1, borderBottom: '2px solid #e2e8f0', verticalAlign: 'middle' }}>
+                    <TableCell sx={{ bgcolor: 'background.default', p: 1, borderBottom: '2px solid #e2e8f0', verticalAlign: 'middle' }}>
                       <Typography sx={{ fontWeight: 800, color: '#475569', fontSize: '0.75rem', textTransform: 'uppercase' }}>Ngày Tạo</Typography>
                     </TableCell>
-                    <TableCell sx={{ bgcolor: '#f8fafc', p: 1, borderBottom: '2px solid #e2e8f0', verticalAlign: 'middle' }}>
+                    <TableCell sx={{ bgcolor: 'background.default', p: 1, borderBottom: '2px solid #e2e8f0', verticalAlign: 'middle' }}>
                       <Typography sx={{ fontWeight: 800, color: '#475569', fontSize: '0.75rem', textTransform: 'uppercase' }}>Màu / Size</Typography>
                     </TableCell>
-                    <TableCell align="center" sx={{ bgcolor: '#f8fafc', p: 1, borderBottom: '2px solid #e2e8f0', verticalAlign: 'middle' }}>
+                    <TableCell align="center" sx={{ bgcolor: 'background.default', p: 1, borderBottom: '2px solid #e2e8f0', verticalAlign: 'middle' }}>
                       <Typography sx={{ fontWeight: 800, color: '#475569', fontSize: '0.75rem', textTransform: 'uppercase' }}>SL Báo</Typography>
                     </TableCell>
-                    <TableCell align="center" sx={{ bgcolor: '#f8fafc', p: 1, borderBottom: '2px solid #e2e8f0', verticalAlign: 'middle' }}>
+                    <TableCell align="center" sx={{ bgcolor: 'background.default', p: 1, borderBottom: '2px solid #e2e8f0', verticalAlign: 'middle' }}>
                       <Typography sx={{ fontWeight: 800, color: '#475569', fontSize: '0.75rem', textTransform: 'uppercase' }}>SL Nhận</Typography>
                     </TableCell>
-                    <TableCell align="center" sx={{ bgcolor: '#f8fafc', p: 1, borderBottom: '2px solid #e2e8f0', verticalAlign: 'middle' }}>
+                    <TableCell align="center" sx={{ bgcolor: 'background.default', p: 1, borderBottom: '2px solid #e2e8f0', verticalAlign: 'middle' }}>
                       <Typography sx={{ fontWeight: 800, color: '#475569', fontSize: '0.75rem', textTransform: 'uppercase' }}>Hành Động</Typography>
                     </TableCell>
                   </TableRow>
@@ -673,7 +673,7 @@ export default function ReceivePage() {
             
             {/* Pagination Controls */}
             {data.length > 0 && (
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', p: 1.5, borderTop: '1px solid #e2e8f0', bgcolor: '#f8fafc', flexWrap: 'wrap', gap: 2 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', p: 1.5, borderTop: '1px solid', borderColor: 'divider', bgcolor: 'background.default', flexWrap: 'wrap', gap: 2 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
                   <Typography variant="body2" sx={{ color: '#475569', fontWeight: 600 }}>Số dòng:</Typography>
                   <Select
@@ -683,7 +683,7 @@ export default function ReceivePage() {
                       setRowsPerPage(Number(e.target.value));
                       setPage(0);
                     }}
-                    sx={{ height: 32, bgcolor: '#ffffff', borderRadius: 1.5, fontSize: '0.875rem', fontWeight: 600, minWidth: 70 }}
+                    sx={{ height: 32, bgcolor: 'background.paper', borderRadius: 1.5, fontSize: '0.875rem', fontWeight: 600, minWidth: 70 }}
                   >
                     {[20, 50, 100].map(v => <MenuItem key={v} value={v} sx={{ fontWeight: 600 }}>{v}</MenuItem>)}
                   </Select>
@@ -714,7 +714,7 @@ export default function ReceivePage() {
 
       {/* Validation Dialog */}
       <Dialog open={dialogOpen} onClose={closeDialog} maxWidth="xs" fullWidth PaperProps={{ sx: { borderRadius: 3 } }}>
-        <DialogTitle sx={{ fontWeight: 800, color: '#0f172a', borderBottom: '1px solid #f1f5f9', pb: 2 }}>
+        <DialogTitle sx={{ fontWeight: 800, color: '#0f172a', borderBottom: '1px solid', borderColor: 'divider', pb: 2 }}>
           Xác Nhận Hàng Nhận
         </DialogTitle>
         <DialogContent sx={{ pt: 3, pb: 6 }}>
@@ -747,7 +747,7 @@ export default function ReceivePage() {
                 </Grid>
               </Grid>
 
-              <Box sx={{ mt: 1, p: 2, bgcolor: '#f8fafc', borderRadius: 2, border: '1px solid #e2e8f0' }}>
+              <Box sx={{ mt: 1, p: 2, bgcolor: 'background.default', borderRadius: 2, border: '1px solid', borderColor: 'divider' }}>
                 <Typography variant="body2" sx={{ fontWeight: 600, color: '#64748b', mb: 1 }}>
                   SỐ LƯỢNG HÀNG XƯỞNG BÁO (Expected)
                 </Typography>
@@ -799,7 +799,7 @@ export default function ReceivePage() {
             </Box>
           )}
         </DialogContent>
-        <DialogActions sx={{ p: 2, borderTop: '1px solid #f1f5f9', bgcolor: '#f8fafc' }}>
+        <DialogActions sx={{ p: 2, borderTop: '1px solid', borderColor: 'divider', bgcolor: 'background.default' }}>
           <Button onClick={closeDialog} disabled={actionLoading} color="inherit" sx={{ fontWeight: 600 }}>
             Đóng
           </Button>
@@ -827,7 +827,7 @@ export default function ReceivePage() {
         fullWidth 
         PaperProps={{ sx: { borderRadius: '12px', overflow: 'hidden' } }}
       >
-        <DialogTitle sx={{ fontWeight: 800, color: '#0f172a', borderBottom: '1px solid #f1f5f9', pb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <DialogTitle sx={{ fontWeight: 800, color: '#0f172a', borderBottom: '1px solid', borderColor: 'divider', pb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           Lịch sử xác nhận
           <IconButton onClick={() => setHistoryDialogOpen(false)} size="small"><CloseIcon /></IconButton>
         </DialogTitle>
@@ -844,7 +844,7 @@ export default function ReceivePage() {
           ) : (
             <TableContainer sx={{ maxHeight: 400 }}>
               <Table size="small">
-                <TableHead sx={{ bgcolor: '#f8fafc' }}>
+                <TableHead sx={{ bgcolor: 'background.default' }}>
                   <TableRow>
                     <TableCell sx={{ fontWeight: 700 }}>TG Cập Nhật</TableCell>
                     <TableCell sx={{ fontWeight: 700 }}>Người XN</TableCell>
@@ -855,7 +855,7 @@ export default function ReceivePage() {
                   {historyData.map((h, i) => (
                     <TableRow key={i}>
                       <TableCell>{new Date(h.SysCreateDate || h.sysCreateDate).toLocaleString()}</TableCell>
-                      <TableCell><Chip size="small" label={h.CreatedBy || h.createdBy} sx={{ fontWeight: 600, bgcolor: '#f1f5f9' }} /></TableCell>
+                      <TableCell><Chip size="small" label={h.CreatedBy || h.createdBy} sx={{ fontWeight: 600, bgcolor: 'background.default' }} /></TableCell>
                       <TableCell align="right" sx={{ fontWeight: 800, color: '#3ba55c' }}>{Number(h.Qty || h.qty).toLocaleString()}</TableCell>
                     </TableRow>
                   ))}

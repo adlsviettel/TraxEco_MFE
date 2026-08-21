@@ -292,7 +292,7 @@ export default function PackingListSummaryPage() {
       <Box sx={{ flexShrink: 0, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', flexWrap: 'wrap', gap: 1 }}>
         <Box sx={{ display: 'flex', gap: 1 }}>
           <Button variant="outlined" size="small" startIcon={<RefreshIcon sx={{ fontSize: '18px !important' }} />} onClick={() => { setData([]); setColFilters({}); setPage(0); }}
-            sx={{ borderRadius: 1.5, fontWeight: 600, fontSize: '0.8rem', height: 32, px: 2, textTransform: 'none', borderColor: '#cbd5e1', color: '#475569', '&:hover': { bgcolor: '#f1f5f9' } }}>
+            sx={{ borderRadius: 1.5, fontWeight: 600, fontSize: '0.8rem', height: 32, px: 2, textTransform: 'none', borderColor: '#cbd5e1', color: '#475569', '&:hover': { bgcolor: 'background.default' } }}>
             {t('history.refresh', 'Reset')}
           </Button>
           <Button variant="contained" size="small" startIcon={<ExcelIcon sx={{ fontSize: '18px !important' }} />} disabled={filteredData.length === 0} onClick={handleExport} disableElevation
@@ -303,25 +303,25 @@ export default function PackingListSummaryPage() {
       </Box>
 
       {/* Filters */}
-      <Paper elevation={0} sx={{ flexShrink: 0, p: 1.5, borderRadius: 2.5, border: '1px solid #e2e8f0', background: 'linear-gradient(135deg, #f8faf8 0%, #ffffff 100%)' }}>
+      <Paper elevation={0} sx={{ flexShrink: 0, p: 1.5, borderRadius: 2.5, border: '1px solid', borderColor: 'divider', bgcolor: 'background.paper' }}>
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1.5, alignItems: 'center' }}>
           
           <Box sx={{ flexGrow: 1, display: 'flex', gap: 1.5, flexWrap: 'wrap' }}>
             <TextField size="small" placeholder={t('qcfb.packing.filterInvoice', 'Invoice No')} value={invoiceNo} onChange={e => setInvoiceNo(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleSearch()} 
               InputProps={{ startAdornment: <Typography sx={{color:'#94a3b8', mr:1, fontSize:'0.8rem', fontWeight:600}}>INV</Typography> }}
-              sx={{ flex: '1 1 150px', '& .MuiOutlinedInput-root': { borderRadius: 1.5, height: 32, fontSize: '0.8rem', bgcolor: '#fff' } }} 
+              sx={{ flex: '1 1 150px', '& .MuiOutlinedInput-root': { borderRadius: 1.5, height: 32, fontSize: '0.8rem', bgcolor: 'background.paper' } }} 
             />
             <TextField size="small" placeholder={t('qcfb.packing.filterPo', 'PO Number')} value={poNo} onChange={e => setPoNo(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleSearch()} 
               InputProps={{ startAdornment: <Typography sx={{color:'#94a3b8', mr:1, fontSize:'0.8rem', fontWeight:600}}>PO#</Typography> }}
-              sx={{ flex: '1 1 150px', '& .MuiOutlinedInput-root': { borderRadius: 1.5, height: 32, fontSize: '0.8rem', bgcolor: '#fff' } }} 
+              sx={{ flex: '1 1 150px', '& .MuiOutlinedInput-root': { borderRadius: 1.5, height: 32, fontSize: '0.8rem', bgcolor: 'background.paper' } }} 
             />
             <TextField size="small" placeholder={t('qcfb.packing.filterItem', 'Item No')} value={itemNo} onChange={e => setItemNo(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleSearch()} 
               InputProps={{ startAdornment: <Typography sx={{color:'#94a3b8', mr:1, fontSize:'0.8rem', fontWeight:600}}>ITM</Typography> }}
-              sx={{ flex: '1 1 150px', '& .MuiOutlinedInput-root': { borderRadius: 1.5, height: 32, fontSize: '0.8rem', bgcolor: '#fff' } }} 
+              sx={{ flex: '1 1 150px', '& .MuiOutlinedInput-root': { borderRadius: 1.5, height: 32, fontSize: '0.8rem', bgcolor: 'background.paper' } }} 
             />
             <TextField size="small" placeholder={t('qcfb.packing.filterColor', 'Color')} value={color} onChange={e => setColor(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleSearch()} 
               InputProps={{ startAdornment: <Typography sx={{color:'#94a3b8', mr:1, fontSize:'0.8rem', fontWeight:600}}>CLR</Typography> }}
-              sx={{ flex: '1 1 150px', '& .MuiOutlinedInput-root': { borderRadius: 1.5, height: 32, fontSize: '0.8rem', bgcolor: '#fff' } }} 
+              sx={{ flex: '1 1 150px', '& .MuiOutlinedInput-root': { borderRadius: 1.5, height: 32, fontSize: '0.8rem', bgcolor: 'background.paper' } }} 
             />
           </Box>
           
@@ -336,7 +336,7 @@ export default function PackingListSummaryPage() {
       {error && <Alert severity="error" sx={{ fontWeight: 600 }}>{error}</Alert>}
 
       {/* Data Table */}
-      <Paper elevation={0} sx={{ flexGrow: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', borderRadius: 2, border: '1px solid #e0e0e0', position: 'relative' }}>
+      <Paper elevation={0} sx={{ flexGrow: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', borderRadius: 2, border: '1px solid', borderColor: 'divider', position: 'relative' }}>
         {loading && <LinearProgress color="success" sx={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 999 }} />}
         {!mounted ? (
           <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexGrow: 1, p: 4 }}>
@@ -376,7 +376,7 @@ export default function PackingListSummaryPage() {
                 </TableBody>
               </Table>
             </TableContainer>
-            <Box sx={{ flexShrink: 0, borderTop: '1px solid #e2e8f0', bgcolor: '#fff', p: 1.5, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
+            <Box sx={{ flexShrink: 0, borderTop: '1px solid', borderColor: 'divider', bgcolor: 'background.paper', p: 1.5, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <Typography variant="body2" sx={{ color: '#475569', fontWeight: 500 }}>{t('qcfb.rowsPerPage', 'Dòng / trang:')}</Typography>
                 <Select
@@ -571,7 +571,7 @@ export default function PackingListSummaryPage() {
             </Box>
           )}
         </DialogContent>
-        <DialogActions sx={{ p: 2.5, backgroundColor: '#fafafa', borderTop: '1px solid #e0e0e0', gap: 1 }}>
+        <DialogActions sx={{ p: 2.5, backgroundColor: '#fafafa', borderTop: '1px solid', borderColor: 'divider', gap: 1 }}>
           <Button onClick={() => setDetailModalOpen(false)} color="inherit" variant="text" sx={{ fontWeight: 600 }}>
             {t('genesis.btnCancel', 'Cancel')}
           </Button>

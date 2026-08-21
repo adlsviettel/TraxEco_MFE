@@ -560,11 +560,11 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
           maxWidth: '100vw', 
           display: 'flex', 
           flexDirection: 'column',
-          bgcolor: '#f1f5f9' 
+          bgcolor: 'background.default' 
         } 
       }}
     >
-      <Box sx={{ p: 3, pb: 2, bgcolor: '#ffffff', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+      <Box sx={{ p: 3, pb: 2, bgcolor: 'background.paper', borderBottom: '1px solid', borderColor: 'divider', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <Box>
           <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'primary.main', mb: 1 }}>
             {t('tcc.formTitle')}
@@ -594,11 +594,11 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
             <Grid container spacing={isMobile ? 2 : 3}>
               {/* CARD 1: GENERAL INFO */}
               <Grid size={{ xs: 12, sm: 6 }}>
-                <Card elevation={0} sx={{ border: '1px solid #e2e8f0', borderRadius: 1, height: '100%' }}>
+                <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1, height: '100%' }}>
                   <CardHeader 
                     title={t('tcc.groupGeneral')} 
                     titleTypographyProps={{ variant: 'subtitle1', fontWeight: 700, color: '#334155', sx: { lineHeight: 1.2 } }} 
-                    sx={{ bgcolor: '#ffffff', py: isMobile ? 1.5 : 2, px: isMobile ? 2 : 3 }} 
+                    sx={{ bgcolor: 'background.paper', py: isMobile ? 1.5 : 2, px: isMobile ? 2 : 3 }} 
                   />
                   <Divider />
                   <CardContent sx={{ pt: isMobile ? 2 : 3, px: isMobile ? 2 : 3, pb: isMobile ? 2 : 3 }}>
@@ -623,7 +623,7 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
                               borderRadius: '8px', 
                               height: 40, 
                               fontSize: 13, 
-                              bgcolor: '#fff', 
+                              bgcolor: 'background.paper', 
                               '& fieldset': { borderColor: '#bfc9c4' }, 
                               '&:hover fieldset': { borderColor: '#2e7d32' }, 
                               '&.Mui-focused fieldset': { borderColor: '#2e7d32' } 
@@ -658,7 +658,7 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
                                   borderRadius: '8px', 
                                   height: 40,
                                   fontSize: 13, 
-                                  bgcolor: '#fff', 
+                                  bgcolor: 'background.paper', 
                                   '& fieldset': { borderColor: '#bfc9c4' }, 
                                   '&:hover fieldset': { borderColor: '#2e7d32' }, 
                                   '&.Mui-focused fieldset': { borderColor: '#2e7d32' } 
@@ -706,7 +706,7 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
                                   borderRadius: '8px', 
                                   height: 40,
                                   fontSize: 13, 
-                                  bgcolor: '#fff', 
+                                  bgcolor: 'background.paper', 
                                   '& fieldset': { borderColor: '#bfc9c4' }, 
                                   '&:hover fieldset': { borderColor: '#2e7d32' }, 
                                   '&.Mui-focused fieldset': { borderColor: '#2e7d32' } 
@@ -726,11 +726,11 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
 
               {/* CARD 2: PRODUCTION DETAILS */}
               <Grid size={{ xs: 12, sm: 6 }}>
-                <Card elevation={0} sx={{ border: '1px solid #e2e8f0', borderRadius: 1, height: '100%' }}>
+                <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1, height: '100%' }}>
                   <CardHeader 
                     title={t('tcc.groupProduction')} 
                     titleTypographyProps={{ variant: 'subtitle1', fontWeight: 700, color: '#334155', sx: { lineHeight: 1.2 } }} 
-                    sx={{ bgcolor: '#ffffff', py: isMobile ? 1.5 : 2, px: isMobile ? 2 : 3 }} 
+                    sx={{ bgcolor: 'background.paper', py: isMobile ? 1.5 : 2, px: isMobile ? 2 : 3 }} 
                   />
                   <Divider />
                   <CardContent sx={{ pt: isMobile ? 2 : 3, px: isMobile ? 2 : 3, pb: isMobile ? 2 : 3 }}>
@@ -746,7 +746,7 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
                               borderRadius: '8px', 
                               height: 40, 
                               fontSize: 13, 
-                              bgcolor: '#fff', 
+                              bgcolor: 'background.paper', 
                               '& fieldset': { borderColor: '#bfc9c4' }, 
                               '&:hover fieldset': { borderColor: '#2e7d32' }, 
                               '&.Mui-focused fieldset': { borderColor: '#2e7d32' } 
@@ -770,7 +770,7 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
                               borderRadius: '8px', 
                               height: 40, 
                               fontSize: 13, 
-                              bgcolor: '#fff', 
+                              bgcolor: 'background.paper', 
                               '& fieldset': { borderColor: '#bfc9c4' }, 
                               '&:hover fieldset': { borderColor: '#2e7d32' }, 
                               '&.Mui-focused fieldset': { borderColor: '#2e7d32' } 
@@ -809,7 +809,7 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
                                   '& .MuiOutlinedInput-root': {
                                     borderRadius: '8px',
                                     height: 40,
-                                    bgcolor: '#fff',
+                                    bgcolor: 'background.paper',
                                     '& fieldset': { borderColor: '#bfc9c4' },
                                     '&:hover fieldset': { borderColor: '#2e7d32' },
                                     '&.Mui-focused fieldset': { borderColor: '#2e7d32' }
@@ -847,7 +847,7 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
                                   '& .MuiOutlinedInput-root': {
                                     borderRadius: '8px',
                                     height: 40,
-                                    bgcolor: '#fff',
+                                    bgcolor: 'background.paper',
                                     '& fieldset': { borderColor: '#bfc9c4' },
                                     '&:hover fieldset': { borderColor: '#2e7d32' },
                                     '&.Mui-focused fieldset': { borderColor: '#2e7d32' }
@@ -886,7 +886,7 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
                                     '& .MuiOutlinedInput-root': {
                                       borderRadius: '8px',
                                       height: 40,
-                                      bgcolor: '#fff',
+                                      bgcolor: 'background.paper',
                                       '& fieldset': { borderColor: '#bfc9c4' },
                                       '&:hover fieldset': { borderColor: '#2e7d32' },
                                       '&.Mui-focused fieldset': { borderColor: '#2e7d32' }
@@ -926,7 +926,7 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
                                     '& .MuiOutlinedInput-root': {
                                       borderRadius: '8px',
                                       height: 40,
-                                      bgcolor: '#fff',
+                                      bgcolor: 'background.paper',
                                       '& fieldset': { borderColor: '#bfc9c4' },
                                       '&:hover fieldset': { borderColor: '#2e7d32' },
                                       '&.Mui-focused fieldset': { borderColor: '#2e7d32' }
@@ -950,7 +950,7 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
                               borderRadius: '8px', 
                               height: 40, 
                               fontSize: 13, 
-                              bgcolor: '#fff', 
+                              bgcolor: 'background.paper', 
                               '& fieldset': { borderColor: '#bfc9c4' }, 
                               '&:hover fieldset': { borderColor: '#2e7d32' }, 
                               '&.Mui-focused fieldset': { borderColor: '#2e7d32' } 
@@ -968,11 +968,11 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
 
               {/* CARD 3: TECHNICAL SPECS */}
               <Grid size={{ xs: 12, sm: 6 }}>
-                <Card elevation={0} sx={{ border: '1px solid #e2e8f0', borderRadius: 1, height: '100%' }}>
+                <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1, height: '100%' }}>
                   <CardHeader 
                     title={t('tcc.groupTechnical')} 
                     titleTypographyProps={{ variant: 'subtitle1', fontWeight: 700, color: '#334155', sx: { lineHeight: 1.2 } }} 
-                    sx={{ bgcolor: '#ffffff', py: isMobile ? 1.5 : 2, px: isMobile ? 2 : 3 }} 
+                    sx={{ bgcolor: 'background.paper', py: isMobile ? 1.5 : 2, px: isMobile ? 2 : 3 }} 
                   />
                   <Divider />
                   <CardContent sx={{ pt: isMobile ? 2 : 3, px: isMobile ? 2 : 3, pb: isMobile ? 2 : 3 }}>
@@ -993,7 +993,7 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
                           sx={{
                             '& .MuiOutlinedInput-root': {
                               borderRadius: '8px',
-                              bgcolor: '#fff',
+                              bgcolor: 'background.paper',
                               '& fieldset': { borderColor: '#bfc9c4' },
                               '&:hover fieldset': { borderColor: '#2e7d32' },
                               '&.Mui-focused fieldset': { borderColor: '#2e7d32' }
@@ -1015,7 +1015,7 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
                               borderRadius: '8px', 
                               height: 40, 
                               fontSize: 13, 
-                              bgcolor: '#fff', 
+                              bgcolor: 'background.paper', 
                               '& fieldset': { borderColor: '#bfc9c4' }, 
                               '&:hover fieldset': { borderColor: '#2e7d32' }, 
                               '&.Mui-focused fieldset': { borderColor: '#2e7d32' } 
@@ -1039,7 +1039,7 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
                               borderRadius: '8px', 
                               height: 40, 
                               fontSize: 13, 
-                              bgcolor: '#fff', 
+                              bgcolor: 'background.paper', 
                               '& fieldset': { borderColor: '#bfc9c4' }, 
                               '&:hover fieldset': { borderColor: '#2e7d32' }, 
                               '&.Mui-focused fieldset': { borderColor: '#2e7d32' } 
@@ -1089,11 +1089,11 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
 
               {/* CARD 4: SCHEDULE & PRIORITY */}
               <Grid size={{ xs: 12, sm: 6 }}>
-                <Card elevation={0} sx={{ border: '1px solid #e2e8f0', borderRadius: 1, height: '100%' }}>
+                <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1, height: '100%' }}>
                   <CardHeader 
                     title={t('tcc.groupSchedule')} 
                     titleTypographyProps={{ variant: 'subtitle1', fontWeight: 700, color: '#334155', sx: { lineHeight: 1.2 } }} 
-                    sx={{ bgcolor: '#ffffff', py: isMobile ? 1.5 : 2, px: isMobile ? 2 : 3 }} 
+                    sx={{ bgcolor: 'background.paper', py: isMobile ? 1.5 : 2, px: isMobile ? 2 : 3 }} 
                   />
                   <Divider />
                   <CardContent sx={{ pt: isMobile ? 2 : 3, px: isMobile ? 2 : 3, pb: isMobile ? 2 : 3 }}>
@@ -1114,7 +1114,7 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
                                   borderRadius: '8px', 
                                   height: 40, 
                                   fontSize: 13, 
-                                  bgcolor: '#fff', 
+                                  bgcolor: 'background.paper', 
                                   '& fieldset': { borderColor: '#bfc9c4' }, 
                                   '&:hover fieldset': { borderColor: '#2e7d32' }, 
                                   '&.Mui-focused fieldset': { borderColor: '#2e7d32' } 
@@ -1142,7 +1142,7 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
                               borderRadius: '8px', 
                               height: 40, 
                               fontSize: 13, 
-                              bgcolor: '#fff', 
+                              bgcolor: 'background.paper', 
                               '& fieldset': { borderColor: '#bfc9c4' }, 
                               '&:hover fieldset': { borderColor: '#2e7d32' }, 
                               '&.Mui-focused fieldset': { borderColor: '#2e7d32' } 
@@ -1171,7 +1171,7 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
               </Grid>
             </Grid>
           </Box>
-          <Box sx={{ p: 2, px: 3, bgcolor: '#ffffff', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+          <Box sx={{ p: 2, px: 3, bgcolor: 'background.paper', borderTop: '1px solid', borderColor: 'divider', display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
             <AppButton onClick={onClose} disabled={submitting} variant="outlined" customVariant="secondary">
               {t('tcc.cancel')}
             </AppButton>
@@ -1220,11 +1220,11 @@ export default function RequestFormDialog({ open, onClose, onSuccess, lastReques
               fontWeight: 'bold', 
               textTransform: 'none', 
               borderRadius: 2,
-              border: '1px solid #cbd5e1',
+              border: '1px solid', borderColor: 'divider',
               color: '#334155',
               '&:hover': {
                 border: '1px solid #94a3b8',
-                bgcolor: '#f8fafc'
+                bgcolor: 'background.default'
               }
             }}
           >

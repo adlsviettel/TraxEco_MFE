@@ -254,7 +254,7 @@ const QCInspectionMockupPage = () => {
                     simulateHardwareScan(manualQr.trim());
                   }
                 }}
-                sx={{ bgcolor: '#fff', borderRadius: 1 }}
+                sx={{ bgcolor: 'background.paper', borderRadius: 1 }}
               />
               <Button 
                 variant="contained" 

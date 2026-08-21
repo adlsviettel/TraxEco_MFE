@@ -102,7 +102,7 @@ const LabelPrintPage: React.FC = () => {
           <Typography variant="h5">{t('rdMaterial.print_title', 'In Label / QR Code')}</Typography>
         </Box>
         <Box display="flex" gap={1.5}>
-          <AppButton variant="outlined" customVariant="secondary" startIcon={<PrintIcon />} onClick={handlePrint} sx={{ bgcolor: '#fff' }}>
+          <AppButton variant="outlined" customVariant="secondary" startIcon={<PrintIcon />} onClick={handlePrint} sx={{ bgcolor: 'background.paper' }}>
             {t('rdMaterial.print_pc', 'Print (PC)')}
           </AppButton>
           <AppButton variant="contained" customVariant="primary" color="success" startIcon={isPrinting ? <CircularProgress size={20} color="inherit" /> : <WifiIcon />} onClick={handleWifiPrint} disabled={isPrinting}>
@@ -115,7 +115,7 @@ const LabelPrintPage: React.FC = () => {
         {/* Left: Item info + print settings */}
         <Grid size={{ xs: 12, md: 7 }}>
           <Card elevation={1} sx={{ mb: 2, borderRadius: 2 }}>
-            <Box sx={{ px: 2.5, py: 1.5, borderBottom: '1px solid #e0e0e0' }}>
+            <Box sx={{ px: 2.5, py: 1.5, borderBottom: '1px solid', borderColor: 'divider' }}>
               <Typography fontWeight={700}>{t('rdMaterial.print_item_info', 'Thông tin Item')}</Typography>
             </Box>
             <Box sx={{ p: 2.5, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1.5 }}>
@@ -134,7 +134,7 @@ const LabelPrintPage: React.FC = () => {
               ))}
               <Box sx={{ gridColumn: '1/-1' }}>
                 <Typography fontSize={11} color="text.secondary">{t('rdMaterial.qr_system_id', 'Mã QR (ID hệ thống)')}</Typography>
-                <Typography fontFamily="monospace" fontSize={11} sx={{ bgcolor: '#f5f5f5', p: 0.75, borderRadius: 1, border: '1px solid #e0e0e0', wordBreak: 'break-all' }}>
+                <Typography fontFamily="monospace" fontSize={11} sx={{ bgcolor: '#f5f5f5', p: 0.75, borderRadius: 1, border: '1px solid', borderColor: 'divider', wordBreak: 'break-all' }}>
                   {qrValue}
                 </Typography>
               </Box>
@@ -142,7 +142,7 @@ const LabelPrintPage: React.FC = () => {
           </Card>
 
           <Card elevation={1} sx={{ borderRadius: 2 }}>
-            <Box sx={{ px: 2.5, py: 1.5, borderBottom: '1px solid #e0e0e0' }}>
+            <Box sx={{ px: 2.5, py: 1.5, borderBottom: '1px solid', borderColor: 'divider' }}>
               <Typography fontWeight={700}>{t('rdMaterial.print_settings', 'Cài đặt in')}</Typography>
             </Box>
             <Stack spacing={2} sx={{ p: 2.5 }}>

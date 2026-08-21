@@ -54,7 +54,7 @@ export const AdminToolbar: React.FC<AdminToolbarProps> = ({
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
             {location.pathname === '/admin' && (
               <IconButton size="small" onClick={() => nav('/')}
-                sx={{ border: '1px solid #cbd5e1', borderRadius: 1.5, color: themeColors.main, p: 0.25 }}>
+                sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1.5, color: themeColors.main, p: 0.25 }}>
                 <ChevronLeftIcon fontSize="small" />
               </IconButton>
             )}
@@ -66,7 +66,7 @@ export const AdminToolbar: React.FC<AdminToolbarProps> = ({
           <Chip 
             label={`${usersCount} ${t('admin.users', 'users')}`} 
             size="small" 
-            sx={{ fontWeight: 800, height: 18, fontSize: 10, backgroundColor: '#fff', color: themeColors.main, border: '1px solid rgba(0,0,0,0.05)' }} 
+            sx={{ fontWeight: 800, height: 18, fontSize: 10, backgroundColor: 'background.paper', color: themeColors.main, border: '1px solid rgba(0,0,0,0.05)' }} 
           />
         </Box>
 
@@ -77,7 +77,7 @@ export const AdminToolbar: React.FC<AdminToolbarProps> = ({
             sx={{ 
               flex: 1,
               '& .MuiOutlinedInput-root': { 
-                borderRadius: 5, backgroundColor: '#fff',
+                borderRadius: 5, backgroundColor: 'background.paper',
                 height: 32,
                 fontSize: 12,
                 '& fieldset': { borderColor: '#e2e8f0' }
@@ -88,7 +88,7 @@ export const AdminToolbar: React.FC<AdminToolbarProps> = ({
           {(isSuperAdmin || myRoleLevel <= 1) && (
             <Tooltip title={t('admin.userTracking', 'User Tracking')}>
               <IconButton onClick={() => nav('/tracking')} size="small"
-                sx={{ bgcolor: '#fff', border: '1px solid #e2e8f0', p: 0.5, borderRadius: 1.5, color: '#475569', '&:hover': { bgcolor: '#eff6ff', color: themeColors.main } }}>
+                sx={{ bgcolor: 'background.paper', border: '1px solid', borderColor: 'divider', p: 0.5, borderRadius: 1.5, color: '#475569', '&:hover': { bgcolor: '#eff6ff', color: themeColors.main } }}>
                 <TrackingIcon sx={{ fontSize: 16 }} />
               </IconButton>
             </Tooltip>
@@ -112,7 +112,7 @@ export const AdminToolbar: React.FC<AdminToolbarProps> = ({
 
           <Tooltip title={t('admin.reloadTooltip')}>
             <IconButton onClick={fetchUsers} disabled={loading} size="small"
-              sx={{ bgcolor: '#fff', border: '1px solid #e2e8f0', p: 0.5, borderRadius: 1.5, color: '#64748b', '&:hover': { bgcolor: '#f8fafc' } }}>
+              sx={{ bgcolor: 'background.paper', border: '1px solid', borderColor: 'divider', p: 0.5, borderRadius: 1.5, color: '#64748b', '&:hover': { bgcolor: 'background.default' } }}>
               <RefreshIcon sx={{ fontSize: 16 }} />
             </IconButton>
           </Tooltip>
@@ -137,7 +137,7 @@ export const AdminToolbar: React.FC<AdminToolbarProps> = ({
           </Typography>
         </Box>
         <Box sx={{ display: 'flex', gap: 1 }}>
-          <Chip label={`${usersCount} ${t('admin.users', 'users')}`} sx={{ height: 24, fontWeight: 700, backgroundColor: '#fff', color: themeColors.main, boxShadow: '0 2px 8px rgba(0,0,0,0.04)', border: '1px solid rgba(0,0,0,0.05)' }} />
+          <Chip label={`${usersCount} ${t('admin.users', 'users')}`} sx={{ height: 24, fontWeight: 700, backgroundColor: 'background.paper', color: themeColors.main, boxShadow: '0 2px 8px rgba(0,0,0,0.04)', border: '1px solid rgba(0,0,0,0.05)' }} />
         </Box>
       </Box>
 
@@ -153,7 +153,7 @@ export const AdminToolbar: React.FC<AdminToolbarProps> = ({
             sx={{ 
               minWidth: 260, 
               '& .MuiOutlinedInput-root': { 
-                borderRadius: 6, backgroundColor: '#fff',
+                borderRadius: 6, backgroundColor: 'background.paper',
                 height: 32, fontSize: 13,
                 transition: 'all 0.3s ease',
                 '& fieldset': { borderColor: '#e2e8f0' },
@@ -181,7 +181,7 @@ export const AdminToolbar: React.FC<AdminToolbarProps> = ({
             </Button>
           )}
           <Tooltip title={t('admin.reloadTooltip')}>
-            <IconButton size="small" onClick={fetchUsers} disabled={loading} sx={{ width: 32, height: 32, background: '#fff', border: '1px solid #e2e8f0', '&:hover': { background: '#f8fafc' } }}>
+            <IconButton size="small" onClick={fetchUsers} disabled={loading} sx={{ width: 32, height: 32, background: 'background.paper', border: '1px solid', borderColor: 'divider', '&:hover': { background: 'background.default' } }}>
               <RefreshIcon sx={{ fontSize: 18, color: '#64748b' }} />
             </IconButton>
           </Tooltip>

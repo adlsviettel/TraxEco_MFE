@@ -213,16 +213,25 @@ function formatInswDate(dateStr: string): string {
     return new Date().toISOString().slice(0, 10);
   }
   const s = dateStr.trim();
-  if (/^\d{4}-\d{2}-\d{2}/.test(s)) {
-    return s.slice(0, 10);
+
+  // 1. Match YYYY-MM-DD anywhere in string
+  const matchYmd = s.match(/(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})/);
+  if (matchYmd) {
+    const year = matchYmd[1];
+    const month = matchYmd[2].padStart(2, '0');
+    const day = matchYmd[3].padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
-  const matchDmy = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
+
+  // 2. Match DD-MM-YYYY anywhere in string
+  const matchDmy = s.match(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
   if (matchDmy) {
     const day = matchDmy[1].padStart(2, '0');
     const month = matchDmy[2].padStart(2, '0');
     const year = matchDmy[3];
     return `${year}-${month}-${day}`;
   }
+
   const parsed = new Date(s);
   if (!isNaN(parsed.getTime())) {
     return parsed.toISOString().slice(0, 10);
@@ -290,17 +299,44 @@ export async function buildInswRequestBody(parsedData: ParsedDataSuccess, kdKegi
     });
   }
 
-  const rawNomor = (parsedData.header?.nomorPengajuan || parsedData.header?.nomorPendaftaran || parsedData.fileName || 'DOK-001').trim();
+  // Sanitize and clean Nomor Pengajuan / Nomor Pendaftaran
+  let rawNomor = (parsedData.header?.nomorPengajuan || parsedData.header?.nomorPendaftaran || parsedData.fileName || 'DOK-001').trim();
+  
+  // Extract 26-digit official registration number if available
+  const match26 = rawNomor.match(/([0-9]{6}[A-Z0-9]{3,6}[0-9]{10,14})/i) || 
+                  (parsedData.fileName || '').match(/([0-9]{6}[A-Z0-9]{3,6}[0-9]{10,14})/i);
+  if (match26) {
+    rawNomor = match26[1];
+  } else if (rawNomor.toLowerCase().startsWith('a.') || rawNomor.toLowerCase().startsWith('d.') || rawNomor.toLowerCase().includes('tanggal') || rawNomor.length < 5) {
+    // Try extracting 6-digit registration number
+    const match6 = (parsedData.header?.nomorPendaftaran || rawNomor || '').match(/([0-9]{6})/);
+    if (match6) {
+      rawNomor = match6[1];
+    } else {
+      // Clean leading garbage prefix
+      rawNomor = rawNomor.replace(/^(a\.|d\.|tanggal|nomor)\s*/i, '').trim() || parsedData.fileName || 'DOK-001';
+    }
+  }
+
   const rawTanggal = parsedData.header?.tanggalPengajuan || parsedData.header?.tanggalPendaftaran || parsedData.importedAt || '';
   const rawEntitas = (parsedData.header?.penerimaBarang || parsedData.header?.pengirimBarang || 'PT. TRAX APPAREL INDONESIA').trim();
+
+  // Auto-correct kdKegiatan based on document format (31 for Outbound, 30 for Inbound)
+  const docFmt = ((parsedData as any).docFormat || parsedData.fileName || '').toLowerCase();
+  let effectiveKdKegiatan = kdKegiatan || '30';
+  if (docFmt.includes('2.5') || docFmt.includes('2.6.1') || docFmt.includes('4.1') || docFmt.includes('3.0') || docFmt.includes('pengeluaran')) {
+    effectiveKdKegiatan = '31';
+  } else if (docFmt.includes('2.0') || docFmt.includes('2.3') || docFmt.includes('4.0') || docFmt.includes('2.6.2') || docFmt.includes('pemasukan')) {
+    effectiveKdKegiatan = '30';
+  }
 
   return {
     data: [
       {
-        kdKegiatan: kdKegiatan || '30',
+        kdKegiatan: effectiveKdKegiatan,
         dokumenKegiatan: [
           {
-            nomorDokKegiatan: rawNomor || 'DOK-001',
+            nomorDokKegiatan: rawNomor,
             tanggalKegiatan: formatInswDate(rawTanggal),
             namaEntitas: rawEntitas || 'PT. TRAX APPAREL INDONESIA',
             barangTransaksi,
@@ -311,20 +347,42 @@ export async function buildInswRequestBody(parsedData: ParsedDataSuccess, kdKegi
   };
 }
 
+// ─── Helper: Check if document is CEISA 4.0 (Non-INSW Push) ───────────────────
+
+export function isCeisaDoc(item: { fileName?: string; docFormat?: string; header?: { nomorPengajuan?: string }; parsedData?: any } | null | undefined): boolean {
+  if (!item) return false;
+  const fileName = (item.fileName || '').toLowerCase();
+  const parsedData = item.parsedData || item;
+  const docFormat = (item.docFormat || parsedData.docFormat || parsedData._debug?.colRanges?.[0]?.xEnd || '').toLowerCase();
+  const nomorPengajuan = (parsedData.header?.nomorPengajuan || '').toLowerCase();
+
+  // CEISA 4.0 document formats (stored in IT Inventory only, no INSW Push needed)
+  if (['bc27', 'bc41', 'bc261', 'bc25'].includes(docFormat)) return true;
+
+  const is27 = fileName.includes('2.7') || nomorPengajuan.includes('2.7');
+  const is41 = fileName.includes('4.1') || nomorPengajuan.includes('4.1');
+  const is261 = fileName.includes('2.6.1') || fileName.includes('261') || nomorPengajuan.includes('2.6.1');
+  const is25 = fileName.includes('2.5') || nomorPengajuan.includes('2.5');
+
+  if (is27 || is41 || is261 || is25) {
+    if (!fileName.includes('2.3') && !fileName.includes('4.0') && !fileName.includes('3.0') && !fileName.includes('2.6.2')) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 // ─── Push to INSW API ────────────────────────────────────────────────────────
 
 export async function pushToInsw(parsedData: ParsedDataSuccess, kdKegiatan: string = '30'): Promise<InswResponse> {
-  // BC 2.7 files are internal TPB declarations managed on CEISA, not INSW
-  const isBc27 = parsedData.fileName?.toLowerCase().includes('2.7') ||
-                 parsedData.header?.nomorPengajuan?.includes('2.7') ||
-                 (parsedData as any).docFormat === 'bc27';
-
-  if (isBc27) {
+  // BC 2.7, BC 4.1, BC 2.6.1, BC 2.5 files are internal TPB / CEISA 4.0 declarations, managed directly on CEISA, not INSW
+  if (isCeisaDoc(parsedData)) {
     return {
       success: false,
       status: 400,
       data: null,
-      error: 'Tờ khai BC 2.7 là chứng từ giao dịch nội bộ TPB được quản lý trên hệ thống CEISA. Chứng từ này không thuộc quy trình Push lên INSW API.',
+      error: 'Tờ khai (BC 2.7, BC 4.1, BC 2.6.1, BC 2.5) thuộc hệ thống CEISA 4.0. Chứng từ này chỉ import lưu trữ kho IT Inventory, không thuộc quy trình Push lên hệ thống INSW.',
     };
   }
 

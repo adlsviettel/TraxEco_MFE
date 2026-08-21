@@ -125,7 +125,7 @@ export default function FabricInspectionPage() {
     }}>
       <Box sx={{ 
         display: 'flex', gap: 2, mb: 4, p: 2, 
-        bgcolor: '#ffffff', 
+        bgcolor: 'background.paper', 
         borderRadius: 4, 
         border: '1px solid rgba(0,0,0,0.04)',
         boxShadow: '0 8px 32px rgba(0,0,0,0.04)',
@@ -140,11 +140,11 @@ export default function FabricInspectionPage() {
           onKeyDown={e => e.key === 'Enter' && handleScan(qrInput)}
           sx={{ 
             '& .MuiOutlinedInput-root': { 
-              bgcolor: '#f8fafc', 
+              bgcolor: 'background.default', 
               borderRadius: 3,
               transition: 'all 0.2s ease-in-out',
-              '&:hover': { bgcolor: '#f1f5f9' },
-              '&.Mui-focused': { bgcolor: '#ffffff', boxShadow: '0 0 0 2px rgba(16, 185, 129, 0.2)' }
+              '&:hover': { bgcolor: 'background.default' },
+              '&.Mui-focused': { bgcolor: 'background.paper', boxShadow: '0 0 0 2px rgba(16, 185, 129, 0.2)' }
             },
             '& .MuiOutlinedInput-notchedOutline': { border: '1px solid transparent' },
             '& input::placeholder': { color: '#94a3b8', fontSize: '1rem' }

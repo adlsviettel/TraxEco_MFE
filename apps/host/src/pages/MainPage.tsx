@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import {
-  Box, Typography, Paper, CircularProgress, Button, Chip, Grid, Stack, Menu, MenuItem,
+  Box, Typography, Paper, CircularProgress, Button, Chip, Grid, Stack, Menu, MenuItem, IconButton, Tooltip, useTheme
 } from '@mui/material';
 import {
   Inventory as PackingIcon,
@@ -13,7 +13,8 @@ import {
   QrCodeScanner as QrCodeIcon,
   ArrowDropDown as ArrowDropDownIcon,
 } from '@mui/icons-material';
-import { appService, authService, ConfirmDialog, defaultConfirmDialog, getInitials, languages } from '@traxeco/shared';
+import { Sun as SunIconLucide, Moon as MoonIconLucide } from 'lucide-react';
+import { appService, authService, ConfirmDialog, defaultConfirmDialog, getInitials, languages, useColorMode } from '@traxeco/shared';
 import type { AppInfo, ConfirmDialogState } from '@traxeco/shared';
 
 const APP_CONFIG: Record<string, { icon: React.ReactNode; route: string; i18nKey?: string }> = {
@@ -67,14 +68,24 @@ const APP_CONFIG: Record<string, { icon: React.ReactNode; route: string; i18nKey
     route: '/coo/dashboard',
     i18nKey: 'app.coo',
   },
+  QC_ACCESSORY: {
+    icon: <QrCodeIcon sx={{ fontSize: 36 }} />,
+    route: '/qc-accessory',
+    i18nKey: 'app.qcAccessory',
+  },
   // Future apps can be added here
 };
 
 export default function MainPage() {
-  const navigate = useNavigate();
-  const [apps, setApps] = useState<AppInfo[]>([]);
-  const [userAppCodes, setUserAppCodes] = useState<string[]>([]);
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
+  const theme = useTheme();
+  const { mode, toggleColorMode } = useColorMode();
+  const isDark = theme.palette.mode === 'dark';
+  const [apps, setApps] = useState<AppInfo[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [userAppCodes, setUserAppCodes] = useState<string[]>([]);
+  const [confirmDialog, setConfirmDialog] = useState<ConfirmDialogState>(defaultConfirmDialog);
   const [langAnchorEl, setLangAnchorEl] = useState<null | HTMLElement>(null);
   
   const handleLangMenuClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -90,8 +101,6 @@ export default function MainPage() {
   };
 
   const activeLang = languages.find(l => l.code === (i18n.language || 'vi')) || languages[0];
-  const [loading, setLoading] = useState(true);
-  const [confirmDialog, setConfirmDialog] = useState<ConfirmDialogState>(defaultConfirmDialog);
 
   const userName = localStorage.getItem('employeeName') || localStorage.getItem('employeeCode') || 'User';
   const employeeCode = localStorage.getItem('employeeCode') || '';
@@ -151,6 +160,7 @@ export default function MainPage() {
         else if (code === 'TCC_TEMPLATE') fallbackName = 'TCC Template';
         else if (code === 'CLINIC') fallbackName = 'Clinic';
         else if (code === 'COO') fallbackName = 'COO Data Import';
+        else if (code === 'QC_ACCESSORY') fallbackName = 'QC Phụ Liệu (QC Accessory)';
         return {
           appCode: code,
           appName: fallbackName,
@@ -158,9 +168,12 @@ export default function MainPage() {
         };
       });
 
-  // Tạm thời hiển thị app COO cho mọi người để review UI
+  // Tạm thời hiển thị app COO & QC_ACCESSORY cho mọi người để review UI
   if (!visibleApps.find(a => a.appCode === 'COO')) {
     visibleApps.push({ appCode: 'COO', appName: 'COO Data Import', isActive: true });
+  }
+  if (!visibleApps.find(a => a.appCode === 'QC_ACCESSORY')) {
+    visibleApps.push({ appCode: 'QC_ACCESSORY', appName: 'QC Phụ Liệu (QC Accessory)', isActive: true });
   }
 
   // Đã bỏ tính năng auto-redirect nếu user chỉ có 1 app (theo yêu cầu fix lỗi chớp màn hình)
@@ -183,7 +196,7 @@ export default function MainPage() {
 
 
   return (
-    <Box sx={{ display: 'flex', height: '100%', backgroundColor: '#f5f7fa', overflow: 'hidden' }}>
+    <Box sx={{ display: 'flex', height: '100%', backgroundColor: 'background.default', overflow: 'hidden' }}>
       
       {/* Left Panel - Branding (Hidden on mobile) */}
       <Box 
@@ -194,7 +207,7 @@ export default function MainPage() {
           alignItems: 'center',
           flex: { md: 0.8, lg: 0.6 },
           position: 'relative',
-          background: 'radial-gradient(circle at 50% 0%, #333946 0%, #22262e 100%)',
+          background: isDark ? 'radial-gradient(circle at 50% 0%, #1e293b 0%, #0f172a 100%)' : 'radial-gradient(circle at 50% 0%, #333946 0%, #22262e 100%)',
           color: '#ffffff',
           overflow: 'hidden',
           height: '100%'
@@ -264,24 +277,26 @@ export default function MainPage() {
           display: 'flex',
           flexDirection: 'column',
           position: 'relative',
-          height: '100%'
+          height: '100%',
+          bgcolor: 'background.default'
         }}
       >
         {/* Top bar — Logout right */}
         <Box sx={{
           display: 'flex', justifyContent: 'flex-end', 
-          p: { xs: 2.5, sm: 3 }, backgroundColor: '#f5f7fa', zIndex: 10,
-          borderBottom: '1px solid rgba(0,0,0,0.03)'
+          p: { xs: 2.5, sm: 3 }, backgroundColor: isDark ? '#0f172a' : '#f5f7fa', zIndex: 10,
+          borderBottom: `1px solid ${theme.palette.divider}`
         }}>
           <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
+
             {isAdmin && (
               <Chip
-                icon={<AdminIcon style={{ color: '#3ba55c' }} />}
+                icon={<AdminIcon style={{ color: isDark ? '#4ade80' : '#3ba55c' }} />}
                 label={t('main.systemAdmin')}
                 onClick={() => navigate('/admin')}
                 sx={{
-                  fontWeight: 600, backgroundColor: 'rgba(59, 165, 92, 0.1)', color: '#3ba55c',
-                  border: '1px solid rgba(59, 165, 92, 0.3)', cursor: 'pointer',
+                  fontWeight: 600, backgroundColor: isDark ? 'rgba(74, 222, 128, 0.15)' : 'rgba(59, 165, 92, 0.1)', color: isDark ? '#4ade80' : '#3ba55c',
+                  border: `1px solid ${isDark ? 'rgba(74, 222, 128, 0.3)' : 'rgba(59, 165, 92, 0.3)'}`, cursor: 'pointer',
                   display: { xs: 'none', sm: 'flex' }
                 }}
               />
@@ -294,8 +309,8 @@ export default function MainPage() {
                 display: 'flex',
                 alignItems: 'center',
                 gap: 1,
-                borderColor: 'rgba(0,0,0,0.15)',
-                color: '#4a5568',
+                borderColor: theme.palette.divider,
+                color: theme.palette.text.primary,
                 fontWeight: 600,
                 fontSize: '0.85rem',
                 borderRadius: 2,
@@ -304,8 +319,8 @@ export default function MainPage() {
                 textTransform: 'none',
                 height: 38,
                 '&:hover': {
-                  borderColor: '#3ba55c',
-                  backgroundColor: 'rgba(59, 165, 92, 0.04)'
+                  borderColor: isDark ? '#4ade80' : '#3ba55c',
+                  backgroundColor: isDark ? 'rgba(74, 222, 128, 0.1)' : 'rgba(59, 165, 92, 0.04)'
                 }
               }}
             >
@@ -317,7 +332,7 @@ export default function MainPage() {
                 style={{ display: 'block', borderRadius: 2 }}
               />
               {activeLang.label}
-              <ArrowDropDownIcon sx={{ color: '#718096' }} />
+              <ArrowDropDownIcon sx={{ color: theme.palette.text.secondary }} />
             </Button>
             
             <Menu
@@ -346,7 +361,7 @@ export default function MainPage() {
                     alt=""
                     style={{ display: 'block', borderRadius: 1 }}
                   />
-                  <Typography variant="body2" sx={{ fontWeight: 600, color: '#2d3748' }}>
+                  <Typography variant="body2" sx={{ fontWeight: 600, color: 'text.primary' }}>
                     {lang.label}
                   </Typography>
                 </MenuItem>
@@ -359,13 +374,13 @@ export default function MainPage() {
             onClick={handleLogout}
             disableElevation
             sx={{
-              backgroundColor: '#3ba55c',
+              backgroundColor: isDark ? '#22c55e' : '#3ba55c',
               color: '#fff',
               fontWeight: 700, 
               fontSize: '0.9rem',
               borderRadius: 2,
               textTransform: 'none',
-              '&:hover': { backgroundColor: '#2e8b4a' },
+              '&:hover': { backgroundColor: isDark ? '#16a34a' : '#2e8b4a' },
             }}
           >
             {t('main.logout', 'Logout')}
@@ -383,20 +398,20 @@ export default function MainPage() {
           }}>
           
           <Box sx={{ textAlign: 'center', mb: 6 }}>
-            <Typography variant="h4" sx={{ fontWeight: 800, color: '#2d3748', mb: 1 }}>
+            <Typography variant="h4" sx={{ fontWeight: 800, color: 'text.primary', mb: 1 }}>
               {t('main.selectApp', 'Select an application to start')}
             </Typography>
           </Box>
 
           {loading ? (
-            <CircularProgress size={40} sx={{ color: '#3ba55c' }} />
+            <CircularProgress size={40} sx={{ color: isDark ? '#4ade80' : '#3ba55c' }} />
           ) : (
             <Paper elevation={0} sx={{ 
               width: '100%', 
               maxWidth: 900, 
               p: { xs: 2, sm: 4 }, 
               borderRadius: 4, 
-              backgroundColor: 'transparent' /* Hoặc màu nền nếu muốn bọc chung */ 
+              backgroundColor: 'transparent'
             }}>
               <Grid container spacing={2}>
                 {visibleApps.map(app => {
@@ -414,15 +429,15 @@ export default function MainPage() {
                           borderRadius: 3,
                           cursor: 'pointer',
                           display: 'flex', flexDirection: 'column', alignItems: 'center',
-                          backgroundColor: '#fff',
+                          backgroundColor: 'background.paper',
                           height: '100%',
                           width: '100%',
-                          boxShadow: '0 4px 16px rgba(0,0,0,0.03)',
-                          border: '1px solid rgba(0,0,0,0.02)',
+                          boxShadow: isDark ? '0 4px 16px rgba(0,0,0,0.3)' : '0 4px 16px rgba(0,0,0,0.03)',
+                          border: `1px solid ${theme.palette.divider}`,
                           transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                           '&:hover': {
                             transform: 'translateY(-4px)',
-                            boxShadow: '0 12px 28px rgba(0,0,0,0.08)',
+                            boxShadow: isDark ? '0 12px 28px rgba(0,0,0,0.5)' : '0 12px 28px rgba(0,0,0,0.08)',
                           },
                           '&:active': {
                             transform: 'translateY(-2px)',
@@ -434,7 +449,7 @@ export default function MainPage() {
                           sx={{
                             width: 60, height: 60, borderRadius: '50%',
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            backgroundColor: '#3ba55c',
+                            backgroundColor: isDark ? '#22c55e' : '#3ba55c',
                             color: '#fff',
                             mb: 2 
                           }}
@@ -446,7 +461,7 @@ export default function MainPage() {
                           variant="body1" 
                           sx={{
                             fontWeight: 800, 
-                            color: '#2d3748', 
+                            color: 'text.primary', 
                             textAlign: 'center', 
                             textTransform: 'uppercase',
                             letterSpacing: '0.02em',

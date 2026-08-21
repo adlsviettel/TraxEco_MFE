@@ -201,7 +201,7 @@ export default function AdminPage() {
   };
 
   return (
-    <Box sx={{ p: { xs: 1, md: 1.5 }, flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)', gap: { xs: 0.5, md: 1 } }}>
+    <Box sx={{ p: { xs: 1, md: 1.5 }, flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', bgcolor: 'background.paper', gap: { xs: 0.5, md: 1 } }}>
       
       {/* Header & Toolbar */}
       <AdminToolbar
@@ -253,9 +253,10 @@ export default function AdminPage() {
           onChange={(_, val) => setActiveTab(val)}
           variant="fullWidth"
           sx={{ 
-            bgcolor: '#fff', 
+            bgcolor: 'background.paper', 
             borderRadius: '8px', 
-            border: '1px solid #e2e8f0',
+            border: '1px solid',
+            borderColor: 'divider',
             mb: 0.5,
             minHeight: 44,
             height: 44,

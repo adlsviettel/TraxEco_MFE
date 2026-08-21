@@ -41,6 +41,10 @@
     "title": "Nhập Kho",
     "uploadPdf": "Tải Lên PDF",
     "dragDrop": "Kéo & thả file PDF vào đây, hoặc nhấp để chọn",
+    "dragDropPrompt": "Kéo & Thả nhiều file PDF tờ khai vào đây hoặc",
+    "clickToSelect": "bấm để chọn file",
+    "supportedTypes": "Hỗ trợ tải lên cùng lúc nhiều tệp: BC 2.5, BC 2.6.1, BC 4.1, BC 2.3, BC 4.0, PPKEK",
+    "hintText": "(Hỗ trợ tải lên: BC 2.3, BC 4.0, BC 2.6.2, PPKEK)",
     "supportedFormat": "Định dạng hỗ trợ: PDF",
     "importedData": "Dữ Liệu Đã Nhập",
     "fileName": "Tên File",
@@ -59,6 +63,10 @@
     "title": "Xuất Kho",
     "uploadPdf": "Tải Lên PDF",
     "dragDrop": "Kéo & thả file PDF vào đây, hoặc nhấp để chọn",
+    "dragDropPrompt": "Kéo & Thả nhiều file PDF tờ khai vào đây hoặc",
+    "clickToSelect": "bấm để chọn file",
+    "supportedTypes": "Hỗ trợ tải lên cùng lúc nhiều tệp: BC 2.5, BC 2.6.1, BC 4.1, BC 2.3, BC 4.0, PPKEK",
+    "hintText": "(Hỗ trợ tải lên: BC 2.5, BC 2.6.1, BC 3.0, BC 2.7, BC 4.1)",
     "supportedFormat": "Định dạng hỗ trợ: PDF",
     "importedData": "Dữ Liệu Đã Xuất",
     "fileName": "Tên File",
@@ -274,6 +282,8 @@
     "pushedAt": "Pushed At",
     "errorMessage": "Error Message",
     "responseBody": "Response Body",
-    "requestBody": "Request Body"
+    "requestBody": "Request Body",
+    "ceisaTooltip": "Tờ khai thuộc hệ thống CEISA 4.0 (BC 2.7, BC 4.1, BC 2.6.1, BC 2.5). Dữ liệu đã lưu IT Inventory, không cần Push INSW.",
+    "copiedClipboard": "Đã copy JSON Payload vào clipboard!"
   }
 }

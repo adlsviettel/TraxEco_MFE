@@ -25,7 +25,7 @@ import FabricSearchFilter from '../components/FabricSearchFilter';
 import { fabricInventoryService } from '../services/fabricInventoryService';
 
 const ACCENT = '#2e7d32';
-const SX_HEADER_CELL = { fontWeight: 700, backgroundColor: '#f8fafc', whiteSpace: 'nowrap', position: 'sticky', top: 0, zIndex: 2, borderBottom: '2px solid #e2e8f0', color: '#334155', letterSpacing: '0.02em' };
+const SX_HEADER_CELL = { fontWeight: 700, backgroundColor: 'background.default', whiteSpace: 'nowrap', position: 'sticky', top: 0, zIndex: 2, borderBottom: '2px solid #e2e8f0', color: '#334155', letterSpacing: '0.02em' };
 const SX_CELL = { whiteSpace: 'nowrap', fontSize: '12px' };
 
 const EMPTY_OPTIONS: readonly string[] = [];
@@ -435,7 +435,7 @@ export default function RelaxPage() {
               size="small" sx={{ fontWeight: 700, bgcolor: '#e8f5e9', color: ACCENT }}
             />
             <Button variant="outlined" startIcon={<ExportIcon sx={{ fontSize: '18px !important' }} />} onClick={handleExport}
-              sx={{ borderRadius: '12px', fontWeight: 600, fontSize: '0.8rem', height: 32, px: 2, textTransform: 'none', borderColor: '#cbd5e1', color: '#475569', bgcolor: '#fff', '&:hover': { bgcolor: '#f1f5f9' } }}>
+              sx={{ borderRadius: '12px', fontWeight: 600, fontSize: '0.8rem', height: 32, px: 2, textTransform: 'none', borderColor: '#cbd5e1', color: '#475569', bgcolor: 'background.paper', '&:hover': { bgcolor: 'background.default' } }}>
               {t('inventory.exportExcel')}
             </Button>
           </Box>
@@ -446,12 +446,12 @@ export default function RelaxPage() {
 
       {searched && (
         <Paper elevation={0} sx={{ 
-          borderRadius: 2, border: '1px solid #e2e8f0', overflow: 'hidden', position: 'relative',
+          borderRadius: 2, border: '1px solid', borderColor: 'divider', overflow: 'hidden', position: 'relative',
           flexGrow: 1, display: 'flex', flexDirection: 'column', minHeight: 0
         }}>
           {saving && <LinearProgress color="warning" sx={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 9999 }} />}
           {data.length > 0 && (
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', p: 1.5, borderBottom: '1px solid #e0e0e0', bgcolor: '#fafafa' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', p: 1.5, borderBottom: '1px solid', borderColor: 'divider', bgcolor: '#fafafa' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 3 }}>
                 <Typography variant="body2" sx={{ fontWeight: 600, color: '#1e293b' }}>
                   {t('relax.legend', 'Legend:')}
@@ -475,7 +475,7 @@ export default function RelaxPage() {
           <TableContainer sx={{ flexGrow: 1, overflow: 'auto' }}>
             <Table stickyHeader size="small" sx={{
               '& .MuiTableCell-root': { fontSize: '12px', py: 0.75, px: 1, borderColor: '#f0f0f0' },
-              '& .MuiTableBody-root .MuiTableRow-root': { bgcolor: '#fff' },
+              '& .MuiTableBody-root .MuiTableRow-root': { bgcolor: 'background.paper' },
               '& .MuiTableBody-root .MuiTableRow-root:hover .sticky-cell': { bgcolor: 'inherit !important' }
             }}>
               <TableHead>
@@ -524,8 +524,8 @@ export default function RelaxPage() {
           </TableContainer>
           <Box sx={{ 
             display: 'flex', alignItems: 'center', justifyContent: 'space-between', 
-            p: 1, borderTop: '1px solid #e0e0e0', flexWrap: 'wrap', gap: 1,
-            backgroundColor: '#fff'
+            p: 1, borderTop: '1px solid', borderColor: 'divider', flexWrap: 'wrap', gap: 1,
+            backgroundColor: 'background.paper'
           }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 600 }}>{t('inventory.rowsPerPage', 'Rows/page')}:</Typography>
@@ -579,7 +579,7 @@ export default function RelaxPage() {
       )}
 
       {!searched && !loading && (
-        <Paper elevation={0} sx={{ p: 6, borderRadius: 3, border: '1px solid #e0e0e0', textAlign: 'center' }}>
+        <Paper elevation={0} sx={{ p: 6, borderRadius: 3, border: '1px solid', borderColor: 'divider', textAlign: 'center' }}>
           <SearchIcon sx={{ fontSize: 48, color: '#bdbdbd', mb: 1 }} />
           <Typography variant="h6" color="text.secondary" sx={{ fontWeight: 600 }}>
             {t('relax.noDataHint')}

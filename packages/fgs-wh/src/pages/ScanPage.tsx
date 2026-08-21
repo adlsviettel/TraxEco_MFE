@@ -144,8 +144,9 @@ export default function ScanPage() {
         sx={{
           p: 1.5,
           borderRadius: 2.5,
-          border: '1px solid #e2e8f0',
-          background: 'linear-gradient(135deg, #f8faf8 0%, #ffffff 100%)',
+          border: '1px solid',
+          borderColor: 'divider',
+          bgcolor: 'background.paper',
           display: 'flex', flexDirection: 'column', gap: 1.5,
         }}
       >
@@ -184,7 +185,7 @@ export default function ScanPage() {
                     borderRadius: 1.5,
                     height: 36,
                     fontSize: '0.85rem',
-                    backgroundColor: '#fff',
+                    backgroundColor: 'background.paper',
                   },
                 }}
               />
@@ -214,7 +215,7 @@ export default function ScanPage() {
                 if (first) localStorage.setItem('selectedFacLine', first);
                 else localStorage.removeItem('selectedFacLine');
               }}
-              sx={{ borderRadius: 1.5, height: 36, fontSize: '0.85rem', backgroundColor: '#fff' }}
+              sx={{ borderRadius: 1.5, height: 36, fontSize: '0.85rem', backgroundColor: 'background.paper' }}
             >
               <MenuItem value=""><em>All</em></MenuItem>
               {factories.map(f => <MenuItem key={f} value={f}>{f}</MenuItem>)}
@@ -228,7 +229,7 @@ export default function ScanPage() {
               value={facLines.includes(facLine) ? facLine : ''}
               label="FacLine"
               onChange={(e) => { setFacLine(e.target.value); localStorage.setItem('selectedFacLine', e.target.value); }}
-              sx={{ borderRadius: 1.5, height: 36, fontSize: '0.85rem', backgroundColor: '#fff' }}
+              sx={{ borderRadius: 1.5, height: 36, fontSize: '0.85rem', backgroundColor: 'background.paper' }}
             >
               <MenuItem value=""><em>-</em></MenuItem>
               {(selectedFactory ? facLines.filter(f => f.startsWith(selectedFactory)) : facLines).map(f => <MenuItem key={f} value={f}>{f}</MenuItem>)}
@@ -256,7 +257,7 @@ export default function ScanPage() {
               </Typography>
               <Chip label={todayHistory.length} size="small" color="primary" sx={{ fontWeight: 700 }} />
             </Box>
-            <Paper elevation={0} sx={{ flexGrow: 1, borderRadius: 2, overflow: 'hidden', border: '1px solid #e0e0e0', display: 'flex', flexDirection: 'column' }}>
+            <Paper elevation={0} sx={{ flexGrow: 1, borderRadius: 2, overflow: 'hidden', border: '1px solid', borderColor: 'divider', display: 'flex', flexDirection: 'column' }}>
               {loadingHistory ? (
                 <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
                   <CircularProgress size={28} />

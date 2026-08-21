@@ -93,11 +93,11 @@ export function MobileRequestList({
               sx={{
                 position: 'relative',
                 flexShrink: 0,
-                border: '1px solid #e2e8f0',
+                border: '1px solid', borderColor: 'divider',
                 borderRadius: '14px',
                 overflow: 'hidden',
                 opacity: isCancelled ? 0.6 : 1,
-                bgcolor: '#ffffff',
+                bgcolor: 'background.paper',
                 boxShadow: '0 2px 8px rgba(0,0,0,0.07)',
                 display: 'flex',
                 flexDirection: 'column',
@@ -115,8 +115,8 @@ export function MobileRequestList({
               <Box sx={{
                 position: 'relative',
                 pl: row.isPriority ? 4.5 : 2, pr: 2, py: 1.3,
-                background: 'linear-gradient(135deg,#f8fafc 0%,#f1f5f9 100%)',
-                borderBottom: '1px solid #e2e8f0',
+                bgcolor: 'background.paper',
+                borderBottom: '1px solid', borderColor: 'divider',
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1,
               }}>
                 {row.isPriority && (
@@ -251,7 +251,7 @@ export function MobileRequestList({
                 </Box>
 
                 {row.remarks && (
-                  <Box sx={{ bgcolor: '#f8fafc', borderRadius: '8px', px: 1.5, py: 0.8, borderLeft: '3px solid #e2e8f0' }}>
+                  <Box sx={{ bgcolor: 'background.default', borderRadius: '8px', px: 1.5, py: 0.8, borderLeft: '3px solid #e2e8f0' }}>
                     <Typography sx={{ color: '#64748b', fontSize: 11, fontStyle: 'italic' }} noWrap>{row.remarks}</Typography>
                   </Box>
                 )}
@@ -284,7 +284,7 @@ export function MobileRequestList({
         }
 
         return (
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.5, py: 1.5, borderTop: '1px solid #e2e8f0', bgcolor: '#fff', flexShrink: 0 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.5, py: 1.5, borderTop: '1px solid', borderColor: 'divider', bgcolor: 'background.paper', flexShrink: 0 }}>
             <IconButton size="small" disabled={mobilePage === 0} onClick={() => setMobilePage(p => p - 1)}
               sx={{ width: 30, height: 30, fontSize: 14, color: '#475569' }}>
               <ChevronLeftIcon fontSize="small" />
@@ -300,7 +300,7 @@ export function MobileRequestList({
                     fontSize: 12, fontWeight: 600, cursor: 'pointer', transition: 'all 0.15s',
                     ...(item === current
                       ? { bgcolor: '#1b5e20', color: '#fff' }
-                      : { color: '#475569', '&:hover': { bgcolor: '#f1f5f9' } }
+                      : { color: '#475569', '&:hover': { bgcolor: 'background.default' } }
                     )
                   }}
                 >

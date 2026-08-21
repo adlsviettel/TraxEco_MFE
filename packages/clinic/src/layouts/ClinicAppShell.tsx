@@ -126,8 +126,8 @@ export default function ClinicAppShell({
         display: "flex",
         flexDirection: isMobile ? "column" : "row",
         width: "100%",
-        height: "100vh",
-        backgroundColor: isMobile ? "#f6f9fc" : undefined,
+        height: "100%",
+        backgroundColor: isMobile ? (theme.palette.mode === 'dark' ? '#0f172a' : '#f6f9fc') : undefined,
         overflow: isMobile ? "auto" : "hidden",
       }}
     >
@@ -139,9 +139,10 @@ export default function ClinicAppShell({
           position="fixed"
           elevation={0}
           sx={{
-            backgroundColor: "#ffffff",
-            borderBottom: `1px solid #e6ebf1`,
-            color: "#0a2540",
+            backgroundColor: theme.palette.mode === 'dark' ? 'rgba(30, 41, 59, 0.95)' : '#ffffff',
+            borderBottom: `1px solid`,
+            borderColor: 'divider',
+            color: theme.palette.text.primary,
           }}
         >
           <Toolbar
@@ -178,14 +179,14 @@ export default function ClinicAppShell({
             >
               <Typography
                 variant="subtitle2"
-                sx={{ fontWeight: 800, color: "#0a2540", lineHeight: 1.2 }}
+                sx={{ fontWeight: 800, color: theme.palette.mode === 'dark' ? '#4ade80' : '#2e7d32', lineHeight: 1.2 }}
               >
                 {appTitleShort || appTitle}
               </Typography>
               <Typography
                 variant="caption"
                 noWrap
-                sx={{ fontWeight: 600, color: "#425466", lineHeight: 1.1 }}
+                sx={{ fontWeight: 600, color: "text.secondary", lineHeight: 1.1 }}
               >
                 {activeIndex >= 0
                   ? filteredMenuItems[activeIndex].label ||
@@ -203,9 +204,10 @@ export default function ClinicAppShell({
           elevation={0}
           sx={{
             zIndex: theme.zIndex.drawer + 1,
-            backgroundColor: "#ffffff",
-            borderBottom: `1px solid #e6ebf1`,
-            color: "#0a2540",
+            backgroundColor: theme.palette.mode === 'dark' ? 'rgba(30, 41, 59, 0.95)' : '#ffffff',
+            borderBottom: `1px solid`,
+            borderColor: 'divider',
+            color: theme.palette.text.primary,
             transition: theme.transitions.create(["width", "margin"], {
               easing: theme.transitions.easing.sharp,
               duration: theme.transitions.duration.leavingScreen,
@@ -292,9 +294,10 @@ export default function ClinicAppShell({
               "& .MuiDrawer-paper": {
                 width: drawerWidth,
                 overflowX: "hidden",
-                backgroundColor: "#ffffff",
-                color: "#425466",
-                borderRight: "1px solid #e6ebf1",
+                backgroundColor: theme.palette.background.paper,
+                color: theme.palette.text.primary,
+                borderRight: "1px solid",
+                borderColor: "divider",
                 transition: theme.transitions.create("width", {
                   easing: theme.transitions.easing.sharp,
                   duration: theme.transitions.duration.enteringScreen,
@@ -310,9 +313,10 @@ export default function ClinicAppShell({
               "& .MuiDrawer-paper": {
                 width: `calc(${theme.spacing(7)} + 1px)`,
                 overflowX: "hidden",
-                backgroundColor: "#ffffff",
-                color: "#425466",
-                borderRight: "1px solid #e6ebf1",
+                backgroundColor: theme.palette.background.paper,
+                color: theme.palette.text.primary,
+                borderRight: "1px solid",
+                borderColor: "divider",
                 transition: theme.transitions.create("width", {
                   easing: theme.transitions.easing.sharp,
                   duration: theme.transitions.duration.leavingScreen,
@@ -538,7 +542,7 @@ export default function ClinicAppShell({
           flexGrow: 1,
           p: isDispenseRoute ? 0 : 1,
           pt: 0,
-          backgroundColor: "#f6f9fc",
+          backgroundColor: theme.palette.background.default,
           display: "flex",
           flexDirection: "column",
           minWidth: 0,
@@ -607,7 +611,7 @@ export default function ClinicAppShell({
             left: 0,
             right: 0,
             zIndex: 1200,
-            borderTop: "1px solid #e6ebf1",
+            borderTop: '1px solid', borderColor: 'divider',
           }}
         >
           <BottomNavigation
@@ -618,7 +622,7 @@ export default function ClinicAppShell({
             showLabels
             sx={{
               height: 64,
-              backgroundColor: "#ffffff",
+              backgroundColor: 'background.paper',
               "& .MuiBottomNavigationAction-root": {
                 minWidth: 0,
                 py: 1,

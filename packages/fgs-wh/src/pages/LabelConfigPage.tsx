@@ -81,7 +81,7 @@ const LocalSearchInput = ({ onSearch }: { onSearch: (val: string) => void }) => 
           onSearch(val);
         }
       }}
-      sx={{ width: 300, bgcolor: '#fff' }}
+      sx={{ width: 300, bgcolor: 'background.paper' }}
     />
   );
 };
@@ -750,7 +750,7 @@ export default function LabelConfigPage() {
                     right: 0, 
                     bgcolor: 'background.paper', 
                     zIndex: 1, 
-                    borderLeft: '1px solid #e0e0e0',
+                    borderLeft: '1px solid', borderColor: 'divider',
                     boxShadow: '-2px 0 5px rgba(0,0,0,0.05)'
                   }}>
                     Thao tác
@@ -778,7 +778,7 @@ export default function LabelConfigPage() {
                       right: 0, 
                       bgcolor: 'background.paper', 
                       zIndex: 1, 
-                      borderLeft: '1px solid #e0e0e0'
+                      borderLeft: '1px solid', borderColor: 'divider'
                     }}>
                       <Stack direction="row" justifyContent="center">
                         <Tooltip title="Chỉnh sửa (Sửa cả cụm)">
@@ -805,7 +805,7 @@ export default function LabelConfigPage() {
             </Table>
           )}
         </TableContainer>
-        <Box sx={{ flexShrink: 0, borderTop: '1px solid #e0e0e0', bgcolor: 'background.paper', p: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 2 }}>
+        <Box sx={{ flexShrink: 0, borderTop: '1px solid', borderColor: 'divider', bgcolor: 'background.paper', p: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 2 }}>
           <Box display="flex" alignItems="center" gap={1}>
             <Typography variant="body2" color="text.secondary">Số dòng / trang:</Typography>
             <TextField
@@ -844,7 +844,7 @@ export default function LabelConfigPage() {
               placeholder="Nhập PO Puma (VD: 4602900114)" 
               value={poSearch} 
               onChange={e => setPoSearch(e.target.value)}
-              sx={{ width: 250, bgcolor: 'white' }}
+              sx={{ width: 250, bgcolor: 'background.paper' }}
             />
             <Button 
               variant="contained" 
@@ -906,7 +906,7 @@ export default function LabelConfigPage() {
               ) : null}
 
               {fetchedDimensions.length === 0 && !editingId ? (
-                <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic', p: 2, textAlign: 'center', bgcolor: '#f1f5f9', borderRadius: 1 }}>
+                <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic', p: 2, textAlign: 'center', bgcolor: 'background.default', borderRadius: 1 }}>
                   Vui lòng kéo dữ liệu PO để lấy danh sách kích thước thùng tự động.
                 </Typography>
               ) : null}
@@ -1019,7 +1019,7 @@ export default function LabelConfigPage() {
             </Stack>
           </Box>
         </DialogContent>
-        <DialogActions sx={{ p: 2, bgcolor: '#f8fafc', justifyContent: 'space-between' }}>
+        <DialogActions sx={{ p: 2, bgcolor: 'background.default', justifyContent: 'space-between' }}>
           <Button onClick={() => setPreview3DOpen(true)} color="info" variant="contained">Xem Trước 3D</Button>
           <Box>
             <Button onClick={handleCloseDialog} color="inherit" variant="outlined" sx={{ mr: 1 }}>Hủy</Button>
@@ -1054,7 +1054,7 @@ export default function LabelConfigPage() {
 
       {/* Dedicated Dialog for PO Manual Config */}
       <Dialog open={poDialogOpen} onClose={() => setPoDialogOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e0e0e0', fontWeight: 'bold' }}>
+        <DialogTitle sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', fontWeight: 'bold' }}>
           Cấu Hình In Theo PO (Manual Values)
         </DialogTitle>
         <DialogContent sx={{ p: 3, display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -1113,7 +1113,7 @@ export default function LabelConfigPage() {
             fullWidth 
           />
         </DialogContent>
-        <DialogActions sx={{ p: 2, bgcolor: '#f8fafc', borderTop: '1px solid #e0e0e0' }}>
+        <DialogActions sx={{ p: 2, bgcolor: 'background.default', borderTop: '1px solid', borderColor: 'divider' }}>
           <Button onClick={() => setPoDialogOpen(false)} color="inherit" variant="outlined">Hủy</Button>
           <Button 
             onClick={handleSavePoDialog} 

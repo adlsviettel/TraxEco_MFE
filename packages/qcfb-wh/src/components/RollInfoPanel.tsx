@@ -24,14 +24,14 @@ export default function RollInfoPanel({ rollInfo }: { rollInfo?: RollInfo }) {
   return (
     <Card elevation={0} sx={{ 
       borderRadius: 4, 
-      bgcolor: '#ffffff', 
+      bgcolor: 'background.paper', 
       border: '1px solid rgba(0,0,0,0.04)',
       boxShadow: '0 8px 32px rgba(0,0,0,0.04)',
       position: 'relative', overflow: 'hidden'
     }}>
       <Box sx={{ position: 'absolute', top: -30, right: -30, width: 100, height: 100, background: 'radial-gradient(circle, rgba(16,185,129,0.05) 0%, rgba(255,255,255,0) 70%)', borderRadius: '50%' }} />
       <CardContent sx={{ p: 2, position: 'relative', zIndex: 1 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, pb: 1.5, borderBottom: '1px solid #f1f5f9' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, pb: 1.5, borderBottom: '1px solid', borderColor: 'divider' }}>
           <Box sx={{ width: 4, height: 18, bgcolor: '#10b981', borderRadius: 1, mr: 1.5 }} />
           <Typography variant="subtitle1" fontWeight={700} sx={{ color: '#0f172a' }}>
             {t('qcfb.inspection.rollInfo', 'ROLL INFO')}

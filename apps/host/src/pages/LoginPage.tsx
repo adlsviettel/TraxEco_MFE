@@ -22,9 +22,15 @@ import {
 } from '@mui/icons-material';
 import { authService, languages } from '@traxeco/shared';
 
+import { useTheme } from '@mui/material';
+import { useColorMode } from '@traxeco/shared';
+
 export default function LoginPage() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const theme = useTheme();
+  const { mode, toggleColorMode } = useColorMode();
+  const isDark = theme.palette.mode === 'dark';
 
   const [username, setUsername] = useState(localStorage.getItem('saved_username') || '');
   const [password, setPassword] = useState('');
@@ -96,7 +102,7 @@ export default function LoginPage() {
       right: 0, 
       bottom: 0, 
       display: 'flex', 
-      backgroundColor: '#fff',
+      backgroundColor: 'background.paper',
       overflow: 'hidden'
     }}>
       
@@ -170,6 +176,7 @@ export default function LoginPage() {
           height: '100%',
           overflowY: 'auto',
           position: 'relative',
+          bgcolor: 'background.default'
         }}
       >
         <Box 
@@ -182,20 +189,20 @@ export default function LoginPage() {
           }}
         >
         {/* Language Switcher */}
-        <Box sx={{ position: 'absolute', top: 24, right: 24 }}>
+        <Box sx={{ position: 'absolute', top: 24, right: 24, display: 'flex', gap: 1 }}>
           <Button 
             variant="outlined"
             onClick={handleLangMenuClick}
             endIcon={<ArrowDropDownIcon />}
             sx={{ 
-              borderColor: '#e0e0e0', 
-              color: '#333',
+              borderColor: theme.palette.divider, 
+              color: theme.palette.text.primary,
               borderRadius: '24px',
               px: { xs: 2, sm: 3 },
               py: 0.8,
               '&:hover': {
-                borderColor: '#bdbdbd',
-                backgroundColor: 'rgba(0,0,0,0.02)'
+                borderColor: isDark ? '#4ade80' : '#3ba55c',
+                backgroundColor: theme.palette.action.hover
               }
             }}
           >
@@ -248,14 +255,14 @@ export default function LoginPage() {
             display: 'flex', 
             flexDirection: 'column', 
             justifyContent: 'center',
-            px: { xs: 3, sm: 6, md: 8, lg: 12 }, /* Responsive padding */
-            maxWidth: { xs: '100%', sm: 450, md: 500, lg: 600 }, /* Scaled width */
+            px: { xs: 3, sm: 6, md: 8, lg: 12 },
+            maxWidth: { xs: '100%', sm: 450, md: 500, lg: 600 },
             mx: 'auto',
             width: '100%',
-            py: { xs: 4, sm: 6, md: 4 }, /* Giảm padding dọc trên mobile để form không bị ép */
+            py: { xs: 4, sm: 6, md: 4 },
           }}
         >
-          {/* Mobile Logo (Chỉ hiện trên điện thoại) */}
+          {/* Mobile Logo */}
           <Box sx={{ display: { xs: 'flex', md: 'none' }, justifyContent: 'center', mb: 4, mt: { xs: 4, sm: 0 } }}>
             <img 
               src={`${import.meta.env.BASE_URL}logo.png`}
@@ -271,10 +278,10 @@ export default function LoginPage() {
             variant="h3" 
             sx={{ 
               fontWeight: 800, 
-              color: '#1a1a1a', 
+              color: 'text.primary', 
               mb: { xs: 4, md: 5 }, 
               textAlign: { xs: 'center', md: 'left' },
-              fontSize: { xs: '1.75rem', sm: '2.25rem', md: '2.5rem', lg: '3rem' } /* Cỡ chữ cân đối hơn trên đt */
+              fontSize: { xs: '1.75rem', sm: '2.25rem', md: '2.5rem', lg: '3rem' }
             }}
           >
             {t('login.title')}
@@ -299,12 +306,18 @@ export default function LoginPage() {
               sx={{
                 '& .MuiOutlinedInput-root': {
                   borderRadius: 1.5,
-                  backgroundColor: '#fff',
-                  height: { xs: 54, md: 56 }, /* Cố định height tối ưu để không bị bóp */
-                  '& input': { color: '#1a1a1a' },
-                  '& fieldset': { borderColor: '#ccc' },
+                  backgroundColor: isDark ? '#1e293b' : '#fff',
+                  height: { xs: 54, md: 56 },
+                  '& input': { color: isDark ? '#f8fafc' : '#1a1a1a' },
+                  '& fieldset': { borderColor: theme.palette.divider },
+                  '&:hover fieldset': { borderColor: isDark ? '#4ade80' : '#15803d' },
+                  '&.Mui-focused fieldset': { borderColor: isDark ? '#4ade80' : '#15803d' }
                 },
-                '& .MuiInputLabel-root': { color: '#666' },
+                '& .MuiInputLabel-root': { color: 'text.secondary' },
+                '& input:-webkit-autofill': {
+                  WebkitBoxShadow: isDark ? '0 0 0 1000px #1e293b inset !important' : '0 0 0 1000px #ffffff inset !important',
+                  WebkitTextFillColor: isDark ? '#f8fafc !important' : '#1a1a1a !important'
+                }
               }}
             />
             
@@ -323,6 +336,7 @@ export default function LoginPage() {
                       aria-label="toggle password visibility"
                       onClick={() => setShowPassword(!showPassword)}
                       edge="end"
+                      sx={{ color: 'text.secondary' }}
                     >
                       {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
                     </IconButton>
@@ -332,13 +346,19 @@ export default function LoginPage() {
               sx={{
                 '& .MuiOutlinedInput-root': {
                   borderRadius: 1.5,
-                  backgroundColor: '#fff',
-                  height: { xs: 54, md: 56 }, /* Cố định height tối ưu để không bị bóp */
-                  '& input': { color: '#1a1a1a' },
+                  backgroundColor: isDark ? '#1e293b' : '#fff',
+                  height: { xs: 54, md: 56 },
+                  '& input': { color: isDark ? '#f8fafc' : '#1a1a1a' },
                   '& input::-ms-reveal, & input::-webkit-credentials-auto-fill-button': { display: 'none' },
-                  '& fieldset': { borderColor: '#ccc' },
+                  '& fieldset': { borderColor: theme.palette.divider },
+                  '&:hover fieldset': { borderColor: isDark ? '#4ade80' : '#15803d' },
+                  '&.Mui-focused fieldset': { borderColor: isDark ? '#4ade80' : '#15803d' }
                 },
-                '& .MuiInputLabel-root': { color: '#666' },
+                '& .MuiInputLabel-root': { color: 'text.secondary' },
+                '& input:-webkit-autofill': {
+                  WebkitBoxShadow: isDark ? '0 0 0 1000px #1e293b inset !important' : '0 0 0 1000px #ffffff inset !important',
+                  WebkitTextFillColor: isDark ? '#f8fafc !important' : '#1a1a1a !important'
+                }
               }}
             />
 

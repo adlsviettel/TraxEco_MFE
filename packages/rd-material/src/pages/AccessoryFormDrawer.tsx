@@ -408,7 +408,7 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
       </Box>
 
             {/* Body */}
-      <Box sx={{ flex: 1, minHeight: 0, overflowY: { xs: 'auto', md: 'hidden' }, p: { xs: 2, md: 4 }, bgcolor: '#f8fafc', display: 'flex', justifyContent: 'center' }}>
+      <Box sx={{ flex: 1, minHeight: 0, overflowY: { xs: 'auto', md: 'hidden' }, p: { xs: 2, md: 4 }, bgcolor: 'background.default', display: 'flex', justifyContent: 'center' }}>
         <Box sx={{ width: '100%', maxWidth: 1440, height: { xs: 'auto', md: '100%' }, display: 'flex', flexDirection: 'column' }}>
           <Grid container spacing={4} sx={{ height: { xs: 'auto', md: '100%' }, minHeight: 0, flex: 1 }}>
           
@@ -422,7 +422,7 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
                 <CardHeader 
                   title="Master Item" 
                   titleTypographyProps={{ variant: 'overline', fontWeight: 800, sx: { letterSpacing: 1, fontSize: 13, color: '#0f172a' } }}
-                  sx={{ bgcolor: '#fff', py: 2, borderBottom: '1px solid rgba(0,0,0,0.04)', borderLeft: '4px solid #2e7d32' }}
+                  sx={{ bgcolor: 'background.paper', py: 2, borderBottom: '1px solid rgba(0,0,0,0.04)', borderLeft: '4px solid #2e7d32' }}
                   action={
                     <IconButton onClick={() => setShowMaster(!showMaster)} size="small" sx={{ color: '#64748b' }}>
                       {showMaster ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
@@ -439,14 +439,14 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
                         value={form.name ?? ''} debounceMs={200} onDebounceChange={(val) => set('name', val)} 
                         sx={{ 
                           '& .MuiOutlinedInput-root': { 
-                            bgcolor: '#f8fafc', 
+                            bgcolor: 'background.default', 
                             borderRadius: 1, 
-                            '&:hover': { bgcolor: '#f1f5f9' }, 
-                            '&.Mui-focused': { bgcolor: '#fff' } 
+                            '&:hover': { bgcolor: 'background.default' }, 
+                            '&.Mui-focused': { bgcolor: 'background.paper' } 
                           }
                         }} 
                       />
-                      <AppTextField label="Master Description" size="small" value={form.description ?? ''} debounceMs={200} onDebounceChange={(val) => set('description', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover': { bgcolor: '#f1f5f9' }, '&.Mui-focused': { bgcolor: '#fff' } } }} />
+                      <AppTextField label="Master Description" size="small" value={form.description ?? ''} debounceMs={200} onDebounceChange={(val) => set('description', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover': { bgcolor: 'background.default' }, '&.Mui-focused': { bgcolor: 'background.paper' } } }} />
                     </Stack>
                   </CardContent>
                 </Collapse>
@@ -457,7 +457,7 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
                 <CardHeader 
                   title="1. Picture" 
                   titleTypographyProps={{ variant: 'overline', fontWeight: 800, sx: { letterSpacing: 1, fontSize: 13, color: '#0f172a' } }}
-                  sx={{ bgcolor: '#fff', py: 2, borderBottom: '1px solid rgba(0,0,0,0.04)', borderLeft: '4px solid #3ba55c' }}
+                  sx={{ bgcolor: 'background.paper', py: 2, borderBottom: '1px solid rgba(0,0,0,0.04)', borderLeft: '4px solid #3ba55c' }}
                 />
                 <CardContent sx={{ p: 3 }}>
                   <Stack spacing={3}>
@@ -467,7 +467,7 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
                         <Box sx={{ flex: 1 }}>
                           <input type="file" multiple id="main-file-upload" accept="image/*" style={{ display: 'none' }} onChange={(e) => handleImageCapture(e, 'mainImage')} />
                           <label htmlFor="main-file-upload">
-                            <Box sx={{ border: '1px dashed #cbd5e1', borderRadius: 1, bgcolor: '#f8fafc', p: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s', '&:hover': { bgcolor: '#f1f5f9', borderColor: '#3ba55c' } }}>
+                            <Box sx={{ border: '1px dashed #cbd5e1', borderRadius: 1, bgcolor: 'background.default', p: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s', '&:hover': { bgcolor: 'background.default', borderColor: '#3ba55c' } }}>
                               <UploadFileIcon sx={{ color: '#94a3b8', fontSize: 20, mr: 1 }} />
                               <Typography variant="caption" fontWeight={600}>{t('rdMaterial.library', 'Thư viện')}</Typography>
                             </Box>
@@ -490,7 +490,7 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
                             title={<Box sx={{ width: 600, height: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: 'rgba(255,255,255,0.95)', borderRadius: 2, overflow: 'hidden' }}><img src={rdItemApi.getImageUrl(url)} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} /></Box>}
                             componentsProps={{ popper: { sx: { zIndex: 10000 } }, tooltip: { sx: { p: 0, bgcolor: 'transparent', boxShadow: '0 10px 30px rgba(0,0,0,0.3)', maxWidth: 'none', borderRadius: 2 } } }}
                           >
-                            <Box sx={{ position: 'relative', width: '100%', aspectRatio: '1/1', borderRadius: 1, overflow: 'hidden', border: '1px solid rgba(0,0,0,0.05)', bgcolor: '#fff', cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }} onClick={() => setLightboxImage(url)}>
+                            <Box sx={{ position: 'relative', width: '100%', aspectRatio: '1/1', borderRadius: 1, overflow: 'hidden', border: '1px solid rgba(0,0,0,0.05)', bgcolor: 'background.paper', cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }} onClick={() => setLightboxImage(url)}>
                               <img className="main-img" src={rdItemApi.getImageUrl(url)} alt="Image" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => (e.currentTarget.style.display = 'none')} />
                               <IconButton size="small" sx={{ position: 'absolute', top: 4, right: 4, bgcolor: 'rgba(255,255,255,0.8)', p: 0.5, backdropFilter: 'blur(4px)', '&:hover': { bgcolor: '#ef4444', color: 'white' } }} onClick={(e) => { e.stopPropagation(); removeImage('mainImage', idx); }}>
                                 <CloseIcon sx={{ fontSize: 16 }} />
@@ -504,7 +504,7 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
                             title={<Box sx={{ width: 600, height: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: 'rgba(255,255,255,0.95)', borderRadius: 2, overflow: 'hidden' }}><PreviewImage file={file} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} /></Box>}
                             componentsProps={{ popper: { sx: { zIndex: 10000 } }, tooltip: { sx: { p: 0, bgcolor: 'transparent', boxShadow: '0 10px 30px rgba(0,0,0,0.3)', maxWidth: 'none', borderRadius: 2 } } }}
                           >
-                            <Box sx={{ position: 'relative', width: '100%', aspectRatio: '1/1', borderRadius: 1, overflow: 'hidden', border: '1px solid #3ba55c', bgcolor: '#fff', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+                            <Box sx={{ position: 'relative', width: '100%', aspectRatio: '1/1', borderRadius: 1, overflow: 'hidden', border: '1px solid #3ba55c', bgcolor: 'background.paper', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
                               <PreviewImage className="main-img" file={file} alt="Pending Main" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                               <IconButton size="small" sx={{ position: 'absolute', top: 4, right: 4, bgcolor: 'rgba(255,255,255,0.8)', p: 0.5, backdropFilter: 'blur(4px)', '&:hover': { bgcolor: '#ef4444', color: 'white' } }} onClick={(e) => { e.stopPropagation(); setPendingMainImages(prev => prev.filter((_, i) => i !== idx)); }}>
                                 <CloseIcon sx={{ fontSize: 16 }} />
@@ -522,7 +522,7 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
                         <Box sx={{ flex: 1 }}>
                           <input type="file" multiple id="stk-file-upload" accept="image/*" style={{ display: 'none' }} onChange={(e) => handleImageCapture(e, 'stickerImage')} />
                           <label htmlFor="stk-file-upload">
-                            <Box sx={{ border: '1px dashed #cbd5e1', borderRadius: 1, bgcolor: '#f8fafc', p: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s', '&:hover': { bgcolor: '#f1f5f9', borderColor: '#3ba55c' } }}>
+                            <Box sx={{ border: '1px dashed #cbd5e1', borderRadius: 1, bgcolor: 'background.default', p: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s', '&:hover': { bgcolor: 'background.default', borderColor: '#3ba55c' } }}>
                               <UploadFileIcon sx={{ color: '#94a3b8', fontSize: 20, mr: 1 }} />
                               <Typography variant="caption" fontWeight={600}>{t('rdMaterial.library', 'Thư viện')}</Typography>
                             </Box>
@@ -545,7 +545,7 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
                             title={<Box sx={{ width: 600, height: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: 'rgba(255,255,255,0.95)', borderRadius: 2, overflow: 'hidden' }}><img src={rdItemApi.getImageUrl(url)} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} /></Box>}
                             componentsProps={{ popper: { sx: { zIndex: 10000 } }, tooltip: { sx: { p: 0, bgcolor: 'transparent', boxShadow: '0 10px 30px rgba(0,0,0,0.3)', maxWidth: 'none', borderRadius: 2 } } }}
                           >
-                            <Box sx={{ position: 'relative', width: '100%', aspectRatio: '1/1', borderRadius: 1, overflow: 'hidden', border: '1px solid rgba(0,0,0,0.05)', bgcolor: '#fff', cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }} onClick={() => setLightboxImage(url)}>
+                            <Box sx={{ position: 'relative', width: '100%', aspectRatio: '1/1', borderRadius: 1, overflow: 'hidden', border: '1px solid rgba(0,0,0,0.05)', bgcolor: 'background.paper', cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }} onClick={() => setLightboxImage(url)}>
                               <img className="stk-img" src={rdItemApi.getImageUrl(url)} alt="Sticker" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => (e.currentTarget.style.display = 'none')} />
                               <IconButton size="small" sx={{ position: 'absolute', top: 4, right: 4, bgcolor: 'rgba(255,255,255,0.8)', p: 0.5, backdropFilter: 'blur(4px)', '&:hover': { bgcolor: '#ef4444', color: 'white' } }} onClick={(e) => { e.stopPropagation(); removeImage('stickerImage', idx); }}>
                                 <CloseIcon sx={{ fontSize: 16 }} />
@@ -559,7 +559,7 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
                             title={<Box sx={{ width: 600, height: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: 'rgba(255,255,255,0.95)', borderRadius: 2, overflow: 'hidden' }}><PreviewImage file={file} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} /></Box>}
                             componentsProps={{ popper: { sx: { zIndex: 10000 } }, tooltip: { sx: { p: 0, bgcolor: 'transparent', boxShadow: '0 10px 30px rgba(0,0,0,0.3)', maxWidth: 'none', borderRadius: 2 } } }}
                           >
-                            <Box sx={{ position: 'relative', width: '100%', aspectRatio: '1/1', borderRadius: 1, overflow: 'hidden', border: '1px solid #3ba55c', bgcolor: '#fff', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+                            <Box sx={{ position: 'relative', width: '100%', aspectRatio: '1/1', borderRadius: 1, overflow: 'hidden', border: '1px solid #3ba55c', bgcolor: 'background.paper', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
                               <PreviewImage className="stk-img" file={file} alt="Pending Sticker" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                               <IconButton size="small" sx={{ position: 'absolute', top: 4, right: 4, bgcolor: 'rgba(255,255,255,0.8)', p: 0.5, backdropFilter: 'blur(4px)', '&:hover': { bgcolor: '#ef4444', color: 'white' } }} onClick={(e) => { e.stopPropagation(); setPendingStickerImages(prev => prev.filter((_, i) => i !== idx)); }}>
                                 <CloseIcon sx={{ fontSize: 16 }} />
@@ -585,7 +585,7 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
               <CardHeader 
                 title={<span>ItemNo (Item Code) <span style={{color: '#ef4444'}}>*</span></span>} 
                 titleTypographyProps={{ variant: 'overline', fontWeight: 800, sx: { letterSpacing: 1, fontSize: 13, color: '#0f172a' } }}
-                sx={{ bgcolor: '#fff', py: 2, borderBottom: '1px solid rgba(0,0,0,0.04)', borderLeft: '4px solid #2e7d32' }}
+                sx={{ bgcolor: 'background.paper', py: 2, borderBottom: '1px solid rgba(0,0,0,0.04)', borderLeft: '4px solid #2e7d32' }}
                 action={
                   <IconButton onClick={() => setShowItemDetails(!showItemDetails)} size="small" sx={{ color: '#64748b' }}>
                     {showItemDetails ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
@@ -620,7 +620,7 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
                         '&:hover': { borderColor: (errors.itemCode || shakeFields.itemCode) ? '#ef4444' : '#94a3b8', bgcolor: errors.itemCode ? '#fef2f2' : '#f1f5f9' }, 
                         '&:focus-within': { 
                           borderColor: errors.itemCode ? '#ef4444' : '#2563eb', 
-                          bgcolor: '#fff', 
+                          bgcolor: 'background.paper', 
                           boxShadow: errors.itemCode ? '0 0 0 4px rgba(239,68,68,0.15)' : '0 0 0 4px rgba(37,99,235,0.1)' 
                         },
                         animation: shakeFields.itemCode ? 'shake 0.5s ease-in-out' : 'none',
@@ -681,7 +681,7 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
                                     borderColor: errors.specification ? '#ef4444' : undefined,
                                   },
                                   '&:hover': { bgcolor: errors.specification ? '#fef2f2' : '#f1f5f9' }, 
-                                  '&.Mui-focused': { bgcolor: '#fff' } 
+                                  '&.Mui-focused': { bgcolor: 'background.paper' } 
                                 }, 
                                 '& .MuiFormLabel-asterisk': { color: '#ef4444' },
                                 animation: shakeFields.specification ? 'shake 0.5s ease-in-out' : 'none',
@@ -694,8 +694,8 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
                             />
                           )} 
                         />
-                        <AppTextField label={t('rdMaterial.accessory_description', 'Accessory Description')} size="small" multiline rows={1} value={(form as any).accessoryDescription ?? ''} debounceMs={200} onDebounceChange={(val) => set('accessoryDescription', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
-                        <AppTextField label={t('rdMaterial.size', 'Size')} size="small" value={(form as any).size ?? ''} debounceMs={200} onDebounceChange={(val) => set('size', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
+                        <AppTextField label={t('rdMaterial.accessory_description', 'Accessory Description')} size="small" multiline rows={1} value={(form as any).accessoryDescription ?? ''} debounceMs={200} onDebounceChange={(val) => set('accessoryDescription', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover':{bgcolor: 'background.default'}, '&.Mui-focused':{bgcolor: 'background.paper'} } }} />
+                        <AppTextField label={t('rdMaterial.size', 'Size')} size="small" value={(form as any).size ?? ''} debounceMs={200} onDebounceChange={(val) => set('size', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover':{bgcolor: 'background.default'}, '&.Mui-focused':{bgcolor: 'background.paper'} } }} />
                         <Autocomplete 
                           componentsProps={{ popper: { style: { zIndex: 10000 } } }} 
                           forcePopupIcon 
@@ -718,10 +718,10 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
                               size="small" 
                               sx={{ 
                                 '& .MuiOutlinedInput-root': { 
-                                  bgcolor: '#f8fafc', 
+                                  bgcolor: 'background.default', 
                                   borderRadius: 1, 
-                                  '&:hover': { bgcolor: '#f1f5f9' }, 
-                                  '&.Mui-focused': { bgcolor: '#fff' } 
+                                  '&:hover': { bgcolor: 'background.default' }, 
+                                  '&.Mui-focused': { bgcolor: 'background.paper' } 
                                 } 
                               }} 
                             />
@@ -756,16 +756,16 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
                               size="small" 
                               sx={{ 
                                 '& .MuiOutlinedInput-root': { 
-                                  bgcolor: '#f8fafc', 
+                                  bgcolor: 'background.default', 
                                   borderRadius: 1, 
-                                  '&:hover': { bgcolor: '#f1f5f9' }, 
-                                  '&.Mui-focused': { bgcolor: '#fff' } 
+                                  '&:hover': { bgcolor: 'background.default' }, 
+                                  '&.Mui-focused': { bgcolor: 'background.paper' } 
                                 } 
                               }} 
                             />
                           )} 
                         />
-                        <AppTextField label={t('rdMaterial.origin', 'Origin')} size="small" value={form.origin ?? ''} debounceMs={200} onDebounceChange={(val) => set('origin', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
+                        <AppTextField label={t('rdMaterial.origin', 'Origin')} size="small" value={form.origin ?? ''} debounceMs={200} onDebounceChange={(val) => set('origin', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover':{bgcolor: 'background.default'}, '&.Mui-focused':{bgcolor: 'background.paper'} } }} />
                       </Box>
                     </Box>
 
@@ -777,7 +777,7 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
                           <AppTextField 
                             label={t('rdMaterial.price', 'Price')} size="small" type="number" 
                             value={form.price ?? ''} debounceMs={200} onDebounceChange={(val) => set('price', val)} 
-                            sx={{ flexGrow: 1, '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }}
+                            sx={{ flexGrow: 1, '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover':{bgcolor: 'background.default'}, '&.Mui-focused':{bgcolor: 'background.paper'} } }}
                           />
                           <Autocomplete 
                             componentsProps={{ popper: { style: { zIndex: 10000 } } }} 
@@ -806,7 +806,7 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
                                   borderColor: errors.currency ? '#ef4444' : undefined,
                                 },
                                 '&:hover': { bgcolor: errors.currency ? '#fef2f2' : '#f1f5f9' },
-                                '&.Mui-focused': { bgcolor: '#fff' }
+                                '&.Mui-focused': { bgcolor: 'background.paper' }
                               },
                               animation: shakeFields.currency ? 'shake 0.5s ease-in-out' : 'none',
                               '@keyframes shake': {
@@ -853,7 +853,7 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
                                   borderColor: errors.priceUnit ? '#ef4444' : undefined,
                                 },
                                 '&:hover': { bgcolor: errors.priceUnit ? '#fef2f2' : '#f1f5f9' },
-                                '&.Mui-focused': { bgcolor: '#fff' }
+                                '&.Mui-focused': { bgcolor: 'background.paper' }
                               },
                               animation: shakeFields.priceUnit ? 'shake 0.5s ease-in-out' : 'none',
                               '@keyframes shake': {
@@ -868,7 +868,7 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
                         
                         <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
                           <AppTextField label={t('rdMaterial.moqMcq', 'MOQ/MCQ')} fullWidth size="small" 
-                            sx={{ flexGrow: 1, '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }}
+                            sx={{ flexGrow: 1, '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover':{bgcolor: 'background.default'}, '&.Mui-focused':{bgcolor: 'background.paper'} } }}
                             value={form.moqMcq || ''} debounceMs={200} onDebounceChange={(val) => set('moqMcq', val)} 
                           />
                           <Autocomplete 
@@ -879,12 +879,12 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
                             onChange={(_, v) => set('moqMcqUnit', v || '')} 
                             onInputChange={(_, v, reason) => { if (reason === 'input' || reason === 'clear') set('moqMcqUnit', v); }} 
                             sx={{ width: 110 }} 
-                            renderInput={(params) => <TextField {...params} label={t('rdMaterial.unit', 'Unit')} size="small" sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1 } }} />} 
+                            renderInput={(params) => <TextField {...params} label={t('rdMaterial.unit', 'Unit')} size="small" sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1 } }} />} 
                           />
                         </Box>
-                        <AppTextField label={t('rdMaterial.mcq_surcharge', 'MCQ Surcharge ($)')} size="small" type="number" value={form.mcqSurcharge ?? ''} debounceMs={200} onDebounceChange={(val) => set('mcqSurcharge', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
-                        <AppTextField label={t('rdMaterial.moq_surcharge', 'MOQ Surcharge ($)')} size="small" type="number" value={form.moqSurcharge ?? ''} debounceMs={200} onDebounceChange={(val) => set('moqSurcharge', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
-                        <AppTextField label={t('rdMaterial.leadtime', 'Leadtime')} size="small" value={form.leadTime ?? ''} debounceMs={200} onDebounceChange={(val) => set('leadTime', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
+                        <AppTextField label={t('rdMaterial.mcq_surcharge', 'MCQ Surcharge ($)')} size="small" type="number" value={form.mcqSurcharge ?? ''} debounceMs={200} onDebounceChange={(val) => set('mcqSurcharge', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover':{bgcolor: 'background.default'}, '&.Mui-focused':{bgcolor: 'background.paper'} } }} />
+                        <AppTextField label={t('rdMaterial.moq_surcharge', 'MOQ Surcharge ($)')} size="small" type="number" value={form.moqSurcharge ?? ''} debounceMs={200} onDebounceChange={(val) => set('moqSurcharge', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover':{bgcolor: 'background.default'}, '&.Mui-focused':{bgcolor: 'background.paper'} } }} />
+                        <AppTextField label={t('rdMaterial.leadtime', 'Leadtime')} size="small" value={form.leadTime ?? ''} debounceMs={200} onDebounceChange={(val) => set('leadTime', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover':{bgcolor: 'background.default'}, '&.Mui-focused':{bgcolor: 'background.paper'} } }} />
                       </Box>
                     </Box>
 
@@ -947,7 +947,7 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
                                   borderColor: errors.quantity ? '#ef4444' : undefined,
                                 },
                                 '&:hover': { bgcolor: errors.quantity ? '#fef2f2' : '#f1f5f9' }, 
-                                '&.Mui-focused': { bgcolor: '#fff' } 
+                                '&.Mui-focused': { bgcolor: 'background.paper' } 
                               },
                               animation: shakeFields.quantity ? 'shake 0.5s ease-in-out' : 'none',
                               '@keyframes shake': {
@@ -973,11 +973,11 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
                               }
                             }} 
                             sx={{ width: 110 }} 
-                            renderInput={(params) => <TextField {...params} label={t('rdMaterial.unit', 'Unit')} size="small" sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1 } }} />} 
+                            renderInput={(params) => <TextField {...params} label={t('rdMaterial.unit', 'Unit')} size="small" sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1 } }} />} 
                           />
                         </Box>
-                        <AppTextField label={t('rdMaterial.location', 'Location')} size="small" value={form.location ?? ''} debounceMs={200} onDebounceChange={(val) => set('location', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
-                        <AppTextField label={t('rdMaterial.remark', 'Remark')} size="small" multiline rows={3} value={form.remark ?? ''} debounceMs={200} onDebounceChange={(val) => set('remark', val)} sx={{ gridColumn: '1/-1', '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
+                        <AppTextField label={t('rdMaterial.location', 'Location')} size="small" value={form.location ?? ''} debounceMs={200} onDebounceChange={(val) => set('location', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover':{bgcolor: 'background.default'}, '&.Mui-focused':{bgcolor: 'background.paper'} } }} />
+                        <AppTextField label={t('rdMaterial.remark', 'Remark')} size="small" multiline rows={3} value={form.remark ?? ''} debounceMs={200} onDebounceChange={(val) => set('remark', val)} sx={{ gridColumn: '1/-1', '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover':{bgcolor: 'background.default'}, '&.Mui-focused':{bgcolor: 'background.paper'} } }} />
 
                       </Box>
                     </Box>
@@ -993,8 +993,8 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
   </Box>
 
       {/* Footer */}
-      <Box sx={{ position: 'sticky', bottom: 0, zIndex: 10, px: 4, py: 2.5, borderTop: '1px solid rgba(0,0,0,0.05)', bgcolor: '#fff', display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-        <Button onClick={onClose} variant="outlined" sx={{ borderRadius: 1, px: 3, fontWeight: 700, borderColor: '#cbd5e1', color: '#64748b', '&:hover': { borderColor: '#94a3b8', bgcolor: '#f8fafc' } }}>
+      <Box sx={{ position: 'sticky', bottom: 0, zIndex: 10, px: 4, py: 2.5, borderTop: '1px solid rgba(0,0,0,0.05)', bgcolor: 'background.paper', display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+        <Button onClick={onClose} variant="outlined" sx={{ borderRadius: 1, px: 3, fontWeight: 700, borderColor: '#cbd5e1', color: '#64748b', '&:hover': { borderColor: '#94a3b8', bgcolor: 'background.default' } }}>
           {t('rdMaterial.cancel', 'Cancel')}
         </Button>
         <Button onClick={() => handleSave(false)} variant="contained" disabled={loading} sx={{ borderRadius: 1, px: 4, fontWeight: 700, bgcolor: '#2e7d32', '&:hover': { bgcolor: '#1b5e20' }, boxShadow: '0 4px 14px 0 rgba(46, 125, 50, 0.39)' }}>
@@ -1020,7 +1020,7 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
             Detected {pastedFiles.length} image(s) from clipboard. Where do you want to paste?
           </Typography>
           {pastedFiles.length > 0 && (
-            <Box sx={{ width: 120, height: 120, borderRadius: 1, overflow: 'hidden', border: '1px solid #e2e8f0' }}>
+            <Box sx={{ width: 120, height: 120, borderRadius: 1, overflow: 'hidden', border: '1px solid', borderColor: 'divider' }}>
               <PreviewImage file={pastedFiles[0]} alt="preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </Box>
           )}

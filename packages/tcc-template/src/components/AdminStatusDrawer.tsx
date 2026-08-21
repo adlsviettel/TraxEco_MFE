@@ -31,13 +31,13 @@ const getStatusStyle = (status: string) => {
     case 'Remake':
       return { bgcolor: '#fffbeb', color: '#b45309', border: '1px solid #fde68a', fontWeight: 600 };
     case 'Cancelled':
-      return { bgcolor: '#f8fafc', color: '#64748b', border: '1px solid #e2e8f0', fontWeight: 600 };
+      return { bgcolor: 'background.default', color: '#64748b', border: '1px solid', borderColor: 'divider', fontWeight: 600 };
     case 'Rejected':
     case 'Deleted':
       return { bgcolor: '#fef2f2', color: '#b91c1c', border: '1px solid #fecaca', fontWeight: 600 };
     case 'Not Started':
     default:
-      return { bgcolor: '#f1f5f9', color: '#475569', border: '1px solid #cbd5e1', fontWeight: 600 };
+      return { bgcolor: 'background.default', color: '#475569', border: '1px solid', borderColor: 'divider', fontWeight: 600 };
   }
 };
 
@@ -356,7 +356,7 @@ export function AdminStatusDrawer({
                         borderRadius: '8px',
                         height: 40,
                         fontSize: 13,
-                        bgcolor: '#fff',
+                        bgcolor: 'background.paper',
                         '& fieldset': { borderColor: '#bfc9c4' },
                         '&:hover fieldset': { borderColor: '#2e7d32' },
                         '&.Mui-focused fieldset': { borderColor: '#2e7d32' },
@@ -401,7 +401,7 @@ export function AdminStatusDrawer({
                             borderRadius: '8px',
                             height: 40,
                             fontSize: 13,
-                            bgcolor: '#fff',
+                            bgcolor: 'background.paper',
                             '& fieldset': { borderColor: '#bfc9c4' },
                             '&:hover fieldset': { borderColor: '#3ba55c' },
                             '&.Mui-focused fieldset': { borderColor: '#3ba55c' }
@@ -430,7 +430,7 @@ export function AdminStatusDrawer({
                             borderRadius: '8px',
                             height: 40,
                             fontSize: 13,
-                            bgcolor: '#fff',
+                            bgcolor: 'background.paper',
                             '& fieldset': { borderColor: '#bfc9c4' },
                             '&:hover fieldset': { borderColor: '#3ba55c' },
                             '&.Mui-focused fieldset': { borderColor: '#3ba55c' }
@@ -461,7 +461,7 @@ export function AdminStatusDrawer({
                                 borderRadius: '8px',
                                 height: 40,
                                 fontSize: 13,
-                                bgcolor: '#fff',
+                                bgcolor: 'background.paper',
                                 '& fieldset': { borderColor: '#bfc9c4' },
                                 '&:hover fieldset': { borderColor: '#3ba55c' },
                                 '&.Mui-focused fieldset': { borderColor: '#3ba55c' }
@@ -490,7 +490,7 @@ export function AdminStatusDrawer({
                                 borderRadius: '8px',
                                 height: 40,
                                 fontSize: 13,
-                                bgcolor: '#fff',
+                                bgcolor: 'background.paper',
                                 '& fieldset': { borderColor: '#bfc9c4' },
                                 '&:hover fieldset': { borderColor: '#3ba55c' },
                                 '&.Mui-focused fieldset': { borderColor: '#3ba55c' }
@@ -521,7 +521,7 @@ export function AdminStatusDrawer({
                             borderRadius: '8px',
                             height: 40,
                             fontSize: 13,
-                            bgcolor: '#fff',
+                            bgcolor: 'background.paper',
                             '& fieldset': { borderColor: '#bfc9c4' },
                             '&:hover fieldset': { borderColor: '#3ba55c' },
                             '&.Mui-focused fieldset': { borderColor: '#3ba55c' }
@@ -683,7 +683,7 @@ export function AdminStatusDrawer({
                           borderRadius: '8px',
                           height: 40,
                           fontSize: 13,
-                          bgcolor: '#fff',
+                          bgcolor: 'background.paper',
                           '& fieldset': { borderColor: '#bfc9c4' },
                           '&:hover fieldset': { borderColor: '#3ba55c' },
                           '&.Mui-focused fieldset': { borderColor: '#3ba55c' }
@@ -761,7 +761,7 @@ export function AdminStatusDrawer({
                           borderRadius: '8px',
                           height: 40,
                           fontSize: 13,
-                          bgcolor: '#fff',
+                          bgcolor: 'background.paper',
                           '& fieldset': { borderColor: '#bfc9c4' },
                           '&:hover fieldset': { borderColor: '#3ba55c' },
                           '&.Mui-focused fieldset': { borderColor: '#3ba55c' }
@@ -802,7 +802,7 @@ export function AdminStatusDrawer({
                           borderRadius: '8px',
                           height: 40,
                           fontSize: 13,
-                          bgcolor: '#fff',
+                          bgcolor: 'background.paper',
                           '& fieldset': { borderColor: '#bfc9c4' },
                           '&:hover fieldset': { borderColor: '#3ba55c' },
                           '&.Mui-focused fieldset': { borderColor: '#3ba55c' }
@@ -845,7 +845,7 @@ export function AdminStatusDrawer({
                               borderRadius: '8px',
                               height: 40,
                               fontSize: 13,
-                              bgcolor: '#fff',
+                              bgcolor: 'background.paper',
                               '& fieldset': { borderColor: '#bfc9c4' },
                               '&:hover fieldset': { borderColor: '#3ba55c' },
                               '&.Mui-focused fieldset': { borderColor: '#3ba55c' }
@@ -886,7 +886,7 @@ export function AdminStatusDrawer({
                               borderRadius: '8px',
                               height: 40,
                               fontSize: 13,
-                              bgcolor: '#fff',
+                              bgcolor: 'background.paper',
                               '& fieldset': { borderColor: '#bfc9c4' },
                               '&:hover fieldset': { borderColor: '#3ba55c' },
                               '&.Mui-focused fieldset': { borderColor: '#3ba55c' }
@@ -922,7 +922,7 @@ export function AdminStatusDrawer({
                           borderRadius: '8px',
                           height: 40,
                           fontSize: 13,
-                          bgcolor: '#fff',
+                          bgcolor: 'background.paper',
                           '& fieldset': { borderColor: '#bfc9c4' },
                           '&:hover fieldset': { borderColor: '#3ba55c' },
                           '&.Mui-focused fieldset': { borderColor: '#3ba55c' }
@@ -956,7 +956,7 @@ export function AdminStatusDrawer({
                           borderRadius: '8px',
                           height: 40,
                           fontSize: 13,
-                          bgcolor: '#fff',
+                          bgcolor: 'background.paper',
                           '& fieldset': { borderColor: '#bfc9c4' },
                           '&:hover fieldset': { borderColor: '#3ba55c' },
                           '&.Mui-focused fieldset': { borderColor: '#3ba55c' }
@@ -985,7 +985,7 @@ export function AdminStatusDrawer({
                       borderRadius: '8px',
                       height: 40,
                       fontSize: 13,
-                      bgcolor: '#f8fafc',
+                      bgcolor: 'background.default',
                       pointerEvents: 'none',
                       animation: errorFields.includes('status') ? `${pulseAnimation} 1s infinite` : 'none',
                       '& fieldset': { borderColor: '#e2e8f0', borderStyle: 'dashed' },

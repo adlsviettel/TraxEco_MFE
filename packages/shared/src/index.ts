@@ -40,6 +40,7 @@ export { useSerialScanner } from './hooks/useSerialScanner';
 
 // Contexts
 export { ToastProvider, useToast } from './contexts/ToastContext';
+export { ColorModeProvider, useColorMode } from './contexts/ColorModeContext';
 
 // Utils
 export { playScanSound, playErrorSound, playWarningSound, playFactoryMismatchSound, playQASound, playCustomSound } from './utils/sound';

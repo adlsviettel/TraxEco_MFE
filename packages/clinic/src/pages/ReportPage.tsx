@@ -195,14 +195,14 @@ export default function ReportPage() {
       {/* FILTER TOOLBAR CARD */}
       <Paper elevation={0} sx={{ 
         borderRadius: '8px',
-        border: '1px solid #cbd5e1',
+        border: '1px solid', borderColor: 'divider',
         p: 1.5,
         display: 'flex',
         flexWrap: 'wrap',
         gap: 1.5,
         alignItems: 'center',
         justifyContent: 'space-between',
-        bgcolor: '#ffffff',
+        bgcolor: 'background.paper',
         flexShrink: 0
       }}>
         {/* Date Filters & Selectors */}
@@ -281,7 +281,7 @@ export default function ReportPage() {
                   height: 30,
                   fontSize: '11.5px',
                   fontWeight: 700,
-                  bgcolor: '#ffffff',
+                  bgcolor: 'background.paper',
                   '& fieldset': { borderColor: '#cbd5e1' }
                 }
               }}
@@ -310,7 +310,7 @@ export default function ReportPage() {
               borderRadius: '6px',
               borderColor: '#cbd5e1',
               color: '#475569',
-              '&:hover': { borderColor: '#94a3b8', bgcolor: '#f8fafc' }
+              '&:hover': { borderColor: '#94a3b8', bgcolor: 'background.default' }
             }}
           >
             Tải dữ liệu
@@ -336,7 +336,7 @@ export default function ReportPage() {
       </Paper>
 
       {/* TABS SELECTION FOR REPORT TYPES */}
-      <Box sx={{ borderBottom: '1px solid #cbd5e1', flexShrink: 0 }}>
+      <Box sx={{ borderBottom: '1px solid', borderColor: 'divider', flexShrink: 0 }}>
         <Tabs 
           value={activeTab} 
           onChange={(_, val) => setActiveTab(val)}
@@ -364,11 +364,11 @@ export default function ReportPage() {
       <Paper elevation={0} sx={{ 
         flexGrow: 1,
         borderRadius: '8px',
-        border: '1px solid #cbd5e1',
+        border: '1px solid', borderColor: 'divider',
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
-        bgcolor: '#fff',
+        bgcolor: 'background.paper',
         height: 'calc(100vh - 170px)'
       }}>
         <TableContainer sx={{ flexGrow: 1, minHeight: 0, overflowY: 'auto' }}>
@@ -378,14 +378,14 @@ export default function ReportPage() {
             <Table size="small" stickyHeader>
               <TableHead>
                 <TableRow>
-                  <TableCell sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>STT</TableCell>
-                  <TableCell sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Nhân viên</TableCell>
-                  <TableCell sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Bệnh lý & Chẩn đoán</TableCell>
-                  <TableCell sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Chế độ BHXH</TableCell>
-                  <TableCell sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }} align="center">Nghỉ từ</TableCell>
-                  <TableCell sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }} align="center">Nghỉ đến</TableCell>
-                  <TableCell sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }} align="center">Số ngày</TableCell>
-                  <TableCell sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Người lập</TableCell>
+                  <TableCell sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>STT</TableCell>
+                  <TableCell sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Nhân viên</TableCell>
+                  <TableCell sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Bệnh lý & Chẩn đoán</TableCell>
+                  <TableCell sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Chế độ BHXH</TableCell>
+                  <TableCell sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }} align="center">Nghỉ từ</TableCell>
+                  <TableCell sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }} align="center">Nghỉ đến</TableCell>
+                  <TableCell sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }} align="center">Số ngày</TableCell>
+                  <TableCell sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Người lập</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -416,12 +416,12 @@ export default function ReportPage() {
             <Table size="small" stickyHeader>
               <TableHead>
                 <TableRow>
-                  <TableCell sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>STT</TableCell>
-                  <TableCell sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Nhân viên</TableCell>
-                  <TableCell sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Triệu chứng / Lý do về</TableCell>
-                  <TableCell sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }} align="center">Giờ cho về</TableCell>
-                  <TableCell sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Thuốc mang về</TableCell>
-                  <TableCell sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Người lập</TableCell>
+                  <TableCell sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>STT</TableCell>
+                  <TableCell sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Nhân viên</TableCell>
+                  <TableCell sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Triệu chứng / Lý do về</TableCell>
+                  <TableCell sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }} align="center">Giờ cho về</TableCell>
+                  <TableCell sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Thuốc mang về</TableCell>
+                  <TableCell sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Người lập</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -461,13 +461,13 @@ export default function ReportPage() {
             <Table size="small" stickyHeader>
               <TableHead>
                 <TableRow>
-                  <TableCell sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>STT</TableCell>
-                  <TableCell sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Nhân viên</TableCell>
-                  <TableCell sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Chế độ Thai sản</TableCell>
-                  <TableCell sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }} align="center">Từ ngày</TableCell>
-                  <TableCell sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }} align="center">Đến ngày</TableCell>
-                  <TableCell sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }} align="center">Số ngày nghỉ</TableCell>
-                  <TableCell sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Người lập</TableCell>
+                  <TableCell sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>STT</TableCell>
+                  <TableCell sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Nhân viên</TableCell>
+                  <TableCell sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Chế độ Thai sản</TableCell>
+                  <TableCell sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }} align="center">Từ ngày</TableCell>
+                  <TableCell sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }} align="center">Đến ngày</TableCell>
+                  <TableCell sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }} align="center">Số ngày nghỉ</TableCell>
+                  <TableCell sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Người lập</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -494,8 +494,8 @@ export default function ReportPage() {
 
         {/* TCC Pagination style under the table */}
         <Box sx={{ 
-          borderTop: '1px solid #e2e8f0', 
-          backgroundColor: '#f8fafc', 
+          borderTop: '1px solid', borderColor: 'divider', 
+          backgroundColor: 'background.default', 
           p: 1.25, 
           px: 3,
           display: 'flex', 
@@ -515,7 +515,7 @@ export default function ReportPage() {
                 height: 30, 
                 fontSize: '12.5px', 
                 fontWeight: 700, 
-                backgroundColor: '#fff',
+                backgroundColor: 'background.paper',
                 borderRadius: '6px',
                 width: 65,
                 '& .MuiOutlinedInput-notchedOutline': { borderColor: '#cbd5e1' }

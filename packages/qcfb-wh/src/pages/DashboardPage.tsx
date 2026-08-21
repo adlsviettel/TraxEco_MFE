@@ -147,9 +147,9 @@ export default function DashboardPage() {
         </Box>
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <TextField type="date" size="small" variant="outlined" value={fromDate} onChange={e => setFromDate(e.target.value)} sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2, bgcolor: '#fff', '& fieldset': { borderColor: '#E5E7EB' } } }} />
+          <TextField type="date" size="small" variant="outlined" value={fromDate} onChange={e => setFromDate(e.target.value)} sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2, bgcolor: 'background.paper', '& fieldset': { borderColor: '#E5E7EB' } } }} />
           <Typography variant="body2" color="#9CA3AF">—</Typography>
-          <TextField type="date" size="small" variant="outlined" value={toDate} onChange={e => setToDate(e.target.value)} sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2, bgcolor: '#fff', '& fieldset': { borderColor: '#E5E7EB' } } }} />
+          <TextField type="date" size="small" variant="outlined" value={toDate} onChange={e => setToDate(e.target.value)} sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2, bgcolor: 'background.paper', '& fieldset': { borderColor: '#E5E7EB' } } }} />
           <Button variant="contained" onClick={() => fetchDashboard(false)} disabled={loading}
             sx={{ height: 40, px: 3, borderRadius: 2, bgcolor: '#111827', color: '#fff', textTransform: 'none', fontWeight: 600, boxShadow: 'none', '&:hover': { bgcolor: '#000' } }}
           >
@@ -160,7 +160,7 @@ export default function DashboardPage() {
 
       {/* ─── LIVE SCAN EVENT (ELEGANT) ─── */}
       {liveRoll && (
-        <Paper elevation={0} sx={{ p: 4, mb: 6, borderRadius: luxuryRadius, border: luxuryBorder, bgcolor: '#fff', boxShadow: luxuryShadow, display: 'flex', alignItems: 'center', gap: 4, position: 'relative', overflow: 'hidden' }}>
+        <Paper elevation={0} sx={{ p: 4, mb: 6, borderRadius: luxuryRadius, border: luxuryBorder, bgcolor: 'background.paper', boxShadow: luxuryShadow, display: 'flex', alignItems: 'center', gap: 4, position: 'relative', overflow: 'hidden' }}>
            <Box sx={{ position: 'absolute', top: 0, left: 0, width: 4, height: '100%', bgcolor: '#3B82F6', animation: 'pulse 2s infinite' }} />
            <Avatar sx={{ bgcolor: '#EFF6FF', color: '#3B82F6', width: 64, height: 64 }}><QrCodeIcon fontSize="large" /></Avatar>
            <Box sx={{ flexGrow: 1 }}>
@@ -190,7 +190,7 @@ export default function DashboardPage() {
       {/* ─── THE BIG METRIC (PASS RATE) ─── */}
       <Grid container spacing={4} sx={{ mb: 6 }}>
         <Grid size={{ xs: 12, md: 6 }}>
-          <Paper elevation={0} sx={{ p: 5, height: '100%', borderRadius: luxuryRadius, border: luxuryBorder, bgcolor: '#fff', boxShadow: luxuryShadow, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+          <Paper elevation={0} sx={{ p: 5, height: '100%', borderRadius: luxuryRadius, border: luxuryBorder, bgcolor: 'background.paper', boxShadow: luxuryShadow, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
             <Typography variant="h6" sx={{ color: '#6B7280', fontWeight: 600, mb: 2 }}>Pass Rate</Typography>
             <Typography variant="h1" sx={{ color: '#111827', fontWeight: 900, letterSpacing: '-0.04em', lineHeight: 1 }}>
               {kpis.passRate}<span style={{ fontSize: '2.5rem', color: '#9CA3AF' }}>%</span>
@@ -208,7 +208,7 @@ export default function DashboardPage() {
         <Grid size={{ xs: 12, md: 6 }}>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4, height: '100%' }}>
             
-            <Paper elevation={0} sx={{ p: 4, flex: 1, borderRadius: luxuryRadius, border: luxuryBorder, bgcolor: '#fff', boxShadow: luxuryShadow, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Paper elevation={0} sx={{ p: 4, flex: 1, borderRadius: luxuryRadius, border: luxuryBorder, bgcolor: 'background.paper', boxShadow: luxuryShadow, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <Box>
                 <Typography variant="h6" sx={{ color: '#6B7280', fontWeight: 600, mb: 1 }}>Passed Rolls</Typography>
                 <Typography variant="h3" sx={{ color: '#10B981', fontWeight: 800 }}>{kpis.passRolls}</Typography>
@@ -216,7 +216,7 @@ export default function DashboardPage() {
               <PassIcon sx={{ fontSize: 64, color: '#D1FAE5' }} />
             </Paper>
 
-            <Paper elevation={0} sx={{ p: 4, flex: 1, borderRadius: luxuryRadius, border: luxuryBorder, bgcolor: '#fff', boxShadow: luxuryShadow, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Paper elevation={0} sx={{ p: 4, flex: 1, borderRadius: luxuryRadius, border: luxuryBorder, bgcolor: 'background.paper', boxShadow: luxuryShadow, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <Box>
                 <Typography variant="h6" sx={{ color: '#6B7280', fontWeight: 600, mb: 1 }}>Failed Rolls</Typography>
                 <Typography variant="h3" sx={{ color: '#EF4444', fontWeight: 800 }}>{kpis.failRolls}</Typography>
@@ -229,7 +229,7 @@ export default function DashboardPage() {
       </Grid>
 
       {/* ─── TOP DEFECTS (CLEAN LIST) ─── */}
-      <Paper elevation={0} sx={{ p: 5, borderRadius: luxuryRadius, border: luxuryBorder, bgcolor: '#fff', boxShadow: luxuryShadow }}>
+      <Paper elevation={0} sx={{ p: 5, borderRadius: luxuryRadius, border: luxuryBorder, bgcolor: 'background.paper', boxShadow: luxuryShadow }}>
         <Typography variant="h6" sx={{ color: '#111827', fontWeight: 800, mb: 4 }}>Top Critical Defects</Typography>
         {kpis.topDefects.length > 0 ? (
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>

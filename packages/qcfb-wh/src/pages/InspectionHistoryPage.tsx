@@ -127,13 +127,13 @@ export default function InspectionHistoryPage() {
       }}>
         <Box sx={{ 
           display: 'flex', flexWrap: 'wrap', gap: 2, mb: 4, p: 2.5, 
-          bgcolor: '#ffffff', 
+          bgcolor: 'background.paper', 
           borderRadius: 4, 
           border: '1px solid rgba(0,0,0,0.04)',
           boxShadow: '0 8px 32px rgba(0,0,0,0.04)',
           alignItems: 'center'
         }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 1.5, pb: 1.5, borderBottom: '1px solid #f1f5f9', width: '100%' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', mb: 1.5, pb: 1.5, borderBottom: '1px solid', borderColor: 'divider', width: '100%' }}>
           <Box sx={{ width: 4, height: 20, bgcolor: '#10b981', borderRadius: 1, mr: 1.5 }} />
           <Typography variant="h6" fontWeight={800} sx={{ color: '#0f172a' }}>
             {t('qcfb.nav.InspectionHistory', 'Inspection History')}
@@ -145,7 +145,7 @@ export default function InspectionHistoryPage() {
         <Card elevation={0} sx={{ 
           mb: 4, 
           borderRadius: 4, 
-          bgcolor: '#ffffff',
+          bgcolor: 'background.paper',
           border: '1px solid rgba(0,0,0,0.04)',
           boxShadow: '0 8px 32px rgba(0,0,0,0.04)',
           overflow: 'hidden'
@@ -158,7 +158,7 @@ export default function InspectionHistoryPage() {
                   value={fromDate}
                   onChange={(val) => setFromDate(val)}
                   slotProps={{ textField: { size: 'medium', fullWidth: true, sx: { 
-                    '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 3 },
+                    '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 3 },
                     '& .MuiOutlinedInput-notchedOutline': { border: '1px solid transparent' },
                     '& .MuiInputLabel-root': { color: '#64748b' }
                   } } }}
@@ -170,7 +170,7 @@ export default function InspectionHistoryPage() {
                   value={toDate}
                   onChange={(val) => setToDate(val)}
                   slotProps={{ textField: { size: 'medium', fullWidth: true, sx: { 
-                    '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 3 },
+                    '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 3 },
                     '& .MuiOutlinedInput-notchedOutline': { border: '1px solid transparent' },
                     '& .MuiInputLabel-root': { color: '#64748b' }
                   } } }}
@@ -207,7 +207,7 @@ export default function InspectionHistoryPage() {
         <Card elevation={0} sx={{ 
           mb: 4, 
           borderRadius: 4, 
-          bgcolor: '#ffffff',
+          bgcolor: 'background.paper',
           border: '1px solid rgba(0,0,0,0.04)',
           boxShadow: '0 8px 32px rgba(0,0,0,0.04)'
         }}>
@@ -219,19 +219,19 @@ export default function InspectionHistoryPage() {
                 </Typography>
               </Grid>
               <Grid size={{ xs: 4, md: 2 }}>
-                <Select size="small" fullWidth displayEmpty value={selectedShelf} onChange={e => { setSelectedShelf(e.target.value); setSelectedLevel(''); setSelectedSeq(''); }} sx={{ bgcolor: '#f1f5f9', borderRadius: 2 }}>
+                <Select size="small" fullWidth displayEmpty value={selectedShelf} onChange={e => { setSelectedShelf(e.target.value); setSelectedLevel(''); setSelectedSeq(''); }} sx={{ bgcolor: 'background.default', borderRadius: 2 }}>
                   <MenuItem value="" disabled>Shelf</MenuItem>
                   {shelfList.map(s => <MenuItem key={s} value={s}>{s}</MenuItem>)}
                 </Select>
               </Grid>
               <Grid size={{ xs: 4, md: 2 }}>
-                <Select size="small" fullWidth displayEmpty value={selectedLevel} onChange={e => { setSelectedLevel(e.target.value); setSelectedSeq(''); }} disabled={!selectedShelf} sx={{ bgcolor: '#f1f5f9', borderRadius: 2 }}>
+                <Select size="small" fullWidth displayEmpty value={selectedLevel} onChange={e => { setSelectedLevel(e.target.value); setSelectedSeq(''); }} disabled={!selectedShelf} sx={{ bgcolor: 'background.default', borderRadius: 2 }}>
                   <MenuItem value="" disabled>Level</MenuItem>
                   {levelList.map(s => <MenuItem key={s} value={s}>{s}</MenuItem>)}
                 </Select>
               </Grid>
               <Grid size={{ xs: 4, md: 2 }}>
-                <Select size="small" fullWidth displayEmpty value={selectedSeq} onChange={e => setSelectedSeq(e.target.value)} disabled={!selectedLevel} sx={{ bgcolor: '#f1f5f9', borderRadius: 2 }}>
+                <Select size="small" fullWidth displayEmpty value={selectedSeq} onChange={e => setSelectedSeq(e.target.value)} disabled={!selectedLevel} sx={{ bgcolor: 'background.default', borderRadius: 2 }}>
                   <MenuItem value="" disabled>Seq</MenuItem>
                   {seqList.map(s => <MenuItem key={s} value={s}>{s}</MenuItem>)}
                 </Select>
@@ -265,7 +265,7 @@ export default function InspectionHistoryPage() {
           height: 600, 
           display: 'flex',
           flexDirection: 'column',
-          bgcolor: '#ffffff', 
+          bgcolor: 'background.paper', 
           borderRadius: 4, 
           border: '1px solid rgba(0,0,0,0.05)',
           boxShadow: '0 10px 40px -10px rgba(0,0,0,0.08)',
@@ -293,7 +293,7 @@ export default function InspectionHistoryPage() {
                 backgroundColor: '#f8fafc !important',
               },
               '& .MuiDataGrid-columnHeaders': { color: '#475569', fontWeight: 700 },
-              '& .MuiDataGrid-row:hover': { bgcolor: '#f1f5f9' },
+              '& .MuiDataGrid-row:hover': { bgcolor: 'background.default' },
             }}
           />
         </Box>

@@ -575,8 +575,8 @@ export default function HistoryPage() {
       <Box sx={{ display: 'flex', flexDirection: 'column', '& > *:not(:last-child)': { mb: 2 }, flexGrow: 1, minHeight: 0 }}>
         {/* ── Compact Header + Filters ── */}
         <Paper elevation={0} sx={{
-          p: '6px 12px', borderRadius: 2.5, border: '1px solid #e2e8f0',
-          background: 'linear-gradient(135deg, #f8faf8 0%, #ffffff 100%)',
+          p: '6px 12px', borderRadius: 2.5, border: '1px solid', borderColor: 'divider',
+          bgcolor: 'background.paper',
           display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap', flexShrink: 0
         }}>
 
@@ -587,17 +587,17 @@ export default function HistoryPage() {
               value={poSearch} onChange={(e) => setPoSearch(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
               InputProps={{ startAdornment: <InputAdornment position="start"><SearchIcon sx={{ fontSize: 16, color: '#94a3b8' }} /></InputAdornment> }}
-              sx={{ width: { xs: '100%', sm: 200, md: 240 }, '& .MuiOutlinedInput-root': { borderRadius: 1.5, height: 32, fontSize: '0.8rem', bgcolor: '#fff' } }}
+              sx={{ width: { xs: '100%', sm: 200, md: 240 }, '& .MuiOutlinedInput-root': { borderRadius: 1.5, height: 32, fontSize: '0.8rem', bgcolor: 'background.default' } }}
             />
 
             <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'nowrap' }}>
               <TextField size="small" type="date" value={fromDate} onChange={(e) => setFromDate(e.target.value)}
                 disabled={!!poSearch.trim()} 
-                sx={{ width: 130, '& .MuiOutlinedInput-root': { borderRadius: 1.5, height: 32, fontSize: '0.8rem', bgcolor: poSearch.trim() ? '#f8f8f8' : '#fff' } }}
+                sx={{ width: 130, '& .MuiOutlinedInput-root': { borderRadius: 1.5, height: 32, fontSize: '0.8rem', bgcolor: 'background.default' } }}
               />
               <TextField size="small" type="date" value={toDate} onChange={(e) => setToDate(e.target.value)}
                 disabled={!!poSearch.trim()} 
-                sx={{ width: 130, '& .MuiOutlinedInput-root': { borderRadius: 1.5, height: 32, fontSize: '0.8rem', bgcolor: poSearch.trim() ? '#f8f8f8' : '#fff' } }}
+                sx={{ width: 130, '& .MuiOutlinedInput-root': { borderRadius: 1.5, height: 32, fontSize: '0.8rem', bgcolor: 'background.default' } }}
               />
             </Box>
 
@@ -645,7 +645,7 @@ export default function HistoryPage() {
       {error && <Alert severity="error" sx={{ borderRadius: 2 }}>{error}</Alert>}
 
       {/* Data Table */}
-      <Paper elevation={0} sx={{ width: '100%', overflow: 'hidden', borderRadius: 2, border: '1px solid #e0e0e0', flexGrow: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
+      <Paper elevation={0} sx={{ width: '100%', overflow: 'hidden', borderRadius: 2, border: '1px solid', borderColor: 'divider', flexGrow: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
         {loading ? (
           <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}><CircularProgress /></Box>
         ) : dataMode === 'detail' ? (
@@ -704,7 +704,7 @@ export default function HistoryPage() {
                 </TableBody>
               </Table>
             </TableContainer>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', p: 1.5, borderTop: '1px solid #e0e0e0', flexWrap: 'wrap', gap: 2 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', p: 1.5, borderTop: '1px solid', borderColor: 'divider', flexWrap: 'wrap', gap: 2 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 600 }}>{t('history.rowsPerPage', 'Rows per page:')}</Typography>
                 <Select

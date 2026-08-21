@@ -32,10 +32,10 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ refreshing, on
             onClick={onExportClick} 
             size="small"
             sx={{ 
-              bgcolor: '#ffffff', 
-              border: '1px solid #e2e8f0',
+              bgcolor: 'background.paper', 
+              border: '1px solid', borderColor: 'divider',
               boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
-              '&:hover': { bgcolor: '#f8fafc' }
+              '&:hover': { bgcolor: 'background.default' }
             }}
           >
             <FileDownloadIcon fontSize="small" sx={{ color: '#15803d' }} />
@@ -47,10 +47,10 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ refreshing, on
             disabled={refreshing}
             size="small"
             sx={{ 
-              bgcolor: '#ffffff', 
-              border: '1px solid #e2e8f0',
+              bgcolor: 'background.paper', 
+              border: '1px solid', borderColor: 'divider',
               boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
-              '&:hover': { bgcolor: '#f8fafc' }
+              '&:hover': { bgcolor: 'background.default' }
             }}
           >
             <RefreshIcon fontSize="small" sx={{ color: '#15803d', animation: refreshing ? 'spin 1s linear infinite' : 'none' }} />

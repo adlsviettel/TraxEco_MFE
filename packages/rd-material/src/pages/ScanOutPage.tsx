@@ -235,7 +235,7 @@ const ScanOutPage: React.FC = () => {
                 fontWeight: 800, flexShrink: 0, mt: 0.5,
                 borderColor: '#e2e8f0', color: '#0f172a',
                 boxShadow: '0 2px 10px rgba(0,0,0,0.02)',
-                '&:hover': { bgcolor: '#f8fafc', borderColor: '#cbd5e1' }
+                '&:hover': { bgcolor: 'background.default', borderColor: '#cbd5e1' }
               }}
             >
               {t('rdMaterial.scanout_scan_another', 'Scan Another')}
@@ -255,7 +255,7 @@ const ScanOutPage: React.FC = () => {
               value={actionType}
               exclusive
               onChange={(_, val) => { if (val) setActionType(val); }}
-              sx={{ mb: 4, bgcolor: '#f8fafc', borderRadius: 2, p: 0.5, boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}
+              sx={{ mb: 4, bgcolor: 'background.default', borderRadius: 2, p: 0.5, boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}
             >
               <ToggleButton value="OUT" sx={{ px: 4, py: 1, fontWeight: 800, border: 'none', borderRadius: 1.5, '&.Mui-selected': { bgcolor: '#fef2f2', color: '#ef4444' } }}>
                 SCAN OUT (BORROW)
@@ -275,8 +275,8 @@ const ScanOutPage: React.FC = () => {
             
             <Paper elevation={0} sx={{ 
               width: '100%', maxWidth: 700, borderRadius: '50px', p: 0.5, pl: 1.5,
-              boxShadow: '0 8px 32px rgba(0,0,0,0.06)', border: '1px solid #e2e8f0',
-              display: 'flex', alignItems: 'center', bgcolor: '#fff',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.06)', border: '1px solid', borderColor: 'divider',
+              display: 'flex', alignItems: 'center', bgcolor: 'background.paper',
               transition: 'all 0.2s', '&:focus-within': { boxShadow: '0 8px 32px rgba(46,125,50,0.15)', borderColor: '#2e7d32' }
             }}>
               <IconButton 
@@ -352,7 +352,7 @@ const ScanOutPage: React.FC = () => {
                   bgcolor: !manualCode ? '#f1f5f9' : '#2e7d32', 
                   color: !manualCode ? '#94a3b8' : '#fff', 
                   '&:hover': { bgcolor: !manualCode ? '#f1f5f9' : '#1b6d24' },
-                  '&.Mui-disabled': { bgcolor: '#f1f5f9', color: '#94a3b8' },
+                  '&.Mui-disabled': { bgcolor: 'background.default', color: '#94a3b8' },
                   ml: 1, flexShrink: 0,
                   transition: 'all 0.2s'
                 }}
@@ -376,8 +376,8 @@ const ScanOutPage: React.FC = () => {
               
               {/* LEFT: Item Profile */}
               <Grid size={{ xs: 12, md: 4 }} sx={{ minWidth: 0 }}>
-                <Card elevation={0} sx={{ borderRadius: 4, border: '1px solid #e2e8f0', overflow: 'hidden' }}>
-                  <Box sx={{ p: 3, bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
+                <Card elevation={0} sx={{ borderRadius: 4, border: '1px solid', borderColor: 'divider', overflow: 'hidden' }}>
+                  <Box sx={{ p: 3, bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider' }}>
                     <Chip 
                       icon={<CheckCircleIcon sx={{ color: '#22c55e !important' }}/>} 
                       label={t('rdMaterial.scanout_qr_valid', 'Item Found')} 
@@ -405,7 +405,7 @@ const ScanOutPage: React.FC = () => {
                       <Divider sx={{ borderStyle: 'dashed' }} />
                       <Box display="flex" justifyContent="space-between" alignItems="center">
                         <Typography color="text.secondary" fontSize={13}>Storage Location</Typography>
-                        <Chip label={item.location || 'Unassigned'} size="small" sx={{ fontWeight: 700, bgcolor: '#f1f5f9', color: '#475569' }} />
+                        <Chip label={item.location || 'Unassigned'} size="small" sx={{ fontWeight: 700, bgcolor: 'background.default', color: '#475569' }} />
                       </Box>
                       <Divider sx={{ borderStyle: 'dashed' }} />
                       <Box display="flex" justifyContent="space-between" alignItems="center" p={2} bgcolor="#f0fdf4" borderRadius={3}>
@@ -425,7 +425,7 @@ const ScanOutPage: React.FC = () => {
               {/* MIDDLE: Action Form */}
               <Grid size={{ xs: 12, md: 4 }} sx={{ minWidth: 0 }}>
                   {/* Action Form */}
-                  <Card elevation={0} sx={{ borderRadius: 4, border: '1px solid #e2e8f0', p: 4, boxShadow: '0 10px 40px -10px rgba(0,0,0,0.05)', height: '100%' }}>
+                  <Card elevation={0} sx={{ borderRadius: 4, border: '1px solid', borderColor: 'divider', p: 4, boxShadow: '0 10px 40px -10px rgba(0,0,0,0.05)', height: '100%' }}>
                     <Typography variant="h6" fontWeight={800} color="#0f172a" mb={3}>
                       {actionType === 'OUT' ? t('rdMaterial.scanout_step3', 'Bước 3 — Xác nhận Scan Out') : t('rdMaterial.scanin_step3', 'Bước 3 — Xác nhận Scan In')}
                     </Typography>
@@ -487,7 +487,7 @@ const ScanOutPage: React.FC = () => {
                                   <AppTextField 
                                     {...params} 
                                     placeholder={t('rdMaterial.scanout_select_staff', 'Select staff (Type ID or Name)...')} 
-                                    sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2, bgcolor: '#f8fafc' } }}
+                                    sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2, bgcolor: 'background.default' } }}
                                     InputProps={{
                                       ...params.InputProps,
                                       endAdornment: (
@@ -507,14 +507,14 @@ const ScanOutPage: React.FC = () => {
                                   placeholder={t('rdMaterial.scanout_guest_name', 'Guest Name *')}
                                   value={guestName}
                                   onChange={(e) => setGuestName(e.target.value)}
-                                  sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2, bgcolor: '#f8fafc' } }}
+                                  sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2, bgcolor: 'background.default' } }}
                                 />
                                 <AppTextField
                                   fullWidth
                                   placeholder={t('rdMaterial.scanout_guest_phone', 'Phone')}
                                   value={guestPhone}
                                   onChange={(e) => setGuestPhone(e.target.value)}
-                                  sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2, bgcolor: '#f8fafc' } }}
+                                  sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2, bgcolor: 'background.default' } }}
                                 />
                               </Box>
                             )}
@@ -530,7 +530,7 @@ const ScanOutPage: React.FC = () => {
                                 value={qty} 
                                 onChange={(e) => setQty(+e.target.value)}
                                 inputProps={{ min: 1, max: actionType === 'OUT' ? (item?.quantity ?? 9999) : (borrowedQty > 0 ? borrowedQty : 99999), style: { textAlign: 'center' } }} 
-                                sx={{ width: 140, '& .MuiOutlinedInput-root': { borderRadius: 2, bgcolor: '#f8fafc', fontSize: '1.2rem', fontWeight: 700 } }} 
+                                sx={{ width: 140, '& .MuiOutlinedInput-root': { borderRadius: 2, bgcolor: 'background.default', fontSize: '1.2rem', fontWeight: 700 } }} 
                               />
                               <Typography fontSize={14} color="text.secondary">
                                 / {actionType === 'OUT' ? (item?.quantity ?? 0) : borrowedQty} {actionType === 'OUT' ? 'available' : 'borrowed'}
@@ -549,7 +549,7 @@ const ScanOutPage: React.FC = () => {
                               placeholder="Reason for scan out..." 
                               value={note} 
                               onChange={(e) => setNote(e.target.value)} 
-                              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2, bgcolor: '#f8fafc' } }}
+                              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2, bgcolor: 'background.default' } }}
                             />
                           </Box>
                           
@@ -558,7 +558,7 @@ const ScanOutPage: React.FC = () => {
                               {t('rdMaterial.scan_log_photo', 'PHOTO EVIDENCE *')}
                             </Typography>
                             {capturedPhotoUrl ? (
-                              <Box sx={{ position: 'relative', width: 120, height: 90, borderRadius: 2, overflow: 'hidden', border: '1px solid #cbd5e1' }}>
+                              <Box sx={{ position: 'relative', width: 120, height: 90, borderRadius: 2, overflow: 'hidden', border: '1px solid', borderColor: 'divider' }}>
                                 <img src={capturedPhotoUrl} alt="Evidence" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                 <IconButton
                                   size="small"
@@ -581,7 +581,7 @@ const ScanOutPage: React.FC = () => {
                                 onClick={() => setCameraDialogOpen(true)}
                                 sx={{ 
                                   borderRadius: 2, borderColor: '#cbd5e1', color: '#475569', textTransform: 'none', fontWeight: 700,
-                                  '&:hover': { borderColor: '#94a3b8', bgcolor: '#f8fafc' }
+                                  '&:hover': { borderColor: '#94a3b8', bgcolor: 'background.default' }
                                 }}
                               >
                                 {t('rdMaterial.take_photo_btn', 'Take Photo / Upload Image')}
@@ -615,7 +615,7 @@ const ScanOutPage: React.FC = () => {
 
               {/* RIGHT: Recent Logs */}
               <Grid size={{ xs: 12, md: 4 }} sx={{ minWidth: 0 }}>
-                  <Card elevation={0} sx={{ borderRadius: 4, border: '1px solid #e2e8f0', p: 4, boxShadow: '0 10px 40px -10px rgba(0,0,0,0.05)', height: '100%', display: 'flex', flexDirection: 'column' }}>
+                  <Card elevation={0} sx={{ borderRadius: 4, border: '1px solid', borderColor: 'divider', p: 4, boxShadow: '0 10px 40px -10px rgba(0,0,0,0.05)', height: '100%', display: 'flex', flexDirection: 'column' }}>
                     <Box display="flex" alignItems="center" gap={1} mb={2}>
                       <HistoryIcon sx={{ color: '#94a3b8', fontSize: 20 }} />
                       <Typography variant="subtitle2" fontWeight={700} color="text.secondary" sx={{ textTransform: 'uppercase', letterSpacing: '0.5px' }}>
@@ -632,7 +632,7 @@ const ScanOutPage: React.FC = () => {
                       <>
                         <Stack spacing={2} sx={{ mb: 3 }}>
                           {displayLogs.map((log) => (
-                            <Paper key={log.id} elevation={0} sx={{ p: 2, borderRadius: 3, border: '1px solid #f1f5f9', bgcolor: '#fff', display: 'flex', gap: 2, alignItems: 'center' }}>
+                            <Paper key={log.id} elevation={0} sx={{ p: 2, borderRadius: 3, border: '1px solid', borderColor: 'divider', bgcolor: 'background.paper', display: 'flex', gap: 2, alignItems: 'center' }}>
                               <Avatar sx={{ bgcolor: '#f0fdf4', color: '#16a34a', width: 40, height: 40 }}>
                                 <PersonIcon />
                               </Avatar>
@@ -646,7 +646,7 @@ const ScanOutPage: React.FC = () => {
                                  <Box 
                                    onClick={() => setPreviewPhotoUrl(log.photoUrl)}
                                    sx={{ 
-                                     width: 36, height: 36, borderRadius: 1.5, overflow: 'hidden', border: '1px solid #e2e8f0', cursor: 'pointer',
+                                     width: 36, height: 36, borderRadius: 1.5, overflow: 'hidden', border: '1px solid', borderColor: 'divider', cursor: 'pointer',
                                      transition: 'transform 0.15s', '&:hover': { transform: 'scale(1.1)' }, flexShrink: 0
                                    }}
                                  >

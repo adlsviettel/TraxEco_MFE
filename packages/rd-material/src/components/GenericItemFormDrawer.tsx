@@ -143,6 +143,9 @@ const GenericItemFormDrawer: React.FC<Props> = ({ open, item, isCopy, itemType, 
           delete cloned.id;
           delete cloned.qrCode;
         }
+        if (itemType === 'YARDAGE' && !cloned.name) {
+          cloned.name = cloned.fabric?.fabricName || (item as any)?.fabric?.fabricName || '';
+        }
         setFormData(cloned);
       }
       else setFormData({ itemType });
@@ -174,8 +177,9 @@ const GenericItemFormDrawer: React.FC<Props> = ({ open, item, isCopy, itemType, 
   };
 
   const handleSave = async () => {
+    const effectiveName = formData.name || formData.fabric?.fabricName || (item as any)?.fabric?.fabricName || formData.itemCode || '';
     const isMissingCode = !formData.itemCode;
-    const isMissingName = !formData.name;
+    const isMissingName = itemType === 'YARDAGE' ? false : !effectiveName;
     const qtyVal = formData.quantity !== undefined && formData.quantity !== null && formData.quantity !== '' ? Number(formData.quantity) : undefined;
     const isMissingQty = cfg.showQuantity && (qtyVal === undefined || qtyVal <= 0);
 
@@ -265,6 +269,7 @@ const GenericItemFormDrawer: React.FC<Props> = ({ open, item, isCopy, itemType, 
       
       const payload = {
         ...formData,
+        name: effectiveName || formData.name,
         priceHistory: currentHistory.length > 0 ? JSON.stringify(currentHistory) : undefined,
       };
 
@@ -309,7 +314,7 @@ const GenericItemFormDrawer: React.FC<Props> = ({ open, item, isCopy, itemType, 
   const renderField = (f: FormFieldDef) => {
     const val = getNested(formData, f.name) ?? '';
     const cols = f.fullWidth ? 12 : 6;
-    const sxProp = { '& .MuiOutlinedInput-root': { bgcolor: '#fff', borderRadius: 2 } };
+    const sxProp = { '& .MuiOutlinedInput-root': { bgcolor: 'background.paper', borderRadius: 2 } };
 
     if (f.type === 'select' && f.options) {
       return (
@@ -364,7 +369,7 @@ const GenericItemFormDrawer: React.FC<Props> = ({ open, item, isCopy, itemType, 
       </Box>
 
       {/* Body */}
-      <Box sx={{ flex: 1, overflowY: { xs: 'auto', md: 'hidden' }, p: { xs: 2, md: 4 }, bgcolor: '#f8fafc', display: 'flex', justifyContent: 'center' }}>
+      <Box sx={{ flex: 1, overflowY: { xs: 'auto', md: 'hidden' }, p: { xs: 2, md: 4 }, bgcolor: 'background.default', display: 'flex', justifyContent: 'center' }}>
         <Box sx={{ width: '100%', maxWidth: 1440, height: { xs: 'auto', md: '100%' }, display: 'flex', flexDirection: 'column' }}>
           <Grid container spacing={4} sx={{ height: { xs: 'auto', md: '100%' }, minHeight: 0, flex: 1 }}>
             
@@ -378,7 +383,7 @@ const GenericItemFormDrawer: React.FC<Props> = ({ open, item, isCopy, itemType, 
                       <CardHeader 
                         title="1. Picture" 
                         titleTypographyProps={{ variant: 'overline', fontWeight: 800, sx: { letterSpacing: 1, fontSize: 13, color: '#0f172a' } }}
-                        sx={{ bgcolor: '#fff', py: 2, borderBottom: '1px solid rgba(0,0,0,0.04)', borderLeft: '4px solid #3ba55c' }}
+                        sx={{ bgcolor: 'background.paper', py: 2, borderBottom: '1px solid rgba(0,0,0,0.04)', borderLeft: '4px solid #3ba55c' }}
                       />
                       <CardContent sx={{ p: 3 }}>
                         <Box>
@@ -386,7 +391,7 @@ const GenericItemFormDrawer: React.FC<Props> = ({ open, item, isCopy, itemType, 
                             <Box sx={{ flex: 1 }}>
                               <input type="file" id="main-file-upload" accept="image/*" style={{ display: 'none' }} onChange={(e) => handleImageCapture(e, 'mainImage')} />
                               <label htmlFor="main-file-upload">
-                                <Box sx={{ border: '1px dashed #cbd5e1', borderRadius: 1, bgcolor: '#f8fafc', p: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s', '&:hover': { bgcolor: '#f1f5f9', borderColor: '#3ba55c' } }}>
+                                <Box sx={{ border: '1px dashed #cbd5e1', borderRadius: 1, bgcolor: 'background.default', p: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s', '&:hover': { bgcolor: 'background.default', borderColor: '#3ba55c' } }}>
                                   <UploadFileIcon sx={{ color: '#94a3b8', fontSize: 20, mr: 1 }} />
                                   <Typography variant="caption" fontWeight={600}>{t('rdMaterial.library', 'Thư viện')}</Typography>
                                 </Box>
@@ -403,7 +408,7 @@ const GenericItemFormDrawer: React.FC<Props> = ({ open, item, isCopy, itemType, 
                             </Box>
                           </Box>
                           {(formData.mainImage || uploading) && (
-                            <Box mt={1.5} sx={{ position: 'relative', width: '100%', aspectRatio: '1/1', borderRadius: 1, overflow: 'hidden', border: formData.mainImage ? '1px solid #e2e8f0' : 'none', bgcolor: '#fff', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+                            <Box mt={1.5} sx={{ position: 'relative', width: '100%', aspectRatio: '1/1', borderRadius: 1, overflow: 'hidden', border: formData.mainImage ? '1px solid #e2e8f0' : 'none', bgcolor: 'background.paper', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
                               {uploading && !formData.mainImage
                                 ? <Box sx={{ inset: 0, position: 'absolute', display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: 'rgba(255,255,255,0.8)' }}><CircularProgress size={24} /></Box>
                                 : <img src={rdItemApi.getImageUrl(formData.mainImage)} alt="Main" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => (e.currentTarget.style.display = 'none')} />
@@ -431,7 +436,7 @@ const GenericItemFormDrawer: React.FC<Props> = ({ open, item, isCopy, itemType, 
                   <CardHeader 
                     title={<span>ItemNo (Item Code) <span style={{color: '#ef4444'}}>*</span></span>} 
                     titleTypographyProps={{ variant: 'overline', fontWeight: 800, sx: { letterSpacing: 1, fontSize: 13, color: '#0f172a' } }}
-                    sx={{ bgcolor: '#fff', py: 2, borderBottom: '1px solid rgba(0,0,0,0.04)', borderLeft: '4px solid #2e7d32' }}
+                    sx={{ bgcolor: 'background.paper', py: 2, borderBottom: '1px solid rgba(0,0,0,0.04)', borderLeft: '4px solid #2e7d32' }}
                   />
                   <CardContent sx={{ p: 0 }}>
                     
@@ -462,7 +467,7 @@ const GenericItemFormDrawer: React.FC<Props> = ({ open, item, isCopy, itemType, 
                             '&:hover': { borderColor: (errors.itemCode || shakeFields.itemCode) ? '#ef4444' : '#94a3b8', bgcolor: errors.itemCode ? '#fef2f2' : '#f1f5f9' }, 
                             '&:focus-within': { 
                               borderColor: errors.itemCode ? '#ef4444' : '#2563eb', 
-                              bgcolor: '#fff', 
+                              bgcolor: 'background.paper', 
                               boxShadow: errors.itemCode ? '0 0 0 4px rgba(239,68,68,0.15)' : '0 0 0 4px rgba(37,99,235,0.1)' 
                             },
                             opacity: (itemType === 'YARDAGE' || !!formData.id) ? 0.7 : 1,
@@ -475,11 +480,12 @@ const GenericItemFormDrawer: React.FC<Props> = ({ open, item, isCopy, itemType, 
                           }} 
                         />
                         <TextField 
-                          label="Name" 
+                          label={itemType === 'YARDAGE' ? "Fabric Name" : "Name"} 
                           size="small" 
-                          required 
+                          required={itemType !== 'YARDAGE'} 
+                          error={itemType === 'YARDAGE' ? false : errors.name}
                           inputRef={nameRef}
-                          value={formData.name || ''} 
+                          value={formData.name || formData.fabric?.fabricName || (item as any)?.fabric?.fabricName || ''} 
                           disabled={itemType === 'YARDAGE'} 
                           onChange={(e) => {
                             handleChange('name', e.target.value);
@@ -502,12 +508,12 @@ const GenericItemFormDrawer: React.FC<Props> = ({ open, item, isCopy, itemType, 
                                 borderColor: errors.name ? '#ef4444' : undefined,
                               },
                               '&:hover': { bgcolor: errors.name ? '#fef2f2' : '#f1f5f9' }, 
-                              '&.Mui-focused': { bgcolor: '#fff' } 
+                              '&.Mui-focused': { bgcolor: 'background.paper' } 
                             },
                             animation: shakeFields.name ? 'shake 0.5s ease-in-out' : 'none',
                           }} 
                         />
-                        {cfg.showDescription && <TextField label="Description" size="small" value={formData.description || ''} onChange={(e) => handleChange('description', e.target.value)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover': { bgcolor: '#f1f5f9' }, '&.Mui-focused': { bgcolor: '#fff' } } }} />}
+                        {cfg.showDescription && <TextField label="Description" size="small" value={formData.description || ''} onChange={(e) => handleChange('description', e.target.value)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover': { bgcolor: 'background.default' }, '&.Mui-focused': { bgcolor: 'background.paper' } } }} />}
                       </Stack>
                     </Box>
 
@@ -520,7 +526,7 @@ const GenericItemFormDrawer: React.FC<Props> = ({ open, item, isCopy, itemType, 
                             <Typography variant="subtitle2" sx={{ color: '#0f172a', textTransform: 'uppercase', letterSpacing: 1 }} fontWeight={800} mb={3}>Specification</Typography>
                           )}
                           <Box display="grid" gridTemplateColumns={{ xs: '1fr', sm: '1fr 1fr' }} gap={2.5}>
-                            {cfg.showCategory && <TextField label={cfg.categoryLabel || "Category"} size="small" value={formData.category || ''} onChange={(e) => handleChange('category', e.target.value)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />}
+                            {cfg.showCategory && <TextField label={cfg.categoryLabel || "Category"} size="small" value={formData.category || ''} onChange={(e) => handleChange('category', e.target.value)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover':{bgcolor: 'background.default'}, '&.Mui-focused':{bgcolor: 'background.paper'} } }} />}
                             {renderFields('specs')}
                           </Box>
                         </Box>
@@ -531,8 +537,8 @@ const GenericItemFormDrawer: React.FC<Props> = ({ open, item, isCopy, itemType, 
                         <Box p={4}>
                           <Typography variant="subtitle2" sx={{ color: '#0f172a', textTransform: 'uppercase', letterSpacing: 1 }} fontWeight={800} mb={3}>Supplier</Typography>
                           <Box display="grid" gridTemplateColumns={{ xs: '1fr', sm: '1fr 1fr' }} gap={2.5}>
-                            <TextField label="Supplier Name" size="small" value={formData.supplierName || ''} onChange={(e) => handleChange('supplierName', e.target.value)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
-                            <TextField label="Origin" size="small" value={formData.origin || ''} onChange={(e) => handleChange('origin', e.target.value)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
+                            <TextField label="Supplier Name" size="small" value={formData.supplierName || ''} onChange={(e) => handleChange('supplierName', e.target.value)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover':{bgcolor: 'background.default'}, '&.Mui-focused':{bgcolor: 'background.paper'} } }} />
+                            <TextField label="Origin" size="small" value={formData.origin || ''} onChange={(e) => handleChange('origin', e.target.value)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover':{bgcolor: 'background.default'}, '&.Mui-focused':{bgcolor: 'background.paper'} } }} />
                           </Box>
                         </Box>
                       )}
@@ -547,7 +553,7 @@ const GenericItemFormDrawer: React.FC<Props> = ({ open, item, isCopy, itemType, 
                                 <TextField 
                                   label="Price" size="small" type="number" 
                                   value={formData.price ?? ''} onChange={(e) => handleChange('price', e.target.value)} 
-                                  sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'}, pr: 0.5 } }}
+                                  sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover':{bgcolor: 'background.default'}, '&.Mui-focused':{bgcolor: 'background.paper'}, pr: 0.5 } }}
                                   InputProps={{
                                     endAdornment: (
                                       <InputAdornment position="end">
@@ -559,7 +565,7 @@ const GenericItemFormDrawer: React.FC<Props> = ({ open, item, isCopy, itemType, 
                                   }}
                                 />
                                 <TextField label="MOQ/MCQ" fullWidth size="small" 
-                                  sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'}, pr: 0.5 } }}
+                                  sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover':{bgcolor: 'background.default'}, '&.Mui-focused':{bgcolor: 'background.paper'}, pr: 0.5 } }}
                                   InputProps={{
                                     endAdornment: (
                                       <InputAdornment position="end">
@@ -569,8 +575,8 @@ const GenericItemFormDrawer: React.FC<Props> = ({ open, item, isCopy, itemType, 
                                     )
                                   }}
                                   value={formData.moqMcq || ''} onChange={(e) => handleChange('moqMcq', e.target.value)} />
-                                <TextField label="MCQ Surcharge ($)" size="small" type="number" value={formData.mcqSurcharge ?? ''} onChange={(e) => handleChange('mcqSurcharge', e.target.value)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
-                                <TextField label="MOQ Surcharge ($)" size="small" type="number" value={formData.moqSurcharge ?? ''} onChange={(e) => handleChange('moqSurcharge', e.target.value)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
+                                <TextField label="MCQ Surcharge ($)" size="small" type="number" value={formData.mcqSurcharge ?? ''} onChange={(e) => handleChange('mcqSurcharge', e.target.value)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover':{bgcolor: 'background.default'}, '&.Mui-focused':{bgcolor: 'background.paper'} } }} />
+                                <TextField label="MOQ Surcharge ($)" size="small" type="number" value={formData.moqSurcharge ?? ''} onChange={(e) => handleChange('moqSurcharge', e.target.value)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover':{bgcolor: 'background.default'}, '&.Mui-focused':{bgcolor: 'background.paper'} } }} />
                               </>
                             )}
                             {renderFields('finance')}
@@ -640,16 +646,16 @@ const GenericItemFormDrawer: React.FC<Props> = ({ open, item, isCopy, itemType, 
                                       borderColor: errors.quantity ? '#ef4444' : undefined,
                                     },
                                     '&:hover': { bgcolor: errors.quantity ? '#fef2f2' : '#f1f5f9' },
-                                    '&.Mui-focused': { bgcolor: '#fff' }
+                                    '&.Mui-focused': { bgcolor: 'background.paper' }
                                   },
                                   animation: shakeFields.quantity ? 'shake 0.5s ease-in-out' : 'none',
                                 }}
                               />
                             )}
-                            {cfg.showLocation && <TextField label={cfg.locationLabel || 'Location'} size="small" value={formData.location ?? ''} onChange={(e) => handleChange('location', e.target.value)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />}
-                            {cfg.showHolder && <TextField label="Holder" size="small" value={formData.holder ?? ''} onChange={(e) => handleChange('holder', e.target.value)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />}
+                            {cfg.showLocation && <TextField label={cfg.locationLabel || 'Location'} size="small" value={formData.location ?? ''} onChange={(e) => handleChange('location', e.target.value)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover':{bgcolor: 'background.default'}, '&.Mui-focused':{bgcolor: 'background.paper'} } }} />}
+                            {cfg.showHolder && <TextField label="Holder" size="small" value={formData.holder ?? ''} onChange={(e) => handleChange('holder', e.target.value)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover':{bgcolor: 'background.default'}, '&.Mui-focused':{bgcolor: 'background.paper'} } }} />}
                             {renderFields('main')}
-                            {cfg.showRemark && <TextField label="Remark" size="small" multiline rows={3} value={formData.remark ?? ''} onChange={(e) => handleChange('remark', e.target.value)} sx={{ gridColumn: '1/-1', '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />}
+                            {cfg.showRemark && <TextField label="Remark" size="small" multiline rows={3} value={formData.remark ?? ''} onChange={(e) => handleChange('remark', e.target.value)} sx={{ gridColumn: '1/-1', '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover':{bgcolor: 'background.default'}, '&.Mui-focused':{bgcolor: 'background.paper'} } }} />}
                           </Box>
                         </Box>
                       )}
@@ -664,8 +670,8 @@ const GenericItemFormDrawer: React.FC<Props> = ({ open, item, isCopy, itemType, 
       </Box>
 
       {/* Footer */}
-      <Box sx={{ px: 3, py: 2.5, borderTop: '1px solid #f1f5f9', bgcolor: '#fff', display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-        <Button onClick={onClose} variant="outlined" sx={{ borderRadius: 1, px: 3, fontWeight: 700, borderColor: '#cbd5e1', color: '#64748b', '&:hover': { borderColor: '#94a3b8', bgcolor: '#f8fafc' } }}>
+      <Box sx={{ px: 3, py: 2.5, borderTop: '1px solid', borderColor: 'divider', bgcolor: 'background.paper', display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+        <Button onClick={onClose} variant="outlined" sx={{ borderRadius: 1, px: 3, fontWeight: 700, borderColor: '#cbd5e1', color: '#64748b', '&:hover': { borderColor: '#94a3b8', bgcolor: 'background.default' } }}>
           {t('rdMaterial.cancel', 'Cancel')}
         </Button>
         <Button variant="contained" onClick={handleSave} disabled={loading}

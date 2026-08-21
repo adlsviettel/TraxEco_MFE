@@ -413,25 +413,25 @@ export default function PackingListPage() {
             </Button>
           )}
           {data.length > 0 && (
-            <Button variant="outlined" size="small" startIcon={<DownloadIcon sx={{ fontSize: '18px !important' }} />} sx={{ height: 32, borderColor: '#cbd5e1', color: '#475569', fontWeight: 600, fontSize: '0.8rem', borderRadius: 1.5, px: 2, textTransform: 'none', bgcolor: '#fff', '&:hover': { bgcolor: '#f1f5f9' } }}>{t('inventory.exportExcel')}</Button>
+            <Button variant="outlined" size="small" startIcon={<DownloadIcon sx={{ fontSize: '18px !important' }} />} sx={{ height: 32, borderColor: '#cbd5e1', color: '#475569', fontWeight: 600, fontSize: '0.8rem', borderRadius: 1.5, px: 2, textTransform: 'none', bgcolor: 'background.paper', '&:hover': { bgcolor: 'background.default' } }}>{t('inventory.exportExcel')}</Button>
           )}
         </Box>
       </FabricSearchFilter>
 
       {error && <Alert severity="error">{error}</Alert>}
 
-      <Paper elevation={0} sx={{ flexGrow: 1, minHeight: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column', borderRadius: 2, border: '1px solid #e2e8f0' }}>
+      <Paper elevation={0} sx={{ flexGrow: 1, minHeight: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column', borderRadius: 2, border: '1px solid', borderColor: 'divider' }}>
         <TableContainer sx={{ flexGrow: 1 }}>
           <Table stickyHeader size="small" sx={{
             '& .MuiTableCell-root': { fontSize: '12px', py: 0.75, px: 1, borderColor: '#f0f0f0' },
-            '& .MuiTableBody-root .MuiTableRow-root': { bgcolor: '#fff' },
+            '& .MuiTableBody-root .MuiTableRow-root': { bgcolor: 'background.paper' },
             '& .MuiTableBody-root .MuiTableRow-root:nth-of-type(even)': { bgcolor: '#fafbfc' },
             '& .MuiTableBody-root .MuiTableRow-root:hover': { bgcolor: '#e8f5e9 !important' },
             '& .MuiTableBody-root .MuiTableRow-root:hover .sticky-cell': { bgcolor: '#e8f5e9 !important' }
           }}>
             <TableHead>
               <TableRow>
-                <TableCell padding="checkbox" sx={{ fontWeight: 700, bgcolor: '#f8fafc', whiteSpace: 'nowrap', position: 'sticky', left: 0, zIndex: 3, top: 0, borderBottom: '2px solid #e2e8f0' }}>
+                <TableCell padding="checkbox" sx={{ fontWeight: 700, bgcolor: 'background.default', whiteSpace: 'nowrap', position: 'sticky', left: 0, zIndex: 3, top: 0, borderBottom: '2px solid #e2e8f0' }}>
                   <Checkbox size="small"
                     checked={filteredData.length > 0 && filteredData.slice(page * rowsPerPage, (page + 1) * rowsPerPage).every(r => {
                       const rk = Object.keys(r).find(k => k.toLowerCase().trim() === 'recno') || 'RecNo';
@@ -457,7 +457,7 @@ export default function PackingListPage() {
                   />
                 </TableCell>
                 {columns.map(col => (
-                  <TableCell key={col} sx={{ fontWeight: 700, bgcolor: '#f8fafc', whiteSpace: 'nowrap', borderBottom: '2px solid #e2e8f0', color: '#334155', letterSpacing: '0.02em' }}>
+                  <TableCell key={col} sx={{ fontWeight: 700, bgcolor: 'background.default', whiteSpace: 'nowrap', borderBottom: '2px solid #e2e8f0', color: '#334155', letterSpacing: '0.02em' }}>
                     <ColumnFilter
                       colKey={col}
                       label={col === 'Comment' ? 'Remark' : col === 'Note' ? 'Remark' : col === 'Location' ? 'WH-Location' : col}
@@ -494,7 +494,7 @@ export default function PackingListPage() {
           </Table>
         </TableContainer>
         {filteredData.length > 0 && (
-          <Box sx={{ p: 1, display: 'flex', justifyContent: 'flex-end', borderTop: '1px solid #e2e8f0' }}>
+          <Box sx={{ p: 1, display: 'flex', justifyContent: 'flex-end', borderTop: '1px solid', borderColor: 'divider' }}>
             <Pagination
               count={Math.ceil(filteredData.length / rowsPerPage)}
               page={page + 1}

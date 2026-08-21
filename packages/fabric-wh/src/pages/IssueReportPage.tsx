@@ -29,7 +29,7 @@ import { fabricInventoryService } from '../services/fabricInventoryService';
  */
 
 const ACCENT = '#2e7d32';
-const SX_HEADER_CELL = { fontWeight: 700, backgroundColor: '#f8fafc', whiteSpace: 'nowrap', position: 'sticky', top: 0, zIndex: 2, borderBottom: '2px solid #e2e8f0', color: '#334155', letterSpacing: '0.02em' };
+const SX_HEADER_CELL = { fontWeight: 700, backgroundColor: 'background.default', whiteSpace: 'nowrap', position: 'sticky', top: 0, zIndex: 2, borderBottom: '2px solid #e2e8f0', color: '#334155', letterSpacing: '0.02em' };
 const SX_CELL = { whiteSpace: 'nowrap', fontSize: '12px' };
 
 const EMPTY_OPTIONS: readonly string[] = [];
@@ -333,7 +333,7 @@ export default function IssueReportPage() {
               </Button>
             )}
             <Button variant="outlined" startIcon={<ExportIcon />} onClick={handleExport}
-              sx={{ borderRadius: 1.5, fontWeight: 600, height: 36, borderColor: '#cbd5e1', color: '#334155', bgcolor: '#fff', '&:hover': { bgcolor: '#f8fafc' } }}>
+              sx={{ borderRadius: 1.5, fontWeight: 600, height: 36, borderColor: '#cbd5e1', color: '#334155', bgcolor: 'background.paper', '&:hover': { bgcolor: 'background.default' } }}>
               {t('inventory.exportExcel')}
             </Button>
           </Box>
@@ -342,13 +342,13 @@ export default function IssueReportPage() {
 
       {searched && (
         <Paper elevation={0} sx={{ 
-          borderRadius: 2, border: '1px solid #e2e8f0', overflow: 'hidden', position: 'relative',
+          borderRadius: 2, border: '1px solid', borderColor: 'divider', overflow: 'hidden', position: 'relative',
           flexGrow: 1, display: 'flex', flexDirection: 'column', minHeight: 0
         }}>
           <TableContainer sx={{ flexGrow: 1, overflow: 'auto' }}>
             <Table stickyHeader size="small" sx={{
               '& .MuiTableCell-root': { fontSize: '12px', py: 0.75, px: 1, borderColor: '#f0f0f0' },
-              '& .MuiTableBody-root .MuiTableRow-root': { bgcolor: '#fff' },
+              '& .MuiTableBody-root .MuiTableRow-root': { bgcolor: 'background.paper' },
               '& .MuiTableBody-root .MuiTableRow-root:nth-of-type(even)': { bgcolor: '#fafbfc' },
               '& .MuiTableBody-root .MuiTableRow-root:hover': { bgcolor: '#e8f5e9 !important' },
               '& .MuiTableBody-root .MuiTableRow-root:hover .sticky-cell': { bgcolor: '#e8f5e9 !important' }
@@ -455,7 +455,7 @@ export default function IssueReportPage() {
               </TableBody>
             </Table>
           </TableContainer>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', p: 1, borderTop: '1px solid #e0e0e0', flexWrap: 'wrap', gap: 1, backgroundColor: '#fff' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', p: 1, borderTop: '1px solid', borderColor: 'divider', flexWrap: 'wrap', gap: 1, backgroundColor: 'background.paper' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 600 }}>{t('inventory.rowsPerPage', 'Rows/page')}:</Typography>
               <Select size="small" value={rowsPerPage} onChange={e => { setRowsPerPage(Number(e.target.value)); setPage(0); }} sx={{ height: 32, fontSize: '0.85rem', borderRadius: 1.5 }}>
@@ -492,7 +492,7 @@ export default function IssueReportPage() {
       )}
 
       {!searched && !loading && (
-        <Paper elevation={0} sx={{ p: 6, borderRadius: 3, border: '1px solid #e0e0e0', textAlign: 'center' }}>
+        <Paper elevation={0} sx={{ p: 6, borderRadius: 3, border: '1px solid', borderColor: 'divider', textAlign: 'center' }}>
           <SearchIcon sx={{ fontSize: 48, color: '#bdbdbd', mb: 1 }} />
           <Typography variant="h6" color="text.secondary" sx={{ fontWeight: 600 }}>{t('issueReport.noDataHint')}</Typography>
         </Paper>

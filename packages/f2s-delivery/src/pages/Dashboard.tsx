@@ -150,7 +150,7 @@ export default function Dashboard() {
         <Grid container spacing={3} sx={{ mt: 1 }}>
           {/* Hourly Chart */}
         <Grid size={{ xs: 12, lg: 8 }}>
-          <Paper elevation={0} sx={{ p: 3, borderRadius: 3, border: '1px solid #e0e0e0', height: 400 }}>
+          <Paper elevation={0} sx={{ p: 3, borderRadius: 3, border: '1px solid', borderColor: 'divider', height: 400 }}>
             <Typography variant="subtitle1" sx={{ fontWeight: 700, color: '#334155', mb: 2 }}>
               {t('f2s.dashboard.hourlyChart')}
             </Typography>
@@ -173,7 +173,7 @@ export default function Dashboard() {
 
         {/* Top 5 Lines */}
         <Grid size={{ xs: 12, lg: 4 }}>
-          <Paper elevation={0} sx={{ p: 3, borderRadius: 3, border: '1px solid #e0e0e0', height: 400 }}>
+          <Paper elevation={0} sx={{ p: 3, borderRadius: 3, border: '1px solid', borderColor: 'divider', height: 400 }}>
             <Typography variant="subtitle1" sx={{ fontWeight: 700, color: '#334155', mb: 2 }}>
               {t('f2s.dashboard.topLines')}
             </Typography>

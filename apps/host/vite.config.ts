@@ -23,6 +23,7 @@ export default defineConfig(({ mode }) => {
         '@traxeco/qcfb-wh': path.resolve(__dirname, '../../packages/qcfb-wh/src'),
         '@traxeco/rd-material': path.resolve(__dirname, '../../packages/rd-material/src'),
         '@traxeco/coo': path.resolve(__dirname, '../../packages/coo/src'),
+        '@traxeco/qc-accessory': path.resolve(__dirname, '../../packages/qc-accessory/src'),
       }
     },
     base: env.VITE_BASE_PATH || '/',

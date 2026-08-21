@@ -36,8 +36,8 @@ const PermissionRow = memo(({ pg, user, pendingChange, themeColor, onToggle }: a
   return (
     <TableRow sx={{ 
       backgroundColor: hasChange ? '#fefce8' : 'transparent',
-      '&:hover': { backgroundColor: '#f8fafc' },
-      '&:hover .sticky-col': { backgroundColor: '#f8fafc' },
+      '&:hover': { backgroundColor: 'background.default' },
+      '&:hover .sticky-col': { backgroundColor: 'background.default' },
       transition: 'all 0.2s'
     }}>
       <TableCell className="sticky-col" sx={{ 
@@ -46,7 +46,7 @@ const PermissionRow = memo(({ pg, user, pendingChange, themeColor, onToggle }: a
         zIndex: 1,
         backgroundColor: hasChange ? '#fefce8' : '#fff',
         fontWeight: 700, 
-        borderBottom: '1px solid #f1f5f9', 
+        borderBottom: '1px solid', borderColor: 'divider', 
         color: '#334155', 
         fontSize: '0.9rem',
         boxShadow: '2px 0 5px -2px rgba(0,0,0,0.05)'
@@ -54,14 +54,14 @@ const PermissionRow = memo(({ pg, user, pendingChange, themeColor, onToggle }: a
       {ACTIONS.map(a => {
         if (a.startsWith('bypass')) {
           if (!BYPASS_PAGES.has(pg.code)) {
-            return <TableCell key={a} align="center" sx={{ py: 0.5, borderBottom: '1px solid #f1f5f9' }} />;
+            return <TableCell key={a} align="center" sx={{ py: 0.5, borderBottom: '1px solid', borderColor: 'divider' }} />;
           }
           if (pg.code === 'fb_relax' && a !== 'bypassSunrise') {
-            return <TableCell key={a} align="center" sx={{ py: 0.5, borderBottom: '1px solid #f1f5f9' }} />;
+            return <TableCell key={a} align="center" sx={{ py: 0.5, borderBottom: '1px solid', borderColor: 'divider' }} />;
           }
         }
         return (
-          <TableCell key={a} align="center" sx={{ py: 0.5, borderBottom: '1px solid #f1f5f9' }}>
+          <TableCell key={a} align="center" sx={{ py: 0.5, borderBottom: '1px solid', borderColor: 'divider' }}>
             <Checkbox size="small" checked={!!state[a]}
                onChange={() => onToggle(user, pg.code, a, state)}
                sx={{ p: 0.5, color: '#cbd5e1', '&.Mui-checked': { color: a === 'canBypassCheck' ? '#f97316' : themeColor, '& .MuiSvgIcon-root': { transform: 'scale(1.1)', transition: 'all 0.2s' } } }} />
@@ -93,7 +93,7 @@ const MobilePermissionRow = memo(({ pg, user, pendingChange, themeColor, onToggl
       p: 1.5, 
       mb: 1.5, 
       borderRadius: '8px', 
-      border: '1px solid #e2e8f0', 
+      border: '1px solid', borderColor: 'divider', 
       backgroundColor: hasChange ? '#fefce8' : '#fff',
       boxShadow: '0 1px 3px rgba(0,0,0,0.02)'
     }}>
@@ -134,7 +134,7 @@ const MobilePermissionRow = memo(({ pg, user, pendingChange, themeColor, onToggl
                   borderColor: '#e2e8f0',
                   backgroundColor: 'transparent',
                   '&:hover': {
-                    backgroundColor: '#f8fafc',
+                    backgroundColor: 'background.default',
                   }
                 })
               }}
@@ -196,12 +196,12 @@ export const PermissionAccordion: React.FC<PermissionAccordionProps> = ({
         return (
           <Accordion key={app.appCode} defaultExpanded={appPages.length > 0}
             sx={{ 
-              mb: 2, border: '1px solid #e2e8f0', borderRadius: '16px !important', 
+              mb: 2, border: '1px solid', borderColor: 'divider', borderRadius: '16px !important', 
               overflow: 'hidden',
               '&:before': { display: 'none' }, boxShadow: '0 4px 12px rgba(0,0,0,0.02)' 
             }}>
             <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: '#94a3b8' }} />}
-              sx={{ background: '#f8fafc', borderBottom: '1px solid #f1f5f9', '& .MuiAccordionSummary-content': { alignItems: 'center', gap: 1 } }}>
+              sx={{ background: 'background.default', borderBottom: '1px solid', borderColor: 'divider', '& .MuiAccordionSummary-content': { alignItems: 'center', gap: 1 } }}>
               <Typography variant="subtitle1" sx={{ fontWeight: 800, flex: 1, color: '#0f172a' }}>
                 <span style={{ marginRight: 8 }}>📱</span> {app.appName} 
                 <Chip label={app.appCode} size="small" sx={{ ml: 1.5, fontSize: 11, height: 22, fontWeight: 800, bgcolor: '#e2e8f0', color: '#475569' }} />
@@ -285,7 +285,7 @@ export const PermissionAccordion: React.FC<PermissionAccordionProps> = ({
                           top: 0,
                           zIndex: 3,
                           fontWeight: 800, 
-                          backgroundColor: '#f1f5f9', 
+                          backgroundColor: 'background.default', 
                           color: '#64748b', 
                           textTransform: 'uppercase', 
                           fontSize: 11, 
@@ -299,7 +299,7 @@ export const PermissionAccordion: React.FC<PermissionAccordionProps> = ({
                             top: 0,
                             zIndex: 2,
                             fontWeight: 800, 
-                            backgroundColor: '#f1f5f9', 
+                            backgroundColor: 'background.default', 
                             color: '#64748b', 
                             textTransform: 'uppercase', 
                             fontSize: 11, 

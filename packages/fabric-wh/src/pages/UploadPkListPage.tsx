@@ -397,7 +397,7 @@ export default function UploadPkListPage() {
         height: '100%',
         overflowY: 'auto',
         minHeight: 0, 
-        backgroundColor: '#f8fafc', 
+        backgroundColor: 'background.default', 
         display: 'flex', 
         flexDirection: 'column',
         zoom: { xs: 1, md: 0.9 } // Thu nhỏ toàn bộ page lại 90% trên màn hình Desktop
@@ -414,7 +414,7 @@ export default function UploadPkListPage() {
       }}>
         {/* Settings & File Selection (Left Column) */}
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-          <Paper sx={{ p: 2, borderRadius: 3, border: '1px solid #e2e8f0', boxShadow: 'none', overflow: 'auto' }}>
+          <Paper sx={{ p: 2, borderRadius: 3, border: '1px solid', borderColor: 'divider', boxShadow: 'none', overflow: 'auto' }}>
             <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 2 }}>Configuration</Typography>
 
             <Autocomplete
@@ -486,7 +486,7 @@ export default function UploadPkListPage() {
                     size="small"
                     color="secondary"
                     onClick={() => setColumnMappingOpen(true)}
-                    sx={{ mt: 1.5, fontWeight: 700, borderRadius: '12px', height: 32, fontSize: '0.8rem', textTransform: 'none', borderColor: '#cbd5e1', color: '#475569', '&:hover': { bgcolor: '#f1f5f9' } }}
+                    sx={{ mt: 1.5, fontWeight: 700, borderRadius: '12px', height: 32, fontSize: '0.8rem', textTransform: 'none', borderColor: '#cbd5e1', color: '#475569', '&:hover': { bgcolor: 'background.default' } }}
                   >
                     {t('upload.mapping')}
                   </Button>
@@ -509,8 +509,8 @@ export default function UploadPkListPage() {
         </Box>
 
         {/* Data Preview */}
-        <Paper sx={{ width: '100%', height: '100%', p: 0, borderRadius: 3, border: '1px solid #e2e8f0', boxShadow: 'none', minHeight: 0, display: 'flex', flexDirection: 'column' }}>
-          <Box sx={{ p: 1.5, borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 1 }}>
+        <Paper sx={{ width: '100%', height: '100%', p: 0, borderRadius: 3, border: '1px solid', borderColor: 'divider', boxShadow: 'none', minHeight: 0, display: 'flex', flexDirection: 'column' }}>
+          <Box sx={{ p: 1.5, borderBottom: '1px solid', borderColor: 'divider', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 1 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                 <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>{t('upload.preview')}</Typography>
                 {mappedData.length > 0 && (
@@ -521,7 +521,7 @@ export default function UploadPkListPage() {
               </Box>
               
               {/* Scale Screen Controller for Data */}
-              <Box sx={{ display: 'flex', alignItems: 'center', width: 200, bgcolor: '#f8fafc', px: 1.5, py: 0.5, borderRadius: 2, border: '1px solid #e2e8f0' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', width: 200, bgcolor: 'background.default', px: 1.5, py: 0.5, borderRadius: 2, border: '1px solid', borderColor: 'divider' }}>
                 <ZoomOutIcon sx={{ color: '#64748b', fontSize: 18 }} />
                 <Slider 
                   size="small"
@@ -537,20 +537,20 @@ export default function UploadPkListPage() {
               </Box>
             </Box>
             
-            <Box sx={{ flex: 1, height: '100%', minHeight: 0, overflowY: 'auto', p: 0.5, backgroundColor: '#f1f5f9', position: 'relative' }}>
+            <Box sx={{ flex: 1, height: '100%', minHeight: 0, overflowY: 'auto', p: 0.5, backgroundColor: 'background.default', position: 'relative' }}>
               {mappedData.length > 0 ? (
                 <Box sx={{ zoom: scale, transformOrigin: 'top left', minWidth: '100%', height: '100%' }}>
-                  <TableContainer component={Paper} elevation={0} sx={{ height: '100%', borderRadius: 1, border: '1px solid #e2e8f0' }}>
+                  <TableContainer component={Paper} elevation={0} sx={{ height: '100%', borderRadius: 1, border: '1px solid', borderColor: 'divider' }}>
                     <Table stickyHeader size="small" sx={{
                       '& .MuiTableCell-root': { fontSize: '12px', py: 0.75, px: 1, borderColor: '#f0f0f0' },
-                      '& .MuiTableBody-root .MuiTableRow-root': { bgcolor: '#fff' },
+                      '& .MuiTableBody-root .MuiTableRow-root': { bgcolor: 'background.paper' },
                       '& .MuiTableBody-root .MuiTableRow-root:nth-of-type(even)': { bgcolor: '#fafbfc' },
                       '& .MuiTableBody-root .MuiTableRow-root:hover': { bgcolor: '#e8f5e9 !important' }
                     }}>
                     <TableHead>
                       <TableRow>
                         {previewCols.map((col, idx) => (
-                          <TableCell key={idx} sx={{ fontWeight: 700, bgcolor: '#f8fafc', whiteSpace: 'nowrap', borderRight: '1px solid #e2e8f0', borderBottom: '2px solid #e2e8f0', color: '#334155' }}>
+                          <TableCell key={idx} sx={{ fontWeight: 700, bgcolor: 'background.default', whiteSpace: 'nowrap', borderRight: '1px solid', borderColor: 'divider', borderBottom: '2px solid #e2e8f0', color: '#334155' }}>
                             {col}
                           </TableCell>
                         ))}
@@ -560,7 +560,7 @@ export default function UploadPkListPage() {
                       {mappedData.map((row, rIdx) => (
                         <TableRow key={rIdx} hover sx={{ transition: 'background-color 0.15s' }}>
                           {previewCols.map((col, cIdx) => (
-                            <TableCell key={cIdx} sx={{ whiteSpace: 'nowrap', maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', borderRight: '1px solid #e2e8f0' }}>
+                            <TableCell key={cIdx} sx={{ whiteSpace: 'nowrap', maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', borderRight: '1px solid', borderColor: 'divider' }}>
                               {(row as Record<string, any>)[col]?.toString() || ''}
                             </TableCell>
                           ))}
@@ -583,12 +583,12 @@ export default function UploadPkListPage() {
       {/* Column Mapping Dialog */}
       <Dialog open={columnMappingOpen} onClose={() => setColumnMappingOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle sx={{ fontWeight: 700, color: '#1e293b' }}>{t('upload.mapping', 'Column Mapping')} Config</DialogTitle>
-        <DialogContent dividers sx={{ backgroundColor: '#f8fafc' }}>
+        <DialogContent dividers sx={{ backgroundColor: 'background.default' }}>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <Typography variant="body2" color="text.secondary">
               {t('upload.mappingDesc', 'Match the required system columns (left) with the corresponding columns in your Excel file (right). The system automatically identified columns with the same name.')}
             </Typography>
-            <Paper sx={{ p: 2, borderRadius: 2, border: '1px solid #e2e8f0', boxShadow: 'none' }}>
+            <Paper sx={{ p: 2, borderRadius: 2, border: '1px solid', borderColor: 'divider', boxShadow: 'none' }}>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
                 {DB_COLUMNS.map(dbCol => (
                   <Box key={dbCol} sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>

@@ -39,7 +39,7 @@ interface LoadedPO { poNo: string; ctnQty: number; }
 const inputSx = {
   '& .MuiOutlinedInput-root': {
     borderRadius: '12px',
-    backgroundColor: '#fff',
+    backgroundColor: 'background.paper',
     fontSize: '0.9rem',
     '&.Mui-focused': { boxShadow: `0 0 0 2px ${ACCENT}22` },
   },
@@ -363,7 +363,7 @@ export default function CartonShipPage() {
             sx={{
               borderRadius: '8px', fontWeight: 700, px: 2, height: 36,
               borderColor: '#cbd5e1', color: '#475569', fontSize: '0.85rem',
-              '&:hover': { borderColor: '#94a3b8', bgcolor: '#f8fafc' },
+              '&:hover': { borderColor: '#94a3b8', bgcolor: 'background.default' },
             }}
           >
             Làm mới
@@ -392,8 +392,8 @@ export default function CartonShipPage() {
 
           {/* Truck Info Card */}
           <Paper elevation={0} sx={{
-            p: 2.5, borderRadius: 3, border: '1px solid #e2e8f0',
-            background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
+            p: 2.5, borderRadius: 3, border: '1px solid', borderColor: 'divider',
+            bgcolor: 'background.paper',
           }}>
             <SectionLabel icon={TruckIcon}>Thông tin chuyến xe</SectionLabel>
 
@@ -490,7 +490,7 @@ export default function CartonShipPage() {
               }}
               sx={{
                 '& .MuiOutlinedInput-root': {
-                  borderRadius: '12px', backgroundColor: '#fff',
+                  borderRadius: '12px', backgroundColor: 'background.paper',
                   fontWeight: 700, fontSize: '1.1rem',
                   '&.Mui-focused': { boxShadow: `0 0 0 3px ${ACCENT}20`, borderColor: ACCENT },
                 },
@@ -502,12 +502,12 @@ export default function CartonShipPage() {
           <Paper elevation={0} sx={{
             p: 3, borderRadius: 3,
             border: '1px dashed #cbd5e1',
-            background: 'linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%)',
+            bgcolor: 'background.paper',
             display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
             textAlign: 'center'
           }}>
             <Box sx={{
-              width: 56, height: 56, borderRadius: '50%', bgcolor: '#fff',
+              width: 56, height: 56, borderRadius: '50%', bgcolor: 'background.paper',
               display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 2,
               boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)'
             }}>
@@ -536,12 +536,12 @@ export default function CartonShipPage() {
           <Grid size={{ xs: 12, md: 7, lg: 8 }} sx={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: { xs: 500, md: 0 } }}>
           <Paper elevation={0} sx={{
             display: 'flex', flexDirection: 'column', flexGrow: 1,
-            borderRadius: 3, border: '1px solid #e2e8f0', overflow: 'hidden',
-            background: '#fff',
+            borderRadius: 3, border: '1px solid', borderColor: 'divider', overflow: 'hidden',
+            background: 'background.paper',
           }}>
 
             {/* Tabs */}
-            <Box sx={{ px: 2, backgroundColor: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
+            <Box sx={{ px: 2, backgroundColor: 'background.default', borderBottom: '1px solid', borderColor: 'divider' }}>
               <Tabs value={tabIndex} onChange={(_, v) => setTabIndex(v)}
                 TabIndicatorProps={{ sx: { height: 2.5, borderRadius: '2px 2px 0 0', backgroundColor: ACCENT } }}
               >
@@ -623,7 +623,7 @@ export default function CartonShipPage() {
             {/* Summary Footer */}
             {loadedCTNs.length > 0 && (
               <Box sx={{
-                px: 2, py: 1, borderTop: '1px solid #e2e8f0', backgroundColor: '#f8fafc',
+                px: 2, py: 1, borderTop: '1px solid', borderColor: 'divider', backgroundColor: 'background.default',
                 display: 'flex', justifyContent: 'flex-end', gap: 2,
               }}>
                 <Typography variant="caption" fontWeight={600} color="#64748b">
@@ -687,7 +687,7 @@ export default function CartonShipPage() {
 
 /* ═══ Shared Styles ═══ */
 const thSx = {
-  fontWeight: 800, color: '#475569', backgroundColor: '#f1f5f9',
+  fontWeight: 800, color: '#475569', backgroundColor: 'background.default',
   py: 1, fontSize: '0.7rem', letterSpacing: 0.5,
   borderBottom: '2px solid #e2e8f0', textTransform: 'uppercase' as const,
 };

@@ -86,7 +86,7 @@ export default function TrackingPage() {
   return (
     <Box sx={{ px: 1, py: 0.5, flex: 1, height: '100%', overflowY: 'auto', minHeight: 0, display: 'flex', flexDirection: 'column', gap: 1 }}>
 <Box sx={{ flexShrink: 0, display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-</Box>      <Paper elevation={0} sx={{ flexShrink: 0, borderRadius: 2, border: '1px solid #e0e0e0', overflow: 'hidden' }}>
+</Box>      <Paper elevation={0} sx={{ flexShrink: 0, borderRadius: 2, border: '1px solid', borderColor: 'divider', overflow: 'hidden' }}>
         <Box sx={{
           p: 1, display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap',
           background: 'linear-gradient(135deg, #f5f5f5 0%, #fafafa 100%)',
@@ -99,7 +99,7 @@ export default function TrackingPage() {
             value={fromDate}
             onChange={(e) => setFromDate(e.target.value)}
             InputLabelProps={{ shrink: true }}
-            sx={{ width: 140, '& .MuiOutlinedInput-root': { backgroundColor: '#fff', borderRadius: 2, borderColor: '#e2e8f0' } }}
+            sx={{ width: 140, '& .MuiOutlinedInput-root': { backgroundColor: 'background.paper', borderRadius: 2, borderColor: '#e2e8f0' } }}
           />
 
           <TextField
@@ -109,7 +109,7 @@ export default function TrackingPage() {
             value={toDate}
             onChange={(e) => setToDate(e.target.value)}
             InputLabelProps={{ shrink: true }}
-            sx={{ width: 140, '& .MuiOutlinedInput-root': { backgroundColor: '#fff', borderRadius: 2, borderColor: '#e2e8f0' } }}
+            sx={{ width: 140, '& .MuiOutlinedInput-root': { backgroundColor: 'background.paper', borderRadius: 2, borderColor: '#e2e8f0' } }}
           />
 
           <TextField 
@@ -118,7 +118,7 @@ export default function TrackingPage() {
             value={filter} 
             onChange={e => { setFilter(e.target.value); setPage(0); }}
             InputProps={{ startAdornment: <ManageSearchIcon sx={{ color: '#94a3b8', mr: 1, fontSize: '1.2rem' }} /> }}
-            sx={{ flex: '1 1 200px', maxWidth: 400, '& .MuiOutlinedInput-root': { backgroundColor: '#fff', borderRadius: 2, borderColor: '#e2e8f0' } }}
+            sx={{ flex: '1 1 200px', maxWidth: 400, '& .MuiOutlinedInput-root': { backgroundColor: 'background.paper', borderRadius: 2, borderColor: '#e2e8f0' } }}
           />
 
           <Button variant="contained" startIcon={!loading ? <ManageSearchIcon /> : undefined} onClick={loadData}
@@ -133,22 +133,22 @@ export default function TrackingPage() {
         </Box>
       </Paper>
 
-      <Paper elevation={0} sx={{ flexGrow: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', borderRadius: 2, border: '1px solid #e2e8f0' }}>
+      <Paper elevation={0} sx={{ flexGrow: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', borderRadius: 2, border: '1px solid', borderColor: 'divider' }}>
         <TableContainer sx={{ flexGrow: 1 }}>
           <Table stickyHeader size="small" sx={{
             '& .MuiTableCell-root': { fontSize: '12px', py: 0.75, px: 1, borderColor: '#f0f0f0' },
-            '& .MuiTableBody-root .MuiTableRow-root': { bgcolor: '#fff' },
+            '& .MuiTableBody-root .MuiTableRow-root': { bgcolor: 'background.paper' },
             '& .MuiTableBody-root .MuiTableRow-root:nth-of-type(even)': { bgcolor: '#fafbfc' },
             '& .MuiTableBody-root .MuiTableRow-root:hover': { bgcolor: '#e8f5e9 !important' }
           }}>
             <TableHead>
               <TableRow>
-                <TableCell sx={{ fontWeight: 700, bgcolor: '#f8fafc', width: 60, borderBottom: '2px solid #e2e8f0', color: '#334155' }}>#</TableCell>
-                <TableCell sx={{ fontWeight: 700, bgcolor: '#f8fafc', width: 150, borderBottom: '2px solid #e2e8f0', color: '#334155' }}>When</TableCell>
-                <TableCell sx={{ fontWeight: 700, bgcolor: '#f8fafc', width: 120, borderBottom: '2px solid #e2e8f0', color: '#334155' }}>Who (User)</TableCell>
-                <TableCell sx={{ fontWeight: 700, bgcolor: '#f8fafc', width: 150, borderBottom: '2px solid #e2e8f0', color: '#334155' }}>Action</TableCell>
-                <TableCell sx={{ fontWeight: 700, bgcolor: '#f8fafc', width: 150, borderBottom: '2px solid #e2e8f0', color: '#334155' }}>Target</TableCell>
-                <TableCell sx={{ fontWeight: 700, bgcolor: '#f8fafc', borderBottom: '2px solid #e2e8f0', color: '#334155' }}>Details</TableCell>
+                <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default', width: 60, borderBottom: '2px solid #e2e8f0', color: '#334155' }}>#</TableCell>
+                <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default', width: 150, borderBottom: '2px solid #e2e8f0', color: '#334155' }}>When</TableCell>
+                <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default', width: 120, borderBottom: '2px solid #e2e8f0', color: '#334155' }}>Who (User)</TableCell>
+                <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default', width: 150, borderBottom: '2px solid #e2e8f0', color: '#334155' }}>Action</TableCell>
+                <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default', width: 150, borderBottom: '2px solid #e2e8f0', color: '#334155' }}>Target</TableCell>
+                <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default', borderBottom: '2px solid #e2e8f0', color: '#334155' }}>Details</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -212,7 +212,7 @@ export default function TrackingPage() {
             </TableBody>
           </Table>
         </TableContainer>
-        <Box sx={{ flexShrink: 0, borderTop: '1px solid #e2e8f0', bgcolor: '#fff', p: 1, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', justifyContent: 'space-between', gap: 1 }}>
+        <Box sx={{ flexShrink: 0, borderTop: '1px solid', borderColor: 'divider', bgcolor: 'background.paper', p: 1, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', justifyContent: 'space-between', gap: 1 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <Typography variant="body2" sx={{ color: '#475569', fontWeight: 500 }}>{t('history.rowsPerPage', 'Rows / page:')}</Typography>
             <Select

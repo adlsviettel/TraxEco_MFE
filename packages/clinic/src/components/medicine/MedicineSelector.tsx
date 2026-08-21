@@ -100,7 +100,7 @@ export default function MedicineSelector({
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", height: "100%", overflow: "hidden" }}>
-      <Box sx={{ p: 2, borderBottom: "1px solid #e2e8f0", bgcolor: "#ffffff", flexShrink: 0 }}>
+      <Box sx={{ p: 2, borderBottom: '1px solid', borderColor: 'divider', bgcolor: 'background.paper', flexShrink: 0 }}>
         <Autocomplete
           multiple
           fullWidth
@@ -124,7 +124,7 @@ export default function MedicineSelector({
                 mb: 2,
                 "& .MuiOutlinedInput-root": {
                   borderRadius: 2,
-                  bgcolor: "#f8fafc",
+                  bgcolor: 'background.default',
                 },
               }}
               InputProps={{
@@ -172,9 +172,9 @@ export default function MedicineSelector({
             mb: 2,
             "& .MuiOutlinedInput-root": {
               borderRadius: 5,
-              bgcolor: "#ffffff",
+              bgcolor: 'background.paper',
               "&.Mui-focused": {
-                bgcolor: "#ffffff",
+                bgcolor: 'background.paper',
                 boxShadow: "0 0 0 2px rgba(46,125,50,0.2)",
               },
             },
@@ -227,7 +227,7 @@ export default function MedicineSelector({
           minHeight: 0,
           overflowY: "auto",
           p: 1,
-          bgcolor: "#f8fafc",
+          bgcolor: 'background.default',
           display: "grid",
           gridTemplateColumns: {
             xs: "1fr",

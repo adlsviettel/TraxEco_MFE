@@ -37,8 +37,8 @@ export const DateFilterBar: React.FC<DateFilterBarProps> = ({
         gap: 2, 
         flexWrap: 'wrap', 
         borderRadius: '8px', 
-        border: '1px solid #e2e8f0',
-        bgcolor: '#ffffff'
+        border: '1px solid', borderColor: 'divider',
+        bgcolor: 'background.paper'
       }}
     >
       <FormControl size="small" sx={{ minWidth: 150 }}>
@@ -51,7 +51,7 @@ export const DateFilterBar: React.FC<DateFilterBarProps> = ({
             borderRadius: '8px', 
             height: 40, 
             fontSize: 13,
-            bgcolor: '#fff',
+            bgcolor: 'background.paper',
             '& fieldset': { borderColor: '#bfc9c4' },
             '&:hover fieldset': { borderColor: '#2e7d32' },
             '&.Mui-focused fieldset': { borderColor: '#2e7d32' }
@@ -80,7 +80,7 @@ export const DateFilterBar: React.FC<DateFilterBarProps> = ({
                 borderRadius: '8px', 
                 height: 40, 
                 fontSize: 13,
-                bgcolor: '#fff',
+                bgcolor: 'background.paper',
                 '& fieldset': { borderColor: '#bfc9c4' },
                 '&:hover fieldset': { borderColor: '#2e7d32' },
                 '&.Mui-focused fieldset': { borderColor: '#2e7d32' }
@@ -106,7 +106,7 @@ export const DateFilterBar: React.FC<DateFilterBarProps> = ({
                 borderRadius: '8px', 
                 height: 40, 
                 fontSize: 13,
-                bgcolor: '#fff',
+                bgcolor: 'background.paper',
                 '& fieldset': { borderColor: '#bfc9c4' },
                 '&:hover fieldset': { borderColor: '#2e7d32' },
                 '&.Mui-focused fieldset': { borderColor: '#2e7d32' }

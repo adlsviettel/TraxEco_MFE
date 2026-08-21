@@ -36,9 +36,9 @@ const ACCENT = '#2e7d32';
 // ─── Pre-computed static sx objects ───
 const SX_CELL = { whiteSpace: 'nowrap', fontSize: '12px' } as const;
 const SX_CELL_BOLD = { ...SX_CELL, fontWeight: 700 } as const;
-const SX_HEADER_CELL = { fontWeight: 700, backgroundColor: '#f8fafc', whiteSpace: 'nowrap', position: 'sticky', top: 0, zIndex: 2, borderBottom: '2px solid #e2e8f0', color: '#334155', letterSpacing: '0.02em' } as const;
+const SX_HEADER_CELL = { fontWeight: 700, backgroundColor: 'background.default', whiteSpace: 'nowrap', position: 'sticky', top: 0, zIndex: 2, borderBottom: '2px solid #e2e8f0', color: '#334155', letterSpacing: '0.02em' } as const;
 const SX_ROW = {
-  backgroundColor: '#fff',
+  backgroundColor: 'background.paper',
   '&:nth-of-type(odd)': { backgroundColor: '#fafafa' },
   cursor: 'pointer',
   transition: 'background-color 0.12s ease-out',
@@ -249,7 +249,7 @@ const InventoryRow = memo(({
   return (
     <TableRow hover onContextMenu={(e) => onContextMenu(e, row)} sx={selected ? SX_ROW_SELECTED : SX_ROW}>
       {canDelete && (
-        <TableCell padding="checkbox" className="sticky-cell" sx={{ py: 0, position: 'sticky', left: 0, bgcolor: '#fff', zIndex: 1, transition: 'background-color 0.12s ease-out' }}>
+        <TableCell padding="checkbox" className="sticky-cell" sx={{ py: 0, position: 'sticky', left: 0, bgcolor: 'background.paper', zIndex: 1, transition: 'background-color 0.12s ease-out' }}>
           <Checkbox size="small" disableRipple checked={selected} 
             onChange={(e: any) => onToggle(row.RecNo, e.nativeEvent?.shiftKey || false)}
             sx={{ p: 0.3, '&.Mui-checked': { color: ACCENT } }} />
@@ -906,7 +906,7 @@ export default function InventoryPage() {
             )}
             <Button variant="outlined" startIcon={<ExportIcon />} onClick={handleExport}
               disabled={filteredData.length === 0}
-              sx={{ borderRadius: 1.5, fontWeight: 600, height: 36, borderColor: '#cbd5e1', color: '#334155', bgcolor: '#fff', '&:hover': { bgcolor: '#f8fafc' } }}>
+              sx={{ borderRadius: 1.5, fontWeight: 600, height: 36, borderColor: '#cbd5e1', color: '#334155', bgcolor: 'background.paper', '&:hover': { bgcolor: 'background.default' } }}>
               {t('inventory.exportExcel')}
             </Button>
           </Box>
@@ -916,7 +916,7 @@ export default function InventoryPage() {
       {/* Data Table */}
       {searched && (
         <Paper elevation={0} sx={{ 
-          borderRadius: 3, border: '1px solid #e0e0e0', overflow: 'hidden', position: 'relative',
+          borderRadius: 3, border: '1px solid', borderColor: 'divider', overflow: 'hidden', position: 'relative',
           flexGrow: 1, display: 'flex', flexDirection: 'column', minHeight: 0
         }}>
           {isPending && (
@@ -983,8 +983,8 @@ export default function InventoryPage() {
           </TableContainer>
           <Box sx={{ 
             display: 'flex', alignItems: 'center', justifyContent: 'space-between', 
-            px: 1, py: 0.5, borderTop: '1px solid #e0e0e0', flexWrap: 'wrap', gap: 1,
-            flexShrink: 0, backgroundColor: '#fff', zIndex: 2
+            px: 1, py: 0.5, borderTop: '1px solid', borderColor: 'divider', flexWrap: 'wrap', gap: 1,
+            flexShrink: 0, backgroundColor: 'background.paper', zIndex: 2
           }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 600 }}>{t('inventory.rowsPerPage', 'Rows/page')}:</Typography>
@@ -1045,7 +1045,7 @@ export default function InventoryPage() {
 
       {/* Empty state */}
       {!searched && !loading && (
-        <Paper elevation={0} sx={{ p: 6, borderRadius: 3, border: '1px solid #e0e0e0', textAlign: 'center' }}>
+        <Paper elevation={0} sx={{ p: 6, borderRadius: 3, border: '1px solid', borderColor: 'divider', textAlign: 'center' }}>
           <SearchIcon sx={{ fontSize: 48, color: '#bdbdbd', mb: 1 }} />
           <Typography variant="h6" color="text.secondary" sx={{ fontWeight: 600 }}>
             {t('inventory.emptyHint', 'Enter search criteria and click Search')}
@@ -1255,7 +1255,7 @@ export default function InventoryPage() {
           {/* Simple Label preview layout */}
           <Box id="printArea" sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 2 }}>
             {targetPrintRows.map((row) => (
-              <Box key={row.QrCode} sx={{ p: 2, bgcolor: '#fff', border: '1px solid #cfd8dc', display: 'flex', flexDirection: 'column', alignItems: 'center', borderRadius: 1 }}>
+              <Box key={row.QrCode} sx={{ p: 2, bgcolor: 'background.paper', border: '1px solid #cfd8dc', display: 'flex', flexDirection: 'column', alignItems: 'center', borderRadius: 1 }}>
                 <QrCodeIcon sx={{ fontSize: 80, color: '#37474f' }} />
                 <Typography variant="body2" sx={{ fontWeight: 700, mt: 1, fontFamily: 'monospace' }}>{row.QrCode}</Typography>
                 <Typography variant="caption" sx={{ color: '#546e7a', textAlign: 'center', mt: 0.5, lineHeight: 1.2 }}>

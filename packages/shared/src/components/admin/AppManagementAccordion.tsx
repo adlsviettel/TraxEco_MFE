@@ -51,8 +51,8 @@ export const AppManagementAccordion: React.FC<AppManagementAccordionProps> = ({
               variant="outlined" 
             />
           ))}
-          <TextField size="small" placeholder={t('admin.codePlaceholder')} value={newAppCode} onChange={e => setNewAppCode(e.target.value)} sx={{ width: 120, '& .MuiOutlinedInput-root': { borderRadius: 2, bgcolor: '#fff' } }} />
-          <TextField size="small" placeholder={t('admin.namePlaceholder')} value={newAppName} onChange={e => setNewAppName(e.target.value)} sx={{ width: 180, '& .MuiOutlinedInput-root': { borderRadius: 2, bgcolor: '#fff' } }} />
+          <TextField size="small" placeholder={t('admin.codePlaceholder')} value={newAppCode} onChange={e => setNewAppCode(e.target.value)} sx={{ width: 120, '& .MuiOutlinedInput-root': { borderRadius: 2, bgcolor: 'background.paper' } }} />
+          <TextField size="small" placeholder={t('admin.namePlaceholder')} value={newAppName} onChange={e => setNewAppName(e.target.value)} sx={{ width: 180, '& .MuiOutlinedInput-root': { borderRadius: 2, bgcolor: 'background.paper' } }} />
           <Button size="small" variant="contained" startIcon={<AddIcon />} disableElevation
             disabled={!newAppCode.trim() || !newAppName.trim()}
             onClick={() => onAddApp(newAppCode, newAppName)}

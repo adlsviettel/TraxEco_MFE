@@ -121,7 +121,7 @@ const DashboardPage: React.FC = () => {
                 <Chip
                   label={s.tag}
                   size="small"
-                  sx={{ height: 20, fontSize: 10, fontWeight: 700, color: 'text.secondary', bgcolor: '#f1f5f9' }}
+                  sx={{ height: 20, fontSize: 10, fontWeight: 700, color: 'text.secondary', bgcolor: 'background.default' }}
                 />
               </Box>
               <Typography variant="h4" fontWeight={800} color="text.primary" lineHeight={1} mb={0.5}>

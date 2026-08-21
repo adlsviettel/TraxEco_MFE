@@ -270,7 +270,7 @@ export default function ReportPage() {
         sx={{
           borderRadius: 3,
           mb: 3,
-          border: '1px solid #f1f5f9',
+          border: '1px solid', borderColor: 'divider',
           boxShadow: '0 4px 20px rgba(0,0,0,0.03)',
           overflow: 'hidden'
         }}
@@ -296,7 +296,7 @@ export default function ReportPage() {
                 1. Phân loại báo cáo
               </Typography>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-                <Box sx={{ px: 2, py: 0.5, borderRadius: 2, border: '1px solid #e2e8f0', bgcolor: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Box sx={{ px: 2, py: 0.5, borderRadius: 2, border: '1px solid', borderColor: 'divider', bgcolor: 'background.paper', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <Typography variant="body2" sx={{ fontWeight: 500, color: '#334155' }}>Giao hàng</Typography>
                   <RadioGroup row value={deliveryMethod} onChange={(e) => handleConfigChange(setDeliveryMethod, e.target.value)} sx={{ gap: 1, flexWrap: 'nowrap' }}>
                     <FormControlLabel value="MANUAL" control={<Radio size="small" sx={{ p: 0.5, '&.Mui-checked': { color: '#2e7d32' } }} />} label={<Typography variant="body2" sx={{ fontWeight: 600, color: deliveryMethod === 'MANUAL' ? '#2e7d32' : '#64748b' }}>Thủ công</Typography>} sx={{ m: 0, width: 95 }} />
@@ -304,7 +304,7 @@ export default function ReportPage() {
                   </RadioGroup>
                 </Box>
 
-                <Box sx={{ px: 2, py: 0.5, borderRadius: 2, border: '1px solid #e2e8f0', bgcolor: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Box sx={{ px: 2, py: 0.5, borderRadius: 2, border: '1px solid', borderColor: 'divider', bgcolor: 'background.paper', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <Typography variant="body2" sx={{ fontWeight: 500, color: '#334155' }}>Mức độ</Typography>
                   <RadioGroup row value={reportLevel} onChange={(e) => handleConfigChange(setReportLevel, e.target.value)} sx={{ gap: 1, flexWrap: 'nowrap' }}>
                     <FormControlLabel value="DETAIL" control={<Radio size="small" sx={{ p: 0.5, '&.Mui-checked': { color: '#2e7d32' } }} />} label={<Typography variant="body2" sx={{ fontWeight: 600, color: reportLevel === 'DETAIL' ? '#2e7d32' : '#64748b' }}>Chi tiết</Typography>} sx={{ m: 0, width: 95 }} />
@@ -388,7 +388,7 @@ export default function ReportPage() {
                   variant="outlined"
                   sx={{
                     '& .MuiOutlinedInput-root': {
-                      borderRadius: 2, bgcolor: '#fff',
+                      borderRadius: 2, bgcolor: 'background.paper',
                       '&.Mui-focused fieldset': { borderColor: '#2e7d32', borderWidth: '2px' }
                     }
                   }}
@@ -436,7 +436,7 @@ export default function ReportPage() {
                       },
                       '&.Mui-disabled': {
                         borderColor: '#cbd5e1',
-                        bgcolor: '#f8fafc',
+                        bgcolor: 'background.default',
                         color: '#94a3b8'
                       }
                     }}
@@ -468,7 +468,7 @@ export default function ReportPage() {
         }}>
           {/* Lệnh hiển thị chú giải màu sắc bảng Auto - Detail */}
           {deliveryMethod === 'AUTO' && reportLevel === 'DETAIL' && (
-            <Box sx={{ display: 'flex', gap: 3, px: 2, py: 1.5, bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', flexWrap: 'wrap', alignItems: 'center' }}>
+            <Box sx={{ display: 'flex', gap: 3, px: 2, py: 1.5, bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', flexWrap: 'wrap', alignItems: 'center' }}>
               <Typography variant="body2" sx={{ fontWeight: 700, color: '#475569', display: 'flex', alignItems: 'center', textTransform: 'uppercase', fontSize: '0.7rem', letterSpacing: '0.5px' }}>Chú giải màu:</Typography>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8 }}>
                 <Box sx={{ width: 14, height: 14, borderRadius: '4px', bgcolor: 'rgba(239, 68, 68, 0.3)', border: '1px solid #ef4444' }} />
@@ -483,7 +483,7 @@ export default function ReportPage() {
                 <Typography variant="caption" sx={{ fontWeight: 600, color: '#334155' }}>Đang trong quá trình đóng gói</Typography>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8 }}>
-                <Box sx={{ width: 14, height: 14, borderRadius: '4px', bgcolor: '#fff', border: '1px solid #cbd5e1' }} />
+                <Box sx={{ width: 14, height: 14, borderRadius: '4px', bgcolor: 'background.paper', border: '1px solid', borderColor: 'divider' }} />
                 <Typography variant="caption" sx={{ fontWeight: 600, color: '#334155' }}>Đang chờ / Trống</Typography>
               </Box>
             </Box>
@@ -493,14 +493,14 @@ export default function ReportPage() {
             <Table stickyHeader size="small" sx={{ '& .MuiTableCell-root': { py: { xs: 0.5, lg: 1 }, px: { xs: 1, lg: 2 }, fontSize: { xs: '0.75rem', lg: '0.85rem' } } }}>
               <TableHead>
                 <TableRow>
-                  <TableCell sx={{ bgcolor: '#f1f5f9', width: 50, fontWeight: 700, color: '#475569', borderBottom: '2px solid #e2e8f0' }}>STT</TableCell>
+                  <TableCell sx={{ bgcolor: 'background.default', width: 50, fontWeight: 700, color: '#475569', borderBottom: '2px solid #e2e8f0' }}>STT</TableCell>
                   {hasActions && reportLevel === 'DETAIL' && (
-                    <TableCell sx={{ bgcolor: '#f1f5f9', width: 80, fontWeight: 700, color: '#475569', borderBottom: '2px solid #e2e8f0', textAlign: 'center' }}>Thao tác</TableCell>
+                    <TableCell sx={{ bgcolor: 'background.default', width: 80, fontWeight: 700, color: '#475569', borderBottom: '2px solid #e2e8f0', textAlign: 'center' }}>Thao tác</TableCell>
                   )}
                   {Array.from(new Set(data.flatMap(row => Object.keys(row)))).map(key => {
                     const isActive = !!columnFilters[key];
                     return (
-                      <TableCell key={key} sx={{ bgcolor: '#f1f5f9', fontWeight: 600, color: isActive ? '#2e7d32' : '#475569', whiteSpace: 'nowrap', borderBottom: '2px solid #e2e8f0' }}>
+                      <TableCell key={key} sx={{ bgcolor: 'background.default', fontWeight: 600, color: isActive ? '#2e7d32' : '#475569', whiteSpace: 'nowrap', borderBottom: '2px solid #e2e8f0' }}>
                         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1 }}>
                           {key}
                           <IconButton
@@ -603,7 +603,7 @@ export default function ReportPage() {
               </TableBody>
             </Table>
           </TableContainer>
-          <Box sx={{ borderTop: '1px solid #e2e8f0', bgcolor: '#fff', p: 1.5, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
+          <Box sx={{ borderTop: '1px solid', borderColor: 'divider', bgcolor: 'background.paper', p: 1.5, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <Typography variant="body2" sx={{ color: '#475569', fontWeight: 500 }}>Dòng / trang:</Typography>
               <Select
@@ -676,7 +676,7 @@ export default function ReportPage() {
 
           {/* Edit Dialog */}
           <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)} maxWidth="md" fullWidth>
-            <DialogTitle sx={{ fontWeight: 700, color: '#334155', borderBottom: '1px solid #e2e8f0' }}>
+            <DialogTitle sx={{ fontWeight: 700, color: '#334155', borderBottom: '1px solid', borderColor: 'divider' }}>
               Chỉnh sửa thông tin {deliveryMethod === 'AUTO' ? '(Giao Tự Động)' : '(Giao Thủ Công)'}
             </DialogTitle>
             <DialogContent sx={{ p: 3, pt: '24px !important', maxHeight: '60vh' }}>
@@ -713,7 +713,7 @@ export default function ReportPage() {
                 })}
               </Grid>
             </DialogContent>
-            <DialogActions sx={{ p: 2, borderTop: '1px solid #e2e8f0', bgcolor: '#f8fafc' }}>
+            <DialogActions sx={{ p: 2, borderTop: '1px solid', borderColor: 'divider', bgcolor: 'background.default' }}>
               <Button onClick={() => setEditDialogOpen(false)} color="inherit" sx={{ fontWeight: 600 }}>
                 Hủy bỏ
               </Button>

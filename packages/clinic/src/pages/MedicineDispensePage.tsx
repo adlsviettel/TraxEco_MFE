@@ -500,7 +500,7 @@ export default function MedicineDispensePage() {
           <Box
             sx={{
               flexGrow: 1,
-              border: "1px solid #cbd5e1",
+              border: '1px solid', borderColor: 'divider',
               borderRadius: "12px",
               p: 1,
               px: 2.5,
@@ -509,7 +509,7 @@ export default function MedicineDispensePage() {
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
-              bgcolor: "#ffffff",
+              bgcolor: 'background.paper',
               boxShadow: "0 2px 8px rgba(0,0,0,0.03)",
             }}
           >
@@ -603,7 +603,7 @@ export default function MedicineDispensePage() {
               elevation={0}
               sx={{
                 borderRadius: "16px",
-                border: "1px solid #cbd5e1",
+                border: '1px solid', borderColor: 'divider',
                 height: "100%",
                 display: "flex",
                 flexDirection: "column",
@@ -614,10 +614,10 @@ export default function MedicineDispensePage() {
               {/* Header Card 2 */}
               <Box
                 sx={{
-                  bgcolor: "#ffffff",
+                  bgcolor: 'background.paper',
                   py: 2,
                   px: 3,
-                  borderBottom: "1px solid #e2e8f0",
+                  borderBottom: '1px solid', borderColor: 'divider',
                   flexShrink: 0,
                 }}
               >
@@ -631,7 +631,7 @@ export default function MedicineDispensePage() {
                 sx={{
                   p: 0,
                   pb: "0 !important",
-                  bgcolor: "#ffffff",
+                  bgcolor: 'background.paper',
                   flex: 1,
                   minHeight: 0,
                   display: "flex",
@@ -639,7 +639,7 @@ export default function MedicineDispensePage() {
                   overflow: "hidden",
                 }}
               >
-                <Box sx={{ p: 3, borderBottom: "1px solid #e2e8f0", flexShrink: 0, display: "flex", flexDirection: "column", gap: 2 }}>
+                <Box sx={{ p: 3, borderBottom: '1px solid', borderColor: 'divider', flexShrink: 0, display: "flex", flexDirection: "column", gap: 2 }}>
                   {/* Select Chẩn đoán */}
                   <Autocomplete
                     fullWidth
@@ -656,7 +656,7 @@ export default function MedicineDispensePage() {
                         sx={{
                           "& .MuiOutlinedInput-root": { 
                             borderRadius: "10px",
-                            bgcolor: "#f8fafc",
+                            bgcolor: 'background.default',
                             "& fieldset": { borderColor: "#cbd5e1" },
                             "&:hover fieldset": { borderColor: "#94a3b8" },
                             "&.Mui-focused fieldset": { borderColor: "#15803d", borderWidth: "2px" },
@@ -676,7 +676,7 @@ export default function MedicineDispensePage() {
                     sx={{
                       "& .MuiOutlinedInput-root": {
                         borderRadius: "10px",
-                        bgcolor: "#f8fafc",
+                        bgcolor: 'background.default',
                         "& fieldset": { borderColor: "#cbd5e1" },
                         "&:hover fieldset": { borderColor: "#94a3b8" },
                         "&.Mui-focused fieldset": { borderColor: "#15803d", borderWidth: "2px" },
@@ -742,7 +742,7 @@ export default function MedicineDispensePage() {
                     minHeight: 0,
                     overflowY: "auto",
                     p: 3,
-                    bgcolor: "#f8fafc",
+                    bgcolor: 'background.default',
                     display: "grid",
                     gridTemplateColumns: "1fr 1fr 1fr",
                     gridAutoRows: "min-content",
@@ -759,7 +759,7 @@ export default function MedicineDispensePage() {
                         key={med.idMed}
                         elevation={0}
                         sx={{
-                          border: "1px solid #e2e8f0",
+                          border: '1px solid', borderColor: 'divider',
                           borderRadius: "12px",
                           bgcolor: isOutOfStock ? "#fef2f2" : "#ffffff",
                           transition: "all 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
@@ -830,11 +830,11 @@ export default function MedicineDispensePage() {
               >
                 <Box
                   sx={{
-                    bgcolor: "#ffffff",
+                    bgcolor: 'background.paper',
                     p: 4.5,
                     borderRadius: "20px",
                     boxShadow: "0 20px 40px -15px rgba(0,0,0,0.1), 0 15px 25px -10px rgba(0,0,0,0.05)",
-                    border: "1px solid #cbd5e1",
+                    border: '1px solid', borderColor: 'divider',
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
@@ -862,7 +862,7 @@ export default function MedicineDispensePage() {
               elevation={0}
               sx={{
                 borderRadius: "16px",
-                border: "1px solid #cbd5e1",
+                border: '1px solid', borderColor: 'divider',
                 height: "100%",
                 display: "flex",
                 flexDirection: "column",
@@ -873,10 +873,10 @@ export default function MedicineDispensePage() {
               {/* Header Card 3 */}
               <Box
                 sx={{
-                  bgcolor: "#ffffff",
+                  bgcolor: 'background.paper',
                   py: 2,
                   px: 3,
-                  borderBottom: "1px solid #e2e8f0",
+                  borderBottom: '1px solid', borderColor: 'divider',
                   flexShrink: 0,
                 }}
               >
@@ -894,7 +894,7 @@ export default function MedicineDispensePage() {
                   minHeight: 0,
                   display: "flex",
                   flexDirection: "column",
-                  bgcolor: "#ffffff",
+                  bgcolor: 'background.paper',
                   overflow: "hidden",
                 }}
               >
@@ -918,7 +918,7 @@ export default function MedicineDispensePage() {
                   ) : (
                     <TableContainer component={Paper} elevation={0}>
                       <Table size="small">
-                        <TableHead sx={{ bgcolor: "#f8fafc" }}>
+                        <TableHead sx={{ bgcolor: 'background.default' }}>
                           <TableRow>
                             <TableCell sx={{ fontSize: 12, fontWeight: 800, color: "#475569", p: 1.75 }}>Tên thuốc</TableCell>
                             <TableCell sx={{ fontSize: 12, fontWeight: 800, color: "#475569", p: 1.75, textAlign: "center" }}>Số lượng</TableCell>
@@ -927,14 +927,14 @@ export default function MedicineDispensePage() {
                         </TableHead>
                         <TableBody>
                           {prescription.map((item) => (
-                            <TableRow key={item.medicine.idMed} hover sx={{ "&:hover": { bgcolor: "#f8fafc" } }}>
+                            <TableRow key={item.medicine.idMed} hover sx={{ "&:hover": { bgcolor: 'background.default' } }}>
                               {/* Tên thuốc */}
                               <TableCell sx={{ fontSize: 13.5, fontWeight: 750, p: 1.75, color: "#0f172a" }}>
                                 {item.medicine.nameMed}
                               </TableCell>
                               {/* Số lượng */}
                               <TableCell sx={{ p: 1, textAlign: "center" }}>
-                                <Box sx={{ display: "inline-flex", alignItems: "center", border: "1px solid #cbd5e1", borderRadius: "8px", bgcolor: "#ffffff", overflow: "hidden" }}>
+                                <Box sx={{ display: "inline-flex", alignItems: "center", border: '1px solid', borderColor: 'divider', borderRadius: "8px", bgcolor: 'background.paper', overflow: "hidden" }}>
                                   <IconButton
                                     size="small"
                                     onClick={() => handleQtyChange(item.medicine.idMed, item.qty - 1)}
@@ -975,7 +975,7 @@ export default function MedicineDispensePage() {
                 </Box>
 
                 {/* Footer chỉ còn nút xác nhận phát thuốc */}
-                <Box sx={{ p: 3, borderTop: "1px solid #e2e8f0", bgcolor: "#ffffff", flexShrink: 0 }}>
+                <Box sx={{ p: 3, borderTop: '1px solid', borderColor: 'divider', bgcolor: 'background.paper', flexShrink: 0 }}>
                   <Button
                     fullWidth
                     variant="contained"
@@ -1021,7 +1021,7 @@ export default function MedicineDispensePage() {
             </Typography>
           ) : (
             <Table size="small">
-              <TableHead sx={{ bgcolor: "#f8fafc" }}>
+              <TableHead sx={{ bgcolor: 'background.default' }}>
                 <TableRow>
                   <TableCell sx={{ fontWeight: 800 }}>Thời gian</TableCell>
                   <TableCell sx={{ fontWeight: 800 }}>Chẩn đoán</TableCell>
@@ -1092,7 +1092,7 @@ export default function MedicineDispensePage() {
           <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 1.25, fontWeight: 800, textTransform: "uppercase", fontSize: 11, letterSpacing: "0.5px" }}>
             Chi tiết toa thuốc:
           </Typography>
-          <Box sx={{ bgcolor: "#f8fafc", p: 2, borderRadius: "10px", border: "1px solid #e2e8f0" }}>
+          <Box sx={{ bgcolor: 'background.default', p: 2, borderRadius: "10px", border: '1px solid', borderColor: 'divider' }}>
             {prescription.map((item) => (
               <Box key={item.medicine.idMed} sx={{ display: "flex", justifyContent: "space-between", mb: 0.75 }}>
                 <Typography variant="caption" fontWeight={750} color="#0f172a" sx={{ fontSize: 12.5 }}>
@@ -1236,7 +1236,7 @@ export default function MedicineDispensePage() {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            bgcolor: "#ffffff",
+            bgcolor: 'background.paper',
             p: 4,
             borderRadius: "20px",
             boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
@@ -1306,7 +1306,7 @@ function EmployeeSearchInput({ value, onSearch, onClear, loading, hasSelectedEmp
           width: "100%",
           "& .MuiOutlinedInput-root": {
             borderRadius: "12px",
-            bgcolor: "#ffffff",
+            bgcolor: 'background.paper',
             boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
             paddingRight: "8px",
             "& fieldset": { borderColor: "#d1d5db" },

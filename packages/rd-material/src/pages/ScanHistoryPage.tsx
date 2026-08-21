@@ -143,7 +143,7 @@ const ScanHistoryPage: React.FC = () => {
 
               <IconButton 
                 onClick={(e) => setMobileMenuAnchor(e.currentTarget)}
-                sx={{ bgcolor: '#f8fafc', color: '#64748b', width: 40, height: 40, borderRadius: '50%' }}
+                sx={{ bgcolor: 'background.default', color: '#64748b', width: 40, height: 40, borderRadius: '50%' }}
               >
                 <MoreVertIcon />
               </IconButton>
@@ -257,7 +257,7 @@ const ScanHistoryPage: React.FC = () => {
             fullWidth size="small"
             value={itemType}
             onChange={(e) => { setItemType(e.target.value); setPage(0); }}
-            sx={{ borderRadius: 1.5, fontSize: 14, bgcolor: '#fff' }}
+            sx={{ borderRadius: 1.5, fontSize: 14, bgcolor: 'background.paper' }}
           >
             <MenuItem value="ALL">{t('common.all', 'All')}</MenuItem>
             <MenuItem value="FABRIC">{t('rdMaterial.fabric', 'Fabric Hanger')}</MenuItem>
@@ -272,7 +272,7 @@ const ScanHistoryPage: React.FC = () => {
             fullWidth size="small"
             value={actionType}
             onChange={(e) => { setActionType(e.target.value); setPage(0); }}
-            sx={{ borderRadius: 1.5, fontSize: 14, bgcolor: '#fff' }}
+            sx={{ borderRadius: 1.5, fontSize: 14, bgcolor: 'background.paper' }}
           >
             <MenuItem value="ALL">{t('common.all', 'All')}</MenuItem>
             <MenuItem value="IN">{t('rdMaterial.scanIn', 'Scan In')}</MenuItem>
@@ -282,19 +282,19 @@ const ScanHistoryPage: React.FC = () => {
       </AdvancedFilterDrawer>
 
       {/* 🚀 Table 🚀 */}
-      <Paper elevation={0} sx={{ flexGrow: 1, width: '100%', overflow: 'hidden', borderRadius: '12px', border: '1px solid #e1e3e4', boxShadow: '0px 4px 20px rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column', bgcolor: '#fff' }}>
+      <Paper elevation={0} sx={{ flexGrow: 1, width: '100%', overflow: 'hidden', borderRadius: '12px', border: '1px solid', borderColor: 'divider', boxShadow: '0px 4px 20px rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column', bgcolor: 'background.paper' }}>
         {isMobile ? (
-          <Box sx={{ flexGrow: 1, minHeight: 0, overflowY: 'auto', p: 1.5, display: 'flex', flexDirection: 'column', gap: 1.5, bgcolor: '#f8fafc' }}>
+          <Box sx={{ flexGrow: 1, minHeight: 0, overflowY: 'auto', p: 1.5, display: 'flex', flexDirection: 'column', gap: 1.5, bgcolor: 'background.default' }}>
             {loading ? (
               <Box sx={{ py: 6, display: 'flex', justifyContent: 'center' }}><CircularProgress size={28} color="primary" /></Box>
             ) : logs.length > 0 ? logs.map((log) => {
               const isOut = log.actionType === 'OUT' || log.action === 'SCAN_OUT';
               return (
-                <Box key={log.id} sx={{ bgcolor: '#fff', borderRadius: 3, p: 2, boxShadow: '0 2px 8px rgba(0,0,0,0.04)', display: 'flex', gap: 2, border: '1px solid #e2e8f0' }}>
+                <Box key={log.id} sx={{ bgcolor: 'background.paper', borderRadius: 3, p: 2, boxShadow: '0 2px 8px rgba(0,0,0,0.04)', display: 'flex', gap: 2, border: '1px solid', borderColor: 'divider' }}>
                   {/* Left: Image */}
                   <Box 
                     onClick={() => log.photoUrl && setPreviewPhotoUrl(log.photoUrl)}
-                    sx={{ width: 64, height: 64, borderRadius: 2, overflow: 'hidden', flexShrink: 0, bgcolor: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: log.photoUrl ? 'pointer' : 'default' }}
+                    sx={{ width: 64, height: 64, borderRadius: 2, overflow: 'hidden', flexShrink: 0, bgcolor: 'background.default', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: log.photoUrl ? 'pointer' : 'default' }}
                   >
                     {log.photoUrl ? (
                       <img src={rdItemApi.getImageUrl(log.photoUrl)} alt="img" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -317,7 +317,7 @@ const ScanHistoryPage: React.FC = () => {
                     <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
                       <Chip label={isOut ? 'SCAN OUT' : 'SCAN IN'} size="small" sx={{ height: 22, fontSize: 10, fontWeight: 700, bgcolor: isOut ? '#fef2f2' : '#f0fdf4', color: isOut ? '#b91c1c' : '#16a34a' }} />
                       <Chip label={`Qty: ${log.qtyChanged}`} size="small" sx={{ height: 22, fontSize: 11, fontWeight: 600, bgcolor: isOut ? 'rgba(185,28,28,0.1)' : 'rgba(22,163,74,0.1)', color: isOut ? '#b91c1c' : '#16a34a' }} />
-                      <Chip label={log.holder || log.scannedBy || 'Unknown'} size="small" sx={{ height: 22, fontSize: 11, bgcolor: '#f1f5f9', color: '#475569', maxWidth: 100 }} />
+                      <Chip label={log.holder || log.scannedBy || 'Unknown'} size="small" sx={{ height: 22, fontSize: 11, bgcolor: 'background.default', color: '#475569', maxWidth: 100 }} />
                     </Box>
                     {log.note && <Typography sx={{ fontSize: 12, color: '#94a3b8', mt: 1, fontStyle: 'italic', borderTop: '1px dashed #e2e8f0', pt: 1 }}>{log.note}</Typography>}
                   </Box>
@@ -338,7 +338,7 @@ const ScanHistoryPage: React.FC = () => {
                     <TableCell key={i} sx={{
                       fontWeight: 700, fontSize: 11, color: '#707975',
                       textTransform: 'uppercase', letterSpacing: '0.05em',
-                      bgcolor: '#F9FAFA', borderBottom: '1px solid #e1e3e4',
+                      bgcolor: '#F9FAFA', borderBottom: '1px solid', borderColor: 'divider',
                       py: 2, px: 2, textAlign: isCenter ? 'center' : 'left'
                     }}>
                       {h}
@@ -347,7 +347,7 @@ const ScanHistoryPage: React.FC = () => {
                 })}
               </TableRow>
             </TableHead>
-            <TableBody sx={{ '& tr:nth-of-type(even)': { bgcolor: '#fff' }, '& tr:nth-of-type(odd)': { bgcolor: '#fff' }, opacity: loading ? 0.6 : 1, transition: 'opacity 0.2s' }}>
+            <TableBody sx={{ '& tr:nth-of-type(even)': { bgcolor: 'background.paper' }, '& tr:nth-of-type(odd)': { bgcolor: 'background.paper' }, opacity: loading ? 0.6 : 1, transition: 'opacity 0.2s' }}>
               {loading ? (
                 <TableRow><TableCell colSpan={8} align="center" sx={{ py: 6 }}>
                   <CircularProgress size={28} color="primary" />
@@ -359,7 +359,7 @@ const ScanHistoryPage: React.FC = () => {
                     key={log.id} hover
                     sx={{ 
                       '&:last-child td': { border: 0 },
-                      bgcolor: '#fff',
+                      bgcolor: 'background.paper',
                       transition: 'background-color 0.2s',
                       '&:hover': { bgcolor: '#F9FAFA !important' }
                     }}
@@ -390,7 +390,7 @@ const ScanHistoryPage: React.FC = () => {
                         <Box 
                           onClick={() => setPreviewPhotoUrl(log.photoUrl || null)}
                           sx={{ 
-                            width: 32, height: 32, borderRadius: 1, overflow: 'hidden', border: '1px solid #e1e3e4', cursor: 'pointer',
+                            width: 32, height: 32, borderRadius: 1, overflow: 'hidden', border: '1px solid', borderColor: 'divider', cursor: 'pointer',
                             transition: 'transform 0.15s', '&:hover': { transform: 'scale(1.1)' }, display: 'inline-block'
                           }}
                         >
@@ -411,10 +411,10 @@ const ScanHistoryPage: React.FC = () => {
         )}
         {/* Table Footer / Pagination */}
         <Box sx={{ 
-          borderTop: '1px solid #e1e3e4', 
+          borderTop: '1px solid', borderColor: 'divider', 
           px: { xs: 1, sm: 3 }, 
           py: 1, 
-          bgcolor: '#fff', 
+          bgcolor: 'background.paper', 
           display: 'flex', 
           flexDirection: 'row',
           alignItems: 'center', 

@@ -38,7 +38,7 @@ const ImageGallery = ({ images }: { images: string[] }) => {
   const [fullscreenOpen, setFullscreenOpen] = useState(false);
   if (!images || images.length === 0) {
     return (
-      <Box sx={{ width: '100%', aspectRatio: '4/5', bgcolor: '#f3f4f6', borderRadius: 3, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#9ca3af' }}>
+      <Box sx={{ width: '100%', aspectRatio: { xs: '16/9', sm: '4/5' }, maxHeight: { xs: 240, sm: 'none' }, bgcolor: '#f3f4f6', borderRadius: 3, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#9ca3af' }}>
         <ImageIcon sx={{ fontSize: 48, mb: 1, opacity: 0.5 }} />
         <Typography variant="caption" fontWeight={500}>No Image</Typography>
       </Box>
@@ -47,7 +47,7 @@ const ImageGallery = ({ images }: { images: string[] }) => {
   return (
     <Box>
       <Box 
-        sx={{ width: '100%', aspectRatio: '4/5', bgcolor: '#f3f4f6', borderRadius: 3, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', cursor: 'zoom-in', position: 'relative', '&:hover .overlay': { opacity: 1 } }}
+        sx={{ width: '100%', aspectRatio: { xs: '16/9', sm: '4/5' }, maxHeight: { xs: 240, sm: 'none' }, bgcolor: '#f3f4f6', borderRadius: 3, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', cursor: 'zoom-in', position: 'relative', '&:hover .overlay': { opacity: 1 } }}
         onClick={() => setFullscreenOpen(true)}
       >
         <img src={rdItemApi.getImageUrl(images[activeIdx])} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.3s', transform: 'scale(1)' }} onMouseOver={e => e.currentTarget.style.transform = 'scale(1.05)'} onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'} />
@@ -185,13 +185,13 @@ const FabricDetailPage: React.FC = () => {
   return (
     <Box sx={{ 
       bgcolor: '#F8F9FA', 
-      height: { xs: 'auto', md: 'calc(100vh - 90px)' }, 
+      minHeight: '100%',
       m: { xs: -1, md: -1.5 }, 
       p: { xs: 2, md: 4 },
-      pb: { xs: 'calc(120px + env(safe-area-inset-bottom))', md: 4 },
+      pb: { xs: 'calc(100px + env(safe-area-inset-bottom))', md: 4 },
       display: 'flex',
       flexDirection: 'column',
-      overflow: { xs: 'visible', md: 'hidden' }
+      overflowY: 'visible'
     }}>
       {/* ── Breadcrumb ── */}
       <Box sx={{ flexShrink: 0 }} display="flex" alignItems="center" gap={1} mb={3}>
@@ -246,7 +246,7 @@ const FabricDetailPage: React.FC = () => {
           <Tooltip title="Actions">
             <IconButton 
               onClick={(e) => setActionMenuAnchor(e.currentTarget)} 
-              sx={{ border: '1px solid #e5e7eb', borderRadius: 2, width: 40, height: 40, bgcolor: '#fff', color: '#4b5563', '&:hover': { bgcolor: '#f9fafb', color: '#111827' } }}
+              sx={{ border: '1px solid #e5e7eb', borderRadius: 2, width: 40, height: 40, bgcolor: 'background.paper', color: '#4b5563', '&:hover': { bgcolor: '#f9fafb', color: '#111827' } }}
             >
               <MoreVertIcon sx={{ fontSize: 20 }} />
             </IconButton>
@@ -302,17 +302,17 @@ const FabricDetailPage: React.FC = () => {
       </Box>
 
       {/* ── Main content ── */}
-      <Grid container spacing={4} sx={{ flex: 1, minHeight: 0, height: { xs: 'auto', md: '100%' } }}>
+      <Grid container spacing={4} sx={{ flex: 1, minHeight: 0 }}>
         {/* Left Column */}
-        <Grid size={{ xs: 12, lg: 4 }} sx={{ height: { xs: 'auto', md: '100%' }, display: 'flex', flexDirection: 'column' }}>
-          <Box sx={{ flex: 1, overflowY: { xs: 'visible', md: 'auto' }, pr: { xs: 0, md: 1 }, pb: { xs: 2, md: 0 } }}>
+        <Grid size={{ xs: 12, lg: 4 }} sx={{ display: 'flex', flexDirection: 'column' }}>
+          <Box sx={{ flex: 1, pr: { xs: 0, lg: 1 }, pb: { xs: 2, lg: 0 } }}>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-              <Card elevation={0} sx={{ borderRadius: 4, p: 3, bgcolor: '#fff', border: '1px solid #f3f4f6', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)' }}>
+              <Card elevation={0} sx={{ borderRadius: 4, p: 3, bgcolor: 'background.paper', border: '1px solid #f3f4f6', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)' }}>
                 <Typography fontSize={12} fontWeight={700} color="#9ca3af" textTransform="uppercase" letterSpacing="0.05em" mb={2}>{t('rdMaterial.fabric_images', 'Fabric Images')}</Typography>
                 <ImageGallery images={item.mainImage ? item.mainImage.split(',').filter(Boolean) : []} />
               </Card>
               {item.stickerImage && item.stickerImage.split(',').filter(Boolean).length > 0 && (
-                <Card elevation={0} sx={{ borderRadius: 4, p: 3, bgcolor: '#fff', border: '1px solid #f3f4f6', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)' }}>
+                <Card elevation={0} sx={{ borderRadius: 4, p: 3, bgcolor: 'background.paper', border: '1px solid #f3f4f6', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)' }}>
                   <Typography fontSize={12} fontWeight={700} color="#9ca3af" textTransform="uppercase" letterSpacing="0.05em" mb={2}>{t('rdMaterial.sticker_images', 'Sticker Images')}</Typography>
                   <ImageGallery images={item.stickerImage.split(',').filter(Boolean)} />
                 </Card>
@@ -322,12 +322,12 @@ const FabricDetailPage: React.FC = () => {
         </Grid>
 
         {/* Right Column */}
-        <Grid size={{ xs: 12, lg: 8 }} sx={{ height: { xs: 'auto', md: '100%' }, display: 'flex', flexDirection: 'column' }}>
-          <Box sx={{ flex: 1, overflowY: { xs: 'visible', md: 'auto' }, pr: { xs: 0, md: 1 } }}>
+        <Grid size={{ xs: 12, lg: 8 }} sx={{ display: 'flex', flexDirection: 'column' }}>
+          <Box sx={{ flex: 1, pr: { xs: 0, lg: 1 } }}>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
             {/* Tabbed Details Card */}
             {/* Tabbed Details Card */}
-            <Card elevation={0} sx={{ borderRadius: 4, bgcolor: '#fff', border: '1px solid #f3f4f6', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)', overflow: 'hidden' }}>
+            <Card elevation={0} sx={{ borderRadius: 4, bgcolor: 'background.paper', border: '1px solid #f3f4f6', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)', overflow: 'hidden' }}>
               <Tabs value={tab} onChange={(_, v) => setTab(v)}
                 TabIndicatorProps={{ sx: { bgcolor: '#15803d', height: 2 } }}
                 sx={{
@@ -407,7 +407,7 @@ const FabricDetailPage: React.FC = () => {
                       return (
                         <TableContainer>
                           <Table size="small">
-                            <TableHead sx={{ bgcolor: '#f8fafc' }}>
+                            <TableHead sx={{ bgcolor: 'background.default' }}>
                               <TableRow>
                                 {['Date', 'Customer', 'Price', 'MOQ/MCQ', 'Surcharge', 'Leadtime (Greige)', 'Leadtime (No Greige)', 'User'].map(h => (
                                   <TableCell key={h} sx={{ fontWeight: 600, fontSize: 12, textTransform: 'uppercase', color: '#9ca3af', borderBottom: '1px solid #e5e7eb', py: 1.5 }}>
@@ -498,7 +498,7 @@ const FabricDetailPage: React.FC = () => {
                                         <Box 
                                           onClick={() => setPreviewPhotoUrl(log.photoUrl || null)}
                                           sx={{ 
-                                            width: 32, height: 32, borderRadius: 1, overflow: 'hidden', border: '1px solid #e1e3e4', cursor: 'pointer',
+                                            width: 32, height: 32, borderRadius: 1, overflow: 'hidden', border: '1px solid', borderColor: 'divider', cursor: 'pointer',
                                             transition: 'transform 0.15s', '&:hover': { transform: 'scale(1.1)' }, display: 'inline-block'
                                           }}
                                         >

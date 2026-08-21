@@ -98,7 +98,7 @@ export const EmailTemplateConfig: React.FC = () => {
   }
 
   return (
-    <Paper elevation={0} sx={{ border: '1px solid #e2e8f0', borderRadius: 2, overflow: 'hidden', p: 3 }}>
+    <Paper elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2, overflow: 'hidden', p: 3 }}>
       <Typography variant="h6" sx={{ fontSize: '1rem', fontWeight: 600, color: '#334155', mb: 2 }}>
         {t('tcc.settings.emailTemplate', 'Cấu Hình Email Template (Completed)')}
       </Typography>

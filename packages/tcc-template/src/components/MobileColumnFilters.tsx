@@ -152,7 +152,7 @@ function MobileColumnFilterItem({
       disableGutters
       elevation={0}
       sx={{ 
-        border: '1px solid #e2e8f0', 
+        border: '1px solid', borderColor: 'divider', 
         borderRadius: '8px !important',
         mb: 0.5,
         '&:before': { display: 'none' },
@@ -213,7 +213,7 @@ function MobileColumnFilterItem({
         </IconButton>
       </AccordionSummary>
 
-      <AccordionDetails sx={{ p: 2, display: 'flex', flexDirection: 'column', gap: 1.5, bgcolor: '#fff' }}>
+      <AccordionDetails sx={{ p: 2, display: 'flex', flexDirection: 'column', gap: 1.5, bgcolor: 'background.paper' }}>
         {/* Search unique values */}
         <TextField
           placeholder={t('tcc.searchValues', 'Tìm giá trị...')}
@@ -235,7 +235,7 @@ function MobileColumnFilterItem({
               height: 32,
               fontSize: 12,
               borderRadius: '6px',
-              bgcolor: '#f8fafc'
+              bgcolor: 'background.default'
             }
           }}
         />
@@ -420,7 +420,7 @@ export default function MobileColumnFilters({
                 maxHeight: 300,
                 width: 250,
                 boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
-                border: '1px solid #e2e8f0',
+                border: '1px solid', borderColor: 'divider',
                 borderRadius: '8px',
                 mt: 0.5
               }

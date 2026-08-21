@@ -243,7 +243,7 @@ export default function DefaultScanView({ customer, factory, facLine, onHistoryR
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, flexGrow: 1, minHeight: 0 }}>
       {/* Serial port status bar */}
       {serialSupported && (
-        <Paper elevation={0} sx={{ px: 2, py: 0.75, borderRadius: 2, border: '1px solid #e0e0e0',
+        <Paper elevation={0} sx={{ px: 2, py: 0.75, borderRadius: 2, border: '1px solid', borderColor: 'divider',
           display: 'flex', alignItems: 'center', gap: 1.5, backgroundColor: '#fafafa' }}>
           <UsbIcon sx={{ fontSize: 18, color: serialStatus === 'connected' ? '#2e7d32' : '#999' }} />
           <Box sx={{
@@ -273,7 +273,7 @@ export default function DefaultScanView({ customer, factory, facLine, onHistoryR
 
       <Box sx={{ display: 'flex', gap: 1.5, flexGrow: 1, minHeight: 0 }}>
       {/* Left: Input fields + info */}
-      <Paper elevation={0} sx={{ flex: 1, p: 2, borderRadius: 2, border: '1px solid #e0e0e0', display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+      <Paper elevation={0} sx={{ flex: 1, p: 2, borderRadius: 2, border: '1px solid', borderColor: 'divider', display: 'flex', flexDirection: 'column', gap: 1.5 }}>
         {/* Row 1: CodeReader */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <Typography variant="caption" sx={{ fontWeight: 700, minWidth: 90, color: '#555' }}>{t('defaultScan.codeString')}</Typography>
@@ -294,7 +294,7 @@ export default function DefaultScanView({ customer, factory, facLine, onHistoryR
             autoFocus
             sx={{
               '& .MuiOutlinedInput-root': {
-                borderRadius: 1.5, backgroundColor: '#fff', fontFamily: 'monospace', fontSize: '0.9rem',
+                borderRadius: 1.5, backgroundColor: 'background.paper', fontFamily: 'monospace', fontSize: '0.9rem',
               },
             }}
           />
@@ -440,10 +440,10 @@ export default function DefaultScanView({ customer, factory, facLine, onHistoryR
 
       {/* Right: Scanned items list (ô 12) */}
       <Paper elevation={0} sx={{
-        width: 280, borderRadius: 2, border: '1px solid #e0e0e0',
+        width: 280, borderRadius: 2, border: '1px solid', borderColor: 'divider',
         display: 'flex', flexDirection: 'column', overflow: 'hidden',
       }}>
-        <Box sx={{ p: 1, backgroundColor: '#f5f5f5', borderBottom: '1px solid #e0e0e0' }}>
+        <Box sx={{ p: 1, backgroundColor: '#f5f5f5', borderBottom: '1px solid', borderColor: 'divider' }}>
           <Typography variant="caption" sx={{ fontWeight: 700 }}>
             📦 {t('defaultScan.itemList')} ({Object.keys(scannedItems).length})
           </Typography>

@@ -429,24 +429,24 @@ export default function InsurancePage() {
         <Paper elevation={0} sx={{ 
           width: isMobile ? '100%' : '440px',
           borderRadius: '8px',
-          border: '1px solid #e2e8f0',
+          border: '1px solid', borderColor: 'divider',
           p: 2,
           display: 'flex',
           flexDirection: 'column',
           gap: 1.5,
-          bgcolor: '#fff',
+          bgcolor: 'background.paper',
           flexShrink: 0,
           height: '100%',
           overflowY: 'auto',
           boxShadow: '0 4px 20px -2px rgba(0,0,0,0.05)'
         }}>
-          <Typography sx={{ fontWeight: 800, fontSize: '13px', color: '#0f172a', display: 'flex', alignItems: 'center', gap: 1, borderBottom: '1px solid #f1f5f9', pb: 1, textTransform: 'uppercase', letterSpacing: '0.02em' }}>
+          <Typography sx={{ fontWeight: 800, fontSize: '13px', color: '#0f172a', display: 'flex', alignItems: 'center', gap: 1, borderBottom: '1px solid', borderColor: 'divider', pb: 1, textTransform: 'uppercase', letterSpacing: '0.02em' }}>
             <ApproveIcon sx={{ color: '#15803d', fontSize: 16 }} />
             Tạo hồ sơ nghỉ hưởng BHXH
           </Typography>
 
           {/* SECTION 1: Patient Search */}
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, p: 1.25, border: '1px solid #f1f5f9', borderRadius: '6px', bgcolor: '#f8fafc' }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, p: 1.25, border: '1px solid', borderColor: 'divider', borderRadius: '6px', bgcolor: 'background.default' }}>
             <Typography sx={{ fontSize: '11px', fontWeight: 900, color: '#15803d', textTransform: 'uppercase' }}>1. Nhân viên nghỉ bệnh (*)</Typography>
             <Box sx={{ display: 'flex', gap: 1 }}>
               <TextField
@@ -466,7 +466,7 @@ export default function InsurancePage() {
                   flexGrow: 1,
                   '& .MuiOutlinedInput-root': {
                     borderRadius: '6px',
-                    backgroundColor: '#ffffff',
+                    backgroundColor: 'background.paper',
                     fontSize: '12px',
                     height: 32,
                     '& fieldset': { borderColor: '#cbd5e1' },
@@ -498,7 +498,7 @@ export default function InsurancePage() {
           </Box>
 
           {/* SECTION 2: Submitter Info */}
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, p: 1.25, border: '1px solid #f1f5f9', borderRadius: '6px', bgcolor: '#f8fafc' }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, p: 1.25, border: '1px solid', borderColor: 'divider', borderRadius: '6px', bgcolor: 'background.default' }}>
             <Typography sx={{ fontSize: '11px', fontWeight: 900, color: '#15803d', textTransform: 'uppercase' }}>2. Người nộp hồ sơ (*)</Typography>
             <Box sx={{ display: 'flex', gap: 1 }}>
               <TextField
@@ -511,7 +511,7 @@ export default function InsurancePage() {
                   flexGrow: 1,
                   '& .MuiOutlinedInput-root': {
                     borderRadius: '6px',
-                    backgroundColor: '#ffffff',
+                    backgroundColor: 'background.paper',
                     fontSize: '12px',
                     height: 32,
                     '& fieldset': { borderColor: '#cbd5e1' }
@@ -545,7 +545,7 @@ export default function InsurancePage() {
                     borderRadius: '6px',
                     height: 32,
                     fontSize: '11.5px',
-                    backgroundColor: '#ffffff'
+                    backgroundColor: 'background.paper'
                   }
                 }}
               />
@@ -560,7 +560,7 @@ export default function InsurancePage() {
                     borderRadius: '6px',
                     height: 32,
                     fontSize: '11.5px',
-                    backgroundColor: '#ffffff'
+                    backgroundColor: 'background.paper'
                   }
                 }}
               />
@@ -620,7 +620,7 @@ export default function InsurancePage() {
 
             {/* Auto filled fields from Insurance */}
             {insuranceId && (
-              <Box sx={{ p: 1, bgcolor: '#f8fafc', borderRadius: '6px', border: '1px solid #e2e8f0', display: 'flex', flexWrap: 'wrap', gap: 1.5 }}>
+              <Box sx={{ p: 1, bgcolor: 'background.default', borderRadius: '6px', border: '1px solid', borderColor: 'divider', display: 'flex', flexWrap: 'wrap', gap: 1.5 }}>
                 <Box sx={{ flex: '1 1 40%' }}>
                   <Typography sx={{ fontSize: '10px', color: '#64748b', fontWeight: 700 }}>Mã bệnh BHXH:</Typography>
                   <Typography sx={{ fontSize: '11.5px', color: '#0f172a', fontWeight: 800 }}>{insuranceCode}</Typography>
@@ -662,7 +662,7 @@ export default function InsurancePage() {
                       borderRadius: '6px',
                       height: 32,
                       fontSize: '11.5px',
-                      backgroundColor: '#f8fafc',
+                      backgroundColor: 'background.default',
                       '& fieldset': { borderColor: '#cbd5e1' }
                     }
                   }}
@@ -752,7 +752,7 @@ export default function InsurancePage() {
             />
 
             {isChildChecked && (
-              <Box sx={{ display: 'flex', gap: 1.5, p: 1.25, bgcolor: '#f8fafc', borderRadius: '6px', border: '1px dashed #cbd5e1' }}>
+              <Box sx={{ display: 'flex', gap: 1.5, p: 1.25, bgcolor: 'background.default', borderRadius: '6px', border: '1px dashed #cbd5e1' }}>
                 <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 0.5 }}>
                   <Typography sx={{ fontSize: '11px', fontWeight: 800, color: '#64748b' }}>Ngày sinh của con (*)</Typography>
                   <TextField
@@ -766,7 +766,7 @@ export default function InsurancePage() {
                         height: 30,
                         fontSize: '11px',
                         fontWeight: 700,
-                        backgroundColor: '#ffffff'
+                        backgroundColor: 'background.paper'
                       }
                     }}
                   />
@@ -783,7 +783,7 @@ export default function InsurancePage() {
                         borderRadius: '6px',
                         height: 30,
                         fontSize: '11.5px',
-                        backgroundColor: '#ffffff'
+                        backgroundColor: 'background.paper'
                       }
                     }}
                   />
@@ -797,7 +797,7 @@ export default function InsurancePage() {
             <Typography sx={{ fontSize: '11.5px', fontWeight: 800, color: '#64748b', display: 'flex', alignItems: 'center', gap: 0.5 }}>
               <DocIcon sx={{ fontSize: 16, color: '#15803d' }} /> Hồ sơ chứng từ đính kèm (*)
             </Typography>
-            <FormGroup sx={{ p: 1, border: '1px solid #cbd5e1', borderRadius: '6px', maxHeight: 150, overflowY: 'auto' }}>
+            <FormGroup sx={{ p: 1, border: '1px solid', borderColor: 'divider', borderRadius: '6px', maxHeight: 150, overflowY: 'auto' }}>
               {DOCUMENT_ITEMS.map(doc => (
                 <FormControlLabel
                   key={doc.id}
@@ -866,16 +866,16 @@ export default function InsurancePage() {
         <Paper elevation={0} sx={{ 
           flexGrow: 1,
           borderRadius: '8px',
-          border: '1px solid #cbd5e1',
+          border: '1px solid', borderColor: 'divider',
           display: 'flex',
           flexDirection: 'column',
           overflow: 'hidden',
-          bgcolor: '#fff',
+          bgcolor: 'background.paper',
           height: '100%',
           boxShadow: '0 4px 20px -2px rgba(0,0,0,0.05)'
         }}>
           {/* Header & Filter options */}
-          <Box sx={{ borderBottom: '1px solid #e2e8f0', p: 1.25, px: 2, bgcolor: '#f8fafc', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 1.5 }}>
+          <Box sx={{ borderBottom: '1px solid', borderColor: 'divider', p: 1.25, px: 2, bgcolor: 'background.default', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 1.5 }}>
             <Typography variant="subtitle2" sx={{ fontWeight: 800, fontSize: '13px', color: '#0f172a', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
               Danh sách nghỉ hưởng BHXH
             </Typography>
@@ -894,7 +894,7 @@ export default function InsurancePage() {
                     height: 30,
                     fontSize: '11.5px',
                     fontWeight: 700,
-                    bgcolor: '#ffffff',
+                    bgcolor: 'background.paper',
                     '& fieldset': { borderColor: '#cbd5e1' }
                   }
                 }}
@@ -919,7 +919,7 @@ export default function InsurancePage() {
                     '& .MuiOutlinedInput-root': {
                       borderRadius: '6px',
                       height: 30,
-                      backgroundColor: '#ffffff',
+                      backgroundColor: 'background.paper',
                       fontSize: '11.5px',
                       fontWeight: 750,
                       color: '#334155',
@@ -941,7 +941,7 @@ export default function InsurancePage() {
                     '& .MuiOutlinedInput-root': {
                       borderRadius: '6px',
                       height: 30,
-                      backgroundColor: '#ffffff',
+                      backgroundColor: 'background.paper',
                       fontSize: '11.5px',
                       fontWeight: 750,
                       color: '#334155',
@@ -960,11 +960,11 @@ export default function InsurancePage() {
               <Table size="small" stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Nhân viên</TableCell>
-                    <TableCell sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Bệnh lý & Chế độ BHXH</TableCell>
-                    <TableCell sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }} align="center">Thời gian nghỉ chỉ định</TableCell>
-                    <TableCell sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Hồ sơ & Giấy tờ</TableCell>
-                    <TableCell sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }} align="center">Thao tác</TableCell>
+                    <TableCell sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Nhân viên</TableCell>
+                    <TableCell sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Bệnh lý & Chế độ BHXH</TableCell>
+                    <TableCell sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }} align="center">Thời gian nghỉ chỉ định</TableCell>
+                    <TableCell sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Hồ sơ & Giấy tờ</TableCell>
+                    <TableCell sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }} align="center">Thao tác</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -1038,8 +1038,8 @@ export default function InsurancePage() {
             {/* Pagination custom TCC layout */}
             {filteredRecords.length > 0 && (
               <Box sx={{ 
-                borderTop: '1px solid #e2e8f0', 
-                backgroundColor: '#f8fafc', 
+                borderTop: '1px solid', borderColor: 'divider', 
+                backgroundColor: 'background.default', 
                 p: 1.25, 
                 px: 3,
                 display: 'flex', 
@@ -1062,7 +1062,7 @@ export default function InsurancePage() {
                       height: 30, 
                       fontSize: '12.5px', 
                       fontWeight: 700, 
-                      backgroundColor: '#fff',
+                      backgroundColor: 'background.paper',
                       borderRadius: '6px',
                       '& .MuiOutlinedInput-notchedOutline': { borderColor: '#cbd5e1' }
                     }}

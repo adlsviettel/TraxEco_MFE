@@ -164,11 +164,11 @@ export default function EmployeeSearchCard({
               flexWrap: "wrap",
               gap: 2,
               flexGrow: 1,
-              bgcolor: "#f8fafc",
+              bgcolor: 'background.default',
               p: 0.75,
               px: 2,
               borderRadius: 2,
-              border: "1px solid #e2e8f0",
+              border: '1px solid', borderColor: 'divider',
             }}
           >
             <Avatar sx={{ bgcolor: "#2e7d32", width: 32, height: 32 }}>
@@ -231,7 +231,7 @@ export default function EmployeeSearchCard({
                 color: "#475569",
                 "&:hover": {
                   borderColor: "#94a3b8",
-                  bgcolor: "#f1f5f9",
+                  bgcolor: 'background.default',
                 },
               }}
             >
@@ -264,7 +264,7 @@ export default function EmployeeSearchCard({
             ) : (
               <Table size="small">
                 <TableHead>
-                  <TableRow sx={{ bgcolor: "#f8fafc" }}>
+                  <TableRow sx={{ bgcolor: 'background.default' }}>
                     <TableCell sx={{ fontWeight: 700 }}>Ngày phát</TableCell>
                     <TableCell sx={{ fontWeight: 700 }}>Loại</TableCell>
                     <TableCell sx={{ fontWeight: 700 }}>Triệu chứng / Bệnh</TableCell>
@@ -274,7 +274,7 @@ export default function EmployeeSearchCard({
                 </TableHead>
                 <TableBody>
                   {history.map((row) => (
-                    <TableRow key={row.code} sx={{ "&:hover": { bgcolor: "#f8fafc" } }}>
+                    <TableRow key={row.code} sx={{ "&:hover": { bgcolor: 'background.default' } }}>
                       <TableCell>{new Date(row.sysCreateDate).toLocaleString("vi-VN")}</TableCell>
                       <TableCell>
                         <Chip
@@ -355,8 +355,8 @@ export default function EmployeeSearchCard({
           sx={{
             mt: 2,
             p: 1.5,
-            bgcolor: "#f8fafc",
-            border: "1px solid #e2e8f0",
+            bgcolor: 'background.default',
+            border: '1px solid', borderColor: 'divider',
             borderRadius: 1,
           }}
         >
@@ -432,7 +432,7 @@ export default function EmployeeSearchCard({
                     color: "#475569",
                     "&:hover": {
                       borderColor: "#94a3b8",
-                      bgcolor: "#f8fafc",
+                      bgcolor: 'background.default',
                     },
                   }}
                 >
@@ -468,7 +468,7 @@ export default function EmployeeSearchCard({
           ) : (
             <Table size="small">
               <TableHead>
-                <TableRow sx={{ bgcolor: "#f8fafc" }}>
+                <TableRow sx={{ bgcolor: 'background.default' }}>
                   <TableCell sx={{ fontWeight: 700 }}>Ngày phát</TableCell>
                   <TableCell sx={{ fontWeight: 700 }}>Loại</TableCell>
                   <TableCell sx={{ fontWeight: 700 }}>Triệu chứng / Bệnh</TableCell>
@@ -478,7 +478,7 @@ export default function EmployeeSearchCard({
               </TableHead>
               <TableBody>
                 {history.map((row) => (
-                  <TableRow key={row.code} sx={{ "&:hover": { bgcolor: "#f8fafc" } }}>
+                  <TableRow key={row.code} sx={{ "&:hover": { bgcolor: 'background.default' } }}>
                     <TableCell>{new Date(row.sysCreateDate).toLocaleString("vi-VN")}</TableCell>
                     <TableCell>
                       <Chip

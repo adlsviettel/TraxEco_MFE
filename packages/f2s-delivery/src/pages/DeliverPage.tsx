@@ -162,7 +162,7 @@ function ManualTab() {
         <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#2e7d32', mb: 1, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 1 }}>
           <SearchIcon fontSize="small" /> Bước 1: Tìm PO hoặc SO
         </Typography>
-        <Paper elevation={0} sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: '100%', maxWidth: '100%', borderRadius: 2, border: '1px solid #e0e0e0', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
+        <Paper elevation={0} sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: '100%', maxWidth: '100%', borderRadius: 2, border: '1px solid', borderColor: 'divider', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
           {/* Toggle PO/SO */}
           <TextField
             select
@@ -250,7 +250,7 @@ function ManualTab() {
       
       {/* Bước 2: Danh sách Size của PO/SO */}
       {selectedPO && (
-        <Paper elevation={0} sx={{ p: 2, borderRadius: 2, border: '1px solid #e0e0e0' }}>
+        <Paper elevation={0} sx={{ p: 2, borderRadius: 2, border: '1px solid', borderColor: 'divider' }}>
           <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#2e7d32', mb: 2, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 1 }}>
             <ListIcon /> Bước 2: Chọn Dòng ({searchType}: {selectedPO})
           </Typography>
@@ -330,11 +330,11 @@ function ManualTab() {
 
       {/* Bước 3: History (Result 2) */}
       {selectedPO && history.length > 0 && (
-        <Paper elevation={0} sx={{ p: 2, borderRadius: 2, border: '1px solid #e0e0e0', backgroundColor: '#fafafa' }}>
+        <Paper elevation={0} sx={{ p: 2, borderRadius: 2, border: '1px solid', borderColor: 'divider', backgroundColor: '#fafafa' }}>
           <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#455a64', mb: 2, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 1 }}>
             <ListIcon /> Kết quả giao hàng (Lịch sử & Tổng hợp)
           </Typography>
-          <TableContainer sx={{ border: '1px solid #eee', borderRadius: 1, backgroundColor: '#fff' }}>
+          <TableContainer sx={{ border: '1px solid #eee', borderRadius: 1, backgroundColor: 'background.paper' }}>
             <Table size="small">
               <TableHead sx={{ backgroundColor: '#eeeeee' }}>
                 <TableRow>
@@ -350,7 +350,7 @@ function ManualTab() {
                     {['RecNo', 'JobNo', 'PONo', 'BuyerItem', 'ManuSize', 'CustSize', 'Balance'].map((col) => (
                       <TableCell key={col}>{row[col] != null ? String(row[col]) : ''}</TableCell>
                     ))}
-                    <TableCell sx={{ textAlign: 'center', position: 'sticky', right: 0, backgroundColor: '#ffffff', borderLeft: '1px solid #eee' }}>
+                    <TableCell sx={{ textAlign: 'center', position: 'sticky', right: 0, backgroundColor: 'background.paper', borderLeft: '1px solid #eee' }}>
                       <Button
                         variant="outlined"
                         color="error"
@@ -624,7 +624,7 @@ function PackDialog({ open, item, packTypes, usedCrates, onClose, onConfirm }: P
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth PaperProps={{ sx: { borderRadius: 3 } }}>
-      <DialogTitle sx={{ fontWeight: 700, color: '#2e7d32', display: 'flex', alignItems: 'center', gap: 1, borderBottom: '1px solid #e0e0e0' }}>
+      <DialogTitle sx={{ fontWeight: 700, color: '#2e7d32', display: 'flex', alignItems: 'center', gap: 1, borderBottom: '1px solid', borderColor: 'divider' }}>
         <AutoIcon /> Giao Thùng #{item?.cartonNo}
       </DialogTitle>
       <DialogContent sx={{ pt: 3 }}>
@@ -690,7 +690,7 @@ function PackDialog({ open, item, packTypes, usedCrates, onClose, onConfirm }: P
                         component="img"
                         src={`http://192.168.1.248/F2SDelivery_PartitionType/${pt.pic}`}
                         alt={pt.name}
-                        sx={{ height: 80, width: '100%', objectFit: 'contain', bgcolor: '#fff', borderBottom: '1px solid #eee' }}
+                        sx={{ height: 80, width: '100%', objectFit: 'contain', bgcolor: 'background.paper', borderBottom: '1px solid #eee' }}
                         onError={(e: any) => { e.target.style.display = 'none'; }}
                       />
                     ) : (
@@ -741,7 +741,7 @@ function PackDialog({ open, item, packTypes, usedCrates, onClose, onConfirm }: P
 
             {/* HTML5 QR Scanner */}
             {isScanning && (
-              <Box sx={{ mt: 1, borderRadius: 2, overflow: 'hidden', border: '1px solid #e0e0e0' }}>
+              <Box sx={{ mt: 1, borderRadius: 2, overflow: 'hidden', border: '1px solid', borderColor: 'divider' }}>
                 <Html5QrcodePlugin
                   fps={10}
                   qrbox={250}
@@ -758,7 +758,7 @@ function PackDialog({ open, item, packTypes, usedCrates, onClose, onConfirm }: P
           </Box>
         )}
       </DialogContent>
-      <DialogActions sx={{ p: 2, borderTop: '1px solid #e0e0e0' }}>
+      <DialogActions sx={{ p: 2, borderTop: '1px solid', borderColor: 'divider' }}>
         <Button onClick={onClose} color="inherit" sx={{ fontWeight: 600 }}>Hủy</Button>
         <Button
           variant="contained"
@@ -973,7 +973,7 @@ function AutoTab() {
         <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#2e7d32', mb: 1, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 1 }}>
           <SearchIcon fontSize="small" /> {t('f2s.step1.inputPo', 'Bước 1: Nhập số PO')}
         </Typography>
-        <Paper elevation={0} sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: '100%', maxWidth: '100%', borderRadius: 2, border: '1px solid #e0e0e0' }}>
+        <Paper elevation={0} sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: '100%', maxWidth: '100%', borderRadius: 2, border: '1px solid', borderColor: 'divider' }}>
           <Autocomplete
             freeSolo
             disableClearable
@@ -1041,14 +1041,14 @@ function AutoTab() {
       {activePO && (
         <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1.6fr' }, gap: 2 }}>
           {/* Left: Sewing Output */}
-          <Paper elevation={0} sx={{ borderRadius: 2, border: '1px solid #e0e0e0', overflow: 'hidden' }}>
+          <Paper elevation={0} sx={{ borderRadius: 2, border: '1px solid', borderColor: 'divider', overflow: 'hidden' }}>
             <Box sx={{ p: 1.5, bgcolor: '#e8f5e9', borderBottom: '1px solid #c8e6c9', display: 'flex', alignItems: 'center', gap: 1 }}>
               <ListIcon sx={{ fontSize: 18, color: '#2e7d32' }} />
               <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#2e7d32' }}>{t('f2s.auto.qtyLine', 'Qty Chuyền')} (PO: {activePO})</Typography>
               <Chip 
                 label={`${t('f2s.auto.totalQty', 'Tổng Lên:')} ${totalScanOut}`} 
                 size="small" 
-                sx={{ ml: 'auto', fontWeight: 700, bgcolor: '#fff', color: '#1565c0', border: '1px solid #bbdefb' }} 
+                sx={{ ml: 'auto', fontWeight: 700, bgcolor: 'background.paper', color: '#1565c0', border: '1px solid #bbdefb' }} 
               />
             </Box>
             <TableContainer>
@@ -1087,11 +1087,11 @@ function AutoTab() {
           </Paper>
 
           {/* Right: Packing Plan */}
-          <Paper elevation={0} sx={{ borderRadius: 2, border: '1px solid #e0e0e0', overflow: 'hidden' }}>
+          <Paper elevation={0} sx={{ borderRadius: 2, border: '1px solid', borderColor: 'divider', overflow: 'hidden' }}>
             <Box sx={{ p: 1.5, bgcolor: '#e8f5e9', borderBottom: '1px solid #c8e6c9', display: 'flex', alignItems: 'center', gap: 1 }}>
               <AutoIcon sx={{ fontSize: 18, color: '#2e7d32' }} />
               <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#2e7d32' }}>{t('f2s.auto.packingPlan', 'Packing Plan')}</Typography>
-              <Chip label={`${filteredPackingPlan.length}/${packingPlan.length} ${t('f2s.auto.cartons', 'thùng')}`} size="small" sx={{ fontWeight: 700, bgcolor: '#fff', color: '#2e7d32', border: '1px solid #c8e6c9' }} />
+              <Chip label={`${filteredPackingPlan.length}/${packingPlan.length} ${t('f2s.auto.cartons', 'thùng')}`} size="small" sx={{ fontWeight: 700, bgcolor: 'background.paper', color: '#2e7d32', border: '1px solid #c8e6c9' }} />
               <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center', gap: 0.5 }}>
                 <Typography variant="caption" sx={{ fontWeight: 600, color: '#64748b' }}>{t('f2s.auto.showAll', 'Tất cả')}</Typography>
                 <Switch size="small" checked={showAllCartons} onChange={handleToggleShowAll} sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: '#2e7d32' }, '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': { bgcolor: '#81c784' } }} />
@@ -1123,9 +1123,9 @@ function AutoTab() {
                         <TableCell sx={{ fontSize: '0.75rem' }}>
                           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                             {ctn.sizes.map(s => (
-                              <Box key={s.size} sx={{ display: 'flex', border: '1px solid #cbd5e1', borderRadius: 1, overflow: 'hidden' }}>
+                              <Box key={s.size} sx={{ display: 'flex', border: '1px solid', borderColor: 'divider', borderRadius: 1, overflow: 'hidden' }}>
                                 <Box sx={{ px: 0.75, py: 0.25, bgcolor: '#e3f2fd', fontWeight: 800, color: '#1565c0', borderRight: '1px solid #bbdefb', fontSize: '0.75rem' }}>{s.size}</Box>
-                                <Box sx={{ px: 0.75, py: 0.25, bgcolor: '#fff', fontWeight: 600, color: '#475569', fontSize: '0.7rem' }}>{s.custSize || '-'}</Box>
+                                <Box sx={{ px: 0.75, py: 0.25, bgcolor: 'background.paper', fontWeight: 600, color: '#475569', fontSize: '0.7rem' }}>{s.custSize || '-'}</Box>
                               </Box>
                             ))}
                           </Box>
@@ -1199,7 +1199,7 @@ function AutoTab() {
                   onDelete={() => removeFromQueue(q.cartonNo)}
                   sx={{
                     fontWeight: 600, fontSize: '0.8rem', height: 32,
-                    bgcolor: '#fff', border: '1px solid #f59e0b', color: '#92400e',
+                    bgcolor: 'background.paper', border: '1px solid #f59e0b', color: '#92400e',
                     '& .MuiChip-deleteIcon': { color: '#dc2626', '&:hover': { color: '#991b1b' } },
                   }}
                 />
@@ -1292,12 +1292,12 @@ export default function DeliverPage() {
   return (
     <Box sx={{ pb: { xs: 10, sm: 12, md: 4 }, px: { xs: 0, sm: 1, md: 0 }, pt: { xs: 0.5, md: 1 } }}>
 
-      <Paper elevation={0} sx={{ borderRadius: 2, border: '1px solid #e0e0e0', overflow: 'hidden' }}>
+      <Paper elevation={0} sx={{ borderRadius: 2, border: '1px solid', borderColor: 'divider', overflow: 'hidden' }}>
         <Tabs
           value={tab}
           onChange={(_, v) => setTab(v)}
           sx={{
-            borderBottom: '1px solid #e0e0e0',
+            borderBottom: '1px solid', borderColor: 'divider',
             '& .MuiTab-root': { fontWeight: 600, fontSize: '0.9rem', minHeight: 52 },
             '& .Mui-selected': { color: '#2e7d32 !important' },
             '& .MuiTabs-indicator': { backgroundColor: '#2e7d32' },

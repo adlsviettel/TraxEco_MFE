@@ -154,7 +154,7 @@ export default function Account() {
                     <div style={{
                       fontFamily: 'monospace', fontSize: 11, background: '#fafafa', 
                       padding: '6px 10px', borderRadius: 4, overflowX: 'auto', whiteSpace: 'pre-wrap',
-                      maxHeight: 120, border: '1px solid #e0e0e0', color: '#555', marginTop: 4
+                      maxHeight: 120, border: '1px solid', borderColor: 'divider', color: '#555', marginTop: 4
                     }}>
                       {localStorage.getItem('permissions') || '[] (Trống)'}
                     </div>

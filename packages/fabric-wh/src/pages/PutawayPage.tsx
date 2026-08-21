@@ -366,7 +366,7 @@ export default function PutawayPage() {
     <Box sx={{ px: 1, py: 1, flex: 1, height: '100%', minHeight: 0, display: 'flex', flexDirection: 'column', gap: 1, zoom: { md: 0.85, lg: 0.9, xl: 1 } }}>
       
       {/* HEADER & INPUT BOX */}
-      <Paper elevation={0} sx={{ p: 2, borderRadius: 2, border: '1px solid #e2e8f0', bgcolor: '#f8fafc' }}>
+      <Paper elevation={0} sx={{ p: 2, borderRadius: 2, border: '1px solid', borderColor: 'divider', bgcolor: 'background.default' }}>
         <Box sx={{ 
           display: { xs: 'flex', md: 'grid' }, 
           flexDirection: 'column', 
@@ -403,7 +403,7 @@ export default function PutawayPage() {
                   </InputAdornment>
                 ),
                 sx: { 
-                  bgcolor: '#fff', 
+                  bgcolor: 'background.paper', 
                   borderRadius: 2, 
                   fontWeight: 600, 
                   fontSize: '1.2rem',
@@ -448,19 +448,19 @@ export default function PutawayPage() {
                </Button>
                <Collapse in={showManualShelf}>
                  <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                   <FormControl size="small" sx={{ minWidth: 100, flex: 1, bgcolor: '#fff' }}>
+                   <FormControl size="small" sx={{ minWidth: 100, flex: 1, bgcolor: 'background.paper' }}>
                      <InputLabel>1. {t('putaway.zone')}</InputLabel>
                      <Select value={selName} label="1. Khu" onChange={e => { setSelName(e.target.value); setSelLevel(''); setSelSeq(''); }}>
                        {nameOpts.map(o => <MenuItem key={String(o)} value={String(o)}>{o}</MenuItem>)}
                      </Select>
                    </FormControl>
-                   <FormControl size="small" sx={{ minWidth: 100, flex: 1, bgcolor: '#fff' }} disabled={!selName}>
+                   <FormControl size="small" sx={{ minWidth: 100, flex: 1, bgcolor: 'background.paper' }} disabled={!selName}>
                      <InputLabel>2. {t('putaway.row')}</InputLabel>
                      <Select value={selLevel} label={`2. ${t('putaway.row', 'Row')}`} onChange={e => { setSelLevel(e.target.value); setSelSeq(''); }}>
                        {levelOpts.map(o => <MenuItem key={String(o)} value={String(o)}>{o}</MenuItem>)}
                      </Select>
                    </FormControl>
-                   <FormControl size="small" sx={{ minWidth: 100, flex: 1, bgcolor: '#fff' }} disabled={!selLevel}>
+                   <FormControl size="small" sx={{ minWidth: 100, flex: 1, bgcolor: 'background.paper' }} disabled={!selLevel}>
                      <InputLabel>3. {t('putaway.bin')}</InputLabel>
                      <Select value={selSeq} label={`3. ${t('putaway.bin', 'Bin')}`} onChange={e => setSelSeq(e.target.value)}>
                        {seqOpts.map(o => <MenuItem key={String(o)} value={String(o)}>{o}</MenuItem>)}
@@ -548,18 +548,18 @@ export default function PutawayPage() {
       </Box>
 
       {/* DATAGRID */}
-      <Paper sx={{ flexGrow: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', borderRadius: 2, border: '1px solid #e2e8f0', boxShadow: 'none' }}>
+      <Paper sx={{ flexGrow: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', borderRadius: 2, border: '1px solid', borderColor: 'divider', boxShadow: 'none' }}>
         <TableContainer sx={{ flexGrow: 1 }}>
           <Table stickyHeader size="small" sx={{ '& .MuiTableCell-root': { py: 1.2, px: 2 } }}>
             <TableHead>
               <TableRow>
-                <TableCell sx={{ fontWeight: 700, bgcolor: '#f8fafc', width: 50, borderBottom: '2px solid #e2e8f0', color: '#334155' }}>#</TableCell>
-                <TableCell sx={{ fontWeight: 700, bgcolor: '#f8fafc', borderBottom: '2px solid #e2e8f0', color: '#334155' }}>Invoice / PO</TableCell>
-                <TableCell sx={{ fontWeight: 700, bgcolor: '#f8fafc', borderBottom: '2px solid #e2e8f0', color: '#334155' }}>Item / Color</TableCell>
-                <TableCell sx={{ fontWeight: 700, bgcolor: '#f8fafc', borderBottom: '2px solid #e2e8f0', color: '#334155' }}>Batch / Roll No</TableCell>
-                <TableCell align="right" sx={{ fontWeight: 700, bgcolor: '#f8fafc', borderBottom: '2px solid #e2e8f0', color: '#334155' }}>ShipL / Act.</TableCell>
-                <TableCell sx={{ fontWeight: 700, bgcolor: '#f8fafc', borderBottom: '2px solid #e2e8f0', color: '#334155' }}>Location / Move To</TableCell>
-                <TableCell align="right" sx={{ fontWeight: 700, bgcolor: '#f8fafc', width: 50, borderBottom: '2px solid #e2e8f0', color: '#334155' }}></TableCell>
+                <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default', width: 50, borderBottom: '2px solid #e2e8f0', color: '#334155' }}>#</TableCell>
+                <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default', borderBottom: '2px solid #e2e8f0', color: '#334155' }}>Invoice / PO</TableCell>
+                <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default', borderBottom: '2px solid #e2e8f0', color: '#334155' }}>Item / Color</TableCell>
+                <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default', borderBottom: '2px solid #e2e8f0', color: '#334155' }}>Batch / Roll No</TableCell>
+                <TableCell align="right" sx={{ fontWeight: 700, bgcolor: 'background.default', borderBottom: '2px solid #e2e8f0', color: '#334155' }}>ShipL / Act.</TableCell>
+                <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default', borderBottom: '2px solid #e2e8f0', color: '#334155' }}>Location / Move To</TableCell>
+                <TableCell align="right" sx={{ fontWeight: 700, bgcolor: 'background.default', width: 50, borderBottom: '2px solid #e2e8f0', color: '#334155' }}></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

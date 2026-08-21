@@ -23,7 +23,7 @@ export const ChartCard: React.FC<ChartCardProps> = ({
       elevation={0}
       sx={{ 
         borderRadius: '8px', 
-        border: '1px solid #e2e8f0', 
+        border: '1px solid', borderColor: 'divider', 
         boxShadow: '0 1px 3px rgba(0,0,0,0.02)',
         display: 'flex',
         flexDirection: 'column',

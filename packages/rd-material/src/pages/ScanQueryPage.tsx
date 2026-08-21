@@ -29,7 +29,7 @@ import { AppButton } from '@traxeco/shared';
 const BASE = '/rd-material';
 
 const InfoRow = ({ label, value }: { label: string; value?: React.ReactNode }) => (
-  <Box sx={{ py: 1.25, borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 2 }}>
+  <Box sx={{ py: 1.25, borderBottom: '1px solid', borderColor: 'divider', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 2 }}>
     <Typography component="div" sx={{ fontSize: 13, fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
       {label}
     </Typography>
@@ -46,7 +46,7 @@ const ImageGallery = ({ images }: { images: string[] }) => {
 
   if (!images || images.length === 0) {
     return (
-      <Box sx={{ width: '100%', aspectRatio: '1', bgcolor: '#f8fafc', borderRadius: 3, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#cbd5e1', border: '1px dashed #e2e8f0' }}>
+      <Box sx={{ width: '100%', aspectRatio: '1', bgcolor: 'background.default', borderRadius: 3, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#cbd5e1', border: '1px dashed #e2e8f0' }}>
         <ImageIcon sx={{ fontSize: 48, mb: 1, opacity: 0.5 }} />
         <Typography variant="caption" fontWeight={600}>{t('rdMaterial.no_image', 'No Image')}</Typography>
       </Box>
@@ -59,7 +59,7 @@ const ImageGallery = ({ images }: { images: string[] }) => {
         sx={{ 
           width: '100%', 
           aspectRatio: '1.2', 
-          bgcolor: '#f8fafc', 
+          bgcolor: 'background.default', 
           borderRadius: 3, 
           display: 'flex', 
           alignItems: 'center', 
@@ -67,7 +67,7 @@ const ImageGallery = ({ images }: { images: string[] }) => {
           overflow: 'hidden', 
           cursor: 'zoom-in', 
           position: 'relative',
-          border: '1px solid #e2e8f0',
+          border: '1px solid', borderColor: 'divider',
           '&:hover .overlay': { opacity: 1 }
         }}
         onClick={() => setFullscreenOpen(true)}
@@ -336,8 +336,8 @@ const ScanQueryPage: React.FC = () => {
 
             <Paper elevation={0} sx={{ 
               width: '100%', maxWidth: 700, borderRadius: '50px', p: 0.5, pl: 1.5,
-              boxShadow: '0 8px 32px rgba(0,0,0,0.06)', border: '1px solid #e2e8f0',
-              display: 'flex', alignItems: 'center', bgcolor: '#fff',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.06)', border: '1px solid', borderColor: 'divider',
+              display: 'flex', alignItems: 'center', bgcolor: 'background.paper',
               transition: 'all 0.2s', '&:focus-within': { boxShadow: '0 8px 32px rgba(46,125,50,0.15)', borderColor: '#2e7d32' }
             }}>
               <IconButton 
@@ -422,7 +422,7 @@ const ScanQueryPage: React.FC = () => {
                   bgcolor: !manualCode ? '#f1f5f9' : '#2e7d32', 
                   color: !manualCode ? '#94a3b8' : '#fff', 
                   '&:hover': { bgcolor: !manualCode ? '#f1f5f9' : '#1b6d24' },
-                  '&.Mui-disabled': { bgcolor: '#f1f5f9', color: '#94a3b8' },
+                  '&.Mui-disabled': { bgcolor: 'background.default', color: '#94a3b8' },
                   ml: 1, flexShrink: 0,
                   transition: 'all 0.2s'
                 }}
@@ -454,7 +454,7 @@ const ScanQueryPage: React.FC = () => {
               
               {/* LEFT: Item Profile & Actions */}
               <Grid size={{ xs: 12, md: 4 }} sx={{ minWidth: 0 }}>
-                <Card elevation={0} sx={{ borderRadius: 4, border: '1px solid #e2e8f0', p: 4, boxShadow: '0 10px 40px -10px rgba(0,0,0,0.05)', height: '100%', display: 'flex', flexDirection: 'column' }}>
+                <Card elevation={0} sx={{ borderRadius: 4, border: '1px solid', borderColor: 'divider', p: 4, boxShadow: '0 10px 40px -10px rgba(0,0,0,0.05)', height: '100%', display: 'flex', flexDirection: 'column' }}>
                   <Box display="flex" alignItems="center" gap={1} mb={2}>
                     <CheckCircleIcon sx={{ color: '#22c55e !important' }} />
                     <Typography variant="subtitle2" fontWeight={700} color="text.secondary" sx={{ textTransform: 'uppercase', letterSpacing: '0.5px' }}>
@@ -476,7 +476,7 @@ const ScanQueryPage: React.FC = () => {
                   <Stack spacing={2.5} sx={{ flex: 1 }}>
                     <Box display="flex" justifyContent="space-between" alignItems="center">
                       <Typography color="text.secondary" fontSize={13}>{t('rdMaterial.location', 'Location')}</Typography>
-                      <Chip label={item.location || t('rdMaterial.unassigned', 'Unassigned')} size="small" sx={{ fontWeight: 700, bgcolor: '#f1f5f9', color: '#475569' }} />
+                      <Chip label={item.location || t('rdMaterial.unassigned', 'Unassigned')} size="small" sx={{ fontWeight: 700, bgcolor: 'background.default', color: '#475569' }} />
                     </Box>
                     <Divider sx={{ borderStyle: 'dashed' }} />
                     
@@ -513,7 +513,7 @@ const ScanQueryPage: React.FC = () => {
                           startIcon={<PrintIcon />}
                           sx={{ 
                             borderRadius: 2, textTransform: 'none', py: 1.25, fontWeight: 700, borderColor: '#e2e8f0', color: '#334155',
-                            '&:hover': { borderColor: '#cbd5e1', bgcolor: '#f8fafc' }
+                            '&:hover': { borderColor: '#cbd5e1', bgcolor: 'background.default' }
                           }}
                         >
                           {t('rdMaterial.print_label', 'Print Label')}
@@ -526,7 +526,7 @@ const ScanQueryPage: React.FC = () => {
 
               {/* CENTER: Specifications */}
               <Grid size={{ xs: 12, md: 4 }} sx={{ minWidth: 0 }}>
-                <Card elevation={0} sx={{ borderRadius: 4, border: '1px solid #e2e8f0', p: 4, boxShadow: '0 10px 40px -10px rgba(0,0,0,0.05)', height: '100%' }}>
+                <Card elevation={0} sx={{ borderRadius: 4, border: '1px solid', borderColor: 'divider', p: 4, boxShadow: '0 10px 40px -10px rgba(0,0,0,0.05)', height: '100%' }}>
                   <Box display="flex" alignItems="center" gap={1} mb={2}>
                     <LayersIcon sx={{ color: '#94a3b8', fontSize: 20 }} />
                     <Typography variant="subtitle2" fontWeight={700} color="text.secondary" sx={{ textTransform: 'uppercase', letterSpacing: '0.5px' }}>
@@ -591,7 +591,7 @@ const ScanQueryPage: React.FC = () => {
                       <Typography variant="subtitle2" color="text.secondary" fontWeight={700} sx={{ mb: 1 }}>
                         {t('rdMaterial.remark', 'Remark')}
                       </Typography>
-                      <Typography sx={{ bgcolor: '#fafafa', p: 2, borderRadius: 2, border: '1px solid #f1f5f9', fontSize: 13.5, color: '#334155', whiteSpace: 'pre-wrap' }}>
+                      <Typography sx={{ bgcolor: '#fafafa', p: 2, borderRadius: 2, border: '1px solid', borderColor: 'divider', fontSize: 13.5, color: '#334155', whiteSpace: 'pre-wrap' }}>
                         {item.remark}
                       </Typography>
                     </Box>
@@ -601,7 +601,7 @@ const ScanQueryPage: React.FC = () => {
 
               {/* RIGHT: Scan History */}
               <Grid size={{ xs: 12, md: 4 }} sx={{ minWidth: 0 }}>
-                <Card elevation={0} sx={{ borderRadius: 4, border: '1px solid #e2e8f0', p: 4, boxShadow: '0 10px 40px -10px rgba(0,0,0,0.05)', height: '100%', display: 'flex', flexDirection: 'column' }}>
+                <Card elevation={0} sx={{ borderRadius: 4, border: '1px solid', borderColor: 'divider', p: 4, boxShadow: '0 10px 40px -10px rgba(0,0,0,0.05)', height: '100%', display: 'flex', flexDirection: 'column' }}>
                   <Box display="flex" alignItems="center" gap={1} mb={2}>
                     <HistoryIcon sx={{ color: '#94a3b8', fontSize: 20 }} />
                     <Typography variant="subtitle2" fontWeight={700} color="text.secondary" sx={{ textTransform: 'uppercase', letterSpacing: '0.5px' }}>
@@ -617,7 +617,7 @@ const ScanQueryPage: React.FC = () => {
                       <>
                         <Stack spacing={2} sx={{ mb: 3 }}>
                           {displayLogs.map((log) => (
-                            <Paper key={log.id} elevation={0} sx={{ p: 2, borderRadius: 3, border: '1px solid #f1f5f9', bgcolor: '#fff', display: 'flex', gap: 2, alignItems: 'center' }}>
+                            <Paper key={log.id} elevation={0} sx={{ p: 2, borderRadius: 3, border: '1px solid', borderColor: 'divider', bgcolor: 'background.paper', display: 'flex', gap: 2, alignItems: 'center' }}>
                               <Box flex={1}>
                                 <Box display="flex" alignItems="center" justifyContent="space-between" mb={0.5}>
                                   <Typography variant="body2" fontWeight={700} color="#0f172a">{log.holder}</Typography>

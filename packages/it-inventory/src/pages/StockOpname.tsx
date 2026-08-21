@@ -229,13 +229,13 @@ export default function StockOpname({ category = 'wip' }: StockOpnameProps) {
                   value={targetDate}
                   onChange={(e) => setTargetDate(e.target.value)}
                   style={{
-                    border: '1px solid #cbd5e1',
+                    border: '1px solid', borderColor: 'divider',
                     borderRadius: 6,
                     padding: '4px 10px',
                     fontSize: 13,
                     fontWeight: 600,
                     color: '#0f172a',
-                    background: '#fff'
+                    background: 'background.paper'
                   }}
                 />
               </div>
@@ -304,7 +304,7 @@ export default function StockOpname({ category = 'wip' }: StockOpnameProps) {
 
         {/* Data Table Card with Fixed Header & Scrollable Body */}
         <div className="card" style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', minHeight: 400 }}>
-          <div className="card-header responsive-header" style={{ padding: '12px 20px', borderBottom: '1px solid #e2e8f0', flexShrink: 0 }}>
+          <div className="card-header responsive-header" style={{ padding: '12px 20px', borderBottom: '1px solid', borderColor: 'divider', flexShrink: 0 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <h3 style={{ margin: 0, fontSize: 16, color: '#0f172a' }}>{t('stockOpname.title', 'Stock Opname Inventory')}</h3>
               <span className="record-count">{filteredItems.length} {t('common.records', 'records')}</span>
@@ -321,7 +321,7 @@ export default function StockOpname({ category = 'wip' }: StockOpnameProps) {
                   width: '100%',
                   padding: '6px 12px 6px 32px',
                   borderRadius: 6,
-                  border: '1px solid #cbd5e1',
+                  border: '1px solid', borderColor: 'divider',
                   fontSize: 13,
                   color: '#0f172a'
                 }}
@@ -332,7 +332,7 @@ export default function StockOpname({ category = 'wip' }: StockOpnameProps) {
           {loadingERP ? (
             <div style={{ textAlign: 'center', padding: '60px 20px', flex: 1 }}>
               <RefreshCw size={32} className="spin" style={{ margin: '0 auto 12px', display: 'block', color: 'var(--primary, #3ba55c)' }} />
-              <p style={{ color: '#64748b', margin: 0 }}>Querying Linked Server [192.168.70.115].AXDB Stock Opname Journal...</p>
+              <p style={{ color: '#64748b', margin: 0 }}>Querying Linked Server [192.168.70.115_tsiiplan].AXDB Stock Opname Journal...</p>
             </div>
           ) : filteredItems.length === 0 ? (
             <div style={{ padding: '60px 20px', textAlign: 'center', color: '#94a3b8', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', flex: 1 }}>
@@ -346,31 +346,31 @@ export default function StockOpname({ category = 'wip' }: StockOpnameProps) {
               <div style={{ flex: 1, overflowY: 'auto', overflowX: 'auto' }}>
                 <table className="table" style={{ width: '100%', borderCollapse: 'separate', borderSpacing: 0 }}>
                   <thead>
-                    <tr style={{ background: '#f8fafc', textAlign: 'left', fontSize: 12, color: '#475569' }}>
-                      <th style={{ width: 40, textAlign: 'center', padding: '10px', position: 'sticky', top: 0, background: '#f8fafc', zIndex: 10, borderBottom: '2px solid #e2e8f0' }}>
+                    <tr style={{ background: 'background.default', textAlign: 'left', fontSize: 12, color: '#475569' }}>
+                      <th style={{ width: 40, textAlign: 'center', padding: '10px', position: 'sticky', top: 0, background: 'background.default', zIndex: 10, borderBottom: '2px solid #e2e8f0' }}>
                         <input type="checkbox" checked={allSelected} onChange={toggleSelectAll} />
                       </th>
-                      <th style={{ position: 'sticky', top: 0, background: '#f8fafc', zIndex: 10, borderBottom: '2px solid #e2e8f0' }}>{t('table.docNo', 'Doc No / Ref')} (`nomorDokKegiatan`)</th>
-                      <th style={{ position: 'sticky', top: 0, background: '#f8fafc', zIndex: 10, borderBottom: '2px solid #e2e8f0' }}>{t('table.actualTimestamp', 'Actual Timestamp')} (`thoiGianThucTe`)</th>
-                      <th style={{ position: 'sticky', top: 0, background: '#f8fafc', zIndex: 10, borderBottom: '2px solid #e2e8f0' }}>{t('table.cutoffDate', '5AM Cutoff Date')}</th>
-                      <th style={{ position: 'sticky', top: 0, background: '#f8fafc', zIndex: 10, borderBottom: '2px solid #e2e8f0' }}>{t('table.itemCode', 'Item Code')} (`kdBarang`)</th>
-                      <th style={{ position: 'sticky', top: 0, background: '#f8fafc', zIndex: 10, borderBottom: '2px solid #e2e8f0' }}>{t('table.description', 'Description')} (`uraianBarang`)</th>
-                      <th style={{ textAlign: 'right', position: 'sticky', top: 0, background: '#f8fafc', zIndex: 10, borderBottom: '2px solid #e2e8f0' }}>{t('table.qty', 'Quantity')} (`jumlah`)</th>
-                      <th style={{ position: 'sticky', top: 0, background: '#f8fafc', zIndex: 10, borderBottom: '2px solid #e2e8f0' }}>{t('table.uom', 'UOM')}</th>
-                      <th style={{ textAlign: 'right', position: 'sticky', top: 0, background: '#f8fafc', zIndex: 10, borderBottom: '2px solid #e2e8f0' }}>{t('table.value', 'Value')} (`nilai`)</th>
-                      <th style={{ position: 'sticky', top: 0, background: '#f8fafc', zIndex: 10, borderBottom: '2px solid #e2e8f0' }}>{t('table.warehouse', 'Warehouse')} (`kho`)</th>
-                      <th style={{ textAlign: 'center', position: 'sticky', top: 0, background: '#f8fafc', zIndex: 10, borderBottom: '2px solid #e2e8f0' }}>{t('table.status', 'INSW Status')}</th>
+                      <th style={{ position: 'sticky', top: 0, background: 'background.default', zIndex: 10, borderBottom: '2px solid #e2e8f0' }}>{t('table.docNo', 'Doc No / Ref')} (`nomorDokKegiatan`)</th>
+                      <th style={{ position: 'sticky', top: 0, background: 'background.default', zIndex: 10, borderBottom: '2px solid #e2e8f0' }}>{t('table.actualTimestamp', 'Actual Timestamp')} (`thoiGianThucTe`)</th>
+                      <th style={{ position: 'sticky', top: 0, background: 'background.default', zIndex: 10, borderBottom: '2px solid #e2e8f0' }}>{t('table.cutoffDate', '5AM Cutoff Date')}</th>
+                      <th style={{ position: 'sticky', top: 0, background: 'background.default', zIndex: 10, borderBottom: '2px solid #e2e8f0' }}>{t('table.itemCode', 'Item Code')} (`kdBarang`)</th>
+                      <th style={{ position: 'sticky', top: 0, background: 'background.default', zIndex: 10, borderBottom: '2px solid #e2e8f0' }}>{t('table.description', 'Description')} (`uraianBarang`)</th>
+                      <th style={{ textAlign: 'right', position: 'sticky', top: 0, background: 'background.default', zIndex: 10, borderBottom: '2px solid #e2e8f0' }}>{t('table.qty', 'Quantity')} (`jumlah`)</th>
+                      <th style={{ position: 'sticky', top: 0, background: 'background.default', zIndex: 10, borderBottom: '2px solid #e2e8f0' }}>{t('table.uom', 'UOM')}</th>
+                      <th style={{ textAlign: 'right', position: 'sticky', top: 0, background: 'background.default', zIndex: 10, borderBottom: '2px solid #e2e8f0' }}>{t('table.value', 'Value')} (`nilai`)</th>
+                      <th style={{ position: 'sticky', top: 0, background: 'background.default', zIndex: 10, borderBottom: '2px solid #e2e8f0' }}>{t('table.warehouse', 'Warehouse')} (`kho`)</th>
+                      <th style={{ textAlign: 'center', position: 'sticky', top: 0, background: 'background.default', zIndex: 10, borderBottom: '2px solid #e2e8f0' }}>{t('table.status', 'INSW Status')}</th>
                     </tr>
                   </thead>
                   <tbody>
                     {pagedItems.map(item => {
                       const isSelected = selectedIds.has(item.id);
                       return (
-                        <tr key={item.id} style={{ background: isSelected ? 'var(--primary-light, #e8f7ec)' : 'transparent', borderBottom: '1px solid #f1f5f9' }}>
+                        <tr key={item.id} style={{ background: isSelected ? 'var(--primary-light, #e8f7ec)' : 'transparent', borderBottom: '1px solid', borderColor: 'divider' }}>
                           <td style={{ textAlign: 'center', padding: '10px' }}>
                             <input type="checkbox" checked={isSelected} onChange={() => toggleSelect(item.id)} />
                           </td>
-                          <td style={{ padding: '10px' }}><code style={{ fontWeight: 600, color: 'var(--primary-dark, #2e8b4a)', background: '#f1f5f9', padding: '2px 6px', borderRadius: 4 }}>{item.nomorDokKegiatan}</code></td>
+                          <td style={{ padding: '10px' }}><code style={{ fontWeight: 600, color: 'var(--primary-dark, #2e8b4a)', background: 'background.default', padding: '2px 6px', borderRadius: 4 }}>{item.nomorDokKegiatan}</code></td>
                           <td style={{ fontSize: 12, color: '#64748b', padding: '10px' }}>{item.thoiGianThucTe}</td>
                           <td style={{ padding: '10px' }}>
                             <span className="status-badge" style={{ background: '#e8f7ec', color: '#2e8b4a', fontSize: 11, fontWeight: 600 }}>
@@ -388,10 +388,10 @@ export default function StockOpname({ category = 'wip' }: StockOpnameProps) {
                           <td style={{ textAlign: 'right', padding: '10px', color: '#0f172a' }}>
                             Rp {item.nilai.toLocaleString('en-US', { minimumFractionDigits: 2 })}
                           </td>
-                          <td style={{ padding: '10px' }}><span className="status-badge" style={{ background: '#f1f5f9', color: '#475569' }}>{item.kho}</span></td>
+                          <td style={{ padding: '10px' }}><span className="status-badge" style={{ background: 'background.default', color: '#475569' }}>{item.kho}</span></td>
                           <td style={{ textAlign: 'center', padding: '10px' }}>
                             {item.statusPush === 'idle' && (
-                              <span className="status-badge" style={{ background: '#f1f5f9', color: '#64748b' }}><Clock size={12} /> Pending</span>
+                              <span className="status-badge" style={{ background: 'background.default', color: '#64748b' }}><Clock size={12} /> Pending</span>
                             )}
                             {item.statusPush === 'pushing' && (
                               <span className="status-badge" style={{ background: '#e0f2fe', color: '#0284c7' }}><RefreshCw size={12} className="spin" /> Pushing...</span>
@@ -416,8 +416,8 @@ export default function StockOpname({ category = 'wip' }: StockOpnameProps) {
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 padding: '10px 20px',
-                borderTop: '1px solid #e2e8f0',
-                background: '#fff',
+                borderTop: '1px solid', borderColor: 'divider',
+                background: 'background.paper',
                 fontSize: 13,
                 flexShrink: 0
               }}>
@@ -426,7 +426,7 @@ export default function StockOpname({ category = 'wip' }: StockOpnameProps) {
                   <select
                     value={pageSize}
                     onChange={e => { setPageSize(Number(e.target.value)); setPage(1); }}
-                    style={{ padding: '4px 8px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13, background: '#fff', color: '#0f172a' }}
+                    style={{ padding: '4px 8px', borderRadius: 6, border: '1px solid', borderColor: 'divider', fontSize: 13, background: 'background.paper', color: '#0f172a' }}
                   >
                     <option value={10}>10</option>
                     <option value={15}>15</option>

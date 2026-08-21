@@ -22,13 +22,13 @@ const getStatusStyle = (status: string) => {
     case 'Remake':
       return { bgcolor: '#fffbeb', color: '#b45309', border: '1px solid #fde68a', fontWeight: 600 };
     case 'Cancelled':
-      return { bgcolor: '#f8fafc', color: '#64748b', border: '1px solid #e2e8f0', fontWeight: 600 };
+      return { bgcolor: 'background.default', color: '#64748b', border: '1px solid', borderColor: 'divider', fontWeight: 600 };
     case 'Rejected':
     case 'Deleted':
       return { bgcolor: '#fef2f2', color: '#b91c1c', border: '1px solid #fecaca', fontWeight: 600 };
     case 'Not Started':
     default:
-      return { bgcolor: '#f1f5f9', color: '#475569', border: '1px solid #cbd5e1', fontWeight: 600 };
+      return { bgcolor: 'background.default', color: '#475569', border: '1px solid', borderColor: 'divider', fontWeight: 600 };
   }
 };
 
@@ -158,7 +158,7 @@ export function RequestDetailDialog({
       PaperProps={{
         sx: {
           borderRadius: '20px',
-          bgcolor: '#f8fafc',
+          bgcolor: 'background.default',
           p: 0,
           m: 1.5,
           width: 'calc(100% - 24px)',
@@ -194,7 +194,7 @@ export function RequestDetailDialog({
       <DialogContent sx={{ p: 2, display: 'flex', flexDirection: 'column', gap: 2.2 }}>
         
         {/* Progress Timeline Stepper */}
-        <Box sx={{ bgcolor: '#fff', borderRadius: '14px', p: 2.2, border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', gap: 1.5, boxShadow: '0 1px 3px rgba(0,0,0,0.01)' }}>
+        <Box sx={{ bgcolor: 'background.paper', borderRadius: '14px', p: 2.2, border: '1px solid', borderColor: 'divider', display: 'flex', flexDirection: 'column', gap: 1.5, boxShadow: '0 1px 3px rgba(0,0,0,0.01)' }}>
           <Typography sx={{ fontSize: 11, fontWeight: 800, color: '#1b5e20', display: 'flex', alignItems: 'center', gap: 0.8, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
             {t('tcc.progressTimeline', '📍 Progress Timeline')}
           </Typography>
@@ -257,8 +257,8 @@ export function RequestDetailDialog({
         )}
 
         {/* Section 1: General Info Card */}
-        <Box sx={{ bgcolor: '#fff', borderRadius: '14px', p: 2, border: '1px solid #e2e8f0', boxShadow: '0 1px 3px rgba(0,0,0,0.01)' }}>
-          <Typography sx={{ fontSize: 11, fontWeight: 800, color: '#1b5e20', mb: 2, display: 'flex', alignItems: 'center', gap: 0.8, borderBottom: '1px solid #f1f5f9', pb: 1, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+        <Box sx={{ bgcolor: 'background.paper', borderRadius: '14px', p: 2, border: '1px solid', borderColor: 'divider', boxShadow: '0 1px 3px rgba(0,0,0,0.01)' }}>
+          <Typography sx={{ fontSize: 11, fontWeight: 800, color: '#1b5e20', mb: 2, display: 'flex', alignItems: 'center', gap: 0.8, borderBottom: '1px solid', borderColor: 'divider', pb: 1, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
             {t('tcc.generalInfo', '📝 General Info')}
           </Typography>
           <Grid container spacing={2}>
@@ -272,8 +272,8 @@ export function RequestDetailDialog({
         </Box>
 
         {/* Section 2: Process & Machine Card */}
-        <Box sx={{ bgcolor: '#fff', borderRadius: '14px', p: 2, border: '1px solid #e2e8f0', boxShadow: '0 1px 3px rgba(0,0,0,0.01)' }}>
-          <Typography sx={{ fontSize: 11, fontWeight: 800, color: '#1b5e20', mb: 2, display: 'flex', alignItems: 'center', gap: 0.8, borderBottom: '1px solid #f1f5f9', pb: 1, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+        <Box sx={{ bgcolor: 'background.paper', borderRadius: '14px', p: 2, border: '1px solid', borderColor: 'divider', boxShadow: '0 1px 3px rgba(0,0,0,0.01)' }}>
+          <Typography sx={{ fontSize: 11, fontWeight: 800, color: '#1b5e20', mb: 2, display: 'flex', alignItems: 'center', gap: 0.8, borderBottom: '1px solid', borderColor: 'divider', pb: 1, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
             {t('tcc.processAndMachine', '⚙️ Process & Machine')}
           </Typography>
           <Grid container spacing={2}>
@@ -285,8 +285,8 @@ export function RequestDetailDialog({
         </Box>
 
         {/* Section 3: Dates Card */}
-        <Box sx={{ bgcolor: '#fff', borderRadius: '14px', p: 2, border: '1px solid #e2e8f0', boxShadow: '0 1px 3px rgba(0,0,0,0.01)' }}>
-          <Typography sx={{ fontSize: 11, fontWeight: 800, color: '#1b5e20', mb: 2, display: 'flex', alignItems: 'center', gap: 0.8, borderBottom: '1px solid #f1f5f9', pb: 1, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+        <Box sx={{ bgcolor: 'background.paper', borderRadius: '14px', p: 2, border: '1px solid', borderColor: 'divider', boxShadow: '0 1px 3px rgba(0,0,0,0.01)' }}>
+          <Typography sx={{ fontSize: 11, fontWeight: 800, color: '#1b5e20', mb: 2, display: 'flex', alignItems: 'center', gap: 0.8, borderBottom: '1px solid', borderColor: 'divider', pb: 1, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
             {t('tcc.timelineDates', '📅 Timeline & Dates')}
           </Typography>
           <Grid container spacing={2}>
@@ -309,8 +309,8 @@ export function RequestDetailDialog({
         </Box>
 
         {/* Section 4: Remarks Card */}
-        <Box sx={{ bgcolor: '#fff', borderRadius: '14px', p: 2, border: '1px solid #e2e8f0', boxShadow: '0 1px 3px rgba(0,0,0,0.01)', mb: 1 }}>
-          <Typography sx={{ fontSize: 11, fontWeight: 800, color: '#1b5e20', mb: 2, display: 'flex', alignItems: 'center', gap: 0.8, borderBottom: '1px solid #f1f5f9', pb: 1, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+        <Box sx={{ bgcolor: 'background.paper', borderRadius: '14px', p: 2, border: '1px solid', borderColor: 'divider', boxShadow: '0 1px 3px rgba(0,0,0,0.01)', mb: 1 }}>
+          <Typography sx={{ fontSize: 11, fontWeight: 800, color: '#1b5e20', mb: 2, display: 'flex', alignItems: 'center', gap: 0.8, borderBottom: '1px solid', borderColor: 'divider', pb: 1, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
             {t('tcc.extraInfo', '🏷️ Extra Information')}
           </Typography>
           <Grid container spacing={2}>
@@ -350,7 +350,7 @@ export function RequestDetailDialog({
               <Typography sx={{ color: '#64748b', fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', mb: 0.5 }}>
                 {t('tcc.remarks', 'Remarks')}
               </Typography>
-              <Box sx={{ bgcolor: '#f8fafc', borderRadius: '10px', p: 1.5, borderLeft: '4px solid #cbd5e1', mt: 0.5 }}>
+              <Box sx={{ bgcolor: 'background.default', borderRadius: '10px', p: 1.5, borderLeft: '4px solid #cbd5e1', mt: 0.5 }}>
                 <Typography sx={{ color: request.remarks ? '#334155' : '#94a3b8', fontSize: 13, fontStyle: request.remarks ? 'normal' : 'italic', lineHeight: 1.4 }}>
                   {request.remarks || t('tcc.noRemarks', 'No remarks provided')}
                 </Typography>
@@ -360,7 +360,7 @@ export function RequestDetailDialog({
         </Box>
 
         {/* Section 5: Comments */}
-        <Box sx={{ bgcolor: '#fff', borderRadius: '14px', border: '1px solid #e2e8f0', p: 2 }}>
+        <Box sx={{ bgcolor: 'background.paper', borderRadius: '14px', border: '1px solid', borderColor: 'divider', p: 2 }}>
           <Typography sx={{ fontSize: 13, fontWeight: 800, color: '#1b5e20', mb: 1.5 }}>
             {t('tcc.discussionHeader', '💬 DISCUSSION & EXCHANGE') + ' (' + safeComments.length + ')'}
           </Typography>
@@ -376,7 +376,7 @@ export function RequestDetailDialog({
           ) : (
             <Box sx={{ maxHeight: 200, overflowY: 'auto', mb: 1 }}>
               {safeComments.map((c: any, i: number) => (
-                <Box key={c?.id ?? i} sx={{ bgcolor: '#f1f5f9', borderRadius: '8px', p: 1, mb: 1, border: '1px solid #e2e8f0' }}>
+                <Box key={c?.id ?? i} sx={{ bgcolor: 'background.default', borderRadius: '8px', p: 1, mb: 1, border: '1px solid', borderColor: 'divider' }}>
                   <Typography sx={{ fontSize: 10, fontWeight: 700, color: '#475569' }}>{c?.authorName || ''}</Typography>
                   <Typography sx={{ fontSize: 12, color: '#1e293b' }}>{c?.content || ''}</Typography>
                 </Box>
@@ -391,7 +391,7 @@ export function RequestDetailDialog({
               placeholder={t('tcc.commentPlaceholder', 'Enter your comment...')}
               onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendComment(); } }}
               disabled={submittingComment}
-              sx={{ '& .MuiInputBase-root': { borderRadius: '20px', fontSize: 12, bgcolor: '#fff' } }}
+              sx={{ '& .MuiInputBase-root': { borderRadius: '20px', fontSize: 12, bgcolor: 'background.paper' } }}
             />
             <Button variant="contained" onClick={handleSendComment}
               disabled={!newCommentText.trim() || submittingComment}
@@ -403,7 +403,7 @@ export function RequestDetailDialog({
         </Box>
 
         {/* Section 6: Audit Logs */}
-        <Box sx={{ bgcolor: '#fff', borderRadius: '14px', border: '1px solid #e2e8f0', p: 2, mb: 2 }}>
+        <Box sx={{ bgcolor: 'background.paper', borderRadius: '14px', border: '1px solid', borderColor: 'divider', p: 2, mb: 2 }}>
           <Typography sx={{ fontSize: 13, fontWeight: 800, color: '#1b5e20', mb: 1.5 }}>
             {t('tcc.auditLogHeader', '📜 AUDIT LOGS')}
           </Typography>

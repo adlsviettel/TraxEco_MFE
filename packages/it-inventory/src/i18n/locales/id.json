@@ -41,6 +41,10 @@
     "title": "Pemasukan",
     "uploadPdf": "Unggah PDF",
     "dragDrop": "Seret & jatuhkan file PDF di sini, atau klik untuk memilih",
+    "dragDropPrompt": "Seret & jatuhkan beberapa file PDF deklarasi ke sini atau",
+    "clickToSelect": "klik untuk memilih file",
+    "supportedTypes": "Mendukung pengunggahan beberapa file sekaligus: BC 2.5, BC 2.6.1, BC 4.1, BC 2.3, BC 4.0, PPKEK",
+    "hintText": "(Mendukung unggahan: BC 2.3, BC 4.0, BC 2.6.2, PPKEK)",
     "supportedFormat": "Format yang didukung: PDF",
     "importedData": "Data Pemasukan",
     "fileName": "Nama File",
@@ -59,6 +63,10 @@
     "title": "Pengeluaran",
     "uploadPdf": "Unggah PDF",
     "dragDrop": "Seret & jatuhkan file PDF di sini, atau klik untuk memilih",
+    "dragDropPrompt": "Seret & jatuhkan beberapa file PDF deklarasi ke sini atau",
+    "clickToSelect": "klik untuk memilih file",
+    "supportedTypes": "Mendukung pengunggahan beberapa file sekaligus: BC 2.5, BC 2.6.1, BC 4.1, BC 2.3, BC 4.0, PPKEK",
+    "hintText": "(Mendukung unggahan: BC 2.5, BC 2.6.1, BC 3.0, BC 2.7, BC 4.1)",
     "supportedFormat": "Format yang didukung: PDF",
     "importedData": "Data Pengeluaran",
     "fileName": "Nama File",
@@ -191,7 +199,9 @@
     "pushedAt": "Dikirim Pada",
     "errorMessage": "Pesan Kesalahan",
     "responseBody": "Isi Respons",
-    "requestBody": "Isi Permintaan"
+    "requestBody": "Isi Permintaan",
+    "ceisaTooltip": "Deklarasi milik sistem CEISA 4.0 (BC 2.7, BC 4.1, BC 2.6.1, BC 2.5). Data telah disimpan di IT Inventory, tidak perlu Push ke INSW.",
+    "copiedClipboard": "Payload JSON telah disalin ke clipboard!"
   },
   "common": {
     "save": "Simpan",

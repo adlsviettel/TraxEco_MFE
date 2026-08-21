@@ -394,9 +394,9 @@ export const SerialPortPage = () => {
     };
 
     return (
-        <Box sx={{ p: 3, bgcolor: '#f8fafc', minHeight: '100%', display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+        <Box sx={{ p: 3, bgcolor: 'background.default', minHeight: '100%', display: 'flex', flexDirection: 'column', gap: 2.5 }}>
             {/* Header */}
-            <Paper elevation={0} sx={{ p: 2.5, borderRadius: 2.5, border: '1px solid #e2e8f0', bgcolor: '#fff' }}>
+            <Paper elevation={0} sx={{ p: 2.5, borderRadius: 2.5, border: '1px solid', borderColor: 'divider', bgcolor: 'background.paper' }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
                         <PortIcon sx={{ color: '#15803d', fontSize: 32 }} />
@@ -444,22 +444,112 @@ export const SerialPortPage = () => {
                 </Alert>
             )}
 
-            <Grid container spacing={3}>
+            <Grid container spacing={2.5} alignItems="flex-start">
                 {/* Connection Settings Panel */}
-                <Grid item xs={12} md={4}>
-                    <Paper elevation={0} sx={{ p: 2.5, borderRadius: 2.5, border: '1px solid #e2e8f0', bgcolor: '#fff', display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <Grid item xs={12} lg={5} xl={4}>
+                    <Paper elevation={0} sx={{ p: 2.5, borderRadius: 2.5, border: '1px solid', borderColor: 'divider', bgcolor: 'background.paper', display: 'flex', flexDirection: 'column', gap: 2, height: 'fit-content' }}>
                         <Tabs 
                             value={modeTab} 
                             onChange={(_, val) => setModeTab(val)} 
                             variant="fullWidth" 
-                            sx={{ borderBottom: 1, borderColor: 'divider', mb: 1, '& .MuiTab-root': { textTransform: 'none', fontWeight: 700 } }}
+                            sx={{ borderBottom: 1, borderColor: 'divider', '& .MuiTab-root': { textTransform: 'none', fontWeight: 700 } }}
                         >
-                            <Tab icon={<LanIcon />} iconPosition="start" label="Mạng LAN (TCP/IP)" />
                             <Tab icon={<PortIcon />} iconPosition="start" label="Cổng COM (Serial)" />
+                            <Tab icon={<LanIcon />} iconPosition="start" label="Mạng LAN (TCP/IP)" />
                         </Tabs>
 
                         {modeTab === 0 ? (
-                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+                                <FormControl fullWidth size="small">
+                                    <InputLabel>Baud Rate (Tốc độ truyền)</InputLabel>
+                                    <Select
+                                        value={baudRate}
+                                        label="Baud Rate (Tốc độ truyền)"
+                                        onChange={(e) => setBaudRate(Number(e.target.value))}
+                                        disabled={isConnected}
+                                    >
+                                        <MenuItem value={2400}>2400 bps</MenuItem>
+                                        <MenuItem value={4800}>4800 bps</MenuItem>
+                                        <MenuItem value={9600}>9600 bps (Tiêu chuẩn CAS)</MenuItem>
+                                        <MenuItem value={19200}>19200 bps (CAS CL5200)</MenuItem>
+                                        <MenuItem value={38400}>38400 bps</MenuItem>
+                                        <MenuItem value={57600}>57600 bps</MenuItem>
+                                        <MenuItem value={115200}>115200 bps</MenuItem>
+                                    </Select>
+                                </FormControl>
+
+                                <Grid container spacing={1}>
+                                    <Grid item xs={4}>
+                                        <FormControl fullWidth size="small">
+                                            <InputLabel>Data Bits</InputLabel>
+                                            <Select value={dataBits} label="Data Bits" onChange={(e) => setDataBits(Number(e.target.value))} disabled={isConnected}>
+                                                <MenuItem value={7}>7 bits</MenuItem>
+                                                <MenuItem value={8}>8 bits</MenuItem>
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <FormControl fullWidth size="small">
+                                            <InputLabel>Stop Bits</InputLabel>
+                                            <Select value={stopBits} label="Stop Bits" onChange={(e) => setStopBits(Number(e.target.value))} disabled={isConnected}>
+                                                <MenuItem value={1}>1 bit</MenuItem>
+                                                <MenuItem value={2}>2 bits</MenuItem>
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <FormControl fullWidth size="small">
+                                            <InputLabel>Parity</InputLabel>
+                                            <Select value={parity} label="Parity" onChange={(e) => setParity(e.target.value as any)} disabled={isConnected}>
+                                                <MenuItem value="none">None</MenuItem>
+                                                <MenuItem value="even">Even</MenuItem>
+                                                <MenuItem value="odd">Odd</MenuItem>
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
+                                </Grid>
+
+                                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mt: 0.5 }}>
+                                    {!isConnected ? (
+                                        <>
+                                            <Button
+                                                fullWidth
+                                                variant="contained"
+                                                startIcon={<UsbIcon />}
+                                                onClick={handleConnect}
+                                                disabled={!isSupported || isScanning}
+                                                sx={{ bgcolor: '#15803d', '&:hover': { bgcolor: '#166534' }, textTransform: 'none', fontWeight: 700, py: 1.2 }}
+                                            >
+                                                Chọn Cổng COM9 & Kết Nối
+                                            </Button>
+
+                                            <Button
+                                                fullWidth
+                                                variant="outlined"
+                                                color="secondary"
+                                                onClick={handleAutoScan}
+                                                disabled={!isSupported || isScanning}
+                                                sx={{ textTransform: 'none', fontWeight: 700, py: 0.75 }}
+                                            >
+                                                {isScanning ? 'Đang tự động quét Baud Rate...' : '🔍 Quét Tự Động Tất Cả Tốc Độ Baud Rate'}
+                                            </Button>
+                                        </>
+                                    ) : (
+                                        <Button
+                                            fullWidth
+                                            variant="contained"
+                                            color="error"
+                                            startIcon={<StopIcon />}
+                                            onClick={handleDisconnect}
+                                            sx={{ textTransform: 'none', fontWeight: 700, py: 1 }}
+                                        >
+                                            Ngắt Kết Nối
+                                        </Button>
+                                    )}
+                                </Box>
+                            </Box>
+                        ) : (
+                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
                                 <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#15803d' }}>
                                     🌐 Cấu Hình Kết Nối Cân Mạng LAN (Ethernet)
                                 </Typography>
@@ -502,125 +592,17 @@ export const SerialPortPage = () => {
                                     {lanAutoPoll ? '🛑 Tắt Tự Động Đọc Cân Mạng LAN' : '🔄 Bật Tự Động Đọc Realtime (1s/lần)'}
                                 </Button>
                             </Box>
-                        ) : (
-                            <>
-                                <Typography variant="subtitle1" sx={{ fontWeight: 700, color: '#1e293b' }}>
-                                    Cấu Hình Cổng COM / RS232
-                                </Typography>
-
-                                <FormControl fullWidth size="small">
-                                    <InputLabel>Baud Rate (Tốc độ)</InputLabel>
-                                    <Select
-                                        value={baudRate}
-                                        label="Baud Rate (Tốc độ)"
-                                        onChange={(e) => setBaudRate(Number(e.target.value))}
-                                        disabled={isConnected}
-                                    >
-                                        <MenuItem value={4800}>4800 bps</MenuItem>
-                                        <MenuItem value={9600}>9600 bps (Tiêu chuẩn)</MenuItem>
-                                        <MenuItem value={19200}>19200 bps</MenuItem>
-                                        <MenuItem value={38400}>38400 bps</MenuItem>
-                                        <MenuItem value={57600}>57600 bps</MenuItem>
-                                        <MenuItem value={115200}>115200 bps</MenuItem>
-                                    </Select>
-                                </FormControl>
-
-                                <Grid container spacing={1.5}>
-                                    <Grid item xs={4}>
-                                        <FormControl fullWidth size="small">
-                                            <InputLabel>Data Bits</InputLabel>
-                                            <Select
-                                                value={dataBits}
-                                                label="Data Bits"
-                                                onChange={(e) => setDataBits(Number(e.target.value))}
-                                                disabled={isConnected}
-                                            >
-                                                <MenuItem value={7}>7 bits</MenuItem>
-                                                <MenuItem value={8}>8 bits</MenuItem>
-                                            </Select>
-                                        </FormControl>
-                                    </Grid>
-                                    <Grid item xs={4}>
-                                        <FormControl fullWidth size="small">
-                                            <InputLabel>Stop Bits</InputLabel>
-                                            <Select
-                                                value={stopBits}
-                                                label="Stop Bits"
-                                                onChange={(e) => setStopBits(Number(e.target.value))}
-                                                disabled={isConnected}
-                                            >
-                                                <MenuItem value={1}>1 bit</MenuItem>
-                                                <MenuItem value={2}>2 bits</MenuItem>
-                                            </Select>
-                                        </FormControl>
-                                    </Grid>
-                                    <Grid item xs={4}>
-                                        <FormControl fullWidth size="small">
-                                            <InputLabel>Parity</InputLabel>
-                                            <Select
-                                                value={parity}
-                                                label="Parity"
-                                                onChange={(e) => setParity(e.target.value as any)}
-                                                disabled={isConnected}
-                                            >
-                                                <MenuItem value="none">None</MenuItem>
-                                                <MenuItem value="even">Even</MenuItem>
-                                                <MenuItem value="odd">Odd</MenuItem>
-                                            </Select>
-                                        </FormControl>
-                                    </Grid>
-                                </Grid>
-                            </>
                         )}
 
-                        <Box sx={{ mt: 1, display: 'flex', flexDirection: 'column', gap: 1 }}>
-                            {!isConnected ? (
-                                <>
-                                    <Button
-                                        fullWidth
-                                        variant="contained"
-                                        startIcon={<UsbIcon />}
-                                        onClick={handleConnect}
-                                        disabled={!isSupported || isScanning}
-                                        sx={{ bgcolor: '#15803d', '&:hover': { bgcolor: '#166534' }, textTransform: 'none', fontWeight: 600, py: 1 }}
-                                    >
-                                        Chọn Cổng COM & Kết Nối
-                                    </Button>
-
-                                    <Button
-                                        fullWidth
-                                        variant="outlined"
-                                        color="secondary"
-                                        onClick={handleAutoScan}
-                                        disabled={!isSupported || isScanning}
-                                        sx={{ textTransform: 'none', fontWeight: 700, py: 0.75 }}
-                                    >
-                                        {isScanning ? 'Đang tự động quét Baud Rate...' : '🔍 Quét Tự Động Tất Cả Tốc Độ Baud Rate'}
-                                    </Button>
-                                </>
-                            ) : (
-                                <Button
-                                    fullWidth
-                                    variant="contained"
-                                    color="error"
-                                    startIcon={<StopIcon />}
-                                    onClick={handleDisconnect}
-                                    sx={{ textTransform: 'none', fontWeight: 600, py: 1 }}
-                                >
-                                    Ngắt Kết Nối
-                                </Button>
-                            )}
-                        </Box>
-
-                        <Divider sx={{ my: 1 }} />
+                        <Divider sx={{ my: 0.5 }} />
 
                         {/* Display Card for Latest Value */}
-                        <Card elevation={0} sx={{ bgcolor: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: 2 }}>
-                            <CardContent sx={{ textAlign: 'center', p: 2 }}>
-                                <Typography variant="caption" sx={{ textTransform: 'uppercase', letterSpacing: 1, fontWeight: 700, color: '#64748b' }}>
-                                    Giá Trị Đọc Nhận Mới Nhất
+                        <Card elevation={0} sx={{ bgcolor: isConnected ? '#f0fdf4' : '#f8fafc', border: `1.5px solid ${isConnected ? '#86efac' : '#cbd5e1'}`, borderRadius: 2 }}>
+                            <CardContent sx={{ textAlign: 'center', p: 2, '&:last-child': { pb: 2 } }}>
+                                <Typography variant="caption" sx={{ textTransform: 'uppercase', letterSpacing: 1.2, fontWeight: 800, color: '#64748b' }}>
+                                    Số Ký Cân Đọc Nhận (Realtime Weight)
                                 </Typography>
-                                <Typography variant="h3" sx={{ fontWeight: 800, color: isConnected ? '#15803d' : '#94a3b8', mt: 1, fontFamily: 'monospace' }}>
+                                <Typography variant="h3" sx={{ fontWeight: 800, color: isConnected ? '#15803d' : '#475569', mt: 0.75, fontFamily: 'monospace' }}>
                                     {latestValue}
                                 </Typography>
                             </CardContent>
@@ -628,46 +610,34 @@ export const SerialPortPage = () => {
 
                         {isConnected && (
                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                                <Typography variant="caption" sx={{ fontWeight: 700, color: '#475569' }}>
-                                    ⚡ Lệnh phát số cân cơ bản:
-                                </Typography>
-                                <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                                    <Button size="small" variant="outlined" color="success" onClick={() => sendPresetCommand('P')}>Lệnh 'P'</Button>
-                                    <Button size="small" variant="outlined" color="success" onClick={() => sendPresetCommand('W')}>Lệnh 'W'</Button>
-                                    <Button size="small" variant="outlined" color="success" onClick={() => sendPresetCommand('READ')}>Lệnh 'READ'</Button>
-                                    <Button size="small" variant="outlined" color="success" onClick={() => sendPresetCommand('PRINT')}>Lệnh 'PRINT'</Button>
-                                </Box>
-
-                                <Typography variant="caption" sx={{ fontWeight: 700, color: '#15803d', mt: 0.5 }}>
+                                <Typography variant="caption" sx={{ fontWeight: 700, color: '#15803d' }}>
                                     ⚖️ Lệnh Chuẩn Cho Cân CAS CL5200-30P:
                                 </Typography>
-                                <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                                    <Button size="small" variant="contained" color="success" onClick={() => sendRawBytes([0x02, 0x30, 0x31, 0x57, 0x03], 'CL5200 STX-01W-ETX')}>
-                                        CL5200 Lệnh W (&lt;STX&gt;01W&lt;ETX&gt;)
-                                    </Button>
-                                    <Button size="small" variant="contained" color="success" onClick={() => sendRawBytes([0x05], 'ENQ')}>
-                                        CAS Lệnh ENQ (0x05)
-                                    </Button>
-                                    <Button size="small" variant="contained" color="success" onClick={() => sendRawBytes([0x11], 'DC1')}>
-                                        CAS Lệnh DC1 (0x11)
-                                    </Button>
-                                    <Button size="small" variant="contained" color="success" onClick={() => sendRawBytes([0x57, 0x0D, 0x0A], 'W+CRLF')}>
-                                        CL5200 Lệnh W+CRLF
-                                    </Button>
-                                </Box>
+                                <Grid container spacing={1}>
+                                    <Grid item xs={6}>
+                                        <Button fullWidth size="small" variant="contained" color="success" onClick={() => sendRawBytes([0x02, 0x30, 0x31, 0x57, 0x03], 'CL5200 STX-01W-ETX')}>
+                                            Lệnh &lt;STX&gt;01W&lt;ETX&gt;
+                                        </Button>
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <Button fullWidth size="small" variant="contained" color="success" onClick={() => sendRawBytes([0x05], 'ENQ')}>
+                                            CAS ENQ (0x05)
+                                        </Button>
+                                    </Grid>
+                                </Grid>
 
-                                 <Button 
+                                <Button 
                                     size="small" 
                                     variant="contained" 
                                     color={isAutoPolling ? "error" : "info"} 
                                     onClick={toggleAutoPoll} 
-                                    sx={{ textTransform: 'none', mt: 0.5, fontWeight: 700 }}
+                                    sx={{ textTransform: 'none', fontWeight: 700, py: 0.75 }}
                                 >
-                                    {isAutoPolling ? '🛑 Tắt Tự Động Hỏi Số Cân' : '🔄 Bật Tự Động Hỏi Số Cân (Phù hợp Sendmode = 3)'}
+                                    {isAutoPolling ? '🛑 Tắt Tự Động Hỏi Số Cân' : '🔄 Bật Tự Động Hỏi Số Cân (Sendmode=3)'}
                                 </Button>
 
-                                <Button size="small" variant="contained" color="warning" onClick={toggleSignals} sx={{ textTransform: 'none', mt: 0.5, fontWeight: 600 }}>
-                                    Kích Hoạt Tín Hiệu DTR/RTS (Bật Nguồn RS232)
+                                <Button size="small" variant="outlined" color="warning" onClick={toggleSignals} sx={{ textTransform: 'none', fontWeight: 600 }}>
+                                    Kích Hoạt Tín Hiệu DTR/RTS
                                 </Button>
                             </Box>
                         )}
@@ -675,8 +645,8 @@ export const SerialPortPage = () => {
                 </Grid>
 
                 {/* Live Terminal & Logs */}
-                <Grid item xs={12} md={8}>
-                    <Paper elevation={0} sx={{ p: 2.5, borderRadius: 2.5, border: '1px solid #e2e8f0', bgcolor: '#fff', display: 'flex', flexDirection: 'column', height: '100%', minHeight: 580 }}>
+                <Grid item xs={12} lg={7} xl={8} sx={{ display: 'flex', flexDirection: 'column' }}>
+                    <Paper elevation={0} sx={{ p: 2.5, borderRadius: 2.5, border: '1px solid', borderColor: 'divider', bgcolor: 'background.paper', display: 'flex', flexDirection: 'column', height: '100%', minHeight: 560 }}>
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.5 }}>
                             <Typography variant="subtitle1" sx={{ fontWeight: 700, color: '#1e293b' }}>
                                 Luồng Dữ Liệu Realtime (Terminal Log)

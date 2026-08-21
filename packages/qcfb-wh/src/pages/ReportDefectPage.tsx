@@ -335,14 +335,14 @@ const ReportDefectPage: React.FC = () => {
   return (
     <Box sx={{ px: 1, py: 0.5, flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', gap: 1 }}>
 
-      <Paper elevation={0} sx={{ flexShrink: 0, borderRadius: 2, border: '1px solid #e0e0e0', overflow: 'hidden' }}>
+      <Paper elevation={0} sx={{ flexShrink: 0, borderRadius: 2, border: '1px solid', borderColor: 'divider', overflow: 'hidden' }}>
         <Box sx={{
           p: 2, display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap',
           background: 'linear-gradient(135deg, #f5f5f5 0%, #fafafa 100%)',
           borderBottom: '1px solid #e8e8e8',
         }}>
           {/* Date range element */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, backgroundColor: '#fff', borderRadius: 1.5, border: '1px solid #e0e0e0', px: 1.5, py: 0.5 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, backgroundColor: 'background.paper', borderRadius: 1.5, border: '1px solid', borderColor: 'divider', px: 1.5, py: 0.5 }}>
             <Typography variant="caption" sx={{ fontWeight: 700, color: '#2e7d32', mr: 0.5, whiteSpace: 'nowrap' }}>📅 {t('qcfb.dateTitle', 'Date')}</Typography>
             <TextField size="small" type="date" value={fromDate}
               onChange={e => setFromDate(e.target.value)}
@@ -358,15 +358,15 @@ const ReportDefectPage: React.FC = () => {
           <Box sx={{ flexGrow: 1, display: 'flex', gap: 1.5, flexWrap: 'wrap' }}>
             <TextField size="small" placeholder={t('qcfb.invoiceNo', 'Invoice No')} value={invoiceNo} onChange={e => setInvoiceNo(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleSearch()}
               InputProps={{ startAdornment: <Typography sx={{ color: '#94a3b8', mr: 1, fontSize: '0.85rem', fontWeight: 600 }}>INV</Typography> }}
-              sx={{ flex: '1 1 150px', '& .MuiOutlinedInput-root': { backgroundColor: '#fff', borderRadius: 2, transition: 'all 0.2s', '& fieldset': { borderColor: '#e2e8f0' }, '&:hover fieldset': { borderColor: '#cbd5e1' }, '&.Mui-focused fieldset': { borderColor: '#2e7d32', borderWidth: '1px', boxShadow: '0 0 0 3px rgba(46,125,50,0.1)' } }, '& input': { fontSize: '0.875rem', fontWeight: 500, color: '#334155' } }}
+              sx={{ flex: '1 1 150px', '& .MuiOutlinedInput-root': { backgroundColor: 'background.paper', borderRadius: 2, transition: 'all 0.2s', '& fieldset': { borderColor: '#e2e8f0' }, '&:hover fieldset': { borderColor: '#cbd5e1' }, '&.Mui-focused fieldset': { borderColor: '#2e7d32', borderWidth: '1px', boxShadow: '0 0 0 3px rgba(46,125,50,0.1)' } }, '& input': { fontSize: '0.875rem', fontWeight: 500, color: '#334155' } }}
             />
             <TextField size="small" placeholder={t('qcfb.poNumber', 'PO Number')} value={poNo} onChange={e => setPoNo(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleSearch()}
               InputProps={{ startAdornment: <Typography sx={{ color: '#94a3b8', mr: 1, fontSize: '0.85rem', fontWeight: 600 }}>PO#</Typography> }}
-              sx={{ flex: '1 1 150px', '& .MuiOutlinedInput-root': { backgroundColor: '#fff', borderRadius: 2, transition: 'all 0.2s', '& fieldset': { borderColor: '#e2e8f0' }, '&:hover fieldset': { borderColor: '#cbd5e1' }, '&.Mui-focused fieldset': { borderColor: '#2e7d32', borderWidth: '1px', boxShadow: '0 0 0 3px rgba(46,125,50,0.1)' } }, '& input': { fontSize: '0.875rem', fontWeight: 500, color: '#334155' } }}
+              sx={{ flex: '1 1 150px', '& .MuiOutlinedInput-root': { backgroundColor: 'background.paper', borderRadius: 2, transition: 'all 0.2s', '& fieldset': { borderColor: '#e2e8f0' }, '&:hover fieldset': { borderColor: '#cbd5e1' }, '&.Mui-focused fieldset': { borderColor: '#2e7d32', borderWidth: '1px', boxShadow: '0 0 0 3px rgba(46,125,50,0.1)' } }, '& input': { fontSize: '0.875rem', fontWeight: 500, color: '#334155' } }}
             />
             <TextField size="small" placeholder={t('qcfb.itemNo', 'Item No')} value={itemNo} onChange={e => setItemNo(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleSearch()}
               InputProps={{ startAdornment: <Typography sx={{ color: '#94a3b8', mr: 1, fontSize: '0.85rem', fontWeight: 600 }}>ITM</Typography> }}
-              sx={{ flex: '1 1 150px', '& .MuiOutlinedInput-root': { backgroundColor: '#fff', borderRadius: 2, transition: 'all 0.2s', '& fieldset': { borderColor: '#e2e8f0' }, '&:hover fieldset': { borderColor: '#cbd5e1' }, '&.Mui-focused fieldset': { borderColor: '#2e7d32', borderWidth: '1px', boxShadow: '0 0 0 3px rgba(46,125,50,0.1)' } }, '& input': { fontSize: '0.875rem', fontWeight: 500, color: '#334155' } }}
+              sx={{ flex: '1 1 150px', '& .MuiOutlinedInput-root': { backgroundColor: 'background.paper', borderRadius: 2, transition: 'all 0.2s', '& fieldset': { borderColor: '#e2e8f0' }, '&:hover fieldset': { borderColor: '#cbd5e1' }, '&.Mui-focused fieldset': { borderColor: '#2e7d32', borderWidth: '1px', boxShadow: '0 0 0 3px rgba(46,125,50,0.1)' } }, '& input': { fontSize: '0.875rem', fontWeight: 500, color: '#334155' } }}
             />
           </Box>
 
@@ -419,7 +419,7 @@ const ReportDefectPage: React.FC = () => {
               ) : (
                 paginatedData.map((row, idx) => (
                   <TableRow key={idx} hover>
-                    <TableCell sx={{ position: 'sticky', left: 0, backgroundColor: 'inherit', borderRight: '1px solid #e0e0e0', zIndex: 5 }}>
+                    <TableCell sx={{ position: 'sticky', left: 0, backgroundColor: 'inherit', borderRight: '1px solid', borderColor: 'divider', zIndex: 5 }}>
                       {page * rowsPerPage + idx + 1}
                     </TableCell>
                     {COLUMNS.map(col => (
@@ -435,7 +435,7 @@ const ReportDefectPage: React.FC = () => {
         </TableContainer>
 
         {/* F2S Pagination */}
-        <Box sx={{ flexShrink: 0, borderTop: '1px solid #e2e8f0', bgcolor: '#fff', p: 1.5, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
+        <Box sx={{ flexShrink: 0, borderTop: '1px solid', borderColor: 'divider', bgcolor: 'background.paper', p: 1.5, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <Typography variant="body2" sx={{ color: '#475569', fontWeight: 500 }}>{t('qcfb.rowsPerPage', 'Dòng / trang:')}</Typography>
             <Select

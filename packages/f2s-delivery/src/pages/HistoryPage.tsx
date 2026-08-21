@@ -68,7 +68,7 @@ function ManualTab() {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 200px)' }}>
       {/* Filter bar */}
-      <Paper elevation={0} sx={{ p: 1.5, mb: 2, borderRadius: 2.5, border: '1px solid #e2e8f0', background: 'linear-gradient(135deg, #f8faf8 0%, #ffffff 100%)' }}>
+      <Paper elevation={0} sx={{ p: 1.5, mb: 2, borderRadius: 2.5, border: '1px solid', borderColor: 'divider', bgcolor: 'background.paper' }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap' }}>
           <TextField
             label="Từ ngày"
@@ -140,7 +140,7 @@ function ManualTab() {
       )}
 
       {!loading && data.length > 0 && (
-        <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 2, border: '1px solid #e0e0e0', backgroundColor: '#fff !important', flex: 1, overflow: 'auto' }}>
+        <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 2, border: '1px solid', borderColor: 'divider', backgroundColor: '#fff !important', flex: 1, overflow: 'auto' }}>
           <Table size="small" stickyHeader sx={{ '& .MuiTableCell-root': { py: { xs: 0.5, lg: 1 }, px: { xs: 1, lg: 2 }, fontSize: { xs: '0.75rem', lg: '0.85rem' } } }}>
             <TableHead>
               <TableRow>
@@ -176,7 +176,7 @@ function ManualTab() {
       )}
 
       {searched && !loading && totalElements > 0 && (
-        <Box sx={{ borderTop: '1px solid #e0e0e0', backgroundColor: '#fafafa', p: 1.5, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', justifyContent: 'space-between', gap: 2, borderRadius: '0 0 8px 8px' }}>
+        <Box sx={{ borderTop: '1px solid', borderColor: 'divider', backgroundColor: '#fafafa', p: 1.5, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', justifyContent: 'space-between', gap: 2, borderRadius: '0 0 8px 8px' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <Typography variant="body2" sx={{ color: '#475569', fontWeight: 500 }}>{t('f2s.history.rowsPerPage')}:</Typography>
             <Select
@@ -186,7 +186,7 @@ function ManualTab() {
                 setRowsPerPage(Number(e.target.value));
                 setPage(0);
               }}
-              sx={{ height: 32, fontSize: '0.875rem', backgroundColor: '#fff' }}
+              sx={{ height: 32, fontSize: '0.875rem', backgroundColor: 'background.paper' }}
             >
               {[15, 50, 100, 200].map(v => <MenuItem key={v} value={v}>{v}</MenuItem>)}
             </Select>
@@ -258,7 +258,7 @@ function AutoTab() {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 200px)' }}>
       {/* Filter bar */}
-      <Paper elevation={0} sx={{ p: 1.5, mb: 2, borderRadius: 2.5, border: '1px solid #e2e8f0', background: 'linear-gradient(135deg, #f8faf8 0%, #ffffff 100%)' }}>
+      <Paper elevation={0} sx={{ p: 1.5, mb: 2, borderRadius: 2.5, border: '1px solid', borderColor: 'divider', bgcolor: 'background.paper' }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap' }}>
           <TextField
             label="Từ ngày"
@@ -330,7 +330,7 @@ function AutoTab() {
       )}
 
       {!loading && data.length > 0 && (
-        <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 2, border: '1px solid #e0e0e0', backgroundColor: '#fff !important', flex: 1, overflow: 'auto' }}>
+        <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 2, border: '1px solid', borderColor: 'divider', backgroundColor: '#fff !important', flex: 1, overflow: 'auto' }}>
           <Table size="small" stickyHeader sx={{ '& .MuiTableCell-root': { py: { xs: 0.5, lg: 1 }, px: { xs: 1, lg: 2 }, fontSize: { xs: '0.75rem', lg: '0.85rem' } } }}>
             <TableHead>
               <TableRow>
@@ -375,7 +375,7 @@ function AutoTab() {
       )}
 
       {searched && !loading && totalElements > 0 && (
-        <Box sx={{ borderTop: '1px solid #e0e0e0', backgroundColor: '#fafafa', p: 1.5, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', justifyContent: 'space-between', gap: 2, borderRadius: '0 0 8px 8px' }}>
+        <Box sx={{ borderTop: '1px solid', borderColor: 'divider', backgroundColor: '#fafafa', p: 1.5, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', justifyContent: 'space-between', gap: 2, borderRadius: '0 0 8px 8px' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <Typography variant="body2" sx={{ color: '#475569', fontWeight: 500 }}>Dòng / trang:</Typography>
             <Select
@@ -385,7 +385,7 @@ function AutoTab() {
                 setRowsPerPage(Number(e.target.value));
                 setPage(0);
               }}
-              sx={{ height: 32, fontSize: '0.875rem', backgroundColor: '#fff' }}
+              sx={{ height: 32, fontSize: '0.875rem', backgroundColor: 'background.paper' }}
             >
               {[15, 50, 100, 200].map(v => <MenuItem key={v} value={v}>{v}</MenuItem>)}
             </Select>
@@ -423,12 +423,12 @@ export default function HistoryPage() {
     <Box>
 
 
-      <Paper elevation={0} sx={{ borderRadius: 2, border: '1px solid #e0e0e0', overflow: 'hidden' }}>
+      <Paper elevation={0} sx={{ borderRadius: 2, border: '1px solid', borderColor: 'divider', overflow: 'hidden' }}>
         <Tabs
           value={tab}
           onChange={(_, v) => setTab(v)}
           sx={{
-            borderBottom: '1px solid #e0e0e0',
+            borderBottom: '1px solid', borderColor: 'divider',
             '& .MuiTab-root': { fontWeight: 600, fontSize: '0.9rem', minHeight: 52 },
             '& .Mui-selected': { color: '#2e7d32 !important' },
             '& .MuiTabs-indicator': { backgroundColor: '#2e7d32' },

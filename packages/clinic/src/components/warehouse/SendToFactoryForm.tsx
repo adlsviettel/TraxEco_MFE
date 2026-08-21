@@ -121,7 +121,7 @@ export default function SendToFactoryForm({ warehouseStock, onSendToFactory }: S
       <Grid container spacing={2.5} sx={{ height: '100%', minHeight: 0 }}>
         
         {/* CỘT 1: CHỌN LÔ THUỐC NGUỒN TRONG KHO TỔNG */}
-        <Grid size={{ xs: 12, md: 4.25 }} sx={{ display: 'flex', flexDirection: 'column', height: '100%', borderRight: '1px solid #f1f5f9', pr: 2 }}>
+        <Grid size={{ xs: 12, md: 4.25 }} sx={{ display: 'flex', flexDirection: 'column', height: '100%', borderRight: '1px solid', borderColor: 'divider', pr: 2 }}>
           <Typography variant="caption" color="text.secondary" display="block" sx={{ fontWeight: 800, textTransform: 'uppercase', fontSize: 11, letterSpacing: '0.5px', mb: 1.5 }}>
             1. Chọn Lô Thuốc Nguồn
           </Typography>
@@ -222,7 +222,7 @@ export default function SendToFactoryForm({ warehouseStock, onSendToFactory }: S
         </Grid>
 
         {/* CỘT 2: ĐIỀN THÔNG TIN ĐIỀU CHUYỂN */}
-        <Grid size={{ xs: 12, md: 3.75 }} sx={{ display: 'flex', flexDirection: 'column', height: '100%', borderRight: '1px solid #f1f5f9', pr: 2 }}>
+        <Grid size={{ xs: 12, md: 3.75 }} sx={{ display: 'flex', flexDirection: 'column', height: '100%', borderRight: '1px solid', borderColor: 'divider', pr: 2 }}>
           <Typography variant="caption" color="text.secondary" display="block" sx={{ fontWeight: 800, textTransform: 'uppercase', fontSize: 11, letterSpacing: '0.5px', mb: 1.5 }}>
             2. Điền Thông Tin Chuyển
           </Typography>
@@ -241,7 +241,7 @@ export default function SendToFactoryForm({ warehouseStock, onSendToFactory }: S
                   </Box>
                 </Box>
               ) : (
-                <Box sx={{ p: 2, borderRadius: '8px', bgcolor: '#f8fafc', border: '1px dashed #cbd5e1', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 1, py: 3 }}>
+                <Box sx={{ p: 2, borderRadius: '8px', bgcolor: 'background.default', border: '1px dashed #cbd5e1', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 1, py: 3 }}>
                   <InfoIcon sx={{ color: '#94a3b8', fontSize: 24 }} />
                   <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic', textAlign: 'center', fontSize: 12, lineHeight: 1.4 }}>
                     Chưa chọn lô nguồn.<br />Vui lòng click vào một thẻ lô ở Cột 1.
@@ -348,7 +348,7 @@ export default function SendToFactoryForm({ warehouseStock, onSendToFactory }: S
 
           <Box sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1, height: '100%', overflow: 'hidden' }}>
             {/* Hàng chờ hiển thị danh sách */}
-            <Box sx={{ flexGrow: 1, overflowY: 'auto', border: '1px solid #e2e8f0', borderRadius: '8px', bgcolor: '#f8fafc', p: 1.5 }}>
+            <Box sx={{ flexGrow: 1, overflowY: 'auto', border: '1px solid', borderColor: 'divider', borderRadius: '8px', bgcolor: 'background.default', p: 1.5 }}>
               {queuedTransfers.length === 0 ? (
                 <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', py: 8, gap: 1.5 }}>
                   <BagIcon sx={{ color: '#cbd5e1', fontSize: 40 }} />

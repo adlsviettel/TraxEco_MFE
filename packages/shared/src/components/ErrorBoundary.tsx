@@ -46,7 +46,7 @@ class ErrorBoundary extends Component<Props, State> {
           background: 'linear-gradient(135deg, #f0f4ff 0%, #fce4ec 100%)',
         }}>
           <div style={{
-            background: '#fff',
+            background: 'background.paper',
             borderRadius: '16px',
             padding: '40px 32px',
             maxWidth: '440px',
@@ -86,8 +86,8 @@ class ErrorBoundary extends Component<Props, State> {
             </p>
             {import.meta.env.DEV && this.state.error && (
               <pre style={{
-                background: '#f8fafc',
-                border: '1px solid #e2e8f0',
+                background: 'background.default',
+                border: '1px solid', borderColor: 'divider',
                 borderRadius: '8px',
                 padding: '12px',
                 fontSize: '0.75rem',
@@ -121,9 +121,9 @@ class ErrorBoundary extends Component<Props, State> {
               <button
                 onClick={this.handleGoHome}
                 style={{
-                  background: '#f1f5f9',
+                  background: 'background.default',
                   color: '#334155',
-                  border: '1px solid #e2e8f0',
+                  border: '1px solid', borderColor: 'divider',
                   padding: '12px 24px',
                   borderRadius: '8px',
                   fontWeight: 600,

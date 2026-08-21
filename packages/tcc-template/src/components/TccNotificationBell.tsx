@@ -470,7 +470,7 @@ export default function TccNotificationBell() {
         color="inherit"
         onClick={handleClick}
         sx={{
-          border: '1px solid #e2e8f0',
+          border: '1px solid', borderColor: 'divider',
           borderRadius: '6px',
           padding: '8px',
           bgcolor: open ? 'rgba(0,0,0,0.03)' : 'transparent',
@@ -503,14 +503,14 @@ export default function TccNotificationBell() {
             maxHeight: 480,
             borderRadius: '12px',
             boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
-            border: '1px solid #f1f5f9',
+            border: '1px solid', borderColor: 'divider',
             display: 'flex',
             flexDirection: 'column',
           },
         }}
       >
         {/* Header */}
-        <Box sx={{ p: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #f1f5f9' }}>
+        <Box sx={{ p: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid', borderColor: 'divider' }}>
           <Typography sx={{ fontWeight: 800, fontSize: '0.95rem', color: '#1e293b' }}>
             {t('tcc.notification.bellHeader', 'TCC Notifications')}
           </Typography>
@@ -534,7 +534,7 @@ export default function TccNotificationBell() {
         </Box>
 
         {/* List Content */}
-        <Box sx={{ flex: 1, overflowY: 'auto', bgcolor: '#f8fafc' }}>
+        <Box sx={{ flex: 1, overflowY: 'auto', bgcolor: 'background.default' }}>
           {loading && notifications.length === 0 ? (
             <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
               <CircularProgress size={24} sx={{ color: '#2e7d32' }} />
@@ -609,7 +609,7 @@ export default function TccNotificationBell() {
         </Box>
 
         {/* Footer */}
-        <Box sx={{ p: 1.2, borderTop: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', px: 2 }}>
+        <Box sx={{ p: 1.2, borderTop: '1px solid', borderColor: 'divider', display: 'flex', justifyContent: 'space-between', px: 2 }}>
           <Button
             size="small"
             onClick={resetUnread}
@@ -632,7 +632,7 @@ export default function TccNotificationBell() {
               fontSize: '0.75rem',
               fontWeight: 700,
               color: '#475569',
-              '&:hover': { bgcolor: '#f1f5f9' },
+              '&:hover': { bgcolor: 'background.default' },
             }}
           >
             {t('tcc.notification.refresh', 'Làm mới danh sách')}
@@ -734,7 +734,7 @@ export default function TccNotificationBell() {
 
                   <Grid size={{ xs: 12 }}>
                     <Typography variant="caption" color="text.secondary" sx={{ display: 'block', fontWeight: 600 }}>{t('tcc.operationDescription', 'Operation Description')}</Typography>
-                    <Typography variant="body2" sx={{ fontWeight: 500, color: '#475569', bgcolor: '#f8fafc', p: 1.5, borderRadius: '8px', border: '1px solid #f1f5f9', whiteSpace: 'pre-wrap' }}>
+                    <Typography variant="body2" sx={{ fontWeight: 500, color: '#475569', bgcolor: 'background.default', p: 1.5, borderRadius: '8px', border: '1px solid', borderColor: 'divider', whiteSpace: 'pre-wrap' }}>
                       {selectedNotificationReq.operationDescription || `(${t('common.none', 'Không có')})`}
                     </Typography>
                   </Grid>
@@ -788,7 +788,7 @@ export default function TccNotificationBell() {
 
                   <Grid size={{ xs: 12 }}>
                     <Typography variant="caption" color="text.secondary" sx={{ display: 'block', fontWeight: 600 }}>{t('tcc.remarks', 'Remarks')} / {t('tcc.comments', 'Comments')}</Typography>
-                    <Typography variant="body2" sx={{ fontWeight: 500, color: '#475569', bgcolor: '#f8fafc', p: 1.5, borderRadius: '8px', border: '1px solid #f1f5f9', whiteSpace: 'pre-wrap' }}>
+                    <Typography variant="body2" sx={{ fontWeight: 500, color: '#475569', bgcolor: 'background.default', p: 1.5, borderRadius: '8px', border: '1px solid', borderColor: 'divider', whiteSpace: 'pre-wrap' }}>
                       {selectedNotificationReq.remarks || selectedNotificationReq.comments || `(${t('common.none', 'Không có')})`}
                     </Typography>
                   </Grid>

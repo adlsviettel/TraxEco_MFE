@@ -11,7 +11,7 @@ export default function PassFailPage() {
 
   return (
     <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0 }}>
-      <Paper elevation={0} sx={{ borderRadius: 0, borderBottom: '1px solid #e0e0e0', backgroundColor: '#fff', px: 2, pt: 1, flexShrink: 0 }}>
+      <Paper elevation={0} sx={{ borderRadius: 0, borderBottom: '1px solid', borderColor: 'divider', backgroundColor: 'background.paper', px: 2, pt: 1, flexShrink: 0 }}>
         <Tabs 
           value={activeTab} 
           onChange={(_, val) => setActiveTab(val)}
@@ -34,7 +34,7 @@ export default function PassFailPage() {
         </Tabs>
       </Paper>
 
-      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, p: 0, backgroundColor: '#f5f7fa' }}>
+      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, p: 0, backgroundColor: 'background.default' }}>
         {/* We use display: 'none' instead of unmounting to keep state alive */}
         <Box sx={{ flex: 1, display: activeTab === 0 ? 'flex' : 'none', flexDirection: 'column', minHeight: 0 }}>
           <BulkPassFailTab />

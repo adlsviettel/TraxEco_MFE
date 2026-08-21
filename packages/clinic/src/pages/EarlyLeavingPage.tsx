@@ -283,17 +283,17 @@ export default function EarlyLeavingPage() {
         <Paper elevation={0} sx={{ 
           width: isMobile ? '100%' : '350px',
           borderRadius: '8px',
-          border: '1px solid #e2e8f0',
+          border: '1px solid', borderColor: 'divider',
           p: 2,
           display: 'flex',
           flexDirection: 'column',
           gap: 1.5,
-          bgcolor: '#fff',
+          bgcolor: 'background.paper',
           flexShrink: 0,
           height: '100%',
           boxShadow: '0 4px 20px -2px rgba(0,0,0,0.05)'
         }}>
-          <Typography sx={{ fontWeight: 800, fontSize: '13px', color: '#0f172a', display: 'flex', alignItems: 'center', gap: 1, borderBottom: '1px solid #f1f5f9', pb: 1, textTransform: 'uppercase', letterSpacing: '0.02em' }}>
+          <Typography sx={{ fontWeight: 800, fontSize: '13px', color: '#0f172a', display: 'flex', alignItems: 'center', gap: 1, borderBottom: '1px solid', borderColor: 'divider', pb: 1, textTransform: 'uppercase', letterSpacing: '0.02em' }}>
             <ApproveIcon sx={{ color: '#15803d', fontSize: 16 }} />
             Tạo phiếu cho về sớm
           </Typography>
@@ -319,7 +319,7 @@ export default function EarlyLeavingPage() {
                   flexGrow: 1,
                   '& .MuiOutlinedInput-root': {
                     borderRadius: '6px',
-                    backgroundColor: '#ffffff',
+                    backgroundColor: 'background.paper',
                     fontSize: '12.5px',
                     height: 36,
                     '& fieldset': { borderColor: '#cbd5e1' },
@@ -374,7 +374,7 @@ export default function EarlyLeavingPage() {
           ) : (
             <Box sx={{ 
               p: 2, 
-              bgcolor: '#f8fafc', 
+              bgcolor: 'background.default', 
               borderRadius: '6px', 
               border: '1px dashed #cbd5e1',
               display: 'flex',
@@ -405,7 +405,7 @@ export default function EarlyLeavingPage() {
               sx={{
                 '& .MuiOutlinedInput-root': {
                   borderRadius: '6px',
-                  backgroundColor: '#ffffff',
+                  backgroundColor: 'background.paper',
                   fontSize: '12.5px',
                   '& fieldset': { borderColor: '#cbd5e1' },
                   '&.Mui-focused fieldset': { borderColor: '#15803d' },
@@ -491,16 +491,16 @@ export default function EarlyLeavingPage() {
         <Paper elevation={0} sx={{ 
           flexGrow: 1,
           borderRadius: '8px',
-          border: '1px solid #cbd5e1',
+          border: '1px solid', borderColor: 'divider',
           display: 'flex',
           flexDirection: 'column',
           overflow: 'hidden',
-          bgcolor: '#fff',
+          bgcolor: 'background.paper',
           height: '100%',
           boxShadow: '0 4px 20px -2px rgba(0,0,0,0.05)'
         }}>
           {/* Header & Filter options */}
-          <Box sx={{ borderBottom: '1px solid #e2e8f0', p: 1.25, px: 2, bgcolor: '#f8fafc', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 1.5 }}>
+          <Box sx={{ borderBottom: '1px solid', borderColor: 'divider', p: 1.25, px: 2, bgcolor: 'background.default', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 1.5 }}>
             <Typography variant="subtitle2" sx={{ fontWeight: 800, fontSize: '13px', color: '#0f172a', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
               Danh sách công nhân ra về sớm
             </Typography>
@@ -520,7 +520,7 @@ export default function EarlyLeavingPage() {
                     height: 30,
                     fontSize: '11.5px',
                     fontWeight: 700,
-                    bgcolor: '#ffffff',
+                    bgcolor: 'background.paper',
                     '& fieldset': { borderColor: '#cbd5e1' }
                   }
                 }}
@@ -545,7 +545,7 @@ export default function EarlyLeavingPage() {
                     '& .MuiOutlinedInput-root': {
                       borderRadius: '6px',
                       height: 30,
-                      backgroundColor: '#ffffff',
+                      backgroundColor: 'background.paper',
                       fontSize: '11.5px',
                       fontWeight: 750,
                       color: '#334155',
@@ -567,7 +567,7 @@ export default function EarlyLeavingPage() {
                     '& .MuiOutlinedInput-root': {
                       borderRadius: '6px',
                       height: 30,
-                      backgroundColor: '#ffffff',
+                      backgroundColor: 'background.paper',
                       fontSize: '11.5px',
                       fontWeight: 750,
                       color: '#334155',
@@ -586,13 +586,13 @@ export default function EarlyLeavingPage() {
               <Table size="small" stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase' }}>Công nhân</TableCell>
-                    <TableCell sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase' }}>Bộ phận</TableCell>
-                    <TableCell sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase' }}>Triệu chứng / Lý do</TableCell>
-                    <TableCell sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase' }} align="center">Thời gian về</TableCell>
-                    <TableCell sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase' }}>Thuốc</TableCell>
-                    <TableCell sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase' }}>Người duyệt</TableCell>
-                    <TableCell sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase' }} align="center">Thao tác</TableCell>
+                    <TableCell sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase' }}>Công nhân</TableCell>
+                    <TableCell sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase' }}>Bộ phận</TableCell>
+                    <TableCell sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase' }}>Triệu chứng / Lý do</TableCell>
+                    <TableCell sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase' }} align="center">Thời gian về</TableCell>
+                    <TableCell sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase' }}>Thuốc</TableCell>
+                    <TableCell sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase' }}>Người duyệt</TableCell>
+                    <TableCell sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase' }} align="center">Thao tác</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -641,8 +641,8 @@ export default function EarlyLeavingPage() {
             {/* Pagination custom TCC layout */}
             {filteredRecords.length > 0 && (
               <Box sx={{ 
-                borderTop: '1px solid #e2e8f0', 
-                backgroundColor: '#f8fafc', 
+                borderTop: '1px solid', borderColor: 'divider', 
+                backgroundColor: 'background.default', 
                 p: 1.25, 
                 px: 3,
                 display: 'flex', 
@@ -665,7 +665,7 @@ export default function EarlyLeavingPage() {
                       height: 30, 
                       fontSize: '12.5px', 
                       fontWeight: 700, 
-                      backgroundColor: '#fff',
+                      backgroundColor: 'background.paper',
                       borderRadius: '6px',
                       '& .MuiOutlinedInput-notchedOutline': { borderColor: '#cbd5e1' }
                     }}

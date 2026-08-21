@@ -597,15 +597,15 @@ export default function MaternityPage() {
       <Paper elevation={0} sx={{ 
         flexGrow: 1,
         borderRadius: '8px',
-        border: '1px solid #cbd5e1',
+        border: '1px solid', borderColor: 'divider',
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
-        bgcolor: '#fff',
+        bgcolor: 'background.paper',
         height: 'calc(100vh - 90px)'
       }}>
         {/* Toolbar Header */}
-        <Box sx={{ p: 2, borderBottom: '1px solid #cbd5e1', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: 2, bgcolor: '#f8fafc', flexShrink: 0 }}>
+        <Box sx={{ p: 2, borderBottom: '1px solid', borderColor: 'divider', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: 2, bgcolor: 'background.default', flexShrink: 0 }}>
           <Typography sx={{ fontWeight: 800, fontSize: '13.5px', color: '#0f172a', display: 'flex', alignItems: 'center', gap: 1, textTransform: 'uppercase' }}>
             <PregnantIcon sx={{ color: '#15803d', fontSize: 18 }} />
             Quản lý chế độ thai sản
@@ -633,7 +633,7 @@ export default function MaternityPage() {
         </Box>
 
         {/* Filter Area */}
-        <Box sx={{ px: 2, py: 1.5, display: 'flex', flexWrap: 'wrap', gap: 2, alignItems: 'center', borderBottom: '1px solid #e2e8f0', bgcolor: '#fff' }}>
+        <Box sx={{ px: 2, py: 1.5, display: 'flex', flexWrap: 'wrap', gap: 2, alignItems: 'center', borderBottom: '1px solid', borderColor: 'divider', bgcolor: 'background.paper' }}>
           <TextField
             placeholder="Tìm theo tên, MSNV..."
             value={filterText}
@@ -706,7 +706,7 @@ export default function MaternityPage() {
               borderRadius: '6px',
               borderColor: '#cbd5e1',
               color: '#475569',
-              '&:hover': { bgcolor: '#f8fafc', borderColor: '#94a3b8' }
+              '&:hover': { bgcolor: 'background.default', borderColor: '#94a3b8' }
             }}
           >
             Xóa bộ lọc
@@ -718,12 +718,12 @@ export default function MaternityPage() {
           <Table size="small" stickyHeader>
             <TableHead>
               <TableRow>
-                <TableCell sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Nhân viên</TableCell>
-                <TableCell sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Thông tin thai kỳ</TableCell>
-                <TableCell sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Thời gian về sớm</TableCell>
-                <TableCell sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }} align="center">Lịch khám & Sau sinh</TableCell>
-                <TableCell sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Trạng thái</TableCell>
-                <TableCell sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }} align="center">Thao tác</TableCell>
+                <TableCell sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Nhân viên</TableCell>
+                <TableCell sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Thông tin thai kỳ</TableCell>
+                <TableCell sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Thời gian về sớm</TableCell>
+                <TableCell sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }} align="center">Lịch khám & Sau sinh</TableCell>
+                <TableCell sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Trạng thái</TableCell>
+                <TableCell sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', py: 1.25, px: 2, fontWeight: 800, fontSize: '11px', color: '#475569', textTransform: 'uppercase', whiteSpace: 'nowrap' }} align="center">Thao tác</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -790,7 +790,7 @@ export default function MaternityPage() {
                               borderRadius: '4px',
                               borderColor: '#cbd5e1',
                               color: '#475569',
-                              '&:hover': { bgcolor: '#f8fafc', borderColor: '#94a3b8' }
+                              '&:hover': { bgcolor: 'background.default', borderColor: '#94a3b8' }
                             }}
                           >
                             Cập nhật
@@ -849,7 +849,7 @@ export default function MaternityPage() {
         }}
       >
         {/* Drawer header */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #f1f5f9', pb: 1.5 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid', borderColor: 'divider', pb: 1.5 }}>
           <Typography sx={{ fontWeight: 800, fontSize: '14.5px', color: '#0f172a', display: 'flex', alignItems: 'center', gap: 1, textTransform: 'uppercase' }}>
             <PregnantIcon sx={{ color: '#15803d' }} />
             {isUpdateMode ? 'Cập nhật hồ sơ thai sản' : 'Đăng ký hồ sơ thai sản'}
@@ -903,7 +903,7 @@ export default function MaternityPage() {
         {employeeId ? (
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, flexGrow: 1, overflowY: 'auto', pr: 0.5 }}>
             {/* Employee summary */}
-            <Box sx={{ p: 1.5, bgcolor: '#f8fafc', borderRadius: '6px', border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+            <Box sx={{ p: 1.5, bgcolor: 'background.default', borderRadius: '6px', border: '1px solid', borderColor: 'divider', display: 'flex', flexDirection: 'column', gap: 1.5 }}>
               {/* Row 1: Read-only Employee Profile Details */}
               <Box sx={{ display: 'flex', gap: 2 }}>
                 <Box sx={{ flex: 1.2 }}>
@@ -938,7 +938,7 @@ export default function MaternityPage() {
                         height: 30,
                         fontSize: '11.5px',
                         fontWeight: 750,
-                        bgcolor: '#fff',
+                        bgcolor: 'background.paper',
                         '& fieldset': { borderColor: '#cbd5e1' }
                       },
                       '& .MuiInputBase-input': { py: 0.5, px: 1 }
@@ -950,7 +950,7 @@ export default function MaternityPage() {
             </Box>
 
             {/* Ultrasound information */}
-            <Box sx={{ border: '1px solid #cbd5e1', borderRadius: '6px', p: 1.5 }}>
+            <Box sx={{ border: '1px solid', borderColor: 'divider', borderRadius: '6px', p: 1.5 }}>
               <Typography sx={{ fontSize: '11.5px', fontWeight: 900, color: '#15803d', mb: 1, textTransform: 'uppercase' }}>1. Thông tin chẩn đoán siêu âm</Typography>
               <Grid container spacing={1.5}>
                 <Grid item xs={12}>
@@ -1010,7 +1010,7 @@ export default function MaternityPage() {
             </Box>
 
             {/* 5 Prenatal Checkups */}
-            <Box sx={{ border: '1px solid #cbd5e1', borderRadius: '6px', p: 1.5 }}>
+            <Box sx={{ border: '1px solid', borderColor: 'divider', borderRadius: '6px', p: 1.5 }}>
               <Typography sx={{ fontSize: '11.5px', fontWeight: 900, color: '#15803d', mb: 1, textTransform: 'uppercase' }}>2. Lịch khám thai định kỳ (Tối đa 5 lần)</Typography>
               <Grid container spacing={1}>
                 {[
@@ -1044,7 +1044,7 @@ export default function MaternityPage() {
             </Box>
 
             {/* Postpartum details */}
-            <Box sx={{ border: '1px solid #cbd5e1', borderRadius: '6px', p: 1.5 }}>
+            <Box sx={{ border: '1px solid', borderColor: 'divider', borderRadius: '6px', p: 1.5 }}>
               <Typography sx={{ fontSize: '11.5px', fontWeight: 900, color: '#15803d', mb: 1, textTransform: 'uppercase' }}>3. Thông tin sinh con & Nghỉ dưỡng sức</Typography>
               
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
@@ -1076,8 +1076,8 @@ export default function MaternityPage() {
                 <Grid container spacing={2}>
                   {/* Left Column: Thông tin của bé */}
                   <Grid item xs={6}>
-                    <Box sx={{ borderRight: '1px solid #e2e8f0', pr: 2, display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-                      <Typography sx={{ fontSize: '11px', fontWeight: 900, color: '#475569', textTransform: 'uppercase', borderBottom: '1px solid #f1f5f9', pb: 0.5 }}>
+                    <Box sx={{ borderRight: '1px solid', borderColor: 'divider', pr: 2, display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+                      <Typography sx={{ fontSize: '11px', fontWeight: 900, color: '#475569', textTransform: 'uppercase', borderBottom: '1px solid', borderColor: 'divider', pb: 0.5 }}>
                         Thông tin bé
                       </Typography>
                       
@@ -1123,7 +1123,7 @@ export default function MaternityPage() {
                   {/* Right Column: Nghỉ dưỡng sức */}
                   <Grid item xs={6}>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, height: '100%' }}>
-                      <Typography sx={{ fontSize: '11px', fontWeight: 900, color: '#475569', textTransform: 'uppercase', borderBottom: '1px solid #f1f5f9', pb: 0.5 }}>
+                      <Typography sx={{ fontSize: '11px', fontWeight: 900, color: '#475569', textTransform: 'uppercase', borderBottom: '1px solid', borderColor: 'divider', pb: 0.5 }}>
                         Nghỉ dưỡng sức
                       </Typography>
 
@@ -1171,7 +1171,7 @@ export default function MaternityPage() {
                           )}
                         </>
                       ) : (
-                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexGrow: 1, bgcolor: '#f8fafc', borderRadius: '4px', p: 1.5, border: '1px dashed #cbd5e1' }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexGrow: 1, bgcolor: 'background.default', borderRadius: '4px', p: 1.5, border: '1px dashed #cbd5e1' }}>
                           <Typography sx={{ fontSize: '11px', color: '#94a3b8', fontWeight: 700, textAlign: 'center' }}>
                             Nhập ngày sinh con để thiết lập nghỉ dưỡng sức
                           </Typography>
@@ -1197,7 +1197,7 @@ export default function MaternityPage() {
             </Box>
           </Box>
         ) : (
-          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexGrow: 1, bgcolor: '#f8fafc', borderRadius: '8px', border: '1px dashed #cbd5e1' }}>
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexGrow: 1, bgcolor: 'background.default', borderRadius: '8px', border: '1px dashed #cbd5e1' }}>
             <Typography sx={{ color: '#64748b', fontSize: '12px', fontWeight: 650, fontStyle: 'italic' }}>
               Nhập MSNV ở trên để đăng ký/tải thông tin thai sản.
             </Typography>
@@ -1206,7 +1206,7 @@ export default function MaternityPage() {
 
         {/* Action footer inside drawer */}
         {employeeId && (
-          <Box sx={{ borderTop: '1px solid #f1f5f9', pt: 2, display: 'flex', gap: 1.5, mt: 'auto' }}>
+          <Box sx={{ borderTop: '1px solid', borderColor: 'divider', pt: 2, display: 'flex', gap: 1.5, mt: 'auto' }}>
             <Button
               variant="outlined"
               onClick={() => setIsDrawerOpen(false)}

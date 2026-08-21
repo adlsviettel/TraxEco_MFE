@@ -163,7 +163,7 @@ export default function ExcelStyleColumnMenu(props: GridColumnMenuProps) {
   const hasFilter = Boolean(columnFilters[colDef.field]);
 
   return (
-    <Box sx={{ width: 260, display: 'flex', flexDirection: 'column', bgcolor: '#fff' }} onClick={(e) => e.stopPropagation()}>
+    <Box sx={{ width: 260, display: 'flex', flexDirection: 'column', bgcolor: 'background.paper' }} onClick={(e) => e.stopPropagation()}>
       <List dense sx={{ p: 0 }}>
         <ListItemButton onClick={handleSortAsc} sx={{ py: 1 }}>
           <ListItemIcon sx={{ minWidth: 32 }}><ArrowUpwardIcon fontSize="small" /></ListItemIcon>
@@ -200,7 +200,7 @@ export default function ExcelStyleColumnMenu(props: GridColumnMenuProps) {
         />
       </Box>
 
-      <Box sx={{ maxHeight: 200, overflowY: 'auto', border: '1px solid #e0e0e0', mx: 1, mb: 1, borderRadius: 1 }}>
+      <Box sx={{ maxHeight: 200, overflowY: 'auto', border: '1px solid', borderColor: 'divider', mx: 1, mb: 1, borderRadius: 1 }}>
         <List dense disablePadding>
           <ListItem disablePadding>
             <ListItemButton onClick={handleSelectAll} sx={{ py: 0, px: 1 }}>

@@ -37,7 +37,7 @@ export const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
 }) => {
   return (
     <Box sx={{ 
-      p: { xs: 1.5, md: 1.75 }, borderBottom: '1px solid #f1f5f9', background: '#fff', 
+      p: { xs: 1.5, md: 1.75 }, borderBottom: '1px solid', borderColor: 'divider', background: 'background.paper', 
       display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap' 
     }}>
       {isMobile && (
@@ -81,12 +81,12 @@ export const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
         )}
         <Tooltip title="Edit user info">
           <IconButton size="small"
-            sx={{ background: '#f8fafc', border: '1px solid #e2e8f0', color: themeColors.main, transition: 'all 0.2s', '&:hover': { background: themeColors.light, transform: 'translateY(-2px)', borderColor: themeColors.main } }}
+            sx={{ background: 'background.default', border: '1px solid', borderColor: 'divider', color: themeColors.main, transition: 'all 0.2s', '&:hover': { background: themeColors.light, transform: 'translateY(-2px)', borderColor: themeColors.main } }}
             onClick={onEditClick}>
             <EditIcon fontSize="small" />
           </IconButton>
         </Tooltip>
-        <Box sx={{ display: 'flex', alignItems: 'center', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 8, px: 1, py: 0.25, transition: 'all 0.2s', '&:focus-within': { borderColor: themeColors.main, boxShadow: `0 0 0 2px ${themeColors.light}` } }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', background: 'background.default', border: '1px solid', borderColor: 'divider', borderRadius: 8, px: 1, py: 0.25, transition: 'all 0.2s', '&:focus-within': { borderColor: themeColors.main, boxShadow: `0 0 0 2px ${themeColors.light}` } }}>
           <Switch checked={selectedUser.isActive} size="small"
             onChange={(_, checked) => onToggleActive(checked)} />
         </Box>

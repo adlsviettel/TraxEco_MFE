@@ -402,7 +402,7 @@ const GenericItemList: React.FC<GenericItemListProps> = ({ title, subtitle, item
               <IconButton 
                 onClick={(e) => setMobileMenuAnchor(e.currentTarget)}
                 sx={{ 
-                  bgcolor: '#f1f5f9', 
+                  bgcolor: 'background.default', 
                   color: '#64748b',
                   borderRadius: '50%',
                   width: 44,
@@ -624,9 +624,9 @@ const GenericItemList: React.FC<GenericItemListProps> = ({ title, subtitle, item
         open={filterOpen}
         onClose={() => setFilterOpen(false)}
         sx={{ zIndex: 9999 }}
-        PaperProps={{ sx: { width: { xs: '100%', sm: 360 }, p: 0, bgcolor: '#f8fafc' } }}
+        PaperProps={{ sx: { width: { xs: '100%', sm: 360 }, p: 0, bgcolor: 'background.default' } }}
       >
-            <Box sx={{ p: 2.5, bgcolor: '#fff', borderBottom: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Box sx={{ p: 2.5, bgcolor: 'background.paper', borderBottom: '1px solid', borderColor: 'divider', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <Typography variant="h6" fontWeight={700}>{t('rdMaterial.advanced_filter', 'Advanced Filter')}</Typography>
               <IconButton onClick={() => setFilterOpen(false)} size="small"><ClearIcon /></IconButton>
             </Box>
@@ -642,7 +642,7 @@ const GenericItemList: React.FC<GenericItemListProps> = ({ title, subtitle, item
             }}>
               <Box>
                 <Typography variant="caption" color="text.secondary" fontWeight={600} mb={0.5} display="block">{t('rdMaterial.filter_item_code', 'Item Code')}</Typography>
-                <Autocomplete multiple freeSolo options={[] as string[]} value={itemCode} onChange={(_, val) => { setItemCode(val); if(hasSearched) setPage(0); }} renderInput={(params) => <TextField {...params} fullWidth size="small" placeholder={t('rdMaterial.enter_to_add', 'Enter to add...')} sx={{ '& .MuiOutlinedInput-root': { borderRadius: 1.5, fontSize: 14, bgcolor: '#fff' } }} />} />
+                <Autocomplete multiple freeSolo options={[] as string[]} value={itemCode} onChange={(_, val) => { setItemCode(val); if(hasSearched) setPage(0); }} renderInput={(params) => <TextField {...params} fullWidth size="small" placeholder={t('rdMaterial.enter_to_add', 'Enter to add...')} sx={{ '& .MuiOutlinedInput-root': { borderRadius: 1.5, fontSize: 14, bgcolor: 'background.paper' } }} />} />
               </Box>
               <Box>
                 <Typography variant="caption" color="text.secondary" fontWeight={600} mb={0.5} display="block">{t('rdMaterial.filter_supplier', 'Supplier')}</Typography>
@@ -658,14 +658,14 @@ const GenericItemList: React.FC<GenericItemListProps> = ({ title, subtitle, item
               </Box>
               <Box>
                 <Typography variant="caption" color="text.secondary" fontWeight={600} mb={0.5} display="block">{t('rdMaterial.filter_location', 'Location')}</Typography>
-                <Autocomplete multiple freeSolo options={[] as string[]} value={location} onChange={(_, val) => { setLocation(val); if(hasSearched) setPage(0); }} renderInput={(params) => <TextField {...params} fullWidth size="small" placeholder={t('rdMaterial.enter_to_add', 'Enter to add...')} sx={{ '& .MuiOutlinedInput-root': { borderRadius: 1.5, fontSize: 14, bgcolor: '#fff' } }} />} />
+                <Autocomplete multiple freeSolo options={[] as string[]} value={location} onChange={(_, val) => { setLocation(val); if(hasSearched) setPage(0); }} renderInput={(params) => <TextField {...params} fullWidth size="small" placeholder={t('rdMaterial.enter_to_add', 'Enter to add...')} sx={{ '& .MuiOutlinedInput-root': { borderRadius: 1.5, fontSize: 14, bgcolor: 'background.paper' } }} />} />
               </Box>
               <Box>
                 <Typography variant="caption" color="text.secondary" fontWeight={600} mb={0.5} display="block">{t('rdMaterial.filter_holder', 'Holder')}</Typography>
-                <Autocomplete multiple freeSolo options={[] as string[]} value={holder} onChange={(_, val) => { setHolder(val); if(hasSearched) setPage(0); }} renderInput={(params) => <TextField {...params} fullWidth size="small" placeholder={t('rdMaterial.enter_to_add', 'Enter to add...')} sx={{ '& .MuiOutlinedInput-root': { borderRadius: 1.5, fontSize: 14, bgcolor: '#fff' } }} />} />
+                <Autocomplete multiple freeSolo options={[] as string[]} value={holder} onChange={(_, val) => { setHolder(val); if(hasSearched) setPage(0); }} renderInput={(params) => <TextField {...params} fullWidth size="small" placeholder={t('rdMaterial.enter_to_add', 'Enter to add...')} sx={{ '& .MuiOutlinedInput-root': { borderRadius: 1.5, fontSize: 14, bgcolor: 'background.paper' } }} />} />
               </Box>
             </Box>
-            <Box sx={{ p: 2.5, bgcolor: '#fff', borderTop: '1px solid #e2e8f0', display: 'flex', gap: 1.5 }}>
+            <Box sx={{ p: 2.5, bgcolor: 'background.paper', borderTop: '1px solid', borderColor: 'divider', display: 'flex', gap: 1.5 }}>
               {activeFiltersCount > 0 && (
                 <Button fullWidth variant="outlined" color="inherit"
                   onClick={() => { setItemCode([]); setSupplierName([]); setColor([]); setOrigin([]); setLocation([]); setHolder([]); if(hasSearched) setPage(0); }} 
@@ -686,7 +686,7 @@ const GenericItemList: React.FC<GenericItemListProps> = ({ title, subtitle, item
           </Drawer>
 
       {/* 🚀 Table / Cards 🚀 */}
-      <Paper elevation={0} sx={{ position: 'relative', flexGrow: 1, width: '100%', overflow: 'hidden', borderRadius: '12px', border: '1px solid #e1e3e4', boxShadow: '0px 4px 20px rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column', bgcolor: '#fff' }}>
+      <Paper elevation={0} sx={{ position: 'relative', flexGrow: 1, width: '100%', overflow: 'hidden', borderRadius: '12px', border: '1px solid', borderColor: 'divider', boxShadow: '0px 4px 20px rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column', bgcolor: 'background.paper' }}>
         {/* Loading Overlay */}
         {loading && items.length > 0 && (
           <Box sx={{
@@ -752,7 +752,7 @@ const GenericItemList: React.FC<GenericItemListProps> = ({ title, subtitle, item
                         alignItems: 'center',
                         bgcolor: (item.quantity ?? 0) <= 0 ? '#fef2f2' : '#fff',
                         cursor: disableRowClick ? 'default' : 'pointer',
-                        '&:active': !disableRowClick ? { bgcolor: '#f8fafc' } : undefined,
+                        '&:active': !disableRowClick ? { bgcolor: 'background.default' } : undefined,
                         transition: 'background-color 0.1s'
                       }}
                     >
@@ -764,7 +764,7 @@ const GenericItemList: React.FC<GenericItemListProps> = ({ title, subtitle, item
                             height: 60, 
                             borderRadius: 1.5, 
                             overflow: 'hidden', 
-                            bgcolor: '#f1f5f9', 
+                            bgcolor: 'background.default', 
                             display: 'flex', 
                             alignItems: 'center', 
                             justifyContent: 'center',
@@ -830,14 +830,14 @@ const GenericItemList: React.FC<GenericItemListProps> = ({ title, subtitle, item
                             <Chip 
                               label={item.supplierName || 'No Supplier'} 
                               size="small" 
-                              sx={{ height: 22, fontSize: 10, bgcolor: '#f1f5f9', color: '#475569', fontWeight: 500 }} 
+                              sx={{ height: 22, fontSize: 10, bgcolor: 'background.default', color: '#475569', fontWeight: 500 }} 
                             />
                           )}
                           {visibleColumns['Location'] !== false && item.location && (
                             <Chip 
                               label={item.location} 
                               size="small" 
-                              sx={{ height: 22, fontSize: 10, bgcolor: '#f1f5f9', color: '#475569', fontWeight: 500 }} 
+                              sx={{ height: 22, fontSize: 10, bgcolor: 'background.default', color: '#475569', fontWeight: 500 }} 
                             />
                           )}
                           {visibleColumns['Qty'] !== false && (
@@ -873,22 +873,22 @@ const GenericItemList: React.FC<GenericItemListProps> = ({ title, subtitle, item
             <Table stickyHeader size="small" sx={{ minWidth: 'max-content', width: '100%', tableLayout: 'auto' }}>
               <TableHead>
                 <TableRow>
-                  {visibleColumns['Image'] !== false && <TableCell sx={{ width: 60, bgcolor: '#F9FAFA', borderBottom: '1px solid #e1e3e4', py: 2, whiteSpace: 'nowrap' }}></TableCell>}
-                  {visibleColumns['Name'] !== false && <TableCell sx={{ fontWeight: 700, fontSize: 11, color: '#707975', textTransform: 'uppercase', letterSpacing: '0.05em', bgcolor: '#F9FAFA', borderBottom: '1px solid #e1e3e4', py: 2, px: 2, whiteSpace: 'nowrap' }}>{itemType === 'YARDAGE' ? t('rdMaterial.fabric_name', 'Fabric Name') : t('rdMaterial.erp_number', 'ERP Number')}</TableCell>}
-                  {visibleColumns['Item Code'] !== false && <TableCell sx={{ fontWeight: 700, fontSize: 11, color: '#707975', textTransform: 'uppercase', letterSpacing: '0.05em', bgcolor: '#F9FAFA', borderBottom: '1px solid #e1e3e4', py: 2, px: 2, whiteSpace: 'nowrap' }}>{t('rdMaterial.item_code', 'Item Code')}</TableCell>}
-                  {visibleColumns['Category'] !== false && <TableCell sx={{ fontWeight: 700, fontSize: 11, color: '#707975', textTransform: 'uppercase', letterSpacing: '0.05em', bgcolor: '#F9FAFA', borderBottom: '1px solid #e1e3e4', py: 2, px: 2, whiteSpace: 'nowrap' }}>{categoryLabel ? t(categoryLabel.toLowerCase().replace(/ /g, '_'), categoryLabel) : t('rdMaterial.category', 'Category')}</TableCell>}
+                  {visibleColumns['Image'] !== false && <TableCell sx={{ width: 60, bgcolor: '#F9FAFA', borderBottom: '1px solid', borderColor: 'divider', py: 2, whiteSpace: 'nowrap' }}></TableCell>}
+                  {visibleColumns['Name'] !== false && <TableCell sx={{ fontWeight: 700, fontSize: 11, color: '#707975', textTransform: 'uppercase', letterSpacing: '0.05em', bgcolor: '#F9FAFA', borderBottom: '1px solid', borderColor: 'divider', py: 2, px: 2, whiteSpace: 'nowrap' }}>{itemType === 'YARDAGE' ? t('rdMaterial.fabric_name', 'Fabric Name') : t('rdMaterial.erp_number', 'ERP Number')}</TableCell>}
+                  {visibleColumns['Item Code'] !== false && <TableCell sx={{ fontWeight: 700, fontSize: 11, color: '#707975', textTransform: 'uppercase', letterSpacing: '0.05em', bgcolor: '#F9FAFA', borderBottom: '1px solid', borderColor: 'divider', py: 2, px: 2, whiteSpace: 'nowrap' }}>{t('rdMaterial.item_code', 'Item Code')}</TableCell>}
+                  {visibleColumns['Category'] !== false && <TableCell sx={{ fontWeight: 700, fontSize: 11, color: '#707975', textTransform: 'uppercase', letterSpacing: '0.05em', bgcolor: '#F9FAFA', borderBottom: '1px solid', borderColor: 'divider', py: 2, px: 2, whiteSpace: 'nowrap' }}>{categoryLabel ? t(categoryLabel.toLowerCase().replace(/ /g, '_'), categoryLabel) : t('rdMaterial.category', 'Category')}</TableCell>}
                   {columns.map((col, idx) => visibleColumns[col.header] !== false && (
-                    <TableCell key={idx} sx={{ fontWeight: 700, fontSize: 11, color: '#707975', textTransform: 'uppercase', letterSpacing: '0.05em', bgcolor: '#F9FAFA', borderBottom: '1px solid #e1e3e4', py: 2, px: 2, whiteSpace: 'nowrap' }}>
+                    <TableCell key={idx} sx={{ fontWeight: 700, fontSize: 11, color: '#707975', textTransform: 'uppercase', letterSpacing: '0.05em', bgcolor: '#F9FAFA', borderBottom: '1px solid', borderColor: 'divider', py: 2, px: 2, whiteSpace: 'nowrap' }}>
                       {translateHeader(col.header, t)}
                     </TableCell>
                   ))}
-                  {visibleColumns['Location'] !== false && <TableCell sx={{ fontWeight: 700, fontSize: 11, color: '#707975', textTransform: 'uppercase', letterSpacing: '0.05em', bgcolor: '#F9FAFA', borderBottom: '1px solid #e1e3e4', py: 2, px: 2, whiteSpace: 'nowrap' }}>{t('rdMaterial.location', 'Location')}</TableCell>}
-                  {visibleColumns['Qty'] !== false && <TableCell sx={{ fontWeight: 700, fontSize: 11, color: '#707975', textTransform: 'uppercase', letterSpacing: '0.05em', bgcolor: '#F9FAFA', borderBottom: '1px solid #e1e3e4', py: 2, px: 2, textAlign: 'center', whiteSpace: 'nowrap' }}>{t('rdMaterial.quantity', 'Qty')}</TableCell>}
-                  {visibleColumns['Created At'] !== false && <TableCell sx={{ fontWeight: 700, fontSize: 11, color: '#707975', textTransform: 'uppercase', letterSpacing: '0.05em', bgcolor: '#F9FAFA', borderBottom: '1px solid #e1e3e4', py: 2, px: 2, whiteSpace: 'nowrap' }}>{t('rdMaterial.created_at', 'Created At')}</TableCell>}
-                  {visibleColumns['Actions'] !== false && <TableCell sx={{ fontWeight: 700, fontSize: 11, color: '#707975', textTransform: 'uppercase', letterSpacing: '0.05em', bgcolor: '#F9FAFA', borderBottom: '1px solid #e1e3e4', py: 2, px: 2, textAlign: 'right', whiteSpace: 'nowrap' }}>{t('rdMaterial.actions', 'Actions')}</TableCell>}
+                  {visibleColumns['Location'] !== false && <TableCell sx={{ fontWeight: 700, fontSize: 11, color: '#707975', textTransform: 'uppercase', letterSpacing: '0.05em', bgcolor: '#F9FAFA', borderBottom: '1px solid', borderColor: 'divider', py: 2, px: 2, whiteSpace: 'nowrap' }}>{t('rdMaterial.location', 'Location')}</TableCell>}
+                  {visibleColumns['Qty'] !== false && <TableCell sx={{ fontWeight: 700, fontSize: 11, color: '#707975', textTransform: 'uppercase', letterSpacing: '0.05em', bgcolor: '#F9FAFA', borderBottom: '1px solid', borderColor: 'divider', py: 2, px: 2, textAlign: 'center', whiteSpace: 'nowrap' }}>{t('rdMaterial.quantity', 'Qty')}</TableCell>}
+                  {visibleColumns['Created At'] !== false && <TableCell sx={{ fontWeight: 700, fontSize: 11, color: '#707975', textTransform: 'uppercase', letterSpacing: '0.05em', bgcolor: '#F9FAFA', borderBottom: '1px solid', borderColor: 'divider', py: 2, px: 2, whiteSpace: 'nowrap' }}>{t('rdMaterial.created_at', 'Created At')}</TableCell>}
+                  {visibleColumns['Actions'] !== false && <TableCell sx={{ fontWeight: 700, fontSize: 11, color: '#707975', textTransform: 'uppercase', letterSpacing: '0.05em', bgcolor: '#F9FAFA', borderBottom: '1px solid', borderColor: 'divider', py: 2, px: 2, textAlign: 'right', whiteSpace: 'nowrap' }}>{t('rdMaterial.actions', 'Actions')}</TableCell>}
                 </TableRow>
               </TableHead>
-              <TableBody sx={{ '& tr:nth-of-type(even)': { bgcolor: '#fff' }, '& tr:nth-of-type(odd)': { bgcolor: '#fff' }, opacity: loading ? 0.6 : 1, transition: 'opacity 0.2s' }}>
+              <TableBody sx={{ '& tr:nth-of-type(even)': { bgcolor: 'background.paper' }, '& tr:nth-of-type(odd)': { bgcolor: 'background.paper' }, opacity: loading ? 0.6 : 1, transition: 'opacity 0.2s' }}>
                 {loading ? (
                   <TableRow><TableCell colSpan={colSpanCount} align="center" sx={{ py: 6 }}>
                     <CircularProgress size={28} color="primary" />
@@ -924,19 +924,19 @@ const GenericItemList: React.FC<GenericItemListProps> = ({ title, subtitle, item
                           {item.mainImage ? (
                             <Tooltip
                               title={
-                                <Box sx={{ width: 240, height: 240, bgcolor: '#fff', borderRadius: 1, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <Box sx={{ width: 240, height: 240, bgcolor: 'background.paper', borderRadius: 1, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                   <img src={rdItemApi.getImageUrl(item.mainImage.split(',')[0])} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                                 </Box>
                               }
                               placement="right"
-                              componentsProps={{ tooltip: { sx: { bgcolor: '#fff', boxShadow: '0 4px 20px rgba(0,0,0,0.15)', p: 0.5, border: '1px solid #e1e3e4' } } }}
+                              componentsProps={{ tooltip: { sx: { bgcolor: 'background.paper', boxShadow: '0 4px 20px rgba(0,0,0,0.15)', p: 0.5, border: '1px solid', borderColor: 'divider' } } }}
                             >
-                              <Box sx={{ width: 48, height: 48, borderRadius: 1, overflow: 'hidden', bgcolor: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #bfc9c4', mx: 'auto' }}>
+                              <Box sx={{ width: 48, height: 48, borderRadius: 1, overflow: 'hidden', bgcolor: 'background.default', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #bfc9c4', mx: 'auto' }}>
                                 <img src={rdItemApi.getImageUrl(item.mainImage.split(',')[0])} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                               </Box>
                             </Tooltip>
                           ) : (
-                            <Box sx={{ width: 48, height: 48, borderRadius: 1, overflow: 'hidden', bgcolor: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #bfc9c4', mx: 'auto', fontSize: 20 }}>
+                            <Box sx={{ width: 48, height: 48, borderRadius: 1, overflow: 'hidden', bgcolor: 'background.default', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #bfc9c4', mx: 'auto', fontSize: 20 }}>
                               📦
                             </Box>
                           )}
@@ -1043,10 +1043,10 @@ const GenericItemList: React.FC<GenericItemListProps> = ({ title, subtitle, item
 
         {/* Table Footer / Pagination */}
         <Box sx={{ 
-          borderTop: '1px solid #e1e3e4', 
+          borderTop: '1px solid', borderColor: 'divider', 
           px: { xs: 1, sm: 3 }, 
           py: 1, 
-          bgcolor: '#fff', 
+          bgcolor: 'background.paper', 
           display: 'flex', 
           flexDirection: 'row',
           alignItems: 'center', 

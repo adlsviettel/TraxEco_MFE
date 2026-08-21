@@ -81,7 +81,7 @@ const getStickyBodyStyle = (colId: string, filteredCols: any[], rowBgColor: stri
 };
 
 const InfoRow = ({ label, value }: { label: string; value?: React.ReactNode }) => (
-  <Box sx={{ py: 1.25, borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 2 }}>
+  <Box sx={{ py: 1.25, borderBottom: '1px solid', borderColor: 'divider', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 2 }}>
     <Typography component="div" sx={{ fontSize: 12, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
       {label}
     </Typography>
@@ -316,19 +316,19 @@ const YardageListPage: React.FC = () => {
             {item.mainImage ? (
               <Tooltip
                 title={
-                  <Box sx={{ width: 240, height: 240, bgcolor: '#fff', borderRadius: 1, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Box sx={{ width: 240, height: 240, bgcolor: 'background.paper', borderRadius: 1, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <img src={rdItemApi.getImageUrl(item.mainImage.split(',')[0])} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                   </Box>
                 }
                 placement="right"
-                componentsProps={{ tooltip: { sx: { bgcolor: '#fff', boxShadow: '0 4px 20px rgba(0,0,0,0.15)', p: 0.5, border: '1px solid #e1e3e4' } } }}
+                componentsProps={{ tooltip: { sx: { bgcolor: 'background.paper', boxShadow: '0 4px 20px rgba(0,0,0,0.15)', p: 0.5, border: '1px solid', borderColor: 'divider' } } }}
               >
-                <Box sx={{ width: 48, height: 48, borderRadius: 1, overflow: 'hidden', bgcolor: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #bfc9c4', mx: 'auto' }}>
+                <Box sx={{ width: 48, height: 48, borderRadius: 1, overflow: 'hidden', bgcolor: 'background.default', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #bfc9c4', mx: 'auto' }}>
                   <img src={rdItemApi.getImageUrl(item.mainImage.split(',')[0])} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 </Box>
               </Tooltip>
             ) : (
-              <Box sx={{ width: 48, height: 48, borderRadius: 1, overflow: 'hidden', bgcolor: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #bfc9c4', mx: 'auto' }}>
+              <Box sx={{ width: 48, height: 48, borderRadius: 1, overflow: 'hidden', bgcolor: 'background.default', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #bfc9c4', mx: 'auto' }}>
                 <Typography sx={{ fontSize: 10, color: '#94a3b8', textAlign: 'center', lineHeight: 1.1, fontWeight: 600 }}>No Image</Typography>
               </Box>
             )}
@@ -632,7 +632,7 @@ const YardageListPage: React.FC = () => {
               <IconButton 
                 onClick={(e) => setMobileMenuAnchor(e.currentTarget)}
                 sx={{ 
-                  bgcolor: '#f1f5f9', 
+                  bgcolor: 'background.default', 
                   color: '#64748b',
                   borderRadius: '50%',
                   width: 44,
@@ -849,7 +849,7 @@ const YardageListPage: React.FC = () => {
       >
         <Box>
           <Typography variant="caption" color="text.secondary" fontWeight={600} mb={0.5} display="block">{t('rdMaterial.filter_item_code', 'Item Code')}</Typography>
-          <Autocomplete multiple freeSolo options={[] as string[]} value={itemCode} onChange={(_, val) => { setItemCode(val); if(hasSearched) setPage(0); }} renderInput={(params) => <TextField {...params} fullWidth size="small" placeholder="Enter to add..." sx={{ '& .MuiOutlinedInput-root': { borderRadius: 1.5, fontSize: 14, bgcolor: '#fff' } }} />} />
+          <Autocomplete multiple freeSolo options={[] as string[]} value={itemCode} onChange={(_, val) => { setItemCode(val); if(hasSearched) setPage(0); }} renderInput={(params) => <TextField {...params} fullWidth size="small" placeholder="Enter to add..." sx={{ '& .MuiOutlinedInput-root': { borderRadius: 1.5, fontSize: 14, bgcolor: 'background.paper' } }} />} />
         </Box>
         <Box>
           <Typography variant="caption" color="text.secondary" fontWeight={600} mb={0.5} display="block">{t('rdMaterial.filter_supplier', 'Supplier')}</Typography>
@@ -874,7 +874,7 @@ const YardageListPage: React.FC = () => {
       </AdvancedFilterDrawer>
 
       {/* 📦 Table / Cards 📦 */}
-      <Paper elevation={0} sx={{ position: 'relative', flexGrow: 1, width: '100%', overflow: 'hidden', borderRadius: '12px', border: '1px solid #e1e3e4', boxShadow: '0px 4px 20px rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column', bgcolor: '#fff' }}>
+      <Paper elevation={0} sx={{ position: 'relative', flexGrow: 1, width: '100%', overflow: 'hidden', borderRadius: '12px', border: '1px solid', borderColor: 'divider', boxShadow: '0px 4px 20px rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column', bgcolor: 'background.paper' }}>
         {/* Loading Overlay */}
         {loading && items.length > 0 && (
           <Box sx={{
@@ -962,11 +962,11 @@ const YardageListPage: React.FC = () => {
                           height: 60, 
                           borderRadius: 1.5, 
                           overflow: 'hidden', 
-                          bgcolor: '#f1f5f9', 
+                          bgcolor: 'background.default', 
                           display: 'flex', 
                           alignItems: 'center', 
                           justifyContent: 'center', 
-                          border: '1px solid #e2e8f0', 
+                          border: '1px solid', borderColor: 'divider', 
                           flexShrink: 0 
                         }}
                       >
@@ -1016,12 +1016,12 @@ const YardageListPage: React.FC = () => {
                             <Chip 
                               label={item.location} 
                               size="small" 
-                              sx={{ height: 22, fontSize: 10, bgcolor: '#f1f5f9', color: '#475569', fontWeight: 500 }} 
+                              sx={{ height: 22, fontSize: 10, bgcolor: 'background.default', color: '#475569', fontWeight: 500 }} 
                             />
                           )}
                           {visibleColumns['Qty'] !== false && (
                             <Chip 
-                              label={`${item.quantity ?? 0} ${item.quantityUnit || 'Yd'}`} 
+                              label={`${item.quantity ?? 0} ${item.quantityUnit || 'yds'}`} 
                               size="small" 
                               color={(item.quantity ?? 0) > 0 ? 'success' : 'error'}
                               sx={{ height: 22, fontSize: 10, fontWeight: 700 }} 
@@ -1099,7 +1099,7 @@ const YardageListPage: React.FC = () => {
                         sx={{
                           fontWeight: 700, fontSize: 11, color: '#707975',
                           textTransform: 'uppercase', letterSpacing: '0.05em',
-                          bgcolor: '#F9FAFA', borderBottom: '1px solid #e1e3e4',
+                          bgcolor: '#F9FAFA', borderBottom: '1px solid', borderColor: 'divider',
                           py: 2, px: 2, textAlign: col.isCenter ? 'center' : col.isRight ? 'right' : 'left',
                           whiteSpace: 'nowrap',
                           cursor: col.id !== 'Image' && col.id !== 'Actions' ? 'grab' : 'default',
@@ -1151,7 +1151,7 @@ const YardageListPage: React.FC = () => {
                   })}
                 </TableRow>
               </TableHead>
-              <TableBody sx={{ '& tr:nth-of-type(even)': { bgcolor: '#fff' }, '& tr:nth-of-type(odd)': { bgcolor: '#fff' }, opacity: loading ? 0.6 : 1, transition: 'opacity 0.2s' }}>
+              <TableBody sx={{ '& tr:nth-of-type(even)': { bgcolor: 'background.paper' }, '& tr:nth-of-type(odd)': { bgcolor: 'background.paper' }, opacity: loading ? 0.6 : 1, transition: 'opacity 0.2s' }}>
                 {loading && filteredItems.length === 0 ? (
                   <TableRow><TableCell colSpan={colSpanCount} align="center" sx={{ py: 6 }}>
                     <CircularProgress size={28} color="primary" />
@@ -1194,10 +1194,10 @@ const YardageListPage: React.FC = () => {
 
         {/* Table Footer / Pagination */}
         <Box sx={{ 
-          borderTop: '1px solid #e1e3e4', 
+          borderTop: '1px solid', borderColor: 'divider', 
           px: { xs: 1, sm: 3 }, 
           py: 1, 
-          bgcolor: '#fff', 
+          bgcolor: 'background.paper', 
           display: 'flex', 
           flexDirection: 'row',
           alignItems: 'center', 

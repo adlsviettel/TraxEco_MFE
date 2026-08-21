@@ -43,12 +43,12 @@ const AutoSaveField = ({ qrCode, field, label, initialValue, type = "number" }: 
           value={value} onChange={e => setValue(e.target.value)}
           sx={{ 
             '& .MuiOutlinedInput-root': { 
-              bgcolor: '#f8fafc', 
+              bgcolor: 'background.default', 
               borderRadius: 3, 
               color: '#1e293b',
               transition: 'all 0.2s ease-in-out',
-              '&:hover': { bgcolor: '#f1f5f9' },
-              '&.Mui-focused': { bgcolor: '#ffffff', boxShadow: '0 0 0 2px rgba(16, 185, 129, 0.2)' }
+              '&:hover': { bgcolor: 'background.default' },
+              '&.Mui-focused': { bgcolor: 'background.paper', boxShadow: '0 0 0 2px rgba(16, 185, 129, 0.2)' }
             },
             '& .MuiOutlinedInput-notchedOutline': { border: '1px solid transparent' }
           }}
@@ -66,7 +66,7 @@ export default function InspectionPanel({ qrCode, data, onColorChange, onHandfee
   const PassFailButton = ({ label, field, value, onChange }: any) => (
     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
       <Typography variant="caption" fontWeight={700} sx={{ color: '#64748b' }}>{label}</Typography>
-      <Box sx={{ display: 'flex', gap: 1, bgcolor: '#f1f5f9', p: 0.5, borderRadius: 8 }}>
+      <Box sx={{ display: 'flex', gap: 1, bgcolor: 'background.default', p: 0.5, borderRadius: 8 }}>
         <Button 
           variant={value === 'P' ? 'contained' : 'text'} 
           color="success" 
@@ -99,12 +99,12 @@ export default function InspectionPanel({ qrCode, data, onColorChange, onHandfee
       display: 'flex', 
       flexDirection: 'column', 
       borderRadius: 4, 
-      bgcolor: '#ffffff', 
+      bgcolor: 'background.paper', 
       border: '1px solid rgba(0,0,0,0.04)',
       boxShadow: '0 8px 32px rgba(0,0,0,0.04)'
     }}>
       <CardContent sx={{ p: 3, flexGrow: 1, overflowY: 'auto' }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, pb: 1.5, borderBottom: '1px solid #f1f5f9' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, pb: 1.5, borderBottom: '1px solid', borderColor: 'divider' }}>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Box sx={{ width: 4, height: 18, bgcolor: '#10b981', borderRadius: 1, mr: 1.5 }} />
             <Typography variant="subtitle1" fontWeight={700} sx={{ color: '#0f172a' }}>

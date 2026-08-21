@@ -1597,5 +1597,39 @@
     "errorMessage": "Error Message",
     "responseBody": "Response Body",
     "requestBody": "Request Body"
+  },
+  "coo": {
+    "title": "Ứng dụng Trax COO",
+    "nav": {
+      "dashboard": "Bảng Điều Khiển",
+      "import": "Đồng Bộ Dữ Liệu",
+      "admin": "Quản Trị"
+    },
+    "dashboard": {
+      "title": "COO ERP Data Sync & Hải Quan Tờ Khai",
+      "subtitle": "Tra cứu số PO, ghép nối nguyên phụ liệu với tờ khai hải quan & xuất báo cáo",
+      "poSearchPlaceholder": "Nhập số PO (Ví dụ: PO123456)...",
+      "searchBtn": "Tìm Kiếm PO",
+      "exportExcel": "Xuất Excel",
+      "totalRecords": "Tổng số dòng",
+      "missingMainFabric": "Thiếu Vải chính",
+      "missingDeclaration": "Thiếu Tờ khai",
+      "missingCustoms": "Thiếu Hải quan",
+      "valid": "Hợp lệ",
+      "summaryTitle": "THỐNG KÊ TỔNG HỢP",
+      "totalRows": "Tổng số dòng",
+      "statusNormal": "Bình Thường",
+      "searchHint": "Vui lòng nhập số PO để tìm kiếm và khớp dữ liệu"
+    },
+    "import": {
+      "title": "Đồng Bộ & Nhập Dữ Liệu",
+      "subtitle": "Nhập dữ liệu Tờ Khai Hải Quan Hàng Tuần và Dữ Liệu Định Mức COO",
+      "customsTitle": "Nhập Dữ Liệu Tờ Khai / Hải Quan Hàng Tuần",
+      "consumptionTitle": "Nhập Dữ Liệu Định Mức NGUYÊN NGUYÊN LIỆU COO",
+      "selectFile": "Chọn File Excel",
+      "uploadBtn": "Tải Lên & Nhập",
+      "successMsg": "Tải lên và nhập dữ liệu thành công!",
+      "errorMsg": "Lỗi nhập dữ liệu"
+    }
   }
 }

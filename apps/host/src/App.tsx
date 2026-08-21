@@ -5,7 +5,7 @@ import { ThemeProvider, CssBaseline, Dialog, DialogTitle, DialogContent, DialogA
 import { LockReset as LockResetIcon } from '@mui/icons-material';
 
 import {
-  lightTheme,
+  ColorModeProvider,
   AdminPage,
   ApkUpdatePrompt,
   authService,
@@ -29,6 +29,7 @@ const AccessoryWHApp = React.lazy(() => import('@traxeco/accessory-wh'));
 const TccTemplateApp = React.lazy(() => import('@traxeco/tcc-template'));
 const ClinicApp = React.lazy(() => import('@traxeco/clinic'));
 const CooApp = React.lazy(() => import('@traxeco/coo'));
+const QCAccessoryApp = React.lazy(() => import('@traxeco/qc-accessory'));
 
 import { useTranslation } from 'react-i18next';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -213,7 +214,7 @@ function App() {
   }, []);
 
   return (
-    <ThemeProvider theme={lightTheme}>
+    <ColorModeProvider>
       <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={currentLocale}>
         <ApkUpdatePrompt />
         <CssBaseline />
@@ -361,6 +362,17 @@ function App() {
             </PrivateRoute>
           } />
 
+          {/* QC Accessory app */}
+          <Route path="/qc-accessory/*" element={
+            <PrivateRoute>
+              <ChangePasswordGuard>
+                <Suspense fallback={<CircularProgress sx={{ m: 'auto', mt: 10 }} />}>
+                  <QCAccessoryApp />
+                </Suspense>
+              </ChangePasswordGuard>
+            </PrivateRoute>
+          } />
+
           {/* Catch-all: redirect unknown routes to home */}
           <Route path="*" element={<CatchAllRedirect />} />
         </Routes>
@@ -368,7 +380,7 @@ function App() {
       </ToastProvider>
         </BrowserRouter>
       </LocalizationProvider>
-    </ThemeProvider>
+    </ColorModeProvider>
   );
 }
 

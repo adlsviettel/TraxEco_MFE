@@ -337,14 +337,14 @@ export default function DailyReportPage() {
       </Box>
 
       {/* Search Filters */}
-      <Paper elevation={0} sx={{ flexShrink: 0, borderRadius: 2, border: '1px solid #e0e0e0', overflow: 'hidden' }}>
+      <Paper elevation={0} sx={{ flexShrink: 0, borderRadius: 2, border: '1px solid', borderColor: 'divider', overflow: 'hidden' }}>
         {/* Row 1 — Date range + Action buttons */}
         <Box sx={{
           p: 1.5, display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap',
           background: 'linear-gradient(135deg, #f5f5f5 0%, #fafafa 100%)',
           borderBottom: '1px solid #e8e8e8',
         }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, backgroundColor: '#fff', borderRadius: 1.5, border: '1px solid #e0e0e0', px: 1.5, py: 0.25 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, backgroundColor: 'background.paper', borderRadius: 1.5, border: '1px solid', borderColor: 'divider', px: 1.5, py: 0.25 }}>
             <Typography variant="caption" sx={{ fontWeight: 700, color: '#2e7d32', mr: 0.5, whiteSpace: 'nowrap' }}>📅</Typography>
             <TextField size="small" type="date" value={fromDate}
               onChange={e => setFromDate(e.target.value)}
@@ -385,7 +385,7 @@ export default function DailyReportPage() {
           </Button>
           <Button variant="outlined" startIcon={<RefreshIcon sx={{ fontSize: '18px !important' }} />} size="small"
             onClick={() => { setFromDate(todayStr()); setToDate(todayStr()); setInvoiceNo(''); setPoNo(''); setItemNo(''); setColor(''); setBatch(''); setRollNo(''); setData([]); setColumns([]); setError(null); setPage(0); setColFilters({}); }}
-            sx={{ borderRadius: '12px', fontWeight: 600, height: 32, fontSize: '0.8rem', px: 2, textTransform: 'none', borderColor: '#cbd5e1', color: '#475569', '&:hover': { bgcolor: '#f1f5f9' } }}>
+            sx={{ borderRadius: '12px', fontWeight: 600, height: 32, fontSize: '0.8rem', px: 2, textTransform: 'none', borderColor: '#cbd5e1', color: '#475569', '&:hover': { bgcolor: 'background.default' } }}>
             {t('qcfb.resetBtn', 'Reset')}
           </Button>
         </Box>
@@ -396,7 +396,7 @@ export default function DailyReportPage() {
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fill, minmax(170px, 1fr))',
             gap: 1.5,
-            background: '#fff',
+            background: 'background.paper',
             borderTop: '1px dashed #e0e0e0',
           }}>
             {[
@@ -420,7 +420,7 @@ export default function DailyReportPage() {
                 sx={{
                   flex: '1 1 150px',
                   '& .MuiOutlinedInput-root': { 
-                    backgroundColor: '#fff', borderRadius: 2, transition: 'all 0.2s', 
+                    backgroundColor: 'background.paper', borderRadius: 2, transition: 'all 0.2s', 
                     '& fieldset': { borderColor: '#e2e8f0' }, 
                     '&:hover fieldset': { borderColor: '#cbd5e1' }, 
                     '&.Mui-focused fieldset': { borderColor: '#2e7d32', borderWidth: '1px', boxShadow: '0 0 0 3px rgba(46,125,50,0.1)' } 
@@ -437,7 +437,7 @@ export default function DailyReportPage() {
       {error && <Alert severity="error" sx={{ borderRadius: 2 }}>{error}</Alert>}
 
       {/* Data Table */}
-      <Paper elevation={0} sx={{ width: '100%', overflow: 'hidden', borderRadius: 2, border: '1px solid #e0e0e0', flexGrow: 1, display: 'flex', flexDirection: 'column', position: 'relative' }}>
+      <Paper elevation={0} sx={{ width: '100%', overflow: 'hidden', borderRadius: 2, border: '1px solid', borderColor: 'divider', flexGrow: 1, display: 'flex', flexDirection: 'column', position: 'relative' }}>
         {loading && <LinearProgress color="success" sx={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 999 }} />}
         {!mounted ? (
           <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}><CircularProgress /></Box>
@@ -510,7 +510,7 @@ export default function DailyReportPage() {
                 </TableBody>
               </Table>
             </TableContainer>
-            <Box sx={{ flexShrink: 0, borderTop: '1px solid #e2e8f0', bgcolor: '#fff', p: 1.5, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
+            <Box sx={{ flexShrink: 0, borderTop: '1px solid', borderColor: 'divider', bgcolor: 'background.paper', p: 1.5, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <Typography variant="body2" sx={{ color: '#475569', fontWeight: 500 }}>{t('qcfb.rowsPerPage', 'Dòng / trang:')}</Typography>
                 <Select

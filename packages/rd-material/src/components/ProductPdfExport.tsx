@@ -68,11 +68,11 @@ const ProductPdfExport: React.FC<ProductPdfExportProps> = ({ data }) => {
         >
           {/* Header */}
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', mb: 1.5, height: '12mm', flexShrink: 0 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              {/* Trax Group Logo placeholder */}
-              <Box sx={{ width: 20, height: 20, bgcolor: '#000', mr: 1 }} />
-              <Typography sx={{ fontWeight: 800, fontSize: '13pt', color: '#000' }}>Trax Group</Typography>
-            </Box>
+            <img 
+              src={`${import.meta.env.BASE_URL}export_logo.png`} 
+              alt="Trax Group" 
+              style={{ height: '26px', width: 'auto', objectFit: 'contain' }} 
+            />
           </Box>
 
           {/* Grid of 4 items - STRICT 2x2 layout fitting A4 page height */}
@@ -91,9 +91,20 @@ const ProductPdfExport: React.FC<ProductPdfExportProps> = ({ data }) => {
               const imgUrls = product.mainImage ? product.mainImage.split(',') : [];
               
               return (
-                <Box key={idx} sx={{ display: 'flex', alignItems: 'flex-start', height: '100%', maxHeight: '86mm', overflow: 'hidden', boxSizing: 'border-box' }}>
+                <Box key={idx} sx={{ 
+                  display: 'flex', 
+                  alignItems: 'flex-start', 
+                  height: '100%', 
+                  maxHeight: '86mm', 
+                  bgcolor: '#ffffff',
+                  borderRadius: '8px',
+                  p: '10px 12px',
+                  border: '1px solid #e2e8f0',
+                  boxSizing: 'border-box', 
+                  overflow: 'hidden' 
+                }}>
                   {/* Left: Image (Display up to first 2 images, strictly bounded) */}
-                  <Box sx={{ width: '34%', height: '100%', maxHeight: '86mm', mr: 1.5, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: '4px', flexShrink: 0, overflow: 'hidden' }}>
+                  <Box sx={{ width: '38%', height: '100%', maxHeight: '78mm', mr: 1.5, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: '4px', flexShrink: 0, overflow: 'hidden' }}>
                     {imgUrls.length > 0 ? (
                       imgUrls.slice(0, 2).map((url, imgIdx) => (
                         <img 
@@ -103,7 +114,7 @@ const ProductPdfExport: React.FC<ProductPdfExportProps> = ({ data }) => {
                           alt={`${product.itemCode}-${imgIdx}`} 
                           style={{ 
                             maxWidth: '100%', 
-                            maxHeight: imgUrls.length > 1 ? '38mm' : '80mm', 
+                            maxHeight: imgUrls.length > 1 ? '36mm' : '76mm', 
                             width: 'auto', 
                             height: 'auto', 
                             objectFit: 'contain',
@@ -113,29 +124,24 @@ const ProductPdfExport: React.FC<ProductPdfExportProps> = ({ data }) => {
                         />
                       ))
                     ) : (
-                      <Box sx={{ width: '100%', height: '80mm', bgcolor: '#e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 1 }}>
+                      <Box sx={{ width: '100%', height: '76mm', bgcolor: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 1 }}>
                         <Typography variant="caption" color="text.secondary">No Image</Typography>
                       </Box>
                     )}
                   </Box>
 
                   {/* Right: Info */}
-                  <Box sx={{ flex: 1, minWidth: 0, height: '100%', maxHeight: '86mm', overflow: 'hidden' }}>
-                    <Typography sx={{ fontWeight: 800, fontSize: '11pt', color: '#000', mb: 0.1, lineHeight: 1.2 }}>
+                  <Box sx={{ flex: 1, minWidth: 0, height: '100%', maxHeight: '78mm', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+                    <Typography sx={{ fontWeight: 800, fontSize: '10.5pt', color: '#000', mb: 0.1, lineHeight: 1.2 }}>
                       {product.itemCode || 'N/A'}
                     </Typography>
-                    <Typography sx={{ fontSize: '10pt', color: '#000', mb: 0.1, lineHeight: 1.2 }}>
+                    <Typography sx={{ fontSize: '9.5pt', color: '#1e293b', mb: 0.1, lineHeight: 1.2 }}>
                       {product.product?.styleName || product.name || '—'}
                     </Typography>
-                    
-                    {product.remark && (
-                      <Typography sx={{ fontSize: '9.5pt', color: '#334155', mb: 0.3, lineHeight: 1.2 }}>
-                        (~{product.remark}/ garment)
-                      </Typography>
-                    )}
 
-                    <Box sx={{ mt: 0.5 }}>
+                    <Box sx={{ mt: 0.5, overflowY: 'auto' }}>
                       {enrichedBom.map((bom, bIdx) => {
+                        const usageStr = (bom.usage || '').trim();
                         const supp = (bom.supplierName || '').trim();
                         const code = (bom.itemCode || '').trim();
                         const color = (bom.color || '').trim();
@@ -143,18 +149,19 @@ const ProductPdfExport: React.FC<ProductPdfExportProps> = ({ data }) => {
                         const comp = (bom.composition || '').trim();
                         const tech = (bom.technology || '').trim();
                         const func = (bom.function || '').trim();
-                        const weight = (bom.weightGsm !== undefined && bom.weightGsm !== null && bom.weightGsm !== '') ? String(bom.weightGsm).trim() : '';
-                        const width = (bom.cuttableWidth !== undefined && bom.cuttableWidth !== null && bom.cuttableWidth !== '') ? String(bom.cuttableWidth).trim() : '';
+                        const weight = (bom.weightGsm !== undefined && bom.weightGsm !== null && bom.weightGsm !== '') ? `${String(bom.weightGsm).trim()} gsm` : '';
+                        const width = (bom.cuttableWidth !== undefined && bom.cuttableWidth !== null && bom.cuttableWidth !== '') ? `${String(bom.cuttableWidth).trim()} inch` : '';
 
-                        // Exact order: Supplier - Itemcode/ Color/ Structure, Composition, Technology, Function, Weight, Cuttable width
+                        // Format: Usage: Supplier - Itemcode/ Color/ Structure, Composition, Technology, Function, Weight, Cuttable width
                         const part1 = (supp && code) ? `${supp} - ${code}` : (supp || code);
                         const part2 = color;
                         const part3 = [struct, comp, tech, func, weight, width].filter(Boolean).join(', ');
 
-                        const lineText = [part1, part2, part3].filter(Boolean).join('/ ');
+                        const lineDetail = [part1, part2, part3].filter(Boolean).join('/ ');
+                        const lineText = usageStr ? `${usageStr}: ${lineDetail}` : lineDetail;
 
                         return (
-                          <Typography key={bIdx} sx={{ fontSize: '9pt', color: '#000', mb: 0.2, lineHeight: 1.25, wordBreak: 'break-word' }}>
+                          <Typography key={bIdx} sx={{ fontSize: '8.5pt', color: '#000', mb: 0.3, lineHeight: 1.25, wordBreak: 'break-word' }}>
                             {lineText}
                           </Typography>
                         );

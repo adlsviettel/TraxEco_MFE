@@ -148,7 +148,7 @@ const ColumnFilter = memo(({ label, value, options, onChange }: { label: string;
               startAdornment: <InputAdornment position="start"><SearchIcon sx={{ fontSize: 18 }} /></InputAdornment>
             }}
           />
-          <Box sx={{ maxHeight: 250, overflowY: 'auto', border: '1px solid #e0e0e0', borderRadius: 1, p: 0.5 }}>
+          <Box sx={{ maxHeight: 250, overflowY: 'auto', border: '1px solid', borderColor: 'divider', borderRadius: 1, p: 0.5 }}>
             <FormGroup>
               {!search && (
                 <FormControlLabel 
@@ -401,8 +401,8 @@ export default function PlanLoadPage() {
     }}>
       {/* ── Compact Header + Filters ── */}
       <Paper elevation={0} sx={{
-        p: '6px 12px', borderRadius: 2.5, border: '1px solid #e2e8f0',
-        background: 'linear-gradient(135deg, #f8faf8 0%, #ffffff 100%)',
+        p: '6px 12px', borderRadius: 2.5, border: '1px solid', borderColor: 'divider',
+        bgcolor: 'background.paper',
         display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap', flexShrink: 0
       }}>
 
@@ -410,12 +410,12 @@ export default function PlanLoadPage() {
         {/* Filters & Actions */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'nowrap' }}>
           <TextField size="small" type="date" value={dateFilter} onChange={(e) => setDateFilter(e.target.value)}
-            sx={{ width: 130, '& .MuiOutlinedInput-root': { borderRadius: 1.5, height: 32, fontSize: '0.8rem', bgcolor: '#fff' } }}
+            sx={{ width: 130, '& .MuiOutlinedInput-root': { borderRadius: 1.5, height: 32, fontSize: '0.8rem', bgcolor: 'background.paper' } }}
           />
           <TextField size="small" placeholder={t('planLoad.customer', 'Customer')}
             value={customer} onChange={(e) => setCustomer(e.target.value)}
             InputProps={{ startAdornment: <InputAdornment position="start"><SearchIcon sx={{ fontSize: 16, color: '#94a3b8' }} /></InputAdornment> }}
-            sx={{ width: { xs: 120, sm: 160 }, '& .MuiOutlinedInput-root': { borderRadius: 1.5, height: 32, fontSize: '0.8rem', bgcolor: '#fff' } }}
+            sx={{ width: { xs: 120, sm: 160 }, '& .MuiOutlinedInput-root': { borderRadius: 1.5, height: 32, fontSize: '0.8rem', bgcolor: 'background.paper' } }}
           />
           <Button variant="contained" disableElevation onClick={handleLoad} disabled={loading}
             startIcon={loading ? <CircularProgress size={14} color="inherit" /> : <LoadIcon sx={{ fontSize: '16px !important' }} />}
@@ -424,7 +424,7 @@ export default function PlanLoadPage() {
           </Button>
 
           {loaded && (
-            <IconButton onClick={() => { setColFilters({}); handleLoad(); }} disabled={loading} sx={{ width: 32, height: 32, border: '1px solid #cbd5e1', borderRadius: 1.5, bgcolor: '#fff' }}>
+            <IconButton onClick={() => { setColFilters({}); handleLoad(); }} disabled={loading} sx={{ width: 32, height: 32, border: '1px solid', borderColor: 'divider', borderRadius: 1.5, bgcolor: 'background.paper' }}>
               <RefreshIcon sx={{ fontSize: 16, color: '#64748b' }} />
             </IconButton>
           )}
@@ -454,7 +454,7 @@ export default function PlanLoadPage() {
       {error && <Alert severity="error" sx={{ borderRadius: 2 }}>{error}</Alert>}
 
       {/* Table */}
-      <Paper elevation={0} sx={{ width: '100%', overflow: 'hidden', borderRadius: 2, border: '1px solid #e0e0e0', flexGrow: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
+      <Paper elevation={0} sx={{ width: '100%', overflow: 'hidden', borderRadius: 2, border: '1px solid', borderColor: 'divider', flexGrow: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
         {!loaded ? (
           <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', py: 8, gap: 2 }}>
             <PlanIcon sx={{ fontSize: 64, color: '#ccc' }} />
@@ -509,7 +509,7 @@ export default function PlanLoadPage() {
                 </TableBody>
               </Table>
             </TableContainer>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', p: 1.5, borderTop: '1px solid #e0e0e0', flexWrap: 'wrap', gap: 2 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', p: 1.5, borderTop: '1px solid', borderColor: 'divider', flexWrap: 'wrap', gap: 2 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 600 }}>{t('history.rowsPerPage', 'Rows per page:')}</Typography>
                 <Select

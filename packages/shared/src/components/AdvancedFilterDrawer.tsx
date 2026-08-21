@@ -71,9 +71,9 @@ const AdvancedFilterDrawer: React.FC<AdvancedFilterDrawerProps> = ({
       open={open}
       onClose={onClose}
       sx={{ zIndex: 1250 }}
-      PaperProps={{ sx: { width: { xs: '100%', sm: 360 }, p: 0, bgcolor: '#f8fafc' } }}
+      PaperProps={{ sx: { width: { xs: '100%', sm: 360 }, p: 0, bgcolor: 'background.default' } }}
     >
-      <Box sx={{ p: 2.5, bgcolor: '#fff', borderBottom: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <Box sx={{ p: 2.5, bgcolor: 'background.paper', borderBottom: '1px solid', borderColor: 'divider', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Typography variant="h6" fontWeight={700}>
           {title || t('common.advanced_filter', 'Filter Nâng cao')}
         </Typography>
@@ -90,7 +90,7 @@ const AdvancedFilterDrawer: React.FC<AdvancedFilterDrawerProps> = ({
         {children}
       </Box>
 
-      <Box sx={{ p: 2.5, bgcolor: '#fff', borderTop: '1px solid #e2e8f0', display: 'flex', gap: 1.5 }}>
+      <Box sx={{ p: 2.5, bgcolor: 'background.paper', borderTop: '1px solid', borderColor: 'divider', display: 'flex', gap: 1.5 }}>
         {hasActiveFilters && (
           <AppButton 
             fullWidth 

@@ -1595,5 +1595,39 @@
     "errorMessage": "Error Message",
     "responseBody": "Response Body",
     "requestBody": "Request Body"
+  },
+  "coo": {
+    "title": "Trax COO Application",
+    "nav": {
+      "dashboard": "Dashboard",
+      "import": "Data Import",
+      "admin": "Admin"
+    },
+    "dashboard": {
+      "title": "COO ERP Data Sync & Customs Declaration",
+      "subtitle": "Query PO number, match raw materials with customs declaration & export report",
+      "poSearchPlaceholder": "Search PO (PO1, PO2, ...)...",
+      "searchBtn": "Search PO",
+      "exportExcel": "Export Excel",
+      "totalRecords": "Total Records",
+      "missingMainFabric": "Missing Main Fabric",
+      "missingDeclaration": "Missing Declaration",
+      "missingCustoms": "Missing Customs",
+      "valid": "Valid",
+      "summaryTitle": "EXCEL DATA SUMMARY",
+      "totalRows": "Total Rows",
+      "statusNormal": "Normal",
+      "searchHint": "Please enter PO number to search and match data"
+    },
+    "import": {
+      "title": "Data Sync & Import",
+      "subtitle": "Import Weekly Customs Declaration Data and COO Consumption Data",
+      "customsTitle": "Import Weekly Customs Declaration Data",
+      "consumptionTitle": "Import COO Raw Material Consumption Data",
+      "selectFile": "Select Excel File",
+      "uploadBtn": "Upload & Import",
+      "successMsg": "File uploaded and imported successfully!",
+      "errorMsg": "Data import error"
+    }
   }
 }

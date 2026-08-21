@@ -557,7 +557,7 @@ export default function IssueFabricPage() {
           flexShrink: 0 
         }}>
           
-          <Paper elevation={0} sx={{ p: 2, borderRadius: 3, border: '1px solid #e2e8f0', bgcolor: '#fff' }}>
+          <Paper elevation={0} sx={{ p: 2, borderRadius: 3, border: '1px solid', borderColor: 'divider', bgcolor: 'background.paper' }}>
             <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
               <ToggleButtonGroup
                 color="primary"
@@ -691,7 +691,7 @@ export default function IssueFabricPage() {
             </Box>
           </Paper>
 
-          <Paper elevation={0} sx={{ p: 2, borderRadius: 3, border: '1px solid #e2e8f0', bgcolor: '#fff', flexGrow: 1 }}>
+          <Paper elevation={0} sx={{ p: 2, borderRadius: 3, border: '1px solid', borderColor: 'divider', bgcolor: 'background.paper', flexGrow: 1 }}>
             <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#64748b', mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
               <QrCodeScannerIcon fontSize="small" /> 2. {t('issueFabric.scanRollQR')}
             </Typography>
@@ -754,7 +754,7 @@ export default function IssueFabricPage() {
               </Box>
             </form>
             
-            <Box sx={{ mt: 3, p: 2, borderRadius: 2, bgcolor: '#f8fafc', border: '1px dashed #cbd5e1' }}>
+            <Box sx={{ mt: 3, p: 2, borderRadius: 2, bgcolor: 'background.default', border: '1px dashed #cbd5e1' }}>
               <Typography variant="caption" sx={{ color: '#64748b', display: 'block', mb: 1 }}>
                 <strong>{t('issueFabric.note')}:</strong>
               </Typography>
@@ -774,10 +774,10 @@ export default function IssueFabricPage() {
           width: '100%', 
           height: '100%',
           minHeight: { xs: 300, md: 0 },
-          borderRadius: 3, border: '1px solid #e2e8f0', overflow: 'hidden', 
-          bgcolor: '#fff'
+          borderRadius: 3, border: '1px solid', borderColor: 'divider', overflow: 'hidden', 
+          bgcolor: 'background.paper'
         }}>
-            <Box sx={{ p: 1.5, borderBottom: '1px solid #e0e0e0', bgcolor: '#f8fafc', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Box sx={{ p: 1.5, borderBottom: '1px solid', borderColor: 'divider', bgcolor: 'background.default', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#334155' }}>
                   {t('issueFabric.scannedList')}
                </Typography>
@@ -801,7 +801,7 @@ export default function IssueFabricPage() {
                 <TableHead>
                   <TableRow>
                     {tableHeaders.map((head, idx) => (
-                      <TableCell key={idx} sx={{ fontWeight: 700, bgcolor: '#f8fafc', color: '#334155', whiteSpace: 'nowrap', borderBottom: '2px solid #e2e8f0' }} align={head === 'Yards (Balance)' || head === 'Action' ? 'center' : 'left'}>
+                      <TableCell key={idx} sx={{ fontWeight: 700, bgcolor: 'background.default', color: '#334155', whiteSpace: 'nowrap', borderBottom: '2px solid #e2e8f0' }} align={head === 'Yards (Balance)' || head === 'Action' ? 'center' : 'left'}>
                         {head}
                       </TableCell>
                     ))}
@@ -897,7 +897,7 @@ export default function IssueFabricPage() {
             </TableContainer>
 
             {/* Bottom Actions */}
-            <Box sx={{ p: 2, borderTop: '1px solid #e0e0e0', bgcolor: '#fff', display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+            <Box sx={{ p: 2, borderTop: '1px solid', borderColor: 'divider', bgcolor: 'background.paper', display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
                 <Button 
                   variant="contained" 
                   color="success" 
@@ -946,10 +946,10 @@ export default function IssueFabricPage() {
             <Table stickyHeader size="small" sx={{ '& .MuiTableCell-root': { py: { xs: 0.5, lg: 1 }, px: { xs: 1, lg: 2 }, fontSize: { xs: '0.75rem', lg: '0.85rem' } } }}>
               <TableHead>
                 <TableRow>
-                  <TableCell sx={{ fontWeight: 700, bgcolor: '#f8fafc' }}>Select</TableCell>
-                  <TableCell sx={{ fontWeight: 700, bgcolor: '#f8fafc' }}>Job No</TableCell>
-                  <TableCell sx={{ fontWeight: 700, bgcolor: '#f8fafc' }}>Item No</TableCell>
-                  <TableCell sx={{ fontWeight: 700, bgcolor: '#f8fafc' }}>Color</TableCell>
+                  <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default' }}>Select</TableCell>
+                  <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default' }}>Job No</TableCell>
+                  <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default' }}>Item No</TableCell>
+                  <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default' }}>Color</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -988,7 +988,7 @@ export default function IssueFabricPage() {
       {/* MODAL INVENTORY PICKER */}
       <Dialog open={isInventoryOpen} onClose={() => setIsInventoryOpen(false)} maxWidth="lg" fullWidth PaperProps={{ sx: { borderRadius: 3, height: '85vh', display: 'flex', flexDirection: 'column' } }}>
         <DialogTitle sx={{ p: 0 }}>
-          <Box sx={{ p: 1.5, px: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #e1e8f0', bgcolor: '#f8fafc', gap: 2 }}>
+          <Box sx={{ p: 1.5, px: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #e1e8f0', bgcolor: 'background.default', gap: 2 }}>
              <Box display="flex" alignItems="center" gap={1.5} sx={{ flexShrink: 0 }}>
                <Box sx={{ p: 1, bgcolor: '#dcfce7', borderRadius: 2, display: 'flex' }}>
                  <InventoryIcon sx={{ color: '#16a34a' }} />
@@ -1018,14 +1018,14 @@ export default function IssueFabricPage() {
             <Table stickyHeader size="small" sx={{ '& .MuiTableCell-root': { py: { xs: 0.5, lg: 1 }, px: { xs: 1, lg: 2 }, fontSize: { xs: '0.75rem', lg: '0.85rem' } } }}>
               <TableHead>
                 <TableRow>
-                  <TableCell sx={{ fontWeight: 700, bgcolor: '#f8fafc', borderBottom: '2px solid #e2e8f0', color: '#334155' }}>Select</TableCell>
-                  <TableCell sx={{ fontWeight: 700, bgcolor: '#f8fafc', borderBottom: '2px solid #e2e8f0', color: '#334155' }}>QR Code</TableCell>
-                  <TableCell sx={{ fontWeight: 700, bgcolor: '#f8fafc', borderBottom: '2px solid #e2e8f0', color: '#334155' }}>Item No</TableCell>
-                  <TableCell sx={{ fontWeight: 700, bgcolor: '#f8fafc', borderBottom: '2px solid #e2e8f0', color: '#334155' }}>Color</TableCell>
-                  <TableCell sx={{ fontWeight: 700, bgcolor: '#f8fafc', borderBottom: '2px solid #e2e8f0', color: '#334155' }}>PO</TableCell>
-                  <TableCell sx={{ fontWeight: 700, bgcolor: '#f8fafc', borderBottom: '2px solid #e2e8f0', color: '#334155' }}>Supplier</TableCell>
-                  <TableCell sx={{ fontWeight: 700, bgcolor: '#f8fafc', borderBottom: '2px solid #e2e8f0', color: '#334155', textAlign: 'center' }}>Roll No</TableCell>
-                  <TableCell sx={{ fontWeight: 700, bgcolor: '#f8fafc', borderBottom: '2px solid #e2e8f0', color: '#334155', textAlign: 'center' }}>Yard Balance</TableCell>
+                  <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default', borderBottom: '2px solid #e2e8f0', color: '#334155' }}>Select</TableCell>
+                  <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default', borderBottom: '2px solid #e2e8f0', color: '#334155' }}>QR Code</TableCell>
+                  <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default', borderBottom: '2px solid #e2e8f0', color: '#334155' }}>Item No</TableCell>
+                  <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default', borderBottom: '2px solid #e2e8f0', color: '#334155' }}>Color</TableCell>
+                  <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default', borderBottom: '2px solid #e2e8f0', color: '#334155' }}>PO</TableCell>
+                  <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default', borderBottom: '2px solid #e2e8f0', color: '#334155' }}>Supplier</TableCell>
+                  <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default', borderBottom: '2px solid #e2e8f0', color: '#334155', textAlign: 'center' }}>Roll No</TableCell>
+                  <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default', borderBottom: '2px solid #e2e8f0', color: '#334155', textAlign: 'center' }}>Yard Balance</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -1094,7 +1094,7 @@ export default function IssueFabricPage() {
             </Table>
           </TableContainer>
         </DialogContent>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', px: 2, py: 1.5, borderTop: '1px solid #e2e8f0', bgcolor: '#fff', flexShrink: 0 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', px: 2, py: 1.5, borderTop: '1px solid', borderColor: 'divider', bgcolor: 'background.paper', flexShrink: 0 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 600 }}>Rows/page:</Typography>
             <Select
@@ -1121,7 +1121,7 @@ export default function IssueFabricPage() {
             size="small"
           />
         </Box>
-        <DialogActions sx={{ p: 2, borderTop: '1px solid #e1e8f0', bgcolor: '#f8fafc' }}>
+        <DialogActions sx={{ p: 2, borderTop: '1px solid #e1e8f0', bgcolor: 'background.default' }}>
           <Box sx={{ flexGrow: 1 }}>
             {selectedInventoryRolls.length > 0 && <Typography variant="subtitle2" color="success.main" fontWeight={700}>Đang chọn: {selectedInventoryRolls.length} cuộn</Typography>}
           </Box>
@@ -1158,7 +1158,7 @@ export default function IssueFabricPage() {
             />
           )}
         </DialogContent>
-        <DialogActions sx={{ p: 2, bgcolor: '#f8fafc' }}>
+        <DialogActions sx={{ p: 2, bgcolor: 'background.default' }}>
           <Button onClick={() => setIsCameraScannerOpen(false)} variant="outlined" color="primary">
             {t('common.closeCam', 'Close Camera')}
           </Button>
@@ -1197,9 +1197,9 @@ export default function IssueFabricPage() {
             {t('issueFabric.splitMsg1', 'The system automatically generated ')}<strong>{newPrintedRolls.length}</strong>{t('issueFabric.splitMsg2', ' new QR codes for the split rolls. ')} 
             {t('issueFabric.splitMsg3', 'Do you want to print these codes to label the new rolls?')}
           </Typography>
-          <Box sx={{ p: 2, bgcolor: '#f8fafc', borderRadius: 2, border: '1px dashed #cbd5e1' }}>
+          <Box sx={{ p: 2, bgcolor: 'background.default', borderRadius: 2, border: '1px dashed #cbd5e1' }}>
             {newPrintedRolls.map((r, idx) => (
-              <Box key={idx} sx={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #e2e8f0', pb: 1, mb: 1, '&:last-child': { border: 'none', mb: 0, pb: 0 } }}>
+              <Box key={idx} sx={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid', borderColor: 'divider', pb: 1, mb: 1, '&:last-child': { border: 'none', mb: 0, pb: 0 } }}>
                 <Typography sx={{ fontWeight: 700, fontSize: '0.9rem' }}>{r.QrCode}</Typography>
                 <Typography color="secondary" sx={{ fontWeight: 700 }}>{r.Yard} Yds</Typography>
               </Box>

@@ -32,7 +32,7 @@ export default function PrescriptionTable({
         sx={{
           p: 2,
           textAlign: "center",
-          bgcolor: "#f8fafc",
+          bgcolor: 'background.default',
         }}
       >
         <Typography color="text.secondary" sx={{ fontWeight: 500 }}>
@@ -43,7 +43,7 @@ export default function PrescriptionTable({
   }
 
   return (
-    <Box sx={{ flexGrow: 1, overflowY: "auto", bgcolor: "#ffffff" }}>
+    <Box sx={{ flexGrow: 1, overflowY: "auto", bgcolor: 'background.paper' }}>
       {items.map((item, index) => (
         <Box
           key={item.medicine.idMed}
@@ -56,7 +56,7 @@ export default function PrescriptionTable({
               index === items.length - 1 ? "none" : "1px solid #e6ebf1",
             transition: "background-color 0.15s",
             "&:hover": {
-              bgcolor: "#f6f9fc",
+              bgcolor: 'background.default',
             },
           }}
         >
@@ -115,10 +115,10 @@ export default function PrescriptionTable({
             spacing={0.5}
             sx={{
               mr: 1,
-              bgcolor: "#ffffff",
+              bgcolor: 'background.paper',
               p: 0.5,
               borderRadius: 1,
-              border: "1px solid #e6ebf1",
+              border: '1px solid', borderColor: 'divider',
             }}
           >
             <IconButton
@@ -130,7 +130,7 @@ export default function PrescriptionTable({
                 p: 0.5,
                 color: "#425466",
                 "&.Mui-disabled": { opacity: 0.3 },
-                "&:hover": { bgcolor: "#f6f9fc", color: "#0a2540" },
+                "&:hover": { bgcolor: 'background.default', color: "#0a2540" },
               }}
             >
               <RemoveIcon sx={{ fontSize: 16 }} />
@@ -157,7 +157,7 @@ export default function PrescriptionTable({
                 p: 0.5,
                 color: "#2e7d32",
                 "&.Mui-disabled": { opacity: 0.3, color: "inherit" },
-                "&:hover": { bgcolor: "#f6f9fc", color: "#15803d" },
+                "&:hover": { bgcolor: 'background.default', color: "#15803d" },
               }}
             >
               <AddIcon sx={{ fontSize: 16 }} />

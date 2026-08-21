@@ -92,22 +92,22 @@ export const BulkSetupDialog: React.FC<BulkSetupDialogProps> = ({
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth PaperProps={{ sx: { borderRadius: '16px' } }}>
-      <DialogTitle sx={{ fontWeight: 800, borderBottom: '1px solid #f1f5f9', bgcolor: '#fff', pb: 2 }}>
+      <DialogTitle sx={{ fontWeight: 800, borderBottom: '1px solid', borderColor: 'divider', bgcolor: 'background.paper', pb: 2 }}>
         {t('admin.bulkSetupWizard', 'Bulk Setup Wizard')}
         <Typography variant="body2" sx={{ color: '#64748b', fontWeight: 600, mt: 0.5 }}>
           {bulkStep === 1 ? t('admin.bulkStep1Title', 'Step 1: Search & Select HR Staff') : t('admin.bulkStep2Title', 'Step 2: Assign Profile & Permissions')}
         </Typography>
       </DialogTitle>
-      <DialogContent sx={{ p: 0, height: 500, display: 'flex', flexDirection: 'column', bgcolor: '#f8fafc' }}>
+      <DialogContent sx={{ p: 0, height: 500, display: 'flex', flexDirection: 'column', bgcolor: 'background.default' }}>
         {bulkStep === 1 && (
           <Box sx={{ p: 3, flex: 1, display: 'flex', flexDirection: 'column' }}>
             <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
               <TextField size="small" placeholder={t('admin.bulkSearchPlaceholder', 'Search HR (Code, Name, Dept...)')} inputRef={bulkSearchRef} defaultValue=""
                 onKeyDown={onKeyDown}
-                sx={{ flex: 1, bgcolor: '#fff', '& .MuiOutlinedInput-root': { borderRadius: '4px' } }} />
+                sx={{ flex: 1, bgcolor: 'background.paper', '& .MuiOutlinedInput-root': { borderRadius: '4px' } }} />
               <Button variant="contained" onClick={onSearchClick} disableElevation sx={{ borderRadius: '6px', px: 3, bgcolor: themeColors.main, '&:hover': { bgcolor: themeColors.dark } }}>{t('common.search', 'Search')}</Button>
             </Box>
-            <Paper elevation={0} sx={{ flex: 1, overflowY: 'auto', border: '1px solid #e2e8f0', borderRadius: 2 }}>
+            <Paper elevation={0} sx={{ flex: 1, overflowY: 'auto', border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
               <Table size="small" stickyHeader>
                 <TableHead>
                   <TableRow>
@@ -171,7 +171,7 @@ export const BulkSetupDialog: React.FC<BulkSetupDialogProps> = ({
 
         {bulkStep === 2 && (
           <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-            <Box sx={{ p: 3, borderBottom: '1px solid #e2e8f0', bgcolor: '#fff' }}>
+            <Box sx={{ p: 3, borderBottom: '1px solid', borderColor: 'divider', bgcolor: 'background.paper' }}>
               <Box sx={{ display: 'flex', gap: 3 }}>
                 <FormControl size="small" sx={{ width: 150 }}>
                   <InputLabel>Role Level</InputLabel>
@@ -197,7 +197,7 @@ export const BulkSetupDialog: React.FC<BulkSetupDialogProps> = ({
               </Box>
             </Box>
             
-            <Box sx={{ flex: 1, overflowY: 'auto', p: 3, bgcolor: '#f8fafc' }}>
+            <Box sx={{ flex: 1, overflowY: 'auto', p: 3, bgcolor: 'background.default' }}>
               <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#475569', mb: 2 }}>PERMISSION TEMPLATE FOR {bulkSelectedUsers.length} USERS</Typography>
               {bulkAppCodes.length === 0 && <Alert severity="info">Select apps above to configure permissions.</Alert>}
               {bulkAppCodes.map(appCode => {
@@ -205,7 +205,7 @@ export const BulkSetupDialog: React.FC<BulkSetupDialogProps> = ({
                 if (appPages.length === 0) return null;
                 return (
                   <Accordion key={appCode} defaultExpanded sx={{ mb: 2, borderRadius: '12px !important', boxShadow: '0 4px 12px rgba(0,0,0,0.03)', '&:before': { display: 'none' } }}>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ bgcolor: '#fff', borderBottom: '1px solid #f1f5f9' }}>
+                    <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ bgcolor: 'background.paper', borderBottom: '1px solid', borderColor: 'divider' }}>
                       <Typography sx={{ fontWeight: 800 }}>{appCode}</Typography>
                     </AccordionSummary>
                     <AccordionDetails sx={{ p: 0 }}>
@@ -255,7 +255,7 @@ export const BulkSetupDialog: React.FC<BulkSetupDialogProps> = ({
           </Box>
         )}
       </DialogContent>
-      <DialogActions sx={{ p: 2, bgcolor: '#fff', borderTop: '1px solid #f1f5f9' }}>
+      <DialogActions sx={{ p: 2, bgcolor: 'background.paper', borderTop: '1px solid', borderColor: 'divider' }}>
         <Button onClick={onClose} sx={{ color: '#64748b', fontWeight: 600 }}>{t('admin.cancel', 'Hủy')}</Button>
         <Box sx={{ flex: 1 }} />
         {bulkStep === 1 && (

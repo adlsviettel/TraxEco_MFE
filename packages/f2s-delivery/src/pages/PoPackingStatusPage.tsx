@@ -117,7 +117,7 @@ export default function PoPackingStatusPage() {
       gap: 3, 
       alignItems: searched ? 'stretch' : 'center', 
       justifyContent: searched ? 'flex-start' : 'center', 
-      bgcolor: '#f8fafc' 
+      bgcolor: 'background.default' 
     }}>
       
       {/* INITIAL STATE: Big Centered Search */}
@@ -169,7 +169,7 @@ export default function PoPackingStatusPage() {
                           <SearchIcon sx={{ color: '#94a3b8' }} />
                         </InputAdornment>
                       ),
-                      sx: { borderRadius: 3, bgcolor: '#f8fafc', fontSize: '1.1rem', py: 0.5, '& fieldset': { borderColor: '#e2e8f0' }, '&:hover fieldset': { borderColor: '#3ba55c' }, '&.Mui-focused fieldset': { borderColor: '#3ba55c' } }
+                      sx: { borderRadius: 3, bgcolor: 'background.default', fontSize: '1.1rem', py: 0.5, '& fieldset': { borderColor: '#e2e8f0' }, '&:hover fieldset': { borderColor: '#3ba55c' }, '&.Mui-focused fieldset': { borderColor: '#3ba55c' } }
                     }}
                   />
                 )}
@@ -201,7 +201,7 @@ export default function PoPackingStatusPage() {
                       label={po} 
                       onClick={() => { setPoNumber(po); executeSearch(po); }}
                       sx={{ 
-                        bgcolor: '#fff', border: '1px solid #e2e8f0', fontWeight: 600, color: '#334155', borderRadius: 2,
+                        bgcolor: 'background.paper', border: '1px solid', borderColor: 'divider', fontWeight: 600, color: '#334155', borderRadius: 2,
                         '&:hover': { borderColor: '#3ba55c', bgcolor: '#f0fdf4' } 
                       }} 
                     />
@@ -260,7 +260,7 @@ export default function PoPackingStatusPage() {
                             <SearchIcon sx={{ color: '#94a3b8', fontSize: 20 }} />
                           </InputAdornment>
                         ),
-                        sx: { borderRadius: 2, bgcolor: '#f8fafc', '&.Mui-focused fieldset': { borderColor: '#3ba55c' } }
+                        sx: { borderRadius: 2, bgcolor: 'background.default', '&.Mui-focused fieldset': { borderColor: '#3ba55c' } }
                       }}
                     />
                   )}
@@ -278,14 +278,14 @@ export default function PoPackingStatusPage() {
 
             {/* Summary Cards */}
             <Box sx={{ flexGrow: 1, display: 'flex', gap: 2 }}>
-              <Card elevation={1} sx={{ flex: 1, borderRadius: 4, bgcolor: '#fff', border: '1px solid #e0f2fe' }}>
+              <Card elevation={1} sx={{ flex: 1, borderRadius: 4, bgcolor: 'background.paper', border: '1px solid #e0f2fe' }}>
                 <CardContent sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                   <Typography variant="body2" sx={{ color: '#64748b', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5 }}>Target Quantity</Typography>
                   <Typography variant="h3" sx={{ color: '#0284c7', fontWeight: 800, mt: 1 }}>{summary.target.toLocaleString()}</Typography>
                 </CardContent>
               </Card>
               
-              <Card elevation={1} sx={{ flex: 1, borderRadius: 4, bgcolor: '#fff', border: '1px solid #dcfce7' }}>
+              <Card elevation={1} sx={{ flex: 1, borderRadius: 4, bgcolor: 'background.paper', border: '1px solid #dcfce7' }}>
                 <CardContent sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                   <Typography variant="body2" sx={{ color: '#64748b', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5 }}>Packed Quantity</Typography>
                   <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1, mt: 1 }}>
@@ -295,7 +295,7 @@ export default function PoPackingStatusPage() {
                 </CardContent>
               </Card>
 
-              <Card elevation={1} sx={{ flex: 1, borderRadius: 4, bgcolor: '#fff', border: '1px solid #fef3c7' }}>
+              <Card elevation={1} sx={{ flex: 1, borderRadius: 4, bgcolor: 'background.paper', border: '1px solid #fef3c7' }}>
                 <CardContent sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                   <Typography variant="body2" sx={{ color: '#64748b', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5 }}>Remaining</Typography>
                   <Typography variant="h3" sx={{ color: summary.remaining > 0 ? '#ea580c' : '#16a34a', fontWeight: 800, mt: 1 }}>{summary.remaining.toLocaleString()}</Typography>
@@ -306,7 +306,7 @@ export default function PoPackingStatusPage() {
 
           {/* Details Table */}
           <Paper elevation={2} sx={{ flexGrow: 1, minHeight: 500, borderRadius: 3, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-            <Box sx={{ p: 2, borderBottom: '1px solid #e2e8f0', bgcolor: '#f8fafc', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Box sx={{ p: 2, borderBottom: '1px solid', borderColor: 'divider', bgcolor: 'background.default', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <Typography variant="subtitle1" sx={{ fontWeight: 700, color: '#334155' }}>
                 Packing History for {poNumber}
               </Typography>
@@ -330,7 +330,7 @@ export default function PoPackingStatusPage() {
               </Box>
             </Box>
             
-            <Box sx={{ borderBottom: 1, borderColor: 'divider', bgcolor: '#fff' }}>
+            <Box sx={{ borderBottom: 1, borderColor: 'divider', bgcolor: 'background.paper' }}>
               <Tabs 
                 value={tabIndex} 
                 onChange={(e, val) => setTabIndex(val)} 
@@ -349,16 +349,16 @@ export default function PoPackingStatusPage() {
               <Table stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell sx={{ fontWeight: 700, bgcolor: '#f1f5f9' }}>PO No</TableCell>
-                    <TableCell sx={{ fontWeight: 700, bgcolor: '#f1f5f9' }}>Job No</TableCell>
-                    <TableCell sx={{ fontWeight: 700, bgcolor: '#f1f5f9' }}>UPC Code</TableCell>
-                    <TableCell sx={{ fontWeight: 700, bgcolor: '#f1f5f9' }}>Color</TableCell>
-                    <TableCell align="center" sx={{ fontWeight: 700, bgcolor: '#f1f5f9' }}>Size</TableCell>
-                    <TableCell align="center" sx={{ fontWeight: 700, bgcolor: '#f1f5f9' }}>FacLine</TableCell>
-                    <TableCell align="right" sx={{ fontWeight: 700, bgcolor: '#f1f5f9' }}>Qty</TableCell>
-                    <TableCell align="right" sx={{ fontWeight: 700, bgcolor: '#f1f5f9' }}>Packed</TableCell>
-                    <TableCell align="right" sx={{ fontWeight: 700, bgcolor: '#f1f5f9' }}>Balance</TableCell>
-                    <TableCell align="center" sx={{ fontWeight: 700, bgcolor: '#f1f5f9' }}>Status</TableCell>
+                    <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default' }}>PO No</TableCell>
+                    <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default' }}>Job No</TableCell>
+                    <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default' }}>UPC Code</TableCell>
+                    <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default' }}>Color</TableCell>
+                    <TableCell align="center" sx={{ fontWeight: 700, bgcolor: 'background.default' }}>Size</TableCell>
+                    <TableCell align="center" sx={{ fontWeight: 700, bgcolor: 'background.default' }}>FacLine</TableCell>
+                    <TableCell align="right" sx={{ fontWeight: 700, bgcolor: 'background.default' }}>Qty</TableCell>
+                    <TableCell align="right" sx={{ fontWeight: 700, bgcolor: 'background.default' }}>Packed</TableCell>
+                    <TableCell align="right" sx={{ fontWeight: 700, bgcolor: 'background.default' }}>Balance</TableCell>
+                    <TableCell align="center" sx={{ fontWeight: 700, bgcolor: 'background.default' }}>Status</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -412,16 +412,16 @@ export default function PoPackingStatusPage() {
               <Table stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell sx={{ fontWeight: 700, bgcolor: '#f1f5f9' }}>PO No</TableCell>
-                    <TableCell sx={{ fontWeight: 700, bgcolor: '#f1f5f9' }}>Factory Line</TableCell>
-                    <TableCell sx={{ fontWeight: 700, bgcolor: '#f1f5f9' }}>CTN Seri No</TableCell>
-                    <TableCell align="center" sx={{ fontWeight: 700, bgcolor: '#f1f5f9' }}>Plastic Code</TableCell>
-                    <TableCell align="center" sx={{ fontWeight: 700, bgcolor: '#f1f5f9' }}>Manu Size</TableCell>
-                    <TableCell align="right" sx={{ fontWeight: 700, bgcolor: '#f1f5f9' }}>Packed Qty</TableCell>
-                    <TableCell align="center" sx={{ fontWeight: 700, bgcolor: '#f1f5f9' }}>Barcode</TableCell>
-                    <TableCell sx={{ fontWeight: 700, bgcolor: '#f1f5f9' }}>Created By</TableCell>
-                    <TableCell sx={{ fontWeight: 700, bgcolor: '#f1f5f9' }}>Create Date</TableCell>
-                    <TableCell align="center" sx={{ fontWeight: 700, bgcolor: '#f1f5f9' }}>Status</TableCell>
+                    <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default' }}>PO No</TableCell>
+                    <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default' }}>Factory Line</TableCell>
+                    <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default' }}>CTN Seri No</TableCell>
+                    <TableCell align="center" sx={{ fontWeight: 700, bgcolor: 'background.default' }}>Plastic Code</TableCell>
+                    <TableCell align="center" sx={{ fontWeight: 700, bgcolor: 'background.default' }}>Manu Size</TableCell>
+                    <TableCell align="right" sx={{ fontWeight: 700, bgcolor: 'background.default' }}>Packed Qty</TableCell>
+                    <TableCell align="center" sx={{ fontWeight: 700, bgcolor: 'background.default' }}>Barcode</TableCell>
+                    <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default' }}>Created By</TableCell>
+                    <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default' }}>Create Date</TableCell>
+                    <TableCell align="center" sx={{ fontWeight: 700, bgcolor: 'background.default' }}>Status</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -473,17 +473,17 @@ export default function PoPackingStatusPage() {
               <Table stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell sx={{ fontWeight: 700, bgcolor: '#f1f5f9' }}>PO No</TableCell>
-                    <TableCell align="center" sx={{ fontWeight: 700, bgcolor: '#f1f5f9' }}>CTN No</TableCell>
-                    <TableCell sx={{ fontWeight: 700, bgcolor: '#f1f5f9' }}>CTN Seri No</TableCell>
-                    <TableCell align="center" sx={{ fontWeight: 700, bgcolor: '#f1f5f9' }}>Barcode</TableCell>
-                    <TableCell align="right" sx={{ fontWeight: 700, bgcolor: '#f1f5f9' }}>Packed Qty</TableCell>
-                    <TableCell align="center" sx={{ fontWeight: 700, bgcolor: '#f1f5f9' }}>Cust Size</TableCell>
-                    <TableCell align="center" sx={{ fontWeight: 700, bgcolor: '#f1f5f9' }}>Manu Size</TableCell>
-                    <TableCell align="center" sx={{ fontWeight: 700, bgcolor: '#f1f5f9' }}>Location</TableCell>
-                    <TableCell align="center" sx={{ fontWeight: 700, bgcolor: '#f1f5f9' }}>Ship Status</TableCell>
-                    <TableCell sx={{ fontWeight: 700, bgcolor: '#f1f5f9' }}>Created By</TableCell>
-                    <TableCell sx={{ fontWeight: 700, bgcolor: '#f1f5f9' }}>Create Date</TableCell>
+                    <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default' }}>PO No</TableCell>
+                    <TableCell align="center" sx={{ fontWeight: 700, bgcolor: 'background.default' }}>CTN No</TableCell>
+                    <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default' }}>CTN Seri No</TableCell>
+                    <TableCell align="center" sx={{ fontWeight: 700, bgcolor: 'background.default' }}>Barcode</TableCell>
+                    <TableCell align="right" sx={{ fontWeight: 700, bgcolor: 'background.default' }}>Packed Qty</TableCell>
+                    <TableCell align="center" sx={{ fontWeight: 700, bgcolor: 'background.default' }}>Cust Size</TableCell>
+                    <TableCell align="center" sx={{ fontWeight: 700, bgcolor: 'background.default' }}>Manu Size</TableCell>
+                    <TableCell align="center" sx={{ fontWeight: 700, bgcolor: 'background.default' }}>Location</TableCell>
+                    <TableCell align="center" sx={{ fontWeight: 700, bgcolor: 'background.default' }}>Ship Status</TableCell>
+                    <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default' }}>Created By</TableCell>
+                    <TableCell sx={{ fontWeight: 700, bgcolor: 'background.default' }}>Create Date</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>

@@ -45,7 +45,7 @@ export const F2SConfigAccordion: React.FC<F2SConfigAccordionProps> = ({
             placeholder={t('admin.f2sEditableColsPlaceholder')}
             value={f2sEditableCols} 
             onChange={e => setF2sEditableCols(e.target.value)} 
-            sx={{ flex: 1, minWidth: 300, '& .MuiOutlinedInput-root': { borderRadius: 2, bgcolor: '#fff' } }}
+            sx={{ flex: 1, minWidth: 300, '& .MuiOutlinedInput-root': { borderRadius: 2, bgcolor: 'background.paper' } }}
           />
           <Button variant="contained" size="small" onClick={handleSaveF2SEditableCols} disableElevation
             sx={{ px: 2, fontWeight: 800, borderRadius: 2, bgcolor: themeColors.main, '&:hover': { bgcolor: themeColors.dark } }}>

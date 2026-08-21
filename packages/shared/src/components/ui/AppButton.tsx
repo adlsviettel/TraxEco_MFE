@@ -49,7 +49,7 @@ const AppButton: React.FC<AppButtonProps> = ({
       ...baseSx,
       borderColor: "#bfc9c4",
       color: "#191c1d",
-      bgcolor: "#fff",
+      bgcolor: 'background.paper',
       "&:hover": { bgcolor: "#f3f4f5", borderColor: "#bfc9c4" },
       "&.Mui-active": {
         bgcolor: "rgba(46,125,50,0.05)",
@@ -62,7 +62,7 @@ const AppButton: React.FC<AppButtonProps> = ({
       ...baseSx,
       borderColor: "#d32f2f",
       color: "#d32f2f",
-      bgcolor: "#fff",
+      bgcolor: 'background.paper',
       "&:hover": { bgcolor: "rgba(211,47,47,0.04)", borderColor: "#d32f2f" },
     };
   } else if (variant === "outlined" && customVariant === "warning") {
@@ -70,7 +70,7 @@ const AppButton: React.FC<AppButtonProps> = ({
       ...baseSx,
       borderColor: "#ed6c02",
       color: "#ed6c02",
-      bgcolor: "#fff",
+      bgcolor: 'background.paper',
       "&:hover": { bgcolor: "rgba(237,108,2,0.04)", borderColor: "#ed6c02" },
     };
   }

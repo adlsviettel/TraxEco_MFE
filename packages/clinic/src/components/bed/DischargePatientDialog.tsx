@@ -43,7 +43,7 @@ export default function DischargePatientDialog({ open, bed, onClose, onDischarge
             <Typography variant="body2" sx={{ color: '#475569', mb: 2, fontWeight: 500, lineHeight: 1.5 }}>
               {t('clinic.bed.confirmDischarge', 'Bạn có chắc chắn muốn cho bệnh nhân sau xuất giường nằm và trả giường về trạng thái trống?')}
             </Typography>
-            <Box sx={{ p: 2, bgcolor: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+            <Box sx={{ p: 2, bgcolor: 'background.default', borderRadius: '8px', border: '1px solid', borderColor: 'divider' }}>
               <Typography sx={{ fontWeight: 800, color: '#0f172a', fontSize: 14.5 }}>
                 {bed.fullName}
               </Typography>

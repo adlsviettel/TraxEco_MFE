@@ -381,19 +381,19 @@ const ProductListPage: React.FC = () => {
               {item.mainImage ? (
                 <Tooltip
                   title={
-                    <Box sx={{ width: 240, height: 240, bgcolor: '#fff', borderRadius: 1, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Box sx={{ width: 240, height: 240, bgcolor: 'background.paper', borderRadius: 1, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       <img src={rdItemApi.getImageUrl(item.mainImage.split(',')[0])} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                     </Box>
                   }
                   placement="right"
-                  componentsProps={{ tooltip: { sx: { bgcolor: '#fff', boxShadow: '0 4px 20px rgba(0,0,0,0.15)', p: 0.5, border: '1px solid #e1e3e4' } } }}
+                  componentsProps={{ tooltip: { sx: { bgcolor: 'background.paper', boxShadow: '0 4px 20px rgba(0,0,0,0.15)', p: 0.5, border: '1px solid', borderColor: 'divider' } } }}
                 >
-                  <Box sx={{ width: 48, height: 48, borderRadius: 1, overflow: 'hidden', bgcolor: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #bfc9c4', mx: 'auto' }}>
+                  <Box sx={{ width: 48, height: 48, borderRadius: 1, overflow: 'hidden', bgcolor: 'background.default', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #bfc9c4', mx: 'auto' }}>
                     <img src={rdItemApi.getImageUrl(item.mainImage.split(',')[0])} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   </Box>
                 </Tooltip>
               ) : (
-                <Box sx={{ width: 48, height: 48, borderRadius: 1, overflow: 'hidden', bgcolor: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #bfc9c4', mx: 'auto' }}>
+                <Box sx={{ width: 48, height: 48, borderRadius: 1, overflow: 'hidden', bgcolor: 'background.default', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #bfc9c4', mx: 'auto' }}>
                   <Typography sx={{ fontSize: 10, color: '#94a3b8', textAlign: 'center', lineHeight: 1.1, fontWeight: 600 }}>No Image</Typography>
                 </Box>
               )}
@@ -1065,19 +1065,46 @@ const ProductListPage: React.FC = () => {
       }
 
       const pptx = new PptxGenJSConstructor();
-      pptx.layout = 'LAYOUT_16x9'; // Slide dimensions: 13.33 x 7.5 inches
+      try {
+        pptx.defineLayout({ name: 'WIDE_16_9', width: 13.33, height: 7.5 });
+        pptx.layout = 'WIDE_16_9';
+      } catch {
+        try { pptx.layout = 'LAYOUT_WIDE'; } catch { pptx.layout = 'LAYOUT_16x9'; }
+      }
 
       const cardPositions = [
-        { x: 0.4, y: 0.4, w: 6.0, h: 3.2 },
-        { x: 6.8, y: 0.4, w: 6.0, h: 3.2 },
-        { x: 0.4, y: 3.8, w: 6.0, h: 3.2 },
-        { x: 6.8, y: 3.8, w: 6.0, h: 3.2 }
+        { x: 0.4, y: 0.75, w: 6.0, h: 3.1 },
+        { x: 6.9, y: 0.75, w: 6.0, h: 3.1 },
+        { x: 0.4, y: 4.05, w: 6.0, h: 3.1 },
+        { x: 6.9, y: 4.05, w: 6.0, h: 3.1 }
       ];
+
+      // Load top-right Trax Group logo image for PPT export
+      let logoBase64: string | null = null;
+      try {
+        const logoUrl = `${import.meta.env.BASE_URL}export_logo.png`;
+        const logoRes = await fetch(logoUrl);
+        const logoBlob = await logoRes.blob();
+        logoBase64 = await new Promise<string>((resolve) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result as string);
+          reader.readAsDataURL(logoBlob);
+        });
+      } catch (err) {
+        console.warn('Could not load export_logo.png for PPT:', err);
+      }
 
       // Build 4 cards per slide natively
       for (let i = 0; i < enrichedData.length; i += 4) {
         const pageItems = enrichedData.slice(i, i + 4);
         const slide = pptx.addSlide();
+
+        // Top right Trax Group Logo (positioned in top header area above cards)
+        if (logoBase64) {
+          slide.addImage({ data: logoBase64, x: 10.9, y: 0.18, w: 1.8, h: 0.42 });
+        } else {
+          slide.addText('Trax Group', { x: 10.9, y: 0.18, w: 1.8, h: 0.42, fontSize: 13, bold: true, align: 'right', color: '000000' });
+        }
 
         for (let j = 0; j < pageItems.length; j++) {
           const { product, enrichedBom } = pageItems[j];
@@ -1094,7 +1121,7 @@ const ProductListPage: React.FC = () => {
           });
 
           // 2. Native Images (up to 2 converted to Base64)
-          const rawImgUrls = (product.imageUrl || '')
+          const rawImgUrls = (product.mainImage || (product as any).imageUrl || '')
             .split(',')
             .map(u => u.trim())
             .filter(Boolean)
@@ -1103,7 +1130,7 @@ const ProductListPage: React.FC = () => {
           const base64Images: string[] = [];
           for (const url of rawImgUrls) {
             try {
-              const fullUrl = url.startsWith('http') ? url : `${window.location.origin}${url.startsWith('/') ? '' : '/'}${url}`;
+              const fullUrl = url.startsWith('http') ? url : rdItemApi.getImageUrl(url);
               const res = await fetch(fullUrl, { mode: 'cors' });
               const blob = await res.blob();
               const b64 = await new Promise<string>((resolve) => {
@@ -1118,63 +1145,56 @@ const ProductListPage: React.FC = () => {
             }
           }
 
-          const imgW = 2.0;
+          const imgW = 1.9;
           if (base64Images.length === 1) {
             slide.addImage({
               data: base64Images[0],
-              x: pos.x + 0.15,
-              y: pos.y + 0.15,
+              x: pos.x + 0.12,
+              y: pos.y + 0.12,
               w: imgW,
-              h: 2.9,
+              h: 2.95,
               sizing: { type: 'contain' }
             });
           } else if (base64Images.length >= 2) {
             slide.addImage({
               data: base64Images[0],
-              x: pos.x + 0.15,
-              y: pos.y + 0.15,
+              x: pos.x + 0.12,
+              y: pos.y + 0.12,
               w: imgW,
-              h: 1.35,
+              h: 1.4,
               sizing: { type: 'contain' }
             });
             slide.addImage({
               data: base64Images[1],
-              x: pos.x + 0.15,
+              x: pos.x + 0.12,
               y: pos.y + 1.6,
               w: imgW,
-              h: 1.35,
+              h: 1.4,
               sizing: { type: 'contain' }
             });
           }
 
           // 3. Native Editable Text Box Frame
-          const textX = pos.x + 2.3;
-          const textW = pos.w - 2.45;
+          const textX = pos.x + 2.25;
+          const textW = pos.w - 2.4;
 
           const textObjects: any[] = [];
 
           // Item Code (Bold Title)
           textObjects.push({
             text: product.itemCode || 'N/A',
-            options: { fontSize: 13, bold: true, color: '000000', breakLine: true }
+            options: { fontSize: 11, bold: true, color: '000000', breakLine: true }
           });
 
           // Style Name
           textObjects.push({
             text: product.product?.styleName || product.name || '—',
-            options: { fontSize: 11, color: '1E293B', breakLine: true }
+            options: { fontSize: 9.5, color: '1E293B', breakLine: true }
           });
-
-          // Remark
-          if (product.remark) {
-            textObjects.push({
-              text: `(~${product.remark}/ garment)`,
-              options: { fontSize: 10, italic: true, color: '475569', breakLine: true }
-            });
-          }
 
           // BOM Lines
           enrichedBom.forEach(bom => {
+            const usageStr = (bom.usage || '').trim();
             const supp = (bom.supplierName || '').trim();
             const code = (bom.itemCode || '').trim();
             const color = (bom.color || '').trim();
@@ -1182,18 +1202,19 @@ const ProductListPage: React.FC = () => {
             const comp = (bom.composition || '').trim();
             const tech = (bom.technology || '').trim();
             const func = (bom.function || '').trim();
-            const weight = (bom.weightGsm !== undefined && bom.weightGsm !== null && bom.weightGsm !== '') ? String(bom.weightGsm).trim() : '';
-            const width = (bom.cuttableWidth !== undefined && bom.cuttableWidth !== null && bom.cuttableWidth !== '') ? String(bom.cuttableWidth).trim() : '';
+            const weight = (bom.weightGsm !== undefined && bom.weightGsm !== null && bom.weightGsm !== '') ? `${String(bom.weightGsm).trim()} gsm` : '';
+            const width = (bom.cuttableWidth !== undefined && bom.cuttableWidth !== null && bom.cuttableWidth !== '') ? `${String(bom.cuttableWidth).trim()} inch` : '';
 
             const part1 = (supp && code) ? `${supp} - ${code}` : (supp || code);
             const part2 = color;
             const part3 = [struct, comp, tech, func, weight, width].filter(Boolean).join(', ');
 
-            const lineText = [part1, part2, part3].filter(Boolean).join('/ ');
+            const lineDetail = [part1, part2, part3].filter(Boolean).join('/ ');
+            const lineText = usageStr ? `${usageStr}: ${lineDetail}` : lineDetail;
             if (lineText) {
               textObjects.push({
                 text: lineText,
-                options: { fontSize: 9.5, color: '0F172A', breakLine: true }
+                options: { fontSize: 8.0, color: '0F172A', breakLine: true }
               });
             }
           });
@@ -1203,9 +1224,10 @@ const ProductListPage: React.FC = () => {
             x: textX,
             y: pos.y + 0.15,
             w: textW,
-            h: 2.9,
+            h: 2.95,
             valign: 'top',
-            margin: 0
+            margin: 0,
+            shrinkText: true
           });
         }
       }
@@ -1314,7 +1336,7 @@ const ProductListPage: React.FC = () => {
               <IconButton 
                 onClick={(e) => setMobileMenuAnchor(e.currentTarget)}
                 sx={{ 
-                  bgcolor: '#f1f5f9', 
+                  bgcolor: 'background.default', 
                   color: '#64748b',
                   borderRadius: '50%',
                   width: 44,
@@ -1592,7 +1614,7 @@ const ProductListPage: React.FC = () => {
             size="small"
             sx={{
               display: 'flex',
-              bgcolor: '#f1f5f9',
+              bgcolor: 'background.default',
               p: 0.5,
               borderRadius: 2,
               '& .MuiToggleButton-root': {
@@ -1605,10 +1627,10 @@ const ProductListPage: React.FC = () => {
                 color: '#64748b',
                 textTransform: 'none',
                 '&.Mui-selected': {
-                  bgcolor: '#fff',
+                  bgcolor: 'background.paper',
                   color: '#2e7d32',
                   boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-                  '&:hover': { bgcolor: '#fff' }
+                  '&:hover': { bgcolor: 'background.paper' }
                 }
               }
             }}
@@ -1620,7 +1642,7 @@ const ProductListPage: React.FC = () => {
         </Box>
         <Box>
           <Typography variant="caption" color="text.secondary" fontWeight={600} mb={0.5} display="block">{t('rdMaterial.filter_style_no', 'Style No')}</Typography>
-          <Autocomplete multiple freeSolo options={[] as string[]} value={styleNo} onChange={(_, val) => { setStyleNo(val); if(hasSearched) setPage(0); }} renderInput={(params) => <TextField {...params} fullWidth size="small" placeholder="Enter to add..." sx={{ '& .MuiOutlinedInput-root': { borderRadius: 1.5, fontSize: 14, bgcolor: '#fff' } }} />} />
+          <Autocomplete multiple freeSolo options={[] as string[]} value={styleNo} onChange={(_, val) => { setStyleNo(val); if(hasSearched) setPage(0); }} renderInput={(params) => <TextField {...params} fullWidth size="small" placeholder="Enter to add..." sx={{ '& .MuiOutlinedInput-root': { borderRadius: 1.5, fontSize: 14, bgcolor: 'background.paper' } }} />} />
         </Box>
         <Box>
           <Typography variant="caption" color="text.secondary" fontWeight={600} mb={0.5} display="block">{t('rdMaterial.filter_garment_category', 'Product Category')}</Typography>
@@ -1654,7 +1676,7 @@ const ProductListPage: React.FC = () => {
         ))}
       </Menu>
 
-      <Paper elevation={0} sx={{ position: 'relative', flexGrow: 1, width: '100%', overflow: 'hidden', borderRadius: '12px', border: '1px solid #e1e3e4', boxShadow: '0px 4px 20px rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column', bgcolor: '#fff' }}>
+      <Paper elevation={0} sx={{ position: 'relative', flexGrow: 1, width: '100%', overflow: 'hidden', borderRadius: '12px', border: '1px solid', borderColor: 'divider', boxShadow: '0px 4px 20px rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column', bgcolor: 'background.paper' }}>
         {/* Loading Overlay */}
         {loading && items.length > 0 && (
           <Box sx={{
@@ -1724,7 +1746,7 @@ const ProductListPage: React.FC = () => {
                         alignItems: 'center',
                         bgcolor: (item.quantity ?? 0) <= 0 ? '#fef2f2' : '#fff',
                         cursor: 'pointer',
-                        '&:active': { bgcolor: '#f8fafc' },
+                        '&:active': { bgcolor: 'background.default' },
                         transition: 'background-color 0.1s'
                       }}
                     >
@@ -1735,7 +1757,7 @@ const ProductListPage: React.FC = () => {
                           height: 60, 
                           borderRadius: 1.5, 
                           overflow: 'hidden', 
-                          bgcolor: '#f1f5f9', 
+                          bgcolor: 'background.default', 
                           display: 'flex', 
                           alignItems: 'center', 
                           justifyContent: 'center',
@@ -1763,7 +1785,7 @@ const ProductListPage: React.FC = () => {
                             <Chip 
                               label={item.product.sampleStage} 
                               size="small" 
-                              sx={{ height: 22, fontSize: 10, bgcolor: '#f1f5f9', color: '#475569', fontWeight: 500 }} 
+                              sx={{ height: 22, fontSize: 10, bgcolor: 'background.default', color: '#475569', fontWeight: 500 }} 
                             />
                           )}
                         </Box>
@@ -1788,7 +1810,7 @@ const ProductListPage: React.FC = () => {
                             <Chip 
                               label={item.product.garmentCategory} 
                               size="small" 
-                              sx={{ height: 22, fontSize: 10, bgcolor: '#f1f5f9', color: '#475569', fontWeight: 500 }} 
+                              sx={{ height: 22, fontSize: 10, bgcolor: 'background.default', color: '#475569', fontWeight: 500 }} 
                             />
                           )}
                           {item.quantity !== undefined && (
@@ -1842,7 +1864,7 @@ const ProductListPage: React.FC = () => {
                           sx={{
                             py: 1, px: 0.5,
                             bgcolor: '#F9FAFA',
-                            borderBottom: '1px solid #e1e3e4',
+                            borderBottom: '1px solid', borderColor: 'divider',
                             ...stickyStyle,
                             ...widthStyle,
                           }}
@@ -1904,7 +1926,7 @@ const ProductListPage: React.FC = () => {
                         sx={{
                           fontWeight: 700, fontSize: 11, color: '#707975',
                           textTransform: 'uppercase', letterSpacing: '0.05em',
-                          bgcolor: '#F9FAFA', borderBottom: '1px solid #e1e3e4',
+                          bgcolor: '#F9FAFA', borderBottom: '1px solid', borderColor: 'divider',
                           py: 2, px: 2, textAlign: col.isCenter ? 'center' : col.isRight ? 'right' : 'left',
                           whiteSpace: 'nowrap',
                           cursor: col.id !== 'Image' && col.id !== 'Actions' ? 'grab' : 'default',
@@ -1956,7 +1978,7 @@ const ProductListPage: React.FC = () => {
                   })}
                 </TableRow>
               </TableHead>
-              <TableBody sx={{ '& tr:nth-of-type(even)': { bgcolor: '#fff' }, '& tr:nth-of-type(odd)': { bgcolor: '#fff' }, opacity: loading ? 0.6 : 1, transition: 'opacity 0.2s' }}>
+              <TableBody sx={{ '& tr:nth-of-type(even)': { bgcolor: 'background.paper' }, '& tr:nth-of-type(odd)': { bgcolor: 'background.paper' }, opacity: loading ? 0.6 : 1, transition: 'opacity 0.2s' }}>
                 {loading && filteredItems.length === 0 ? (
                   <TableRow><TableCell colSpan={colSpanCount} align="center" sx={{ py: 6 }}>
                     <CircularProgress size={28} color="primary" />
@@ -1996,10 +2018,10 @@ const ProductListPage: React.FC = () => {
 
         {/* Table Footer / Pagination */}
         <Box sx={{ 
-          borderTop: '1px solid #e1e3e4', 
+          borderTop: '1px solid', borderColor: 'divider', 
           px: { xs: 1, sm: 3 }, 
           py: 1, 
-          bgcolor: '#fff', 
+          bgcolor: 'background.paper', 
           display: 'flex', 
           flexDirection: 'row',
           alignItems: 'center', 

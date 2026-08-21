@@ -201,7 +201,7 @@ const SwipeableItem: React.FC<SwipeableItemProps> = ({
         sx={{
           transform: `translateX(${translateX}px)`,
           transition: isSwiping ? 'none' : 'transform 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-          bgcolor: '#fff',
+          bgcolor: 'background.paper',
           position: 'relative',
           zIndex: 1,
           height: '100%',

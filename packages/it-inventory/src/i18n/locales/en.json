@@ -38,9 +38,13 @@
     "type": "Type"
   },
   "pemasukan": {
-    "title": "Import",
+    "title": "Inbound",
     "uploadPdf": "Upload PDF",
     "dragDrop": "Drag & drop PDF files here, or click to browse",
+    "dragDropPrompt": "Drag & drop multiple declaration PDF files here or",
+    "clickToSelect": "click to select files",
+    "supportedTypes": "Supports batch upload: BC 2.5, BC 2.6.1, BC 4.1, BC 2.3, BC 4.0, PPKEK",
+    "hintText": "(Supported uploads: BC 2.3, BC 4.0, BC 2.6.2, PPKEK)",
     "supportedFormat": "Supported format: PDF",
     "importedData": "Imported Data",
     "fileName": "File Name",
@@ -56,9 +60,13 @@
     "noData": "No data imported yet"
   },
   "pengeluaran": {
-    "title": "Export",
+    "title": "Outbound",
     "uploadPdf": "Upload PDF",
     "dragDrop": "Drag & drop PDF files here, or click to browse",
+    "dragDropPrompt": "Drag & drop multiple declaration PDF files here or",
+    "clickToSelect": "click to select files",
+    "supportedTypes": "Supports batch upload: BC 2.5, BC 2.6.1, BC 4.1, BC 2.3, BC 4.0, PPKEK",
+    "hintText": "(Supported uploads: BC 2.5, BC 2.6.1, BC 3.0, BC 2.7, BC 4.1)",
     "supportedFormat": "Supported format: PDF",
     "importedData": "Exported Data",
     "fileName": "File Name",
@@ -191,7 +199,9 @@
     "pushedAt": "Pushed At",
     "errorMessage": "Error Message",
     "responseBody": "Response Body",
-    "requestBody": "Request Body"
+    "requestBody": "Request Body",
+    "ceisaTooltip": "Declaration belongs to CEISA 4.0 (BC 2.7, BC 4.1, BC 2.6.1, BC 2.5). Stored in IT Inventory, no INSW Push required.",
+    "copiedClipboard": "JSON Payload copied to clipboard!"
   },
   "common": {
     "save": "Save",

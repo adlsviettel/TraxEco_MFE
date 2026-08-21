@@ -22,10 +22,10 @@ export function DataGridFooter() {
 
   return (
     <Box sx={{ 
-      borderTop: '1px solid #e1e3e4', 
+      borderTop: '1px solid', borderColor: 'divider', 
       px: isMobile ? 1.5 : 3, 
       py: 1.5, 
-      bgcolor: '#fff', 
+      bgcolor: 'background.paper', 
       display: 'flex', 
       flexDirection: isMobile ? 'column' : 'row',
       alignItems: 'center', 

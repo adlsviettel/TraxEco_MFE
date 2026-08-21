@@ -148,7 +148,7 @@ export default function ChangePasswordDialog({ open, onClose }: ChangePasswordDi
              disabled={loading || !!success}
           />
         </DialogContent>
-        <DialogActions sx={{ p: 2, bgcolor: '#f8fafc' }}>
+        <DialogActions sx={{ p: 2, bgcolor: 'background.default' }}>
           <Button onClick={handleClose} color="inherit" disabled={loading}>
                          {t('common.cancel', 'Cancel')}
           </Button>

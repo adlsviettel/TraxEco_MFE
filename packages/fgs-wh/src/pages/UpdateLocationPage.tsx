@@ -560,7 +560,7 @@ export default function UpdateLocationPage() {
             loading={loadingCustomers}
             renderInput={(params) => (
               <TextField {...params} label={t('updateLocation.customer')} placeholder={t('updateLocation.customerPlaceholder')} variant="outlined" size="small" sx={{
-                  '& .MuiOutlinedInput-root': { borderRadius: '12px', bgcolor: '#f8fafc', transition: 'all 0.2s', '&:hover': { bgcolor: '#f1f5f9' }, '&.Mui-focused': { bgcolor: '#ffffff', boxShadow: '0 0 0 4px rgba(2, 136, 209, 0.1)' } }
+                  '& .MuiOutlinedInput-root': { borderRadius: '12px', bgcolor: 'background.default', transition: 'all 0.2s', '&:hover': { bgcolor: 'background.default' }, '&.Mui-focused': { bgcolor: 'background.paper', boxShadow: '0 0 0 4px rgba(2, 136, 209, 0.1)' } }
               }} />
             )}
           />
@@ -583,8 +583,8 @@ export default function UpdateLocationPage() {
             }}
             inputProps={{ inputMode: showVirtualKeyboard ? 'text' : 'none', autoComplete: 'off' }}
             sx={{
-              '& .MuiOutlinedInput-root': { borderRadius: '14px', backgroundColor: '#f8fafc', fontWeight: 800, fontSize: '1.05rem', transition: 'all 0.3s ease', border: '1px solid transparent' },
-              '& .Mui-focused': { backgroundColor: '#ffffff', borderColor: '#0ea5e9', boxShadow: '0 4px 15px rgba(14, 165, 233, 0.15)' }
+              '& .MuiOutlinedInput-root': { borderRadius: '14px', backgroundColor: 'background.default', fontWeight: 800, fontSize: '1.05rem', transition: 'all 0.3s ease', border: '1px solid transparent' },
+              '& .Mui-focused': { backgroundColor: 'background.paper', borderColor: '#0ea5e9', boxShadow: '0 4px 15px rgba(14, 165, 233, 0.15)' }
             }}
             InputProps={{
               endAdornment: (
@@ -605,7 +605,7 @@ export default function UpdateLocationPage() {
                   )}
                 </InputAdornment>
               ),
-              sx: { backgroundColor: '#f8fafc', fontWeight: 600 }
+              sx: { backgroundColor: 'background.default', fontWeight: 600 }
             }}
           />
 
@@ -663,13 +663,13 @@ export default function UpdateLocationPage() {
                   title={t('updateLocation.pkListTitle')}
                   action={<Chip label={pkListData.length} size="small" sx={{ fontWeight: 800, bgcolor: '#e0f2fe', color: '#0284c7', minWidth: 28, height: 28, fontSize: '0.75rem', borderRadius: '14px' }} />}
                   titleTypographyProps={{ variant: 'subtitle2', fontWeight: 800, color: '#0f172a' }}
-                  sx={{ bgcolor: '#f8fafc', p: 1.5, minHeight: 0, borderBottom: '1px solid #e2e8f0', '& .MuiCardHeader-avatar': { minWidth: 0, mr: 1.5 }, '& .MuiCardHeader-action': { m: 0, alignSelf: 'center' } }}
+                  sx={{ bgcolor: 'background.default', p: 1.5, minHeight: 0, borderBottom: '1px solid', borderColor: 'divider', '& .MuiCardHeader-avatar': { minWidth: 0, mr: 1.5 }, '& .MuiCardHeader-action': { m: 0, alignSelf: 'center' } }}
                 />
-                <CardContent sx={{ flex: 1, p: 0, overflow: 'auto', bgcolor: '#f1f5f9' }}>
+                <CardContent sx={{ flex: 1, p: 0, overflow: 'auto', bgcolor: 'background.default' }}>
                   {pkListData.length > 0 ? (
                     <Box sx={{ p: { xs: 0.5, md: 1 }, display: 'flex', flexDirection: 'column', '& > *:not(:last-child)': { mr: { xs: 0.5, md: 1 }, mb: { xs: 0.5, md: 1 } } }}>
                       {pkListData.map((row: any, i) => (
-                        <Paper key={i} elevation={0} sx={{ p: 1.5, bgcolor: i % 2 === 0 ? '#f8fafc' : '#ffffff', border: '1px solid #e2e8f0', borderRadius: 2 }}>
+                        <Paper key={i} elevation={0} sx={{ p: 1.5, bgcolor: i % 2 === 0 ? '#f8fafc' : '#ffffff', border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
                           <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 1 }}>
                             <Box sx={{ gridColumn: { xs: 'span 6', sm: 'span 4' } }}>
                               <Typography variant="caption" color="textSecondary" display="block">{t('updateLocation.scheduleEx')}</Typography>
@@ -711,7 +711,7 @@ export default function UpdateLocationPage() {
                     </Box>
                   ) : (
                     <Box sx={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center', p: 1.5 }}>
-                      <Box sx={{ p: 1.5, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', bgcolor: '#ffffff', border: '1.5px dashed #cbd5e1', borderRadius: 3, width: '100%' }}>
+                      <Box sx={{ p: 1.5, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', bgcolor: 'background.paper', border: '1.5px dashed #cbd5e1', borderRadius: 3, width: '100%' }}>
                         <PackingIcon sx={{ fontSize: 28, mb: 1, color: '#94a3b8' }} />
                         <Typography variant="body2" fontWeight={700} color="#64748b">{t('updateLocation.noData')}</Typography>
                       </Box>
@@ -727,9 +727,9 @@ export default function UpdateLocationPage() {
                   title={t('updateLocation.curLocationTitle')}
                   action={<Chip label={curLocationData.length} size="small" sx={{ fontWeight: 800, bgcolor: '#ede9fe', color: '#7c3aed', minWidth: 28, height: 28, fontSize: '0.75rem', borderRadius: '14px' }} />}
                   titleTypographyProps={{ variant: 'subtitle2', fontWeight: 800, color: '#0f172a' }}
-                  sx={{ bgcolor: '#f8fafc', p: 1.5, minHeight: 0, borderBottom: '1px solid #e2e8f0', '& .MuiCardHeader-avatar': { minWidth: 0, mr: 1.5 }, '& .MuiCardHeader-action': { m: 0, alignSelf: 'center' } }}
+                  sx={{ bgcolor: 'background.default', p: 1.5, minHeight: 0, borderBottom: '1px solid', borderColor: 'divider', '& .MuiCardHeader-avatar': { minWidth: 0, mr: 1.5 }, '& .MuiCardHeader-action': { m: 0, alignSelf: 'center' } }}
                 />
-                <CardContent sx={{ flex: 1, p: 0, overflow: 'auto', bgcolor: '#f1f5f9' }}>
+                <CardContent sx={{ flex: 1, p: 0, overflow: 'auto', bgcolor: 'background.default' }}>
                   {curLocationData.length > 0 ? (
                     <Box sx={{ p: { xs: 0.5, md: 1 }, display: 'flex', flexDirection: 'column', '& > *:not(:last-child)': { mr: { xs: 0.5, md: 1 }, mb: { xs: 0.5, md: 1 } } }}>
                       {curLocationData.map((row, i) => {
@@ -737,7 +737,7 @@ export default function UpdateLocationPage() {
                         const qty = String(Object.values(row)[1] || '');
                         
                         return (
-                          <Paper key={i} elevation={0} sx={{ p: { xs: 1, md: 1.5 }, display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: i % 2 === 0 ? '#f8fafc' : '#ffffff', border: '1px solid #e2e8f0', borderRadius: 2 }}>
+                          <Paper key={i} elevation={0} sx={{ p: { xs: 1, md: 1.5 }, display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: i % 2 === 0 ? '#f8fafc' : '#ffffff', border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
                             <Box>
                               <Typography variant="subtitle2" fontWeight={700} sx={{ color: '#0288d1', display: 'flex', alignItems: 'center', gap: 0.5 }}>
                                 <LocationIcon fontSize="small" /> {t('updateLocation.locationLabel')} {shelfName}
@@ -778,7 +778,7 @@ export default function UpdateLocationPage() {
                     </Box>
                   ) : (
                     <Box sx={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center', p: 2 }}>
-                      <Box sx={{ p: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', bgcolor: '#ffffff', border: '1.5px dashed #cbd5e1', borderRadius: 3, width: '100%' }}>
+                      <Box sx={{ p: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', bgcolor: 'background.paper', border: '1.5px dashed #cbd5e1', borderRadius: 3, width: '100%' }}>
                         <HistoryIcon sx={{ fontSize: 28, mb: 1, color: '#94a3b8' }} />
                         <Typography variant="body2" fontWeight={700} color="#64748b">{t('updateLocation.noData')}</Typography>
                       </Box>
@@ -796,7 +796,7 @@ export default function UpdateLocationPage() {
           <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', '& > *:not(:last-child)': { mb: 1.5 }, minWidth: 0 }}>
           
           {/* Top Control Bar: Location & Settings & Actions */}
-          <Paper elevation={0} sx={{ p: '8px 12px', borderRadius: 2.5, display: 'flex', flexDirection: 'column', gap: 1, border: '1px solid #e2e8f0', background: 'linear-gradient(135deg, #f8faf8 0%, #ffffff 100%)', flexShrink: 0 }}>
+          <Paper elevation={0} sx={{ p: '8px 12px', borderRadius: 2.5, display: 'flex', flexDirection: 'column', gap: 1, border: '1px solid', borderColor: 'divider', bgcolor: 'background.paper', flexShrink: 0 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 1.5 }}>
               {/* Location Selectors */}
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flex: '1 1 auto', minWidth: 320 }}>
@@ -804,21 +804,21 @@ export default function UpdateLocationPage() {
                 <Typography variant="subtitle2" fontWeight={800} sx={{ color: '#0f172a', whiteSpace: 'nowrap', display: { xs: 'none', sm: 'block' } }}>
                   {t('updateLocation.locationTitle')}
                 </Typography>
-                <FormControl size="small" sx={{ minWidth: 70, flex: 1, '& .MuiOutlinedInput-root': { borderRadius: 1.5, fontSize: '0.8rem', bgcolor: '#fff' } }}>
+                <FormControl size="small" sx={{ minWidth: 70, flex: 1, '& .MuiOutlinedInput-root': { borderRadius: 1.5, fontSize: '0.8rem', bgcolor: 'background.paper' } }}>
                   <InputLabel sx={{ fontSize: '0.8rem' }}>{t('updateLocation.zone')}</InputLabel>
                   <Select value={shelfHierarchy.zones.includes(shelfZone) ? shelfZone : ''} label={t('updateLocation.zone')} onChange={(e) => setShelfZone(e.target.value as string)}>
                     <MenuItem value="">-</MenuItem>
                     {shelfHierarchy.zones.map(z => <MenuItem key={z} value={z}>{z}</MenuItem>)}
                   </Select>
                 </FormControl>
-                <FormControl size="small" sx={{ minWidth: 70, flex: 1, '& .MuiOutlinedInput-root': { borderRadius: 1.5, fontSize: '0.8rem', bgcolor: '#fff' } }}>
+                <FormControl size="small" sx={{ minWidth: 70, flex: 1, '& .MuiOutlinedInput-root': { borderRadius: 1.5, fontSize: '0.8rem', bgcolor: 'background.paper' } }}>
                   <InputLabel sx={{ fontSize: '0.8rem' }}>{t('updateLocation.level')}</InputLabel>
                   <Select value={shelfHierarchy.levels.includes(shelfLevel) ? shelfLevel : ''} label={t('updateLocation.level')} onChange={(e) => setShelfLevel(e.target.value as string)}>
                     <MenuItem value="">-</MenuItem>
                     {shelfHierarchy.levels.map(l => <MenuItem key={l} value={l}>{l}</MenuItem>)}
                   </Select>
                 </FormControl>
-                <FormControl size="small" sx={{ minWidth: 70, flex: 1, '& .MuiOutlinedInput-root': { borderRadius: 1.5, fontSize: '0.8rem', bgcolor: '#fff' } }}>
+                <FormControl size="small" sx={{ minWidth: 70, flex: 1, '& .MuiOutlinedInput-root': { borderRadius: 1.5, fontSize: '0.8rem', bgcolor: 'background.paper' } }}>
                   <InputLabel sx={{ fontSize: '0.8rem' }}>{t('updateLocation.seq')}</InputLabel>
                   <Select value={shelfHierarchy.seqs.includes(shelfSeq) ? shelfSeq : ''} label={t('updateLocation.seq')} onChange={(e) => setShelfSeq(e.target.value as string)}>
                     <MenuItem value="">-</MenuItem>
@@ -826,13 +826,13 @@ export default function UpdateLocationPage() {
                   </Select>
                 </FormControl>
                 <TextField placeholder={t('updateLocation.pallet')} size="small"
-                  sx={{ width: 80, '& .MuiOutlinedInput-root': { borderRadius: 1.5, height: 32, fontSize: '0.8rem', bgcolor: '#fff' } }}
+                  sx={{ width: 80, '& .MuiOutlinedInput-root': { borderRadius: 1.5, height: 32, fontSize: '0.8rem', bgcolor: 'background.paper' } }}
                   value={palletNo} onChange={(e) => setPalletNo(e.target.value)}
                 />
               </Box>
 
               {/* Checkboxes */}
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, p: '2px 8px', bgcolor: '#f1f5f9', borderRadius: 2, border: '1px solid #e2e8f0', flexWrap: 'wrap' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, p: '2px 8px', bgcolor: 'background.default', borderRadius: 2, border: '1px solid', borderColor: 'divider', flexWrap: 'wrap' }}>
                 <FormControlLabel control={<Checkbox size="small" checked={autoMemo} onChange={(e) => setAutoMemo(e.target.checked)} color="primary" sx={{ py: 0.5 }} />}
                   label={<Typography variant="caption" fontWeight={700} color="#334155">{t('updateLocation.autoMemo')}</Typography>} sx={{ m: 0 }} />
                 <FormControlLabel control={<Checkbox size="small" checked={separateQA} onChange={(e) => setSeparateQA(e.target.checked)} color="secondary" sx={{ py: 0.5 }} />}
@@ -847,7 +847,7 @@ export default function UpdateLocationPage() {
             {/* Action Buttons */}
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
               <Button variant="outlined" size="small" color="inherit" startIcon={<RefreshIcon sx={{ fontSize: '18px !important' }}/>} onClick={handleResetInternal}
-                sx={{ borderRadius: 1.5, fontWeight: 700, height: 32, borderColor: '#cbd5e1', color: '#475569', '&:hover': { bgcolor: '#f1f5f9' }, textTransform: 'none' }}>
+                sx={{ borderRadius: 1.5, fontWeight: 700, height: 32, borderColor: '#cbd5e1', color: '#475569', '&:hover': { bgcolor: 'background.default' }, textTransform: 'none' }}>
                 {t('updateLocation.resetBtn')}
               </Button>
               {!tradeLine && (
@@ -873,8 +873,8 @@ export default function UpdateLocationPage() {
           </Paper>
           
           {/* Bottom: Scanned Cartons list (lvNewLocPO) + tvCTNCount */}
-          <Card elevation={0} sx={{ border: '1px solid #e2e8f0', minHeight: 400, display: 'flex', flexDirection: 'column', borderRadius: 2.5, background: '#ffffff', overflow: 'hidden', flexGrow: 1 }}>
-            <Box sx={{ p: 1.5, bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', gap: 1.5 }}>
+          <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider', minHeight: 400, display: 'flex', flexDirection: 'column', borderRadius: 2.5, background: 'background.paper', overflow: 'hidden', flexGrow: 1 }}>
+            <Box sx={{ p: 1.5, bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', display: 'flex', alignItems: 'center', gap: 1.5 }}>
               <ListIcon sx={{ color: '#0ea5e9', fontSize: 20 }} />
               <Typography variant="subtitle2" fontWeight={800} sx={{ color: '#0f172a', flex: 1 }}>
                 {t('updateLocation.listTitle')}
@@ -884,7 +884,7 @@ export default function UpdateLocationPage() {
 
             {scannedCartons.length === 0 ? (
               <Box sx={{ display: 'flex', flex: 1, alignItems: 'center', justifyContent: 'center', p: 2 }}>
-                <Box sx={{ p: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', bgcolor: '#f8fafc', border: '2px dashed #cbd5e1', borderRadius: 3, width: '100%', maxWidth: '350px' }}>
+                <Box sx={{ p: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', bgcolor: 'background.default', border: '2px dashed #cbd5e1', borderRadius: 3, width: '100%', maxWidth: '350px' }}>
                   <ScannerIcon sx={{ fontSize: 36, mb: 1.5, color: '#94a3b8' }} />
                   <Typography variant="body1" fontWeight={700} color="#64748b">{t('updateLocation.emptyList')}</Typography>
                 </Box>
@@ -894,20 +894,20 @@ export default function UpdateLocationPage() {
                 <Table stickyHeader size="small" sx={{ minWidth: 500, '& .MuiTableCell-root': { py: { xs: 0.5, lg: 1 }, px: { xs: 1, lg: 2 }, fontSize: { xs: '0.75rem', lg: '0.85rem' } } }}>
                   <TableHead>
                     <TableRow>
-                      <TableCell sx={{ fontWeight: 800, fontSize: { xs: '0.7rem', md: '0.75rem' }, color: '#475569', bgcolor: '#f1f5f9', p: 1, width: 30 }}>#</TableCell>
-                      <TableCell sx={{ whiteSpace: 'nowrap', fontWeight: 800, fontSize: { xs: '0.7rem', md: '0.75rem' }, color: '#475569', bgcolor: '#f1f5f9', p: 1 }}>{t('updateLocation.col.poNo')}</TableCell>
-                      <TableCell sx={{ whiteSpace: 'nowrap', fontWeight: 800, fontSize: { xs: '0.7rem', md: '0.75rem' }, color: '#475569', bgcolor: '#f1f5f9', p: 1 }}>CTNBarCode</TableCell>
-                      <TableCell sx={{ whiteSpace: 'nowrap', fontWeight: 800, fontSize: { xs: '0.7rem', md: '0.75rem' }, color: '#475569', bgcolor: '#f1f5f9', p: 1 }}>KỆ / ZONE</TableCell>
-                      <TableCell sx={{ whiteSpace: 'nowrap', fontWeight: 800, fontSize: { xs: '0.7rem', md: '0.75rem' }, color: '#475569', bgcolor: '#f1f5f9', p: 1 }}>PALLET</TableCell>
-                      <TableCell sx={{ whiteSpace: 'nowrap', fontWeight: 800, fontSize: { xs: '0.7rem', md: '0.75rem' }, color: '#475569', bgcolor: '#f1f5f9', p: 1 }}>CTN</TableCell>
-                      <TableCell sx={{ whiteSpace: 'nowrap', fontWeight: 800, fontSize: { xs: '0.7rem', md: '0.75rem' }, color: '#475569', bgcolor: '#f1f5f9', p: 1, textAlign: 'right' }}>QTY</TableCell>
-                      <TableCell sx={{ fontWeight: 800, color: '#475569', bgcolor: '#f1f5f9', p: 1, width: 60 }}></TableCell>
+                      <TableCell sx={{ fontWeight: 800, fontSize: { xs: '0.7rem', md: '0.75rem' }, color: '#475569', bgcolor: 'background.default', p: 1, width: 30 }}>#</TableCell>
+                      <TableCell sx={{ whiteSpace: 'nowrap', fontWeight: 800, fontSize: { xs: '0.7rem', md: '0.75rem' }, color: '#475569', bgcolor: 'background.default', p: 1 }}>{t('updateLocation.col.poNo')}</TableCell>
+                      <TableCell sx={{ whiteSpace: 'nowrap', fontWeight: 800, fontSize: { xs: '0.7rem', md: '0.75rem' }, color: '#475569', bgcolor: 'background.default', p: 1 }}>CTNBarCode</TableCell>
+                      <TableCell sx={{ whiteSpace: 'nowrap', fontWeight: 800, fontSize: { xs: '0.7rem', md: '0.75rem' }, color: '#475569', bgcolor: 'background.default', p: 1 }}>KỆ / ZONE</TableCell>
+                      <TableCell sx={{ whiteSpace: 'nowrap', fontWeight: 800, fontSize: { xs: '0.7rem', md: '0.75rem' }, color: '#475569', bgcolor: 'background.default', p: 1 }}>PALLET</TableCell>
+                      <TableCell sx={{ whiteSpace: 'nowrap', fontWeight: 800, fontSize: { xs: '0.7rem', md: '0.75rem' }, color: '#475569', bgcolor: 'background.default', p: 1 }}>CTN</TableCell>
+                      <TableCell sx={{ whiteSpace: 'nowrap', fontWeight: 800, fontSize: { xs: '0.7rem', md: '0.75rem' }, color: '#475569', bgcolor: 'background.default', p: 1, textAlign: 'right' }}>QTY</TableCell>
+                      <TableCell sx={{ fontWeight: 800, color: '#475569', bgcolor: 'background.default', p: 1, width: 60 }}></TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     {scannedCartons.map((row, idx) => (
                       <Zoom in key={row.id}>
-                        <TableRow hover sx={{ cursor: 'pointer', transition: 'all 0.1s', '&:hover': { bgcolor: '#f8fafc' }, '& td': { p: { xs: 0.75, md: 1 }, fontSize: { xs: '0.7rem', md: '0.8rem' }, whiteSpace: 'nowrap' } }}
+                        <TableRow hover sx={{ cursor: 'pointer', transition: 'all 0.1s', '&:hover': { bgcolor: 'background.default' }, '& td': { p: { xs: 0.75, md: 1 }, fontSize: { xs: '0.7rem', md: '0.8rem' }, whiteSpace: 'nowrap' } }}
                           onClick={() => setChangeLocDialog({ open: true, cartonId: row.id })}
                         >
                           <TableCell sx={{ color: '#94a3b8', fontWeight: 600 }}>{scannedCartons.length - idx}</TableCell>

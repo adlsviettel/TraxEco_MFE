@@ -151,7 +151,7 @@ export default function TableExcelColumnMenu({
         transformOrigin={{ vertical: 'top', horizontal: 'left' }}
         slotProps={{ paper: { sx: { boxShadow: '0 4px 20px rgba(0,0,0,0.1)', borderRadius: 2 } } }}
       >
-        <Box sx={{ width: 260, display: 'flex', flexDirection: 'column', bgcolor: '#fff' }} onClick={(e) => e.stopPropagation()}>
+        <Box sx={{ width: 260, display: 'flex', flexDirection: 'column', bgcolor: 'background.paper' }} onClick={(e) => e.stopPropagation()}>
           <List dense sx={{ p: 0 }}>
             {onSortAsc && (
               <ListItemButton onClick={() => { onSortAsc(); handleClose(); }} sx={{ py: 1 }}>
@@ -193,7 +193,7 @@ export default function TableExcelColumnMenu({
             />
           </Box>
 
-          <Box sx={{ maxHeight: 200, overflowY: 'auto', border: '1px solid #e2e8f0', mx: 1, mb: 1, borderRadius: '6px' }}>
+          <Box sx={{ maxHeight: 200, overflowY: 'auto', border: '1px solid', borderColor: 'divider', mx: 1, mb: 1, borderRadius: '6px' }}>
             <List dense disablePadding>
               <ListItem disablePadding>
                 <ListItemButton onClick={handleSelectAll} sx={{ py: 0, px: 1 }}>
@@ -230,7 +230,7 @@ export default function TableExcelColumnMenu({
             </List>
           </Box>
 
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1, p: 1, borderTop: '1px solid #f1f5f9' }}>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1, p: 1, borderTop: '1px solid', borderColor: 'divider' }}>
             <Button size="small" variant="outlined" onClick={handleClose} sx={{ textTransform: 'none', height: 28, fontSize: 12, borderRadius: '6px', color: '#64748b', borderColor: '#cbd5e1' }}>
               {t('tcc.cancel', 'Cancel')}
             </Button>

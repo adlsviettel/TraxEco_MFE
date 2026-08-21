@@ -111,14 +111,14 @@ export function ReorderColumnsDialog({
                 sx={{
                   p: 1.2,
                   borderRadius: '8px',
-                  border: '1px solid #e2e8f0',
-                  bgcolor: '#f8fafc',
+                  border: '1px solid', borderColor: 'divider',
+                  bgcolor: 'background.default',
                   cursor: 'grab',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'space-between',
                   transition: 'background-color 0.2s',
-                  '&:hover': { bgcolor: '#f1f5f9' },
+                  '&:hover': { bgcolor: 'background.default' },
                   '&:active': { cursor: 'grabbing' }
                 }}
               >

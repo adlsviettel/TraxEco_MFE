@@ -318,7 +318,7 @@ export default function GenesisScanView({ onHistoryRefresh }: GenesisScanViewPro
                   </InputAdornment>
                 ),
                 sx: {
-                  backgroundColor: '#fff',
+                  backgroundColor: 'background.paper',
                   borderRadius: 1.5,
                   fontSize: '0.85rem',
                   height: 36,
@@ -372,20 +372,20 @@ export default function GenesisScanView({ onHistoryRefresh }: GenesisScanViewPro
                 <Chip
                   icon={<BoxIcon sx={{ fontSize: 16 }} />}
                   label={`PO: ${packingList[0]?.PONo || poNumber}`}
-                  sx={{ fontWeight: 700, fontSize: '0.85rem', height: 32, backgroundColor: '#f1f5f9', color: '#0f172a', border: '1px solid #e2e8f0' }}
+                  sx={{ fontWeight: 700, fontSize: '0.85rem', height: 32, backgroundColor: 'background.default', color: '#0f172a', border: '1px solid', borderColor: 'divider' }}
                 />
                 <Chip
                   label={`${t('genesis.totalCartons', 'Cartons')}: ${totalCartons}`}
-                  sx={{ fontWeight: 600, height: 32, backgroundColor: '#f1f5f9', color: '#475569', border: '1px solid #e2e8f0' }}
+                  sx={{ fontWeight: 600, height: 32, backgroundColor: 'background.default', color: '#475569', border: '1px solid', borderColor: 'divider' }}
                 />
                 <Chip
                   label={`${t('genesis.totalQty', 'Total Qty')}: ${totalQty}`}
-                  sx={{ fontWeight: 600, height: 32, backgroundColor: '#f1f5f9', color: '#475569', border: '1px solid #e2e8f0' }}
+                  sx={{ fontWeight: 600, height: 32, backgroundColor: 'background.default', color: '#475569', border: '1px solid', borderColor: 'divider' }}
                 />
                 {selectedCount > 0 && (
                   <Chip
                     label={`${t('genesis.selected', 'Selected')}: ${selectedCount}`}
-                    sx={{ fontWeight: 700, height: 32, backgroundColor: '#e2e8f0', color: '#0f172a', border: '1px solid #cbd5e1' }}
+                    sx={{ fontWeight: 700, height: 32, backgroundColor: '#e2e8f0', color: '#0f172a', border: '1px solid', borderColor: 'divider' }}
                   />
                 )}
 
@@ -397,7 +397,7 @@ export default function GenesisScanView({ onHistoryRefresh }: GenesisScanViewPro
                   startIcon={<QrScanIcon />}
                   sx={{
                     px: 2, height: 32, fontWeight: 700, fontSize: '0.85rem', borderRadius: 1.5, textTransform: 'none',
-                    borderColor: '#2e7d32', color: '#2e7d32', backgroundColor: '#fff',
+                    borderColor: '#2e7d32', color: '#2e7d32', backgroundColor: 'background.paper',
                     '&:hover': { backgroundColor: '#f0fdf4', borderColor: '#1b5e20' },
                   }}
                 >
@@ -458,7 +458,7 @@ export default function GenesisScanView({ onHistoryRefresh }: GenesisScanViewPro
                           startIcon={<ReplayIcon />}
                           sx={{
                             px: 2, height: 32, textTransform: 'none', fontWeight: 700, fontSize: '0.85rem', borderRadius: 1.5,
-                            borderColor: '#eab308', color: '#ca8a04', backgroundColor: '#fff',
+                            borderColor: '#eab308', color: '#ca8a04', backgroundColor: 'background.paper',
                             '&:hover': { backgroundColor: '#fefce8', borderColor: '#a16207' },
                           }}
                         >
@@ -474,8 +474,8 @@ export default function GenesisScanView({ onHistoryRefresh }: GenesisScanViewPro
                         startIcon={<PrintIcon />}
                         sx={{
                           px: 2, height: 32, textTransform: 'none', fontWeight: 700, fontSize: '0.85rem', borderRadius: 1.5,
-                          borderColor: '#cbd5e1', color: '#334155', backgroundColor: '#fff',
-                          '&:hover': { backgroundColor: '#f8fafc', borderColor: '#94a3b8' },
+                          borderColor: '#cbd5e1', color: '#334155', backgroundColor: 'background.paper',
+                          '&:hover': { backgroundColor: 'background.default', borderColor: '#94a3b8' },
                         }}
                       >
                         {t('genesis.print', 'Print')}
@@ -945,7 +945,7 @@ const PackDialogContent = React.memo(function PackDialogContent({
               error={!!scanError}
               InputProps={{
                 sx: {
-                  backgroundColor: '#fff',
+                  backgroundColor: 'background.paper',
                   borderRadius: 1.5,
                   fontSize: '1.1rem',
                   fontFamily: 'monospace',
@@ -1215,7 +1215,7 @@ const DirectScanDialog = React.memo(function DirectScanDialog({
 
       {/* Scanned garments list */}
       {garmentEntries.length > 0 && (
-        <Paper elevation={0} sx={{ borderRadius: 2, border: '1px solid #e0e0e0', overflow: 'hidden' }}>
+        <Paper elevation={0} sx={{ borderRadius: 2, border: '1px solid', borderColor: 'divider', overflow: 'hidden' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', px: 2, py: 1, backgroundColor: '#f5f5f5' }}>
             <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
               {t('genesis.scannedGarments', 'Scanned Garments')} ({garmentCount})

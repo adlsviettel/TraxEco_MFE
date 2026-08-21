@@ -236,16 +236,16 @@ export default function WarehousePage() {
           sx={{
             flex: 1,
             borderRadius: "16px",
-            border: "1px solid #cbd5e1",
+            border: '1px solid', borderColor: 'divider',
             display: "flex",
             flexDirection: "column",
             overflow: "hidden",
             boxShadow: "0 4px 20px -2px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03)",
-            bgcolor: "#ffffff"
+            bgcolor: 'background.paper'
           }}
         >
           {/* Header Cột Trái */}
-          <Box sx={{ p: 2.5, borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", bgcolor: "#f8fafc", flexShrink: 0 }}>
+          <Box sx={{ p: 2.5, borderBottom: '1px solid', borderColor: 'divider', display: "flex", justifyContent: "space-between", alignItems: "center", bgcolor: 'background.default', flexShrink: 0 }}>
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
               <InventoryIcon sx={{ color: "#15803d", fontSize: 20 }} />
               <Typography variant="subtitle1" sx={{ fontWeight: 800, color: "#0f172a", fontSize: 14.5, fontFamily: "'Be Vietnam Pro' !important", letterSpacing: "0.2px" }}>
@@ -274,7 +274,7 @@ export default function WarehousePage() {
           </Box>
 
           {/* Tìm kiếm nhanh */}
-          <Box sx={{ px: 2.5, py: 1.75, borderBottom: "1px solid #f1f5f9", flexShrink: 0 }}>
+          <Box sx={{ px: 2.5, py: 1.75, borderBottom: '1px solid', borderColor: 'divider', flexShrink: 0 }}>
             <AppTextField
               placeholder="Tìm nhanh thuốc trong kho tổng..."
               value={warehouseSearch}
@@ -290,7 +290,7 @@ export default function WarehousePage() {
                 width: "100%",
                 "& .MuiOutlinedInput-root": {
                   borderRadius: "8px",
-                  bgcolor: "#f8fafc",
+                  bgcolor: 'background.default',
                   fontSize: 13,
                   "& fieldset": { borderColor: "#cbd5e1" }
                 }
@@ -311,13 +311,13 @@ export default function WarehousePage() {
                 <Table size="small" stickyHeader>
                   <TableHead>
                     <TableRow>
-                      <TableCell sx={{ bgcolor: "#f8fafc", color: "#475569", fontWeight: 800, fontSize: 11.5, py: 1.5 }}>Lô số</TableCell>
-                      <TableCell sx={{ bgcolor: "#f8fafc", color: "#475569", fontWeight: 800, fontSize: 11.5, py: 1.5 }}>Tên thuốc</TableCell>
-                      <TableCell sx={{ bgcolor: "#f8fafc", color: "#475569", fontWeight: 800, fontSize: 11.5, py: 1.5, textAlign: "center" }}>SL Nhập</TableCell>
-                      <TableCell sx={{ bgcolor: "#f8fafc", color: "#475569", fontWeight: 800, fontSize: 11.5, py: 1.5, textAlign: "center" }}>Tồn kho</TableCell>
-                      <TableCell sx={{ bgcolor: "#f8fafc", color: "#475569", fontWeight: 800, fontSize: 11.5, py: 1.5 }}>Nhà CC</TableCell>
-                      <TableCell sx={{ bgcolor: "#f8fafc", color: "#475569", fontWeight: 800, fontSize: 11.5, py: 1.5, textAlign: "center" }}>HSD</TableCell>
-                      <TableCell sx={{ bgcolor: "#f8fafc", color: "#475569", fontWeight: 800, fontSize: 11.5, py: 1.5, textAlign: "center" }}></TableCell>
+                      <TableCell sx={{ bgcolor: 'background.default', color: "#475569", fontWeight: 800, fontSize: 11.5, py: 1.5 }}>Lô số</TableCell>
+                      <TableCell sx={{ bgcolor: 'background.default', color: "#475569", fontWeight: 800, fontSize: 11.5, py: 1.5 }}>Tên thuốc</TableCell>
+                      <TableCell sx={{ bgcolor: 'background.default', color: "#475569", fontWeight: 800, fontSize: 11.5, py: 1.5, textAlign: "center" }}>SL Nhập</TableCell>
+                      <TableCell sx={{ bgcolor: 'background.default', color: "#475569", fontWeight: 800, fontSize: 11.5, py: 1.5, textAlign: "center" }}>Tồn kho</TableCell>
+                      <TableCell sx={{ bgcolor: 'background.default', color: "#475569", fontWeight: 800, fontSize: 11.5, py: 1.5 }}>Nhà CC</TableCell>
+                      <TableCell sx={{ bgcolor: 'background.default', color: "#475569", fontWeight: 800, fontSize: 11.5, py: 1.5, textAlign: "center" }}>HSD</TableCell>
+                      <TableCell sx={{ bgcolor: 'background.default', color: "#475569", fontWeight: 800, fontSize: 11.5, py: 1.5, textAlign: "center" }}></TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -371,16 +371,16 @@ export default function WarehousePage() {
           sx={{
             flex: 1,
             borderRadius: "16px",
-            border: "1px solid #cbd5e1",
+            border: '1px solid', borderColor: 'divider',
             display: "flex",
             flexDirection: "column",
             overflow: "hidden",
             boxShadow: "0 4px 20px -2px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03)",
-            bgcolor: "#ffffff"
+            bgcolor: 'background.paper'
           }}
         >
           {/* Header Cột Phải */}
-          <Box sx={{ p: 2.5, borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", bgcolor: "#f8fafc", flexShrink: 0 }}>
+          <Box sx={{ p: 2.5, borderBottom: '1px solid', borderColor: 'divider', display: "flex", justifyContent: "space-between", alignItems: "center", bgcolor: 'background.default', flexShrink: 0 }}>
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
               <LocalShippingIcon sx={{ color: "#15803d", fontSize: 20 }} />
               <Typography variant="subtitle1" sx={{ fontWeight: 800, color: "#0f172a", fontSize: 14.5, fontFamily: "'Be Vietnam Pro' !important", letterSpacing: "0.2px" }}>
@@ -409,7 +409,7 @@ export default function WarehousePage() {
           </Box>
 
           {/* Tìm kiếm nhanh */}
-          <Box sx={{ px: 2.5, py: 1.75, borderBottom: "1px solid #f1f5f9", flexShrink: 0 }}>
+          <Box sx={{ px: 2.5, py: 1.75, borderBottom: '1px solid', borderColor: 'divider', flexShrink: 0 }}>
             <AppTextField
               placeholder="Tìm nhanh thuốc đã phân chia xưởng..."
               value={factorySearch}
@@ -425,7 +425,7 @@ export default function WarehousePage() {
                 width: "100%",
                 "& .MuiOutlinedInput-root": {
                   borderRadius: "8px",
-                  bgcolor: "#f8fafc",
+                  bgcolor: 'background.default',
                   fontSize: 13,
                   "& fieldset": { borderColor: "#cbd5e1" }
                 }
@@ -446,13 +446,13 @@ export default function WarehousePage() {
                 <Table size="small" stickyHeader>
                   <TableHead>
                     <TableRow>
-                      <TableCell sx={{ bgcolor: "#f8fafc", color: "#475569", fontWeight: 800, fontSize: 11.5, py: 1.5 }}>Mã chuyển</TableCell>
-                      <TableCell sx={{ bgcolor: "#f8fafc", color: "#475569", fontWeight: 800, fontSize: 11.5, py: 1.5 }}>Tên thuốc</TableCell>
-                      <TableCell sx={{ bgcolor: "#f8fafc", color: "#475569", fontWeight: 800, fontSize: 11.5, py: 1.5, textAlign: "center" }}>Nhà máy</TableCell>
-                      <TableCell sx={{ bgcolor: "#f8fafc", color: "#475569", fontWeight: 800, fontSize: 11.5, py: 1.5, textAlign: "center" }}>SL Nhận</TableCell>
-                      <TableCell sx={{ bgcolor: "#f8fafc", color: "#475569", fontWeight: 800, fontSize: 11.5, py: 1.5, textAlign: "center" }}>Còn lại</TableCell>
-                      <TableCell sx={{ bgcolor: "#f8fafc", color: "#475569", fontWeight: 800, fontSize: 11.5, py: 1.5, textAlign: "center" }}>Lô nguồn</TableCell>
-                      <TableCell sx={{ bgcolor: "#f8fafc", color: "#475569", fontWeight: 800, fontSize: 11.5, py: 1.5, textAlign: "center" }}></TableCell>
+                      <TableCell sx={{ bgcolor: 'background.default', color: "#475569", fontWeight: 800, fontSize: 11.5, py: 1.5 }}>Mã chuyển</TableCell>
+                      <TableCell sx={{ bgcolor: 'background.default', color: "#475569", fontWeight: 800, fontSize: 11.5, py: 1.5 }}>Tên thuốc</TableCell>
+                      <TableCell sx={{ bgcolor: 'background.default', color: "#475569", fontWeight: 800, fontSize: 11.5, py: 1.5, textAlign: "center" }}>Nhà máy</TableCell>
+                      <TableCell sx={{ bgcolor: 'background.default', color: "#475569", fontWeight: 800, fontSize: 11.5, py: 1.5, textAlign: "center" }}>SL Nhận</TableCell>
+                      <TableCell sx={{ bgcolor: 'background.default', color: "#475569", fontWeight: 800, fontSize: 11.5, py: 1.5, textAlign: "center" }}>Còn lại</TableCell>
+                      <TableCell sx={{ bgcolor: 'background.default', color: "#475569", fontWeight: 800, fontSize: 11.5, py: 1.5, textAlign: "center" }}>Lô nguồn</TableCell>
+                      <TableCell sx={{ bgcolor: 'background.default', color: "#475569", fontWeight: 800, fontSize: 11.5, py: 1.5, textAlign: "center" }}></TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -525,10 +525,10 @@ export default function WarehousePage() {
         }}
         sx={{ zIndex: 9999 }}
         PaperProps={{
-          sx: { width: { xs: '100%', sm: 1000 }, backgroundColor: '#ffffff' }
+          sx: { width: { xs: '100%', sm: 1000 }, backgroundColor: 'background.paper' }
         }}
       >
-        <Box sx={{ m: 0, p: 2.5, display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
+        <Box sx={{ m: 0, p: 2.5, display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider' }}>
           <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#0f172a', fontFamily: "'Be Vietnam Pro' !important" }}>
             Nhập kho dược phẩm mới
           </Typography>
@@ -552,10 +552,10 @@ export default function WarehousePage() {
         }}
         sx={{ zIndex: 9999 }}
         PaperProps={{
-          sx: { width: { xs: '100%', sm: 1000 }, backgroundColor: '#ffffff' }
+          sx: { width: { xs: '100%', sm: 1000 }, backgroundColor: 'background.paper' }
         }}
       >
-        <Box sx={{ m: 0, p: 2.5, display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
+        <Box sx={{ m: 0, p: 2.5, display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider' }}>
           <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#0f172a', fontFamily: "'Be Vietnam Pro' !important" }}>
             Phân chia thuốc xuống phân xưởng
           </Typography>

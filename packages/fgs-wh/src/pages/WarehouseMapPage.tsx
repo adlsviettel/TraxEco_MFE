@@ -430,10 +430,10 @@ export default function WarehouseMapPage() {
   // ═══════════════════════════════════════════════════════════════════════════
   return (
     <Paper elevation={0} sx={{ p: { xs: 0.5, md: 1 }, bgcolor: 'transparent', flexGrow: 1, display: 'flex', flexDirection: 'column', minHeight: 0, position: 'relative' }}>
-      <Box sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1, minHeight: 0, borderRadius: 2.5, overflow: 'hidden', border: '1px solid #e2e8f0', bgcolor: '#fff' }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1, minHeight: 0, borderRadius: 2.5, overflow: 'hidden', border: '1px solid', borderColor: 'divider', bgcolor: 'background.paper' }}>
 
         {/* ── HEADER BẢN ĐỒ ── */}
-        <Box sx={{ p: { xs: 1.5, md: 2 }, display: 'flex', flexDirection: { xs: 'column', md: 'row' }, justifyContent: 'space-between', alignItems: { xs: 'flex-start', md: 'center' }, gap: 2, bgcolor: '#ffffff', borderBottom: '1px solid #e2e8f0', flexShrink: 0 }}>
+        <Box sx={{ p: { xs: 1.5, md: 2 }, display: 'flex', flexDirection: { xs: 'column', md: 'row' }, justifyContent: 'space-between', alignItems: { xs: 'flex-start', md: 'center' }, gap: 2, bgcolor: 'background.paper', borderBottom: '1px solid', borderColor: 'divider', flexShrink: 0 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
             <Box sx={{ width: 36, height: 36, borderRadius: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)', color: '#fff' }}>
               <SearchIcon sx={{ fontSize: 20 }} />
@@ -466,7 +466,7 @@ export default function WarehouseMapPage() {
               value={searchPO}
               onChange={(e) => setSearchPO(e.target.value)}
               onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); fetchMapData(); } }}
-              sx={{ width: 240, bgcolor: '#f8fafc', '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}
+              sx={{ width: 240, bgcolor: 'background.default', '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}
               InputProps={{
                 startAdornment: <InputAdornment position="start"><SearchIcon fontSize="small" sx={{ color: '#94a3b8' }} /></InputAdornment>,
                 endAdornment: searchPO ? (
@@ -498,12 +498,12 @@ export default function WarehouseMapPage() {
         </Box>
 
         {/* ── CHÚ GIẢI MÀU SẮC ── */}
-        <Box sx={{ px: { xs: 1.5, md: 3 }, py: 1.5, display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 2, bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', flexShrink: 0 }}>
+        <Box sx={{ px: { xs: 1.5, md: 3 }, py: 1.5, display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 2, bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', flexShrink: 0 }}>
           <Typography fontSize={13} fontWeight="800" color="#64748b" sx={{ textTransform: 'uppercase', letterSpacing: '0.5px' }}>
             Chú Giải Thể Tích:
           </Typography>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Box sx={{ width: 16, height: 16, borderRadius: '4px', bgcolor: '#f1f5f9', border: '1px solid #cbd5e1' }} />
+            <Box sx={{ width: 16, height: 16, borderRadius: '4px', bgcolor: 'background.default', border: '1px solid', borderColor: 'divider' }} />
             <Typography fontSize={12} fontWeight="600" color="text.secondary">Trống</Typography>
           </Box>
           <Box sx={{ mx: 2, width: '1px', height: 16, bgcolor: '#cbd5e1' }} />
@@ -532,7 +532,7 @@ export default function WarehouseMapPage() {
             flex: 1,
             overflow: 'auto',
             WebkitOverflowScrolling: 'touch', // Smooth scroll trên iOS/Android WebView
-            bgcolor: '#f8fafc',
+            bgcolor: 'background.default',
             p: 2,
             minHeight: 0,
             position: 'relative', // Để ripple position absolute bên trong
@@ -731,7 +731,7 @@ const CartonDetailDialog = memo(function CartonDetailDialog({
             <Table stickyHeader size="small" sx={{ '& .MuiTableCell-root': { py: 0.5, px: 1, fontSize: '0.8rem' } }}>
               <TableHead>
                 <TableRow>
-                  <TableCell padding="checkbox" sx={{ bgcolor: '#f8fafc' }}>
+                  <TableCell padding="checkbox" sx={{ bgcolor: 'background.default' }}>
                     <Checkbox
                       size="small"
                       checked={cellCartons.length > 0 && selectedBarcodes.length === cellCartons.length}
@@ -743,11 +743,11 @@ const CartonDetailDialog = memo(function CartonDetailDialog({
                       sx={{ py: 0 }}
                     />
                   </TableCell>
-                  <TableCell sx={{ fontWeight: 'bold', bgcolor: '#f8fafc' }}>Barcode</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold', bgcolor: '#f8fafc' }}>PO Number</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold', bgcolor: '#f8fafc', textAlign: 'center' }}>Thùng</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold', bgcolor: '#f8fafc', textAlign: 'center' }}>Seri</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold', bgcolor: '#f8fafc', textAlign: 'right' }}>Thời gian quét</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold', bgcolor: 'background.default' }}>Barcode</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold', bgcolor: 'background.default' }}>PO Number</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold', bgcolor: 'background.default', textAlign: 'center' }}>Thùng</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold', bgcolor: 'background.default', textAlign: 'center' }}>Seri</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold', bgcolor: 'background.default', textAlign: 'right' }}>Thời gian quét</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>

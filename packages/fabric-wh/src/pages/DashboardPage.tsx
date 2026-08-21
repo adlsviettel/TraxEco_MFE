@@ -30,7 +30,7 @@ const colors = {
   warning: '#f59e0b',     // Amber
   error: '#ef4444',       // Rose Red
   bg: '#f8fafc',          // Soft gray
-  cardBorder: '1px solid #e2e8f0',
+  cardborder: '1px solid', borderColor: 'divider',
 };
 
 export default function DashboardPage() {
@@ -243,7 +243,7 @@ export default function DashboardPage() {
           </Box>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, flex: 1, minHeight: 0, height: '100%', overflowY: 'auto' }}>
             {alerts.map((alert, idx) => (
-              <Box key={idx} sx={{ display: 'flex', gap: 2, p: 2, borderRadius: 2, bgcolor: '#f8fafc', border: '1px solid #f1f5f9' }}>
+              <Box key={idx} sx={{ display: 'flex', gap: 2, p: 2, borderRadius: 2, bgcolor: 'background.default', border: '1px solid', borderColor: 'divider' }}>
                 <Box sx={{ mt: 0.5 }}>{alert.icon}</Box>
                 <Box>
                   <Typography variant="subtitle2" sx={{ fontWeight: 700, color: colors.secondary }}>{alert.title}</Typography>

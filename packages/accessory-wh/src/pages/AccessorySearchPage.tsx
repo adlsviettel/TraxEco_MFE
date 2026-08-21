@@ -23,7 +23,7 @@ function CustomFooter() {
       alignItems: 'center', 
       borderTop: '2px solid #e2e8f0', 
       p: 1.5, 
-      backgroundColor: '#f8fafc', 
+      backgroundColor: 'background.default', 
       borderBottomLeftRadius: 8, 
       borderBottomRightRadius: 8,
       gap: 3,
@@ -37,7 +37,7 @@ function CustomFooter() {
           onChange={(e) => apiRef.current.setPageSize(Number(e.target.value))}
           sx={{ 
             height: 32, 
-            bgcolor: 'white', 
+            bgcolor: 'background.paper', 
             borderRadius: 2,
             fontSize: '0.875rem',
             fontWeight: 600,
@@ -67,7 +67,7 @@ function CustomFooter() {
             border: '1px solid transparent',
           },
           '& .MuiPaginationItem-root:hover': {
-            backgroundColor: '#f1f5f9',
+            backgroundColor: 'background.default',
             borderColor: '#e2e8f0'
           },
           '& .Mui-selected': {
@@ -192,7 +192,7 @@ function CustomColumnMenu(props: GridColumnMenuProps) {
           sx={{ '& .MuiInputBase-root': { borderRadius: 1, fontSize: '0.875rem' } }}
         />
         
-        <Box sx={{ maxHeight: 200, overflowY: 'auto', mt: 1, border: '1px solid #e2e8f0', borderRadius: 1, p: 1 }}>
+        <Box sx={{ maxHeight: 200, overflowY: 'auto', mt: 1, border: '1px solid', borderColor: 'divider', borderRadius: 1, p: 1 }}>
           <FormGroup>
             {searchValue === '' && (
               <FormControlLabel
@@ -422,7 +422,7 @@ export default function AccessorySearchPage() {
   ];
   return (
     <Box sx={{ p: 2, height: '100%', display: 'flex', flexDirection: 'column' }}>
-      <Paper sx={{ p: 2, mb: 2, borderRadius: 3, border: '1px solid #e2e8f0', boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)' }}>
+      <Paper sx={{ p: 2, mb: 2, borderRadius: 3, border: '1px solid', borderColor: 'divider', boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)' }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
           <Typography variant="h6">Tra Cứu Phụ Liệu</Typography>
           {rowSelectionModel.length > 0 && (
@@ -438,19 +438,19 @@ export default function AccessorySearchPage() {
         </Box>
         <Grid container spacing={1.5} alignItems="center">
           <Grid size={{ xs: 12, sm: 6, md: 2.5 }}>
-            <TextField fullWidth label="Item Number" size="small" value={params.item} onChange={e => setParams({...params, item: e.target.value})} onKeyDown={e => e.key === 'Enter' && handleSearch()} sx={{ bgcolor: '#ffffff' }} />
+            <TextField fullWidth label="Item Number" size="small" value={params.item} onChange={e => setParams({...params, item: e.target.value})} onKeyDown={e => e.key === 'Enter' && handleSearch()} sx={{ bgcolor: 'background.paper' }} />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 2.5 }}>
-            <TextField fullWidth label="PO (Batch)" size="small" value={params.po} onChange={e => setParams({...params, po: e.target.value})} onKeyDown={e => e.key === 'Enter' && handleSearch()} sx={{ bgcolor: '#ffffff' }} />
+            <TextField fullWidth label="PO (Batch)" size="small" value={params.po} onChange={e => setParams({...params, po: e.target.value})} onKeyDown={e => e.key === 'Enter' && handleSearch()} sx={{ bgcolor: 'background.paper' }} />
           </Grid>
           <Grid size={{ xs: 12, sm: 4, md: 2 }}>
-            <TextField fullWidth label="Color" size="small" value={params.color} onChange={e => setParams({...params, color: e.target.value})} onKeyDown={e => e.key === 'Enter' && handleSearch()} sx={{ bgcolor: '#ffffff' }} />
+            <TextField fullWidth label="Color" size="small" value={params.color} onChange={e => setParams({...params, color: e.target.value})} onKeyDown={e => e.key === 'Enter' && handleSearch()} sx={{ bgcolor: 'background.paper' }} />
           </Grid>
           <Grid size={{ xs: 12, sm: 4, md: 2 }}>
-            <TextField fullWidth label="Size" size="small" value={params.size} onChange={e => setParams({...params, size: e.target.value})} onKeyDown={e => e.key === 'Enter' && handleSearch()} sx={{ bgcolor: '#ffffff' }} />
+            <TextField fullWidth label="Size" size="small" value={params.size} onChange={e => setParams({...params, size: e.target.value})} onKeyDown={e => e.key === 'Enter' && handleSearch()} sx={{ bgcolor: 'background.paper' }} />
           </Grid>
           <Grid size={{ xs: 12, sm: 4, md: 2 }}>
-            <TextField fullWidth label="Style" size="small" value={params.style} onChange={e => setParams({...params, style: e.target.value})} onKeyDown={e => e.key === 'Enter' && handleSearch()} sx={{ bgcolor: '#ffffff' }} />
+            <TextField fullWidth label="Style" size="small" value={params.style} onChange={e => setParams({...params, style: e.target.value})} onKeyDown={e => e.key === 'Enter' && handleSearch()} sx={{ bgcolor: 'background.paper' }} />
           </Grid>
           <Grid size={{ xs: 12, md: 1 }}>
             <Button 
@@ -534,7 +534,7 @@ export default function AccessorySearchPage() {
             filterPanel: {
               sx: {
                 borderRadius: '12px',
-                border: '1px solid #e2e8f0',
+                border: '1px solid', borderColor: 'divider',
                 boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)',
                 '& .MuiDataGrid-filterForm': {
                   p: 2,
@@ -548,14 +548,14 @@ export default function AccessorySearchPage() {
                 },
                 '& .MuiInput-root': {
                   mt: 0,
-                  backgroundColor: '#f8fafc',
-                  border: '1px solid #e2e8f0',
+                  backgroundColor: 'background.default',
+                  border: '1px solid', borderColor: 'divider',
                   borderRadius: '8px',
                   px: 1,
                   py: 0.5,
                   '&:before, &:after': { display: 'none' },
                   '&:hover': { borderColor: '#cbd5e1' },
-                  '&.Mui-focused': { borderColor: '#10b981', backgroundColor: '#ffffff' }
+                  '&.Mui-focused': { borderColor: '#10b981', backgroundColor: 'background.paper' }
                 },
                 '& .MuiInputLabel-root': {
                   display: 'none', // Hide the floating label inside filter for a cleaner look
@@ -601,14 +601,14 @@ export default function AccessorySearchPage() {
               borderBottom: '2px solid #e2e8f0'
             },
             '& .MuiDataGrid-row:hover': {
-              backgroundColor: '#f1f5f9'
+              backgroundColor: 'background.default'
             },
             '& .MuiDataGrid-cell': {
-              borderBottom: '1px solid #f1f5f9'
+              borderBottom: '1px solid', borderColor: 'divider'
             },
             '& .MuiDataGrid-footerContainer': {
               borderTop: '2px solid #e2e8f0',
-              backgroundColor: '#f8fafc',
+              backgroundColor: 'background.default',
               borderBottomLeftRadius: 8,
               borderBottomRightRadius: 8,
               minHeight: '52px'
@@ -618,15 +618,15 @@ export default function AccessorySearchPage() {
               fontWeight: 600,
             },
             '& .MuiTablePagination-select': {
-              backgroundColor: '#ffffff',
+              backgroundColor: 'background.paper',
               borderRadius: 4,
-              border: '1px solid #cbd5e1',
+              border: '1px solid', borderColor: 'divider',
               py: 0.5,
               ml: 1
             },
             '& .MuiTablePagination-actions .MuiIconButton-root': {
               color: '#3b82f6',
-              backgroundColor: '#ffffff',
+              backgroundColor: 'background.paper',
               border: '1px solid #bfdbfe',
               borderRadius: 2,
               mx: 0.5,
@@ -637,7 +637,7 @@ export default function AccessorySearchPage() {
                 borderColor: '#93c5fd',
               },
               '&.Mui-disabled': {
-                backgroundColor: '#f8fafc',
+                backgroundColor: 'background.default',
                 color: '#cbd5e1',
                 borderColor: '#e2e8f0',
               }

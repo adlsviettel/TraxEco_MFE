@@ -9,6 +9,7 @@ import Header from '../components/Header.tsx';
 import { getFiles } from '../services/api.ts';
 import type { ImportedFileDto, PushLogDto } from '../services/api.ts';
 import { usePush } from '../contexts/PushContext.tsx';
+import { isCeisaDoc } from '../services/inswApi.ts';
 
 // ─── Component ───────────────────────────────────────────────
 export default function InswPush() {
@@ -45,8 +46,9 @@ export default function InswPush() {
   // Auto-refresh when navigating back to this page
   usePageVisible('/insw-push', loadFiles);
 
-  // Pushable = not yet pushed or failed
+  // Pushable = not CEISA 4.0 doc AND (not yet pushed or failed)
   const pushableFiles = files.filter(f => {
+    if (isCeisaDoc(f)) return false;
     const ps = pushStates[f.fileId];
     return !ps || ps.status === 'idle' || ps.status === 'failed';
   });
@@ -85,8 +87,15 @@ export default function InswPush() {
   }
 
   // Status badge
-  function statusBadge(fileId: number) {
-    const ps = pushStates[fileId];
+  function statusBadge(file: ImportedFileDto) {
+    if (isCeisaDoc(file)) {
+      return (
+        <span className="status-badge" style={{ background: '#e0f2fe', color: '#0369a1', border: '1px solid #bae6fd' }} title={t('inswPush.ceisaTooltip', 'Tờ khai thuộc hệ thống CEISA 4.0 (BC 2.7, BC 4.1, BC 2.6.1, BC 2.5). Dữ liệu đã lưu kho IT Inventory, không cần Push INSW.')}>
+          🔒 CEISA (Non-INSW)
+        </span>
+      );
+    }
+    const ps = pushStates[file.fileId];
     if (!ps || ps.status === 'idle')
       return <span className="status-badge" style={{ background: '#e8eaf6', color: '#5c6bc0' }}><Clock size={12} /> {t('inswPush.pending')}</span>;
     if (ps.status === 'pushing')
@@ -159,7 +168,8 @@ export default function InswPush() {
                 )}
                 {files.map((file, _idx) => {
                   const ps = pushStates[file.fileId];
-                  const isPushable = !ps || ps.status === 'idle' || ps.status === 'failed';
+                  const isCeisa = isCeisaDoc(file);
+                  const isPushable = !isCeisa && (!ps || ps.status === 'idle' || ps.status === 'failed');
                   const typeLabels: Record<string, string> = {
                     pemasukan: 'Pemasukan',
                     pengeluaran: 'Pengeluaran',
@@ -199,7 +209,7 @@ export default function InswPush() {
                       </td>
                       <td className="text-muted">{file.totalItems}</td>
                       <td className="text-muted">{file.importedAt ? new Date(file.importedAt).toLocaleString() : '—'}</td>
-                      <td>{statusBadge(file.fileId)}</td>
+                      <td>{statusBadge(file)}</td>
                       <td>
                         <div className="action-btns">
                           {isPushable && (
@@ -237,7 +247,7 @@ export default function InswPush() {
         <div className="modal-overlay" onClick={() => setViewResponse(null)}>
           <div className="modal" onClick={e => e.stopPropagation()} style={{ maxWidth: 680 }}>
             <div className="modal-header">
-              <h3>{t('inswPush.responseDetail', 'Chi Tiết Phản Hồi Push')}</h3>
+              <h3>{t('inswPush.responseDetail', 'Push Response Detail')}</h3>
               <button className="icon-btn" onClick={() => setViewResponse(null)}><X size={20} /></button>
             </div>
             <div style={{ padding: 20 }}>
@@ -262,10 +272,10 @@ export default function InswPush() {
                       isAlreadySent ? (
                         <><CheckCircle size={18} /> {t('inswPush.alreadySent', 'Data already sent to INSW')}</>
                       ) : (
-                        <><CheckCircle size={18} /> {t('inswPush.pushSuccessful', 'Đẩy Thành Công')}</>
+                        <><CheckCircle size={18} /> {t('inswPush.pushSuccessful', 'Push Successful')}</>
                       )
                     ) : (
-                      <><XCircle size={18} /> {t('inswPush.pushFailed', 'Đẩy Thất Bại')}</>
+                      <><XCircle size={18} /> {t('inswPush.pushFailed', 'Push Failed')}</>
                     )}
                   </div>
                 );

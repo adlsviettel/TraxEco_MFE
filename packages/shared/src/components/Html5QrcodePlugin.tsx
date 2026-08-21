@@ -251,7 +251,7 @@ let activeNativeScan: Promise<any> | null = null;
         return (
             <div style={{
                 width: '100%', minHeight: '260px', display: 'flex', flexDirection: 'column',
-                alignItems: 'center', justifyContent: 'center', backgroundColor: '#f8fafc',
+                alignItems: 'center', justifyContent: 'center', backgroundColor: 'background.default',
                 borderRadius: '12px', border: '2px dashed #94a3b8', padding: '16px', textAlign: 'center'
             }}>
                 <div id={qrcodeRegionId} style={{ display: 'none' }} />

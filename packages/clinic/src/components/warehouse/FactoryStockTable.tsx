@@ -56,16 +56,16 @@ export default function FactoryStockTable({ items, onDelete }: FactoryStockTable
       <Table size="small" stickyHeader sx={{ minWidth: 'max-content', width: '100%', tableLayout: 'auto' }}>
         <TableHead>
           <TableRow>
-            <TableCell sx={{ bgcolor: '#F9FAFA', borderBottom: '1px solid #e1e3e4', py: 2, px: 2, fontWeight: 700, fontSize: 11, color: '#707975', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('clinic.warehouse.col.txNo', 'Mã chuyển')}</TableCell>
-            <TableCell sx={{ bgcolor: '#F9FAFA', borderBottom: '1px solid #e1e3e4', py: 2, px: 2, fontWeight: 700, fontSize: 11, color: '#707975', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('clinic.warehouse.col.medName', 'Tên thuốc')}</TableCell>
-            <TableCell sx={{ bgcolor: '#F9FAFA', borderBottom: '1px solid #e1e3e4', py: 2, px: 2, fontWeight: 700, fontSize: 11, color: '#707975', textTransform: 'uppercase', letterSpacing: '0.05em' }} align="center">{t('clinic.warehouse.col.factory', 'Nhà máy')}</TableCell>
-            <TableCell sx={{ bgcolor: '#F9FAFA', borderBottom: '1px solid #e1e3e4', py: 2, px: 2, fontWeight: 700, fontSize: 11, color: '#707975', textTransform: 'uppercase', letterSpacing: '0.05em' }} align="center">{t('clinic.warehouse.col.qtyTrans', 'SL Nhận')}</TableCell>
-            <TableCell sx={{ bgcolor: '#F9FAFA', borderBottom: '1px solid #e1e3e4', py: 2, px: 2, fontWeight: 700, fontSize: 11, color: '#707975', textTransform: 'uppercase', letterSpacing: '0.05em' }} align="center">{t('clinic.warehouse.col.qtyIssue', 'Còn lại')}</TableCell>
-            <TableCell sx={{ bgcolor: '#F9FAFA', borderBottom: '1px solid #e1e3e4', py: 2, px: 2, fontWeight: 700, fontSize: 11, color: '#707975', textTransform: 'uppercase', letterSpacing: '0.05em' }} align="center">{t('clinic.warehouse.col.sourceLot', 'Lô nguồn')}</TableCell>
-            <TableCell sx={{ bgcolor: '#F9FAFA', borderBottom: '1px solid #e1e3e4', py: 2, px: 2, fontWeight: 700, fontSize: 11, color: '#707975', textTransform: 'uppercase', letterSpacing: '0.05em' }} align="center">{t('common.actions', 'Thao tác')}</TableCell>
+            <TableCell sx={{ bgcolor: '#F9FAFA', borderBottom: '1px solid', borderColor: 'divider', py: 2, px: 2, fontWeight: 700, fontSize: 11, color: '#707975', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('clinic.warehouse.col.txNo', 'Mã chuyển')}</TableCell>
+            <TableCell sx={{ bgcolor: '#F9FAFA', borderBottom: '1px solid', borderColor: 'divider', py: 2, px: 2, fontWeight: 700, fontSize: 11, color: '#707975', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('clinic.warehouse.col.medName', 'Tên thuốc')}</TableCell>
+            <TableCell sx={{ bgcolor: '#F9FAFA', borderBottom: '1px solid', borderColor: 'divider', py: 2, px: 2, fontWeight: 700, fontSize: 11, color: '#707975', textTransform: 'uppercase', letterSpacing: '0.05em' }} align="center">{t('clinic.warehouse.col.factory', 'Nhà máy')}</TableCell>
+            <TableCell sx={{ bgcolor: '#F9FAFA', borderBottom: '1px solid', borderColor: 'divider', py: 2, px: 2, fontWeight: 700, fontSize: 11, color: '#707975', textTransform: 'uppercase', letterSpacing: '0.05em' }} align="center">{t('clinic.warehouse.col.qtyTrans', 'SL Nhận')}</TableCell>
+            <TableCell sx={{ bgcolor: '#F9FAFA', borderBottom: '1px solid', borderColor: 'divider', py: 2, px: 2, fontWeight: 700, fontSize: 11, color: '#707975', textTransform: 'uppercase', letterSpacing: '0.05em' }} align="center">{t('clinic.warehouse.col.qtyIssue', 'Còn lại')}</TableCell>
+            <TableCell sx={{ bgcolor: '#F9FAFA', borderBottom: '1px solid', borderColor: 'divider', py: 2, px: 2, fontWeight: 700, fontSize: 11, color: '#707975', textTransform: 'uppercase', letterSpacing: '0.05em' }} align="center">{t('clinic.warehouse.col.sourceLot', 'Lô nguồn')}</TableCell>
+            <TableCell sx={{ bgcolor: '#F9FAFA', borderBottom: '1px solid', borderColor: 'divider', py: 2, px: 2, fontWeight: 700, fontSize: 11, color: '#707975', textTransform: 'uppercase', letterSpacing: '0.05em' }} align="center">{t('common.actions', 'Thao tác')}</TableCell>
           </TableRow>
         </TableHead>
-        <TableBody sx={{ '& tr:nth-of-type(even)': { bgcolor: '#fff' }, '& tr:nth-of-type(odd)': { bgcolor: '#fff' } }}>
+        <TableBody sx={{ '& tr:nth-of-type(even)': { bgcolor: 'background.paper' }, '& tr:nth-of-type(odd)': { bgcolor: 'background.paper' } }}>
           {items.map((item) => {
             const rowBgColor = item.qtyIssue === 0 ? '#fef2f2' : '#fff';
             return (

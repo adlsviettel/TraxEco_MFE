@@ -48,7 +48,7 @@
 /* ───── Sidebar ───── */
 .it-inventory-app .sidebar {
   width: 240px;
-  background: #ffffff !important;
+  background: var(--sidebar-bg);
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
@@ -57,7 +57,7 @@
   overflow: hidden;
   height: 100vh;
   height: 100dvh;
-  border-right: 1px solid #e0e0e0;
+  border-right: 1px solid var(--border);
   z-index: 100;
 }
 
@@ -1064,3 +1064,120 @@ code { font-family: 'Consolas', monospace; background: var(--bg); padding: 2px 6
     flex-wrap: wrap;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   UNIVERSAL DARK MODE OVERRIDES (IT INVENTORY MFE)
+   ═══════════════════════════════════════════════════════════════ */
+html.dark .it-inventory-app,
+[data-theme="dark"] .it-inventory-app,
+.dark .it-inventory-app {
+  --primary: #22c55e;
+  --primary-dark: #16a34a;
+  --primary-light: rgba(34, 197, 94, 0.15);
+  --accent: #22c55e;
+  --sidebar-bg: #1e293b;
+  --sidebar-text: #94a3b8;
+  --sidebar-hover: #334155;
+  --sidebar-active: rgba(34, 197, 94, 0.2);
+  --bg: #0f172a;
+  --surface: #1e293b;
+  --surface-hover: #334155;
+  --border: #334155;
+  --text: #f8fafc;
+  --text-muted: #94a3b8;
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+  color: #f8fafc !important;
+  background-color: #0f172a !important;
+}
+
+html.dark .it-inventory-app .app-layout,
+[data-theme="dark"] .it-inventory-app .app-layout,
+.dark .it-inventory-app .app-layout {
+  background-color: #0f172a !important;
+}
+
+html.dark .it-inventory-app .sidebar,
+[data-theme="dark"] .it-inventory-app .sidebar,
+.dark .it-inventory-app .sidebar {
+  background: #1e293b !important;
+  border-right-color: #334155 !important;
+}
+
+html.dark .it-inventory-app .sidebar-nav-item,
+[data-theme="dark"] .it-inventory-app .sidebar-nav-item,
+.dark .it-inventory-app .sidebar-nav-item {
+  color: #94a3b8 !important;
+}
+
+html.dark .it-inventory-app .sidebar-nav-item:hover,
+[data-theme="dark"] .it-inventory-app .sidebar-nav-item:hover,
+.dark .it-inventory-app .sidebar-nav-item:hover {
+  background-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
+html.dark .it-inventory-app .sidebar-nav-item.active,
+[data-theme="dark"] .it-inventory-app .sidebar-nav-item.active,
+.dark .it-inventory-app .sidebar-nav-item.active {
+  background-color: rgba(34, 197, 94, 0.15) !important;
+  color: #4ade80 !important;
+}
+
+html.dark .it-inventory-app .card,
+html.dark .it-inventory-app .header,
+html.dark .it-inventory-app .modal,
+html.dark .it-inventory-app .dropzone-card,
+[data-theme="dark"] .it-inventory-app .card,
+[data-theme="dark"] .it-inventory-app .header,
+[data-theme="dark"] .it-inventory-app .modal,
+[data-theme="dark"] .it-inventory-app .dropzone-card {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+  border-color: #334155 !important;
+}
+
+html.dark .it-inventory-app .table th,
+[data-theme="dark"] .it-inventory-app .table th {
+  background-color: #0f172a !important;
+  color: #94a3b8 !important;
+  border-bottom-color: #334155 !important;
+}
+
+html.dark .it-inventory-app .table td,
+[data-theme="dark"] .it-inventory-app .table td {
+  border-bottom-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
+html.dark .it-inventory-app input,
+html.dark .it-inventory-app select,
+html.dark .it-inventory-app textarea,
+[data-theme="dark"] .it-inventory-app input,
+[data-theme="dark"] .it-inventory-app select,
+[data-theme="dark"] .it-inventory-app textarea {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+  border-color: #334155 !important;
+}
+
+html.dark .it-inventory-app .modal-header,
+html.dark .it-inventory-app .modal-footer,
+[data-theme="dark"] .it-inventory-app .modal-header,
+[data-theme="dark"] .it-inventory-app .modal-footer {
+  border-color: #334155 !important;
+}
+
+html.dark .it-inventory-app .btn-secondary,
+[data-theme="dark"] .it-inventory-app .btn-secondary {
+  background-color: #334155 !important;
+  color: #f8fafc !important;
+  border-color: #475569 !important;
+}
+
+html.dark .it-inventory-app .record-count,
+[data-theme="dark"] .it-inventory-app .record-count {
+  background-color: #334155 !important;
+  color: #94a3b8 !important;
+}
+

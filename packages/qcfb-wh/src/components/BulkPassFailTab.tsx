@@ -18,7 +18,7 @@ const EMPTY_OPTIONS: readonly string[] = [];
 const ACCENT = '#2e7d32';
 
 const FilterOption = React.memo(({ opt, isSelected, onToggle }: { opt: string; isSelected: boolean; onToggle: (o: string) => void }) => (
-  <Box sx={{ display: 'flex', alignItems: 'center', px: 1, py: 0.75, borderRadius: 1, mx: 0.5, '&:hover': { bgcolor: '#f1f5f9' }, transition: 'background-color 0.2s' }}>
+  <Box sx={{ display: 'flex', alignItems: 'center', px: 1, py: 0.75, borderRadius: 1, mx: 0.5, '&:hover': { bgcolor: 'background.default' }, transition: 'background-color 0.2s' }}>
     <Checkbox size="small" sx={{ p: 0.25, '& .MuiSvgIcon-root': { fontSize: 18 } }} checked={isSelected} onChange={() => onToggle(opt)} />
     <Typography variant="body2" sx={{ ml: 1, fontSize: '0.85rem', color: '#334155', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} onClick={() => onToggle(opt)} style={{ cursor: 'pointer', flex: 1 }}>
       {opt === '' ? <span style={{ color: '#94a3b8', fontStyle: 'italic' }}>(Blanks)</span> : opt}
@@ -89,17 +89,17 @@ const ColumnFilter = React.memo(({ colKey, label, options, value, onChange }: { 
         open={!!anchorEl} anchorEl={anchorEl} onClose={() => setAnchorEl(null)}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
         transformOrigin={{ vertical: 'top', horizontal: 'left' }}
-        slotProps={{ paper: { sx: { borderRadius: 3, boxShadow: '0 10px 40px -10px rgba(0,0,0,0.15)', width: 280, display: 'flex', flexDirection: 'column', border: '1px solid #e2e8f0' } } }}
+        slotProps={{ paper: { sx: { borderRadius: 3, boxShadow: '0 10px 40px -10px rgba(0,0,0,0.15)', width: 280, display: 'flex', flexDirection: 'column', border: '1px solid', borderColor: 'divider' } } }}
       >
-        <Box sx={{ p: 1.5, borderBottom: '1px solid #f1f5f9', bgcolor: '#f8fafc' }}>
+        <Box sx={{ p: 1.5, borderBottom: '1px solid', borderColor: 'divider', bgcolor: 'background.default' }}>
           <TextField
             fullWidth size="small" placeholder="Search..." value={searchText} onChange={(e) => setSearchText(e.target.value)}
             InputProps={{ startAdornment: <SearchIcon sx={{ fontSize: 18, color: '#94a3b8', mr: 1 }} /> }}
-            sx={{ '& .MuiOutlinedInput-root': { fontSize: '0.85rem', borderRadius: 2, bgcolor: '#fff', '& fieldset': { borderColor: '#e2e8f0' }, '&:hover fieldset': { borderColor: '#cbd5e1' } } }}
+            sx={{ '& .MuiOutlinedInput-root': { fontSize: '0.85rem', borderRadius: 2, bgcolor: 'background.paper', '& fieldset': { borderColor: '#e2e8f0' }, '&:hover fieldset': { borderColor: '#cbd5e1' } } }}
           />
         </Box>
         <Box sx={{ flex: 1, overflowY: 'auto', maxHeight: 280, py: 1, display: 'flex', flexDirection: 'column' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', px: 1, py: 0.75, mx: 0.5, borderRadius: 1, '&:hover': { bgcolor: '#f1f5f9' }, transition: 'background-color 0.2s', mb: 0.5, borderBottom: '1px solid #f1f5f9' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', px: 1, py: 0.75, mx: 0.5, borderRadius: 1, '&:hover': { bgcolor: 'background.default' }, transition: 'background-color 0.2s', mb: 0.5, borderBottom: '1px solid', borderColor: 'divider' }}>
             <Checkbox size="small" sx={{ p: 0.25, '& .MuiSvgIcon-root': { fontSize: 18 } }} checked={isAllSelected} indeterminate={isIndeterminate} onChange={handleSelectAll} />
             <Typography variant="body2" sx={{ ml: 1, fontWeight: 700, fontSize: '0.85rem', color: '#1e293b' }} onClick={() => handleSelectAll({ target: { checked: !isAllSelected } } as any)} style={{ cursor: 'pointer', flex: 1 }}>(Select All)</Typography>
           </Box>
@@ -112,8 +112,8 @@ const ColumnFilter = React.memo(({ colKey, label, options, value, onChange }: { 
             </Typography>
           )}
         </Box>
-        <Box sx={{ p: 1.5, borderTop: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', bgcolor: '#f8fafc' }}>
-          <Button size="small" onClick={handleClear} sx={{ textTransform: 'none', color: '#64748b', fontWeight: 600, '&:hover': { bgcolor: '#f1f5f9' } }}>Clear Filter</Button>
+        <Box sx={{ p: 1.5, borderTop: '1px solid', borderColor: 'divider', display: 'flex', justifyContent: 'space-between', bgcolor: 'background.default' }}>
+          <Button size="small" onClick={handleClear} sx={{ textTransform: 'none', color: '#64748b', fontWeight: 600, '&:hover': { bgcolor: 'background.default' } }}>Clear Filter</Button>
           <Box sx={{ display: 'flex', gap: 1 }}>
             <Button size="small" color="inherit" onClick={() => setAnchorEl(null)} sx={{ textTransform: 'none', color: '#64748b', fontWeight: 600 }}>Cancel</Button>
             <Button size="small" variant="contained" color="success" onClick={handleApply} sx={{ textTransform: 'none', boxShadow: 'none', borderRadius: 2, px: 2, fontWeight: 700 }}>OK</Button>
@@ -148,7 +148,7 @@ const MemoDetailRow = React.memo(({ r, isSelected, onClick }: any) => (
       <Checkbox size="small" color="success" checked={isSelected} />
     </TableCell>
     <TableCell>
-      <Box sx={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', minWidth: 28, height: 24, px: 1.5, bgcolor: '#f1f5f9', color: '#0f172a', fontWeight: 800, borderRadius: 1, fontSize: '0.75rem', border: '1px solid #cbd5e1', boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }}>
+      <Box sx={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', minWidth: 28, height: 24, px: 1.5, bgcolor: 'background.default', color: '#0f172a', fontWeight: 800, borderRadius: 1, fontSize: '0.75rem', border: '1px solid', borderColor: 'divider', boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }}>
         {r.RollNo}
       </Box>
     </TableCell>
@@ -365,7 +365,7 @@ export default function BulkPassFailTab() {
   return (
     <Box sx={{ px: 1, py: 0.5, flex: 1, display: 'flex', flexDirection: 'column', gap: 1.5, height: '100%', minHeight: 0 }}>
       {/* FILTER SECTION */}
-      <Paper elevation={0} sx={{ flexShrink: 0, p: 1.5, borderRadius: 2, border: '1px solid #e0e0e0', background: 'linear-gradient(135deg, #f5f5f5 0%, #fafafa 100%)' }}>
+      <Paper elevation={0} sx={{ flexShrink: 0, p: 1.5, borderRadius: 2, border: '1px solid', borderColor: 'divider', background: 'linear-gradient(135deg, #f5f5f5 0%, #fafafa 100%)' }}>
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1.5, alignItems: 'center' }}>
           <Button disabled={masterLoading} variant="contained" size="small" disableElevation onClick={handleSearchMaster}
             startIcon={!masterLoading ? <SearchIcon sx={{ fontSize: '18px !important' }} /> : undefined}
@@ -374,7 +374,7 @@ export default function BulkPassFailTab() {
           </Button>
 
           <Button variant="outlined" size="small" startIcon={<FilterListIcon />} onClick={() => setShowFilters(!showFilters)}
-            sx={{ borderRadius: 1.5, fontWeight: 600, px: 2, height: 32, fontSize: '0.8rem', borderColor: '#e0e0e0', color: '#475569', '&:hover': { borderColor: '#cbd5e1', backgroundColor: '#f8fafc' }, textTransform: 'none' }}>
+            sx={{ borderRadius: 1.5, fontWeight: 600, px: 2, height: 32, fontSize: '0.8rem', borderColor: '#e0e0e0', color: '#475569', '&:hover': { borderColor: '#cbd5e1', backgroundColor: 'background.default' }, textTransform: 'none' }}>
             Lọc thêm
           </Button>
           
@@ -387,22 +387,22 @@ export default function BulkPassFailTab() {
         
         {/* HIDDEN FILTERS */}
         <Slide direction="down" in={showFilters} mountOnEnter unmountOnExit>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1.5, mt: 1.5, p: 1.5, backgroundColor: '#fff', borderRadius: 1.5, border: '1px dashed #cbd5e1' }}>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1.5, mt: 1.5, p: 1.5, backgroundColor: 'background.paper', borderRadius: 1.5, border: '1px dashed #cbd5e1' }}>
             <TextField size="small" placeholder="Invoice No" value={invoiceNo} onChange={e => setInvoiceNo(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleSearchMaster()} 
               InputProps={{ startAdornment: <Typography sx={{color:'#94a3b8', mr:1, fontSize:'0.8rem', fontWeight:600}}>INV</Typography> }}
-              sx={{ flex: '1 1 150px', '& .MuiOutlinedInput-root': { borderRadius: 1.5, height: 32, fontSize: '0.8rem', bgcolor: '#f8fafc' } }} 
+              sx={{ flex: '1 1 150px', '& .MuiOutlinedInput-root': { borderRadius: 1.5, height: 32, fontSize: '0.8rem', bgcolor: 'background.default' } }} 
             />
             <TextField size="small" placeholder="PO Number" value={poNo} onChange={e => setPoNo(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleSearchMaster()} 
               InputProps={{ startAdornment: <Typography sx={{color:'#94a3b8', mr:1, fontSize:'0.8rem', fontWeight:600}}>PO#</Typography> }}
-              sx={{ flex: '1 1 150px', '& .MuiOutlinedInput-root': { borderRadius: 1.5, height: 32, fontSize: '0.8rem', bgcolor: '#f8fafc' } }} 
+              sx={{ flex: '1 1 150px', '& .MuiOutlinedInput-root': { borderRadius: 1.5, height: 32, fontSize: '0.8rem', bgcolor: 'background.default' } }} 
             />
             <TextField size="small" placeholder="Item No" value={itemNo} onChange={e => setItemNo(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleSearchMaster()} 
               InputProps={{ startAdornment: <Typography sx={{color:'#94a3b8', mr:1, fontSize:'0.8rem', fontWeight:600}}>ITM</Typography> }}
-              sx={{ flex: '1 1 150px', '& .MuiOutlinedInput-root': { borderRadius: 1.5, height: 32, fontSize: '0.8rem', bgcolor: '#f8fafc' } }} 
+              sx={{ flex: '1 1 150px', '& .MuiOutlinedInput-root': { borderRadius: 1.5, height: 32, fontSize: '0.8rem', bgcolor: 'background.default' } }} 
             />
             <TextField size="small" placeholder="Color" value={color} onChange={e => setColor(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleSearchMaster()} 
               InputProps={{ startAdornment: <Typography sx={{color:'#94a3b8', mr:1, fontSize:'0.8rem', fontWeight:600}}>CLR</Typography> }}
-              sx={{ flex: '1 1 150px', '& .MuiOutlinedInput-root': { borderRadius: 1.5, height: 32, fontSize: '0.8rem', bgcolor: '#f8fafc' } }} 
+              sx={{ flex: '1 1 150px', '& .MuiOutlinedInput-root': { borderRadius: 1.5, height: 32, fontSize: '0.8rem', bgcolor: 'background.default' } }} 
             />
           </Box>
         </Slide>
@@ -412,15 +412,15 @@ export default function BulkPassFailTab() {
       <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 1.5, minHeight: 0 }}>
         
         {/* TOP GRID: MASTER */}
-        <Paper elevation={0} sx={{ flex: 1, minHeight: 200, display: 'flex', flexDirection: 'column', borderRadius: 2, border: '1px solid #e0e0e0', overflow: 'hidden' }}>
-          <Box sx={{ p: 1.5, borderBottom: '1px solid #e0e0e0', bgcolor: '#f8fafc' }}>
+        <Paper elevation={0} sx={{ flex: 1, minHeight: 200, display: 'flex', flexDirection: 'column', borderRadius: 2, border: '1px solid', borderColor: 'divider', overflow: 'hidden' }}>
+          <Box sx={{ p: 1.5, borderBottom: '1px solid', borderColor: 'divider', bgcolor: 'background.default' }}>
             <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#0f172a' }}>Danh sách Hóa Đơn / PO (Master)</Typography>
           </Box>
           <TableContainer sx={{ flexGrow: 1, overflow: 'auto' }}>
-            <Table stickyHeader size="small" sx={{ '& .MuiTableCell-root': { fontSize: '12px', py: 1, px: 1.5, borderBottom: '1px solid #f1f5f9' } }}>
+            <Table stickyHeader size="small" sx={{ '& .MuiTableCell-root': { fontSize: '12px', py: 1, px: 1.5, borderBottom: '1px solid', borderColor: 'divider' } }}>
               <TableHead>
                 <TableRow>
-                  <TableCell sx={{ fontWeight: 800, bgcolor: '#f8fafc', color: '#475569', borderBottom: '2px solid #e2e8f0' }}>#</TableCell>
+                  <TableCell sx={{ fontWeight: 800, bgcolor: 'background.default', color: '#475569', borderBottom: '2px solid #e2e8f0' }}>#</TableCell>
                   {[
                     { key: 'SupCode', label: 'Supplier' },
                     { key: 'InvoiceNo', label: 'Invoice' },
@@ -428,12 +428,12 @@ export default function BulkPassFailTab() {
                     { key: 'RollItem', label: 'Item' },
                     { key: 'Color', label: 'Color' }
                   ].map(col => (
-                    <TableCell key={col.key} sx={{ fontWeight: 800, bgcolor: '#f8fafc', whiteSpace: 'nowrap', borderBottom: '2px solid #e2e8f0' }}>
+                    <TableCell key={col.key} sx={{ fontWeight: 800, bgcolor: 'background.default', whiteSpace: 'nowrap', borderBottom: '2px solid #e2e8f0' }}>
                       <ColumnFilter colKey={col.key} label={col.label} options={masterColOptions[col.key] || EMPTY_OPTIONS} value={masterColFilters[col.key] || ''} onChange={updateMasterColFilter} />
                     </TableCell>
                   ))}
-                  <TableCell sx={{ fontWeight: 800, bgcolor: '#f8fafc', borderBottom: '2px solid #e2e8f0' }}>TOTAL ROLLS</TableCell>
-                  <TableCell sx={{ fontWeight: 800, bgcolor: '#f8fafc', borderBottom: '2px solid #e2e8f0' }}>TOTAL YARDS</TableCell>
+                  <TableCell sx={{ fontWeight: 800, bgcolor: 'background.default', borderBottom: '2px solid #e2e8f0' }}>TOTAL ROLLS</TableCell>
+                  <TableCell sx={{ fontWeight: 800, bgcolor: 'background.default', borderBottom: '2px solid #e2e8f0' }}>TOTAL YARDS</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -469,7 +469,7 @@ export default function BulkPassFailTab() {
               </TableBody>
             </Table>
           </TableContainer>
-          <Box sx={{ flexShrink: 0, borderTop: '1px solid #e2e8f0', bgcolor: '#fff', p: 1, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
+          <Box sx={{ flexShrink: 0, borderTop: '1px solid', borderColor: 'divider', bgcolor: 'background.paper', p: 1, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <Typography variant="body2" sx={{ color: '#475569', fontWeight: 500 }}>Dòng / trang:</Typography>
               <Select size="small" value={masterRowsPerPage} onChange={(e) => { setMasterRowsPerPage(Number(e.target.value)); setMasterPage(0); }} sx={{ height: 28, fontSize: '0.8rem' }}>
@@ -490,18 +490,18 @@ export default function BulkPassFailTab() {
         </Paper>
 
         {/* BOTTOM GRID: DETAIL */}
-        <Paper elevation={0} sx={{ flex: 1, minHeight: 250, display: 'flex', flexDirection: 'column', borderRadius: 2, border: '1px solid #e0e0e0', overflow: 'hidden' }}>
-          <Box sx={{ p: 1.5, borderBottom: '1px solid #e0e0e0', bgcolor: '#f8fafc', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Paper elevation={0} sx={{ flex: 1, minHeight: 250, display: 'flex', flexDirection: 'column', borderRadius: 2, border: '1px solid', borderColor: 'divider', overflow: 'hidden' }}>
+          <Box sx={{ p: 1.5, borderBottom: '1px solid', borderColor: 'divider', bgcolor: 'background.default', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#0f172a' }}>
               Danh sách Cuộn (Rolls Detail) {activeMasterRow ? `- ${activeMasterRow.InvoiceNo} / ${activeMasterRow.OrderNumber}` : ''}
             </Typography>
             <Chip size="small" label={`${detailData.length} Rolls`} sx={{ bgcolor: '#e2e8f0', color: '#475569', fontWeight: 600 }} />
           </Box>
           <TableContainer sx={{ flexGrow: 1, overflow: 'auto', position: 'relative' }}>
-            <Table stickyHeader size="small" sx={{ '& .MuiTableCell-root': { fontSize: '12px', py: 0.75, px: 1.5, borderBottom: '1px solid #f1f5f9' } }}>
+            <Table stickyHeader size="small" sx={{ '& .MuiTableCell-root': { fontSize: '12px', py: 0.75, px: 1.5, borderBottom: '1px solid', borderColor: 'divider' } }}>
               <TableHead>
                 <TableRow>
-                  <TableCell padding="checkbox" sx={{ bgcolor: '#f8fafc', borderBottom: '2px solid #e2e8f0' }}>
+                  <TableCell padding="checkbox" sx={{ bgcolor: 'background.default', borderBottom: '2px solid #e2e8f0' }}>
                     <Checkbox 
                       size="small" color="success"
                       checked={detailData.length > 0 && selectedRollIds.size === detailData.length}
@@ -510,12 +510,12 @@ export default function BulkPassFailTab() {
                       disabled={detailData.length === 0 || detailLoading}
                     />
                   </TableCell>
-                  <TableCell sx={{ fontWeight: 800, bgcolor: '#f8fafc', color: '#475569', borderBottom: '2px solid #e2e8f0' }}>Roll No</TableCell>
-                  <TableCell sx={{ fontWeight: 800, bgcolor: '#f8fafc', color: '#475569', borderBottom: '2px solid #e2e8f0' }}>Batch No</TableCell>
-                  <TableCell sx={{ fontWeight: 800, bgcolor: '#f8fafc', color: '#475569', borderBottom: '2px solid #e2e8f0' }}>Width</TableCell>
-                  <TableCell sx={{ fontWeight: 800, bgcolor: '#f8fafc', color: '#475569', borderBottom: '2px solid #e2e8f0' }}>Ship Len</TableCell>
-                  <TableCell sx={{ fontWeight: 800, bgcolor: '#f8fafc', color: '#475569', borderBottom: '2px solid #e2e8f0' }}>QC Len</TableCell>
-                  <TableCell sx={{ fontWeight: 800, bgcolor: '#f8fafc', color: '#475569', borderBottom: '2px solid #e2e8f0' }}>QC Result</TableCell>
+                  <TableCell sx={{ fontWeight: 800, bgcolor: 'background.default', color: '#475569', borderBottom: '2px solid #e2e8f0' }}>Roll No</TableCell>
+                  <TableCell sx={{ fontWeight: 800, bgcolor: 'background.default', color: '#475569', borderBottom: '2px solid #e2e8f0' }}>Batch No</TableCell>
+                  <TableCell sx={{ fontWeight: 800, bgcolor: 'background.default', color: '#475569', borderBottom: '2px solid #e2e8f0' }}>Width</TableCell>
+                  <TableCell sx={{ fontWeight: 800, bgcolor: 'background.default', color: '#475569', borderBottom: '2px solid #e2e8f0' }}>Ship Len</TableCell>
+                  <TableCell sx={{ fontWeight: 800, bgcolor: 'background.default', color: '#475569', borderBottom: '2px solid #e2e8f0' }}>QC Len</TableCell>
+                  <TableCell sx={{ fontWeight: 800, bgcolor: 'background.default', color: '#475569', borderBottom: '2px solid #e2e8f0' }}>QC Result</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -551,7 +551,7 @@ export default function BulkPassFailTab() {
               </TableBody>
             </Table>
           </TableContainer>
-          <Box sx={{ flexShrink: 0, borderTop: '1px solid #e2e8f0', bgcolor: '#fff', p: 1, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
+          <Box sx={{ flexShrink: 0, borderTop: '1px solid', borderColor: 'divider', bgcolor: 'background.paper', p: 1, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <Typography variant="body2" sx={{ color: '#475569', fontWeight: 500 }}>Dòng / trang:</Typography>
               <Select size="small" value={detailRowsPerPage} onChange={(e) => { setDetailRowsPerPage(Number(e.target.value)); setDetailPage(0); }} sx={{ height: 28, fontSize: '0.8rem' }}>
@@ -589,12 +589,12 @@ export default function BulkPassFailTab() {
             <TextField 
               size="small" label="Nhóm (Group)" variant="outlined" 
               value={actionGroup} onChange={e => setActionGroup(e.target.value)}
-              sx={{ flex: 1, minWidth: 120, backgroundColor: '#fff', borderRadius: 1 }}
+              sx={{ flex: 1, minWidth: 120, backgroundColor: 'background.paper', borderRadius: 1 }}
             />
             <TextField 
               size="small" label="Ghi chú (Remark)" variant="outlined" 
               value={actionRemark} onChange={e => setActionRemark(e.target.value)}
-              sx={{ flex: 2, minWidth: 200, backgroundColor: '#fff', borderRadius: 1 }}
+              sx={{ flex: 2, minWidth: 200, backgroundColor: 'background.paper', borderRadius: 1 }}
             />
           </Box>
           <Divider sx={{ my: 0.5, borderColor: 'rgba(22, 101, 52, 0.2)' }} />

@@ -120,13 +120,17 @@ export default function MasterData() {
       case '3':
         return <span className="status-badge" style={{ background: '#fef3c7', color: '#92400e', fontWeight: 600 }}>3 - Bahan Baku / Penolong</span>;
       case '4':
-        return <span className="status-badge" style={{ background: '#f3e8ff', color: '#6b21a8', fontWeight: 600 }}>4 - Barang Modal</span>;
+        return <span className="status-badge" style={{ background: '#f3e8ff', color: '#6b21a8', fontWeight: 600 }}>4 - Pengemas / Packaging</span>;
       case '5':
-        return <span className="status-badge" style={{ background: '#ffe4e6', color: '#9f1239', fontWeight: 600 }}>5 - Scrap / Phế liệu</span>;
+        return <span className="status-badge" style={{ background: '#ffe4e6', color: '#9f1239', fontWeight: 600 }}>5 - Scrap / Sisa</span>;
+      case '6':
+        return <span className="status-badge" style={{ background: '#e0f2fe', color: '#0369a1', fontWeight: 600 }}>6 - Barang Contoh / Sample</span>;
+      case '7':
+        return <span className="status-badge" style={{ background: 'background.default', color: '#334155', fontWeight: 600 }}>7 - Bangunan / Konstruksi</span>;
       case '8':
-        return <span className="status-badge" style={{ background: '#ccfbf1', color: '#115e59', fontWeight: 600 }}>8 - WIP / Bán thành phẩm</span>;
+        return <span className="status-badge" style={{ background: '#ccfbf1', color: '#115e59', fontWeight: 600 }}>8 - WIP / Setengah Jadi</span>;
       default:
-        return <span className="status-badge" style={{ background: '#f1f5f9', color: '#475569' }}>Kategori {catCode}</span>;
+        return <span className="status-badge" style={{ background: 'background.default', color: '#475569' }}>Kategori {catCode}</span>;
     }
   };
 
@@ -155,7 +159,7 @@ export default function MasterData() {
                 <select
                   value={categoryFilter}
                   onChange={e => { setCategoryFilter(e.target.value); setPage(1); }}
-                  style={{ border: '1px solid #cbd5e1', borderRadius: 6, padding: '5px 10px', fontSize: 13, background: '#fff', color: '#0f172a', fontWeight: 500 }}
+                  style={{ border: '1px solid', borderColor: 'divider', borderRadius: 6, padding: '5px 10px', fontSize: 13, background: 'background.paper', color: '#0f172a', fontWeight: 500 }}
                 >
                   <option value="ALL">{t('masterData.allCategories', 'Tất cả Kategori (1-8)')}</option>
                   <option value="1">1 - Mesin / Asset</option>
@@ -174,7 +178,7 @@ export default function MasterData() {
                   placeholder={t('masterData.search', 'Search Kode Barang, Description, HS...')}
                   value={search}
                   onChange={e => { setSearch(e.target.value); setPage(1); }}
-                  style={{ width: '100%', padding: '6px 12px 6px 32px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13, color: '#0f172a' }}
+                  style={{ width: '100%', padding: '6px 12px 6px 32px', borderRadius: 6, border: '1px solid', borderColor: 'divider', fontSize: 13, color: '#0f172a' }}
                 />
               </div>
 
@@ -202,26 +206,26 @@ export default function MasterData() {
               <div style={{ flex: 1, overflowY: 'auto', overflowX: 'auto' }}>
                 <table className="table" style={{ width: '100%', borderCollapse: 'separate', borderSpacing: 0 }}>
                   <thead>
-                    <tr style={{ background: '#f8fafc', textAlign: 'left', fontSize: 12, color: '#475569' }}>
-                      <th style={{ width: 45, textAlign: 'center', padding: '10px', position: 'sticky', top: 0, background: '#f8fafc', zIndex: 10, borderBottom: '2px solid #e2e8f0' }}>#</th>
-                      <th style={{ position: 'sticky', top: 0, background: '#f8fafc', zIndex: 10, borderBottom: '2px solid #e2e8f0' }}>{t('table.itemCode', 'Kode Barang')}</th>
-                      <th style={{ position: 'sticky', top: 0, background: '#f8fafc', zIndex: 10, borderBottom: '2px solid #e2e8f0' }}>{t('table.description', 'Uraian Barang')}</th>
-                      <th style={{ position: 'sticky', top: 0, background: '#f8fafc', zIndex: 10, borderBottom: '2px solid #e2e8f0' }}>{t('table.kategori', 'Kategori INSW')}</th>
-                      <th style={{ position: 'sticky', top: 0, background: '#f8fafc', zIndex: 10, borderBottom: '2px solid #e2e8f0' }}>{t('table.hsCode', 'Kode HS')}</th>
-                      <th style={{ textAlign: 'center', position: 'sticky', top: 0, background: '#f8fafc', zIndex: 10, borderBottom: '2px solid #e2e8f0' }}>{t('table.uom', 'Satuan')}</th>
-                      <th style={{ textAlign: 'center', position: 'sticky', top: 0, background: '#f8fafc', zIndex: 10, borderBottom: '2px solid #e2e8f0' }}>{t('table.country', 'Xuất Xứ')}</th>
-                      <th style={{ textAlign: 'center', position: 'sticky', top: 0, background: '#f8fafc', zIndex: 10, borderBottom: '2px solid #e2e8f0' }}>{t('masterData.occurrenceCount', 'Tổng giao dịch')}</th>
-                      <th style={{ position: 'sticky', top: 0, background: '#f8fafc', zIndex: 10, borderBottom: '2px solid #e2e8f0' }}>{t('masterData.latestDocNo', 'Chứng từ gần nhất')}</th>
+                    <tr style={{ background: 'background.default', textAlign: 'left', fontSize: 12, color: '#475569' }}>
+                      <th style={{ width: 45, textAlign: 'center', padding: '10px', position: 'sticky', top: 0, background: 'background.default', zIndex: 10, borderBottom: '2px solid #e2e8f0' }}>#</th>
+                      <th style={{ position: 'sticky', top: 0, background: 'background.default', zIndex: 10, borderBottom: '2px solid #e2e8f0' }}>{t('table.itemCode', 'Kode Barang')}</th>
+                      <th style={{ position: 'sticky', top: 0, background: 'background.default', zIndex: 10, borderBottom: '2px solid #e2e8f0' }}>{t('table.description', 'Uraian Barang')}</th>
+                      <th style={{ position: 'sticky', top: 0, background: 'background.default', zIndex: 10, borderBottom: '2px solid #e2e8f0' }}>{t('table.kategori', 'Kategori INSW')}</th>
+                      <th style={{ position: 'sticky', top: 0, background: 'background.default', zIndex: 10, borderBottom: '2px solid #e2e8f0' }}>{t('table.hsCode', 'Kode HS')}</th>
+                      <th style={{ textAlign: 'center', position: 'sticky', top: 0, background: 'background.default', zIndex: 10, borderBottom: '2px solid #e2e8f0' }}>{t('table.uom', 'Satuan')}</th>
+                      <th style={{ textAlign: 'center', position: 'sticky', top: 0, background: 'background.default', zIndex: 10, borderBottom: '2px solid #e2e8f0' }}>{t('table.country', 'Xuất Xứ')}</th>
+                      <th style={{ textAlign: 'center', position: 'sticky', top: 0, background: 'background.default', zIndex: 10, borderBottom: '2px solid #e2e8f0' }}>{t('masterData.occurrenceCount', 'Tổng giao dịch')}</th>
+                      <th style={{ position: 'sticky', top: 0, background: 'background.default', zIndex: 10, borderBottom: '2px solid #e2e8f0' }}>{t('masterData.latestDocNo', 'Chứng từ gần nhất')}</th>
                     </tr>
                   </thead>
                   <tbody>
                     {paged.map((item, idx) => {
                       const rowNum = (safeCurrentPage - 1) * pageSize + idx + 1;
                       return (
-                        <tr key={idx} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                        <tr key={idx} style={{ borderBottom: '1px solid', borderColor: 'divider' }}>
                           <td style={{ textAlign: 'center', color: '#94a3b8', fontSize: 12, padding: '10px' }}>{rowNum}</td>
                           <td style={{ padding: '10px' }}>
-                            <code style={{ fontWeight: 600, color: 'var(--primary-dark, #2e8b4a)', background: '#f1f5f9', padding: '2px 8px', borderRadius: 4 }}>
+                            <code style={{ fontWeight: 600, color: 'var(--primary-dark, #2e8b4a)', background: 'background.default', padding: '2px 8px', borderRadius: 4 }}>
                               {item.kodeBarang}
                             </code>
                           </td>
@@ -230,7 +234,7 @@ export default function MasterData() {
                           </td>
                           <td style={{ padding: '10px' }}>{getKategoriBadge(item.kategoriBarang)}</td>
                           <td style={{ padding: '10px' }}><code style={{ color: '#475569', fontSize: 12 }}>{item.kodeHS}</code></td>
-                          <td style={{ textAlign: 'center', padding: '10px' }}><span className="status-badge" style={{ background: '#f1f5f9', color: '#334155' }}>{item.satuan}</span></td>
+                          <td style={{ textAlign: 'center', padding: '10px' }}><span className="status-badge" style={{ background: 'background.default', color: '#334155' }}>{item.satuan}</span></td>
                           <td style={{ textAlign: 'center', padding: '10px', fontSize: 12, color: '#64748b' }}>{item.negara}</td>
                           <td style={{ textAlign: 'center', padding: '10px' }}>
                             <span style={{ background: '#e8f7ec', color: '#2e8b4a', fontWeight: 600, padding: '2px 8px', borderRadius: 10, fontSize: 12 }}>
@@ -253,8 +257,8 @@ export default function MasterData() {
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 padding: '10px 20px',
-                borderTop: '1px solid #e2e8f0',
-                background: '#fff',
+                borderTop: '1px solid', borderColor: 'divider',
+                background: 'background.paper',
                 fontSize: 13,
                 flexShrink: 0
               }}>
@@ -263,7 +267,7 @@ export default function MasterData() {
                   <select
                     value={pageSize}
                     onChange={e => { setPageSize(Number(e.target.value)); setPage(1); }}
-                    style={{ padding: '4px 8px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13, background: '#fff', color: '#0f172a' }}
+                    style={{ padding: '4px 8px', borderRadius: 6, border: '1px solid', borderColor: 'divider', fontSize: 13, background: 'background.paper', color: '#0f172a' }}
                   >
                     <option value={15}>15</option>
                     <option value={30}>30</option>

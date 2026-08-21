@@ -131,7 +131,7 @@ export default function ApkUpdatePrompt() {
         <DialogContentText sx={{ color: '#1e293b', mb: 2, fontWeight: 500 }}>
           Đã có phiên bản ứng dụng mới ({updateInfo?.versionName}) cần được cài đặt để tiếp tục làm việc.
         </DialogContentText>
-        <DialogContentText sx={{ color: '#475569', fontSize: '0.9rem', fontStyle: 'italic', backgroundColor: '#f1f5f9', p: 1.5, borderRadius: 1 }}>
+        <DialogContentText sx={{ color: '#475569', fontSize: '0.9rem', fontStyle: 'italic', backgroundColor: 'background.default', p: 1.5, borderRadius: 1 }}>
           Chi tiết: {updateInfo?.releaseNotes}
         </DialogContentText>
         

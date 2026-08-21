@@ -68,13 +68,13 @@ const getStatusStyle = (status: string) => {
     case 'Remake':
       return { bgcolor: '#fffbeb', color: '#b45309', border: '1px solid #fde68a', fontWeight: 600 };
     case 'Cancelled':
-      return { bgcolor: '#f8fafc', color: '#64748b', border: '1px solid #e2e8f0', fontWeight: 600 };
+      return { bgcolor: 'background.default', color: '#64748b', border: '1px solid', borderColor: 'divider', fontWeight: 600 };
     case 'Rejected':
     case 'Deleted':
       return { bgcolor: '#fef2f2', color: '#b91c1c', border: '1px solid #fecaca', fontWeight: 600 };
     case 'Not Started':
     default:
-      return { bgcolor: '#f1f5f9', color: '#475569', border: '1px solid #cbd5e1', fontWeight: 600 };
+      return { bgcolor: 'background.default', color: '#475569', border: '1px solid', borderColor: 'divider', fontWeight: 600 };
   }
 };
 
@@ -767,7 +767,7 @@ export default function RequestorViewPage({ isActive = true }: any) {
                     <IconButton size="small" onClick={() => handleFilterChange('customer', '')}><ClearIcon sx={{ fontSize: 16 }} /></IconButton>
                   </InputAdornment>
                 ) : null,
-                sx: { borderRadius: '24px', bgcolor: '#fff' }
+                sx: { borderRadius: '24px', bgcolor: 'background.paper' }
               }}
               sx={{ flex: 1 }}
             />
@@ -775,7 +775,7 @@ export default function RequestorViewPage({ isActive = true }: any) {
               onClick={() => setFilterOpen(true)}
               sx={{ 
                 bgcolor: activeFiltersCount > 0 ? 'rgba(46,125,50,0.1)' : '#fff',
-                border: '1px solid #e1e3e4',
+                border: '1px solid', borderColor: 'divider',
                 color: '#1b5e20',
                 width: 40, height: 40,
                 borderRadius: '50%'
@@ -788,7 +788,7 @@ export default function RequestorViewPage({ isActive = true }: any) {
           </Box>
         </Box>
       ) : (
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 2, px: 3, py: 2, bgcolor: '#ffffff', borderBottom: '1px solid #e1e3e4', flexShrink: 0 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 2, px: 3, py: 2, bgcolor: 'background.paper', borderBottom: '1px solid', borderColor: 'divider', flexShrink: 0 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap' }}>
             <AppTextField
               placeholder={t('tcc.searchCustomer', 'Search Customer...')}
@@ -805,7 +805,7 @@ export default function RequestorViewPage({ isActive = true }: any) {
                     <IconButton size="small" onClick={() => handleFilterChange('customer', '')}><ClearIcon sx={{ fontSize: 16 }} /></IconButton>
                   </InputAdornment>
                 ) : null,
-                sx: { borderRadius: '8px', bgcolor: '#fff', width: 280 }
+                sx: { borderRadius: '8px', bgcolor: 'background.paper', width: 280 }
               }}
             />
             
@@ -912,7 +912,7 @@ export default function RequestorViewPage({ isActive = true }: any) {
           t={t}
         />
       ) : isActive ? (
-        <Paper elevation={0} sx={{ flex: 1, minHeight: 400, height: 'calc(100vh - 200px)', borderRadius: '8px', border: '1px solid #e1e3e4', boxShadow: '0px 4px 20px rgba(0,0,0,0.05)', bgcolor: '#ffffff', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+        <Paper elevation={0} sx={{ flex: 1, minHeight: 400, height: 'calc(100vh - 200px)', borderRadius: '8px', border: '1px solid', borderColor: 'divider', boxShadow: '0px 4px 20px rgba(0,0,0,0.05)', bgcolor: 'background.paper', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
           <DataGrid
             apiRef={mainApiRef}
             rows={filteredRequests}

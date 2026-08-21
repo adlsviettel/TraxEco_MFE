@@ -27,7 +27,8 @@ const PageContainer = React.memo(({ isActive, children }: { isActive: boolean; c
     height: '100%',
     flex: 1, 
     minHeight: 0,
-    overflow: 'hidden'
+    overflowY: 'auto',
+    WebkitOverflowScrolling: 'touch'
   }}>
     {children}
   </div>
@@ -110,6 +111,7 @@ export default function AppShell({
   );
   
   const currentPath = location.pathname;
+  const activeColor = theme.palette.mode === 'dark' ? '#4ade80' : accentColor;
 
   useEffect(() => {
     const isRoot = rootPath 
@@ -131,7 +133,7 @@ export default function AppShell({
       flexDirection: isMobile ? 'column' : 'row',
       width: '100%',
       height: '100%',
-      backgroundColor: isMobile ? '#f5f7fa' : undefined,
+      backgroundColor: isMobile ? 'background.default' : undefined,
       overflow: isMobile ? 'auto' : 'hidden',
     }}>
       <CssBaseline />
@@ -139,7 +141,7 @@ export default function AppShell({
       {/* ─── APP BAR (responsive) ─── */}
       {isMobile ? (
         <AppBar position="fixed" elevation={0} sx={{
-          backgroundColor: 'rgba(255,255,255,0.85)',
+          backgroundColor: theme.palette.mode === 'dark' ? 'rgba(30, 41, 59, 0.85)' : 'rgba(255,255,255,0.85)',
           backdropFilter: 'blur(10px)',
           borderBottom: `1px solid ${theme.palette.divider}`,
           color: theme.palette.text.primary,
@@ -170,7 +172,7 @@ export default function AppShell({
       ) : (
         <AppBar position="fixed" elevation={0} sx={{
           zIndex: theme.zIndex.drawer + 1,
-          backgroundColor: 'rgba(255, 255, 255, 0.8)',
+          backgroundColor: theme.palette.mode === 'dark' ? 'rgba(30, 41, 59, 0.85)' : 'rgba(255, 255, 255, 0.85)',
           backdropFilter: 'blur(10px)',
           borderBottom: `1px solid ${theme.palette.divider}`,
           color: theme.palette.text.primary,
@@ -219,10 +221,10 @@ export default function AppShell({
           }),
         }}>
           <Toolbar sx={{ minHeight: 'calc(64px + env(safe-area-inset-top)) !important', pt: 'env(safe-area-inset-top)', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', px: [1] }}>
-            <Typography variant="h6" sx={{ flexGrow: 1, ml: 1.5, fontWeight: 800, opacity: open ? 1 : 0, display: 'flex', alignItems: 'center', gap: 1.5, transition: 'opacity 0.3s' }}>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1, ml: open ? 1.5 : 0.5, fontWeight: 800, display: 'flex', alignItems: 'center', gap: 1.5, transition: 'all 0.3s' }}>
               {appLogo ? (
                 <Box sx={{
-                  width: 36, height: 36, borderRadius: 1.5,
+                  width: 36, height: 36, borderRadius: 1.5, flexShrink: 0,
                   background: `linear-gradient(135deg, ${accentColor} 0%, #43a047 100%)`,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   boxShadow: `0 2px 8px ${accentColor}59`
@@ -230,27 +232,32 @@ export default function AppShell({
                   {appLogo}
                 </Box>
               ) : null}
-              <Box sx={{ display: 'flex', flexDirection: 'column', lineHeight: 1.15 }}>
-                <Box component="span" sx={{ fontSize: '0.85rem', fontWeight: 800, background: `linear-gradient(135deg, ${accentColor}, #1b5e20)`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                  {appTitleShort || appTitle}
+              {open && (
+                <Box sx={{ display: 'flex', flexDirection: 'column', lineHeight: 1.15, opacity: open ? 1 : 0, transition: 'opacity 0.3s' }}>
+                  <Box component="span" sx={{ fontSize: '0.85rem', fontWeight: 800, color: theme.palette.mode === 'dark' ? '#4ade80' : accentColor }}>
+                    {appTitleShort || appTitle}
+                  </Box>
                 </Box>
-              </Box>
+              )}
             </Typography>
             <IconButton onClick={toggleDrawer}><ChevronLeftIcon /></IconButton>
           </Toolbar>
           <Divider />
           <List sx={{ px: 1, pt: 2 }}>
-            {filteredMenuItems.map((item) => (
-              <ListItem key={item.text} disablePadding sx={{ display: 'block', mb: 1 }}>
-                <ListItemButton onClick={() => navigate(item.path)} selected={location.pathname === item.path || location.pathname.startsWith(item.path + '/')}
-                  sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'center', px: open ? 2.5 : 1, borderRadius: 2, '&.Mui-selected': { backgroundColor: `${accentColor}1A`, color: accentColor, fontWeight: 600, '&:hover': { backgroundColor: `${accentColor}2A` }, '& .MuiListItemIcon-root': { color: accentColor } } }}>
-                  <ListItemIcon sx={{ minWidth: 0, mr: open ? 2 : 'auto', justifyContent: 'center', color: (location.pathname === item.path || location.pathname.startsWith(item.path + '/')) ? accentColor : 'inherit' }}>
-                    {item.icon}
-                  </ListItemIcon>
-                  <ListItemText primary={item.text} sx={{ opacity: open ? 1 : 0, '& .MuiTypography-root': { fontWeight: (location.pathname === item.path || location.pathname.startsWith(item.path + '/')) ? 600 : 400 } }} />
-                </ListItemButton>
-              </ListItem>
-            ))}
+            {filteredMenuItems.map((item) => {
+              const isSelected = location.pathname === item.path || location.pathname.startsWith(item.path + '/');
+              return (
+                <ListItem key={item.text} disablePadding sx={{ display: 'block', mb: 1 }}>
+                  <ListItemButton onClick={() => navigate(item.path)} selected={isSelected}
+                    sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'center', px: open ? 2.5 : 1, borderRadius: 2, '&.Mui-selected': { backgroundColor: theme.palette.mode === 'dark' ? 'rgba(74, 222, 128, 0.15)' : `${accentColor}1A`, color: activeColor, fontWeight: 600, '&:hover': { backgroundColor: theme.palette.mode === 'dark' ? 'rgba(74, 222, 128, 0.25)' : `${accentColor}2A` }, '& .MuiListItemIcon-root': { color: activeColor } } }}>
+                    <ListItemIcon sx={{ minWidth: 0, mr: open ? 2 : 'auto', justifyContent: 'center', color: isSelected ? activeColor : 'inherit' }}>
+                      {item.icon}
+                    </ListItemIcon>
+                    <ListItemText primary={item.text} sx={{ opacity: open ? 1 : 0, '& .MuiTypography-root': { fontWeight: isSelected ? 600 : 400, color: isSelected ? activeColor : 'inherit' } }} />
+                  </ListItemButton>
+                </ListItem>
+              );
+            })}
           </List>
           {onSettingsClick && (
             <Box sx={{ mt: 'auto', px: 1 }}>
@@ -286,7 +293,7 @@ export default function AppShell({
         backgroundColor: isMobile ? undefined : theme.palette.background.default,
         display: 'flex', flexDirection: 'column',
         minWidth: 0,
-        overflow: 'auto',
+        overflow: 'hidden',
         height: '100%',
         WebkitOverflowScrolling: 'touch',
       }}>
@@ -311,9 +318,9 @@ export default function AppShell({
 
       {/* ─── MOBILE BOTTOM NAV (hidden on desktop) ─── */}
       {isMobile && (
-        <Paper elevation={8} sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 1200, borderTop: '1px solid #e0e0e0' }}>
+        <Paper elevation={8} sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 1200, borderTop: '1px solid', borderColor: 'divider', bgcolor: 'background.paper' }}>
           <BottomNavigation value={activeIndex >= 0 ? activeIndex : 0} onChange={(_, newValue) => navigate(filteredMenuItems[newValue].path)} showLabels
-            sx={{ height: 64, '& .MuiBottomNavigationAction-root': { minWidth: 0, py: 1, color: 'text.secondary', '&.Mui-selected': { color: accentColor } }, '& .MuiBottomNavigationAction-label': { fontSize: '0.65rem', fontWeight: 600, '&.Mui-selected': { fontSize: '0.67rem', fontWeight: 700 } } }}>
+            sx={{ height: 64, bgcolor: 'background.paper', '& .MuiBottomNavigationAction-root': { minWidth: 0, py: 1, color: 'text.secondary', '&.Mui-selected': { color: activeColor } }, '& .MuiBottomNavigationAction-label': { fontSize: '0.65rem', fontWeight: 600, '&.Mui-selected': { fontSize: '0.67rem', fontWeight: 700 } } }}>
             {filteredMenuItems.map((item) => (
               <BottomNavigationAction key={item.path} label={item.text} icon={item.icon} />
             ))}

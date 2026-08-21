@@ -99,6 +99,13 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
 
   // Dynamic Options
   const [structureOpts, setStructureOpts] = useState<string[]>(['Knit', 'Woven']);
+  const [fabricNameOpts, setFabricNameOpts] = useState<string[]>([]);
+  const [compositionOpts, setCompositionOpts] = useState<string[]>([]);
+  const [functionOpts, setFunctionOpts] = useState<string[]>([]);
+  const [technologyOpts, setTechnologyOpts] = useState<string[]>([]);
+  const [supplierOpts, setSupplierOpts] = useState<string[]>([]);
+  const [originOpts, setOriginOpts] = useState<string[]>([]);
+  const [locationOpts, setLocationOpts] = useState<string[]>([]);
   const [currencyOpts, setCurrencyOpts] = useState<string[]>(['USD', 'VND', 'RMB', 'EUR', 'GBP', 'JPY', 'KRW', 'THB', 'SGD', 'MYR', 'IDR']);
   const [unitOpts, setUnitOpts] = useState<string[]>(['yd', 'm', 'pcs', 'set', 'kg', 'roll']);
   const [moqUnitOpts, setMoqUnitOpts] = useState<string[]>(['yd/yd', 'm/m', 'pcs/pcs', 'set/set']);
@@ -118,6 +125,13 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
         }
       };
       loadOptions('structure', setStructureOpts);
+      loadOptions('fabricName', setFabricNameOpts);
+      loadOptions('composition', setCompositionOpts);
+      loadOptions('function', setFunctionOpts);
+      loadOptions('technology', setTechnologyOpts);
+      loadOptions('supplierName', setSupplierOpts);
+      loadOptions('origin', setOriginOpts);
+      loadOptions('location', setLocationOpts);
       loadOptions('currency', setCurrencyOpts);
       loadOptions('unit', setUnitOpts);
       loadOptions('moq_unit', setMoqUnitOpts);
@@ -150,7 +164,7 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
         weightGsm: item.fabric?.weightGsm,
         cuttableWidth: item.fabric?.cuttableWidth,
         colorName: item.fabric?.colorName,
-        hasSy: item.fabric?.hasSy,
+        hasSy: item.fabric?.hasSy ?? (item as any).hasSy ?? false,
         currency: item.currency || 'USD',
       });
     } else {
@@ -344,7 +358,7 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
       const payload = {
         itemType: 'FABRIC',
         itemCode: form.itemCode !== undefined && form.itemCode !== null ? form.itemCode : undefined,
-        name: form.name !== undefined && form.name !== null ? form.name : undefined,
+        name: (form as any).fabricName || form.name || form.itemCode,
         description: form.description !== undefined && form.description !== null ? form.description : undefined,
         category: form.category !== undefined && form.category !== null ? form.category : undefined,
         supplierName: form.supplierName !== undefined && form.supplierName !== null ? form.supplierName : undefined,
@@ -365,6 +379,7 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
         priceHistory: JSON.stringify(currentHistory),
         stickerImage: finalStickerImageUrls.length > 0 ? finalStickerImageUrls.join(',') : "",
         mainImage: finalMainImageUrls.length > 0 ? finalMainImageUrls.join(',') : "",
+        hasSy: Boolean((form as any).hasSy),
         fabric: {
           structure: (form as any).structure || undefined,
           fabricName: (form as any).fabricName || undefined,
@@ -375,7 +390,7 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
           weightGsm: toNum((form as any).weightGsm),
           cuttableWidth: toNum((form as any).cuttableWidth),
           colorName: (form as any).colorName || undefined,
-          hasSy: (form as any).hasSy,
+          hasSy: Boolean((form as any).hasSy),
         },
         priceUnit: form.priceUnit || undefined,
         moqMcqUnit: form.moqMcqUnit || undefined,
@@ -466,7 +481,7 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
       </Box>
 
             {/* Body */}
-      <Box sx={{ flex: 1, minHeight: 0, overflowY: { xs: 'auto', md: 'hidden' }, p: { xs: 2, md: 4 }, bgcolor: '#f8fafc', display: 'flex', justifyContent: 'center' }}>
+      <Box sx={{ flex: 1, minHeight: 0, overflowY: { xs: 'auto', md: 'hidden' }, p: { xs: 2, md: 4 }, bgcolor: 'background.default', display: 'flex', justifyContent: 'center' }}>
         <Box sx={{ width: '100%', maxWidth: 1440, height: { xs: 'auto', md: '100%' }, display: 'flex', flexDirection: 'column' }}>
           <Grid container spacing={4} sx={{ height: { xs: 'auto', md: '100%' }, minHeight: 0, flex: 1 }}>
           
@@ -480,7 +495,7 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
                 <CardHeader 
                   title="Master Item" 
                   titleTypographyProps={{ variant: 'overline', fontWeight: 800, sx: { letterSpacing: 1, fontSize: 13, color: '#0f172a' } }}
-                  sx={{ bgcolor: '#fff', py: 2, borderBottom: '1px solid rgba(0,0,0,0.04)', borderLeft: '4px solid #2e7d32' }}
+                  sx={{ bgcolor: 'background.paper', py: 2, borderBottom: '1px solid rgba(0,0,0,0.04)', borderLeft: '4px solid #2e7d32' }}
                   action={
                     <IconButton onClick={() => setShowMaster(!showMaster)} size="small" sx={{ color: '#64748b' }}>
                       {showMaster ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
@@ -490,8 +505,8 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
                 <Collapse in={showMaster}>
                   <CardContent sx={{ p: 3 }}>
                     <Stack spacing={2.5}>
-                      <AppTextField label={t('rdMaterial.erp_number', 'ERP Number')} size="small" value={form.name ?? ''} debounceMs={200} onDebounceChange={(val) => set('name', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover': { bgcolor: '#f1f5f9' }, '&.Mui-focused': { bgcolor: '#fff' } } }} />
-                      <AppTextField label={t('rdMaterial.description', 'Description')} size="small" value={form.description ?? ''} debounceMs={200} onDebounceChange={(val) => set('description', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover': { bgcolor: '#f1f5f9' }, '&.Mui-focused': { bgcolor: '#fff' } } }} />
+                      <AppTextField label={t('rdMaterial.erp_number', 'ERP Number')} size="small" value={form.name ?? ''} debounceMs={200} onDebounceChange={(val) => set('name', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover': { bgcolor: 'background.default' }, '&.Mui-focused': { bgcolor: 'background.paper' } } }} />
+                      <AppTextField label={t('rdMaterial.description', 'Description')} size="small" value={form.description ?? ''} debounceMs={200} onDebounceChange={(val) => set('description', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover': { bgcolor: 'background.default' }, '&.Mui-focused': { bgcolor: 'background.paper' } } }} />
                     </Stack>
                   </CardContent>
                 </Collapse>
@@ -502,7 +517,7 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
                 <CardHeader 
                   title={t('rdMaterial.picture_title', '1. Picture')} 
                   titleTypographyProps={{ variant: 'overline', fontWeight: 800, sx: { letterSpacing: 1, fontSize: 13, color: '#0f172a' } }}
-                  sx={{ bgcolor: '#fff', py: 2, borderBottom: '1px solid rgba(0,0,0,0.04)', borderLeft: '4px solid #3ba55c' }}
+                  sx={{ bgcolor: 'background.paper', py: 2, borderBottom: '1px solid rgba(0,0,0,0.04)', borderLeft: '4px solid #3ba55c' }}
                 />
                 <CardContent sx={{ p: 3 }}>
                   <Stack spacing={3}>
@@ -512,7 +527,7 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
                         <Box sx={{ flex: 1 }}>
                           <input type="file" multiple id="main-file-upload" accept="image/*" style={{ display: 'none' }} onChange={(e) => handleImageCapture(e, 'mainImage')} />
                           <label htmlFor="main-file-upload">
-                            <Box sx={{ border: '1px dashed #cbd5e1', borderRadius: 1, bgcolor: '#f8fafc', p: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s', '&:hover': { bgcolor: '#f1f5f9', borderColor: '#3ba55c' } }}>
+                            <Box sx={{ border: '1px dashed #cbd5e1', borderRadius: 1, bgcolor: 'background.default', p: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s', '&:hover': { bgcolor: 'background.default', borderColor: '#3ba55c' } }}>
                               <UploadFileIcon sx={{ color: '#94a3b8', fontSize: 20, mr: 1 }} />
                               <Typography variant="caption" fontWeight={600}>{t('rdMaterial.library', 'Thư viện')}</Typography>
                             </Box>
@@ -535,7 +550,7 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
                             title={<Box sx={{ width: 600, height: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: 'rgba(255,255,255,0.95)', borderRadius: 2, overflow: 'hidden' }}><img src={rdItemApi.getImageUrl(url)} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} /></Box>}
                             componentsProps={{ popper: { sx: { zIndex: 10000 } }, tooltip: { sx: { p: 0, bgcolor: 'transparent', boxShadow: '0 10px 30px rgba(0,0,0,0.3)', maxWidth: 'none', borderRadius: 2 } } }}
                           >
-                            <Box sx={{ position: 'relative', width: '100%', aspectRatio: '1/1', borderRadius: 1, overflow: 'hidden', border: '1px solid rgba(0,0,0,0.05)', bgcolor: '#fff', cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }} onClick={() => setLightboxImage(url)}>
+                            <Box sx={{ position: 'relative', width: '100%', aspectRatio: '1/1', borderRadius: 1, overflow: 'hidden', border: '1px solid rgba(0,0,0,0.05)', bgcolor: 'background.paper', cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }} onClick={() => setLightboxImage(url)}>
                               <img className="main-img" src={rdItemApi.getImageUrl(url)} alt="Image" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => (e.currentTarget.style.display = 'none')} />
                               <IconButton size="small" sx={{ position: 'absolute', top: 4, right: 4, bgcolor: 'rgba(255,255,255,0.8)', p: 0.5, backdropFilter: 'blur(4px)', '&:hover': { bgcolor: '#ef4444', color: 'white' } }} onClick={(e) => { e.stopPropagation(); removeImage('mainImage', idx); }}>
                                 <CloseIcon sx={{ fontSize: 16 }} />
@@ -549,7 +564,7 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
                             title={<Box sx={{ width: 600, height: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: 'rgba(255,255,255,0.95)', borderRadius: 2, overflow: 'hidden' }}><PreviewImage file={file} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} /></Box>}
                             componentsProps={{ popper: { sx: { zIndex: 10000 } }, tooltip: { sx: { p: 0, bgcolor: 'transparent', boxShadow: '0 10px 30px rgba(0,0,0,0.3)', maxWidth: 'none', borderRadius: 2 } } }}
                           >
-                            <Box sx={{ position: 'relative', width: '100%', aspectRatio: '1/1', borderRadius: 1, overflow: 'hidden', border: '1px solid #3ba55c', bgcolor: '#fff', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+                            <Box sx={{ position: 'relative', width: '100%', aspectRatio: '1/1', borderRadius: 1, overflow: 'hidden', border: '1px solid #3ba55c', bgcolor: 'background.paper', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
                               <PreviewImage className="main-img" file={file} alt="Pending Main" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                               <IconButton size="small" sx={{ position: 'absolute', top: 4, right: 4, bgcolor: 'rgba(255,255,255,0.8)', p: 0.5, backdropFilter: 'blur(4px)', '&:hover': { bgcolor: '#ef4444', color: 'white' } }} onClick={(e) => { e.stopPropagation(); setPendingMainImages(prev => prev.filter((_, i) => i !== idx)); }}>
                                 <CloseIcon sx={{ fontSize: 16 }} />
@@ -567,7 +582,7 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
                         <Box sx={{ flex: 1 }}>
                           <input type="file" multiple id="stk-file-upload" accept="image/*" style={{ display: 'none' }} onChange={(e) => handleImageCapture(e, 'stickerImage')} />
                           <label htmlFor="stk-file-upload">
-                            <Box sx={{ border: '1px dashed #cbd5e1', borderRadius: 1, bgcolor: '#f8fafc', p: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s', '&:hover': { bgcolor: '#f1f5f9', borderColor: '#3ba55c' } }}>
+                            <Box sx={{ border: '1px dashed #cbd5e1', borderRadius: 1, bgcolor: 'background.default', p: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s', '&:hover': { bgcolor: 'background.default', borderColor: '#3ba55c' } }}>
                               <UploadFileIcon sx={{ color: '#94a3b8', fontSize: 20, mr: 1 }} />
                               <Typography variant="caption" fontWeight={600}>{t('rdMaterial.library', 'Thư viện')}</Typography>
                             </Box>
@@ -590,7 +605,7 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
                             title={<Box sx={{ width: 600, height: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: 'rgba(255,255,255,0.95)', borderRadius: 2, overflow: 'hidden' }}><img src={rdItemApi.getImageUrl(url)} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} /></Box>}
                             componentsProps={{ popper: { sx: { zIndex: 10000 } }, tooltip: { sx: { p: 0, bgcolor: 'transparent', boxShadow: '0 10px 30px rgba(0,0,0,0.3)', maxWidth: 'none', borderRadius: 2 } } }}
                           >
-                            <Box sx={{ position: 'relative', width: '100%', aspectRatio: '1/1', borderRadius: 1, overflow: 'hidden', border: '1px solid rgba(0,0,0,0.05)', bgcolor: '#fff', cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }} onClick={() => setLightboxImage(url)}>
+                            <Box sx={{ position: 'relative', width: '100%', aspectRatio: '1/1', borderRadius: 1, overflow: 'hidden', border: '1px solid rgba(0,0,0,0.05)', bgcolor: 'background.paper', cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }} onClick={() => setLightboxImage(url)}>
                               <img className="stk-img" src={rdItemApi.getImageUrl(url)} alt="Sticker" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => (e.currentTarget.style.display = 'none')} />
                               <IconButton size="small" sx={{ position: 'absolute', top: 4, right: 4, bgcolor: 'rgba(255,255,255,0.8)', p: 0.5, backdropFilter: 'blur(4px)', '&:hover': { bgcolor: '#ef4444', color: 'white' } }} onClick={(e) => { e.stopPropagation(); removeImage('stickerImage', idx); }}>
                                 <CloseIcon sx={{ fontSize: 16 }} />
@@ -604,7 +619,7 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
                             title={<Box sx={{ width: 600, height: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: 'rgba(255,255,255,0.95)', borderRadius: 2, overflow: 'hidden' }}><PreviewImage file={file} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} /></Box>}
                             componentsProps={{ popper: { sx: { zIndex: 10000 } }, tooltip: { sx: { p: 0, bgcolor: 'transparent', boxShadow: '0 10px 30px rgba(0,0,0,0.3)', maxWidth: 'none', borderRadius: 2 } } }}
                           >
-                            <Box sx={{ position: 'relative', width: '100%', aspectRatio: '1/1', borderRadius: 1, overflow: 'hidden', border: '1px solid #3ba55c', bgcolor: '#fff', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+                            <Box sx={{ position: 'relative', width: '100%', aspectRatio: '1/1', borderRadius: 1, overflow: 'hidden', border: '1px solid #3ba55c', bgcolor: 'background.paper', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
                               <PreviewImage className="stk-img" file={file} alt="Pending Sticker" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                               <IconButton size="small" sx={{ position: 'absolute', top: 4, right: 4, bgcolor: 'rgba(255,255,255,0.8)', p: 0.5, backdropFilter: 'blur(4px)', '&:hover': { bgcolor: '#ef4444', color: 'white' } }} onClick={(e) => { e.stopPropagation(); setPendingStickerImages(prev => prev.filter((_, i) => i !== idx)); }}>
                                 <CloseIcon sx={{ fontSize: 16 }} />
@@ -630,7 +645,7 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
               <CardHeader 
                 title={<span>ItemNo (Item Code) <span style={{color: '#ef4444'}}>*</span></span>} 
                 titleTypographyProps={{ variant: 'overline', fontWeight: 800, sx: { letterSpacing: 1, fontSize: 13, color: '#0f172a' } }}
-                sx={{ bgcolor: '#fff', py: 2, borderBottom: '1px solid rgba(0,0,0,0.04)', borderLeft: '4px solid #2e7d32' }}
+                sx={{ bgcolor: 'background.paper', py: 2, borderBottom: '1px solid rgba(0,0,0,0.04)', borderLeft: '4px solid #2e7d32' }}
                 action={
                   <IconButton onClick={() => setShowItemDetails(!showItemDetails)} size="small" sx={{ color: '#64748b' }}>
                     {showItemDetails ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
@@ -672,7 +687,7 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
                         '&:hover': { borderColor: (errors.itemCode || duplicateCodeError || shakeFields.itemCode) ? '#ef4444' : '#94a3b8', bgcolor: (errors.itemCode || duplicateCodeError) ? '#fef2f2' : '#f1f5f9' }, 
                         '&:focus-within': { 
                           borderColor: (errors.itemCode || duplicateCodeError) ? '#ef4444' : '#2563eb', 
-                          bgcolor: '#fff', 
+                          bgcolor: 'background.paper', 
                           boxShadow: (errors.itemCode || duplicateCodeError) ? '0 0 0 4px rgba(239,68,68,0.15)' : '0 0 0 4px rgba(37,99,235,0.1)' 
                         },
                         animation: shakeFields.itemCode ? 'shake 0.5s ease-in-out' : 'none',
@@ -696,13 +711,13 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
                     <Box p={4}>
                       <Typography variant="subtitle2" sx={{ color: '#0f172a', textTransform: 'uppercase', letterSpacing: 1 }} fontWeight={800} mb={3}>{t('rdMaterial.specs_title', '2. Specification')}</Typography>
                       <Box display="grid" gridTemplateColumns={{ xs: '1fr', sm: '1fr 1fr' }} gap={2.5}>
-                        <Autocomplete componentsProps={{ popper: { style: { zIndex: 10000 } } }} forcePopupIcon options={structureOpts} freeSolo size="small" value={(form as any).structure ?? ''} onChange={(_, val) => set('structure', val)} onInputChange={(_, val, reason) => { if (reason === 'input' || reason === 'clear') set('structure', val); }} renderInput={(params) => <TextField {...params} label={t('rdMaterial.structure', 'Structure')} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />} />
-                        <AppTextField label={t('rdMaterial.fabric_name', 'Fabric Name')} size="small" inputProps={{ 'data-testid': 'rd-fabric-form-fabricName' }} value={(form as any).fabricName ?? ''} debounceMs={200} onDebounceChange={(val) => set('fabricName', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
-                        <AppTextField label={t('rdMaterial.composition', 'Composition')} size="small" value={(form as any).composition ?? ''} debounceMs={200} onDebounceChange={(val) => set('composition', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
-                        <AppTextField label={t('rdMaterial.function', 'Function')} size="small" value={(form as any).function ?? ''} debounceMs={200} onDebounceChange={(val) => set('function', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
-                        <AppTextField label={t('rdMaterial.technology', 'Technology')} size="small" value={(form as any).technology ?? ''} debounceMs={200} onDebounceChange={(val) => set('technology', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
-                        <AppTextField label={t('rdMaterial.weight_gsm', 'Weight (GSM)')} size="small" type="number" inputProps={{ min: 0 }} value={(form as any).weightGsm ?? ''} debounceMs={200} onDebounceChange={(val) => set('weightGsm', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
-                        <AppTextField label={t('rdMaterial.width', 'Cuttable width (inch)')} size="small" type="number" inputProps={{ min: 0 }} value={(form as any).cuttableWidth ?? ''} debounceMs={200} onDebounceChange={(val) => set('cuttableWidth', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
+                        <Autocomplete componentsProps={{ popper: { style: { zIndex: 10000 } } }} forcePopupIcon options={structureOpts} freeSolo size="small" value={(form as any).structure ?? ''} onChange={(_, val) => set('structure', val || '')} onInputChange={(_, val, reason) => { if (reason === 'input' || reason === 'clear') set('structure', val); }} renderInput={(params) => <TextField {...params} label={t('rdMaterial.structure', 'Structure')} sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover':{bgcolor: 'background.default'}, '&.Mui-focused':{bgcolor: 'background.paper'} } }} />} />
+                        <Autocomplete componentsProps={{ popper: { style: { zIndex: 10000 } } }} forcePopupIcon options={fabricNameOpts} freeSolo size="small" value={(form as any).fabricName ?? ''} onChange={(_, val) => set('fabricName', val || '')} onInputChange={(_, val, reason) => { if (reason === 'input' || reason === 'clear') set('fabricName', val); }} renderInput={(params) => <TextField {...params} label={t('rdMaterial.fabric_name', 'Fabric Name')} inputProps={{ ...params.inputProps, 'data-testid': 'rd-fabric-form-fabricName' }} sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover':{bgcolor: 'background.default'}, '&.Mui-focused':{bgcolor: 'background.paper'} } }} />} />
+                        <Autocomplete componentsProps={{ popper: { style: { zIndex: 10000 } } }} forcePopupIcon options={compositionOpts} freeSolo size="small" value={(form as any).composition ?? ''} onChange={(_, val) => set('composition', val || '')} onInputChange={(_, val, reason) => { if (reason === 'input' || reason === 'clear') set('composition', val); }} renderInput={(params) => <TextField {...params} label={t('rdMaterial.composition', 'Composition')} sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover':{bgcolor: 'background.default'}, '&.Mui-focused':{bgcolor: 'background.paper'} } }} />} />
+                        <Autocomplete componentsProps={{ popper: { style: { zIndex: 10000 } } }} forcePopupIcon options={functionOpts} freeSolo size="small" value={(form as any).function ?? ''} onChange={(_, val) => set('function', val || '')} onInputChange={(_, val, reason) => { if (reason === 'input' || reason === 'clear') set('function', val); }} renderInput={(params) => <TextField {...params} label={t('rdMaterial.function', 'Function')} sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover':{bgcolor: 'background.default'}, '&.Mui-focused':{bgcolor: 'background.paper'} } }} />} />
+                        <Autocomplete componentsProps={{ popper: { style: { zIndex: 10000 } } }} forcePopupIcon options={technologyOpts} freeSolo size="small" value={(form as any).technology ?? ''} onChange={(_, val) => set('technology', val || '')} onInputChange={(_, val, reason) => { if (reason === 'input' || reason === 'clear') set('technology', val); }} renderInput={(params) => <TextField {...params} label={t('rdMaterial.technology', 'Technology')} sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover':{bgcolor: 'background.default'}, '&.Mui-focused':{bgcolor: 'background.paper'} } }} />} />
+                        <AppTextField label={t('rdMaterial.weight_gsm', 'Weight (GSM)')} size="small" type="number" inputProps={{ min: 0 }} value={(form as any).weightGsm ?? ''} debounceMs={200} onDebounceChange={(val) => set('weightGsm', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover':{bgcolor: 'background.default'}, '&.Mui-focused':{bgcolor: 'background.paper'} } }} />
+                        <AppTextField label={t('rdMaterial.width', 'Cuttable width (inch)')} size="small" type="number" inputProps={{ min: 0 }} value={(form as any).cuttableWidth ?? ''} debounceMs={200} onDebounceChange={(val) => set('cuttableWidth', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover':{bgcolor: 'background.default'}, '&.Mui-focused':{bgcolor: 'background.paper'} } }} />
                       </Box>
                     </Box>
 
@@ -710,8 +725,8 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
                     <Box p={4}>
                       <Typography variant="subtitle2" sx={{ color: '#0f172a', textTransform: 'uppercase', letterSpacing: 1 }} fontWeight={800} mb={3}>{t('rdMaterial.supplier_title', '3. Supplier')}</Typography>
                       <Box display="grid" gridTemplateColumns={{ xs: '1fr', sm: '1fr 1fr' }} gap={2.5}>
-                        <AppTextField label={t('rdMaterial.supplier', 'Supplier Name')} size="small" value={form.supplierName ?? ''} debounceMs={200} onDebounceChange={(val) => set('supplierName', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
-                        <AppTextField label={t('rdMaterial.origin', 'Origin')} size="small" value={form.origin ?? ''} debounceMs={200} onDebounceChange={(val) => set('origin', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
+                        <Autocomplete componentsProps={{ popper: { style: { zIndex: 10000 } } }} forcePopupIcon options={supplierOpts} freeSolo size="small" value={form.supplierName ?? ''} onChange={(_, val) => set('supplierName', val || '')} onInputChange={(_, val, reason) => { if (reason === 'input' || reason === 'clear') set('supplierName', val); }} renderInput={(params) => <TextField {...params} label={t('rdMaterial.supplier', 'Supplier Name')} sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover':{bgcolor: 'background.default'}, '&.Mui-focused':{bgcolor: 'background.paper'} } }} />} />
+                        <Autocomplete componentsProps={{ popper: { style: { zIndex: 10000 } } }} forcePopupIcon options={originOpts} freeSolo size="small" value={form.origin ?? ''} onChange={(_, val) => set('origin', val || '')} onInputChange={(_, val, reason) => { if (reason === 'input' || reason === 'clear') set('origin', val); }} renderInput={(params) => <TextField {...params} label={t('rdMaterial.origin', 'Origin')} sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover':{bgcolor: 'background.default'}, '&.Mui-focused':{bgcolor: 'background.paper'} } }} />} />
                       </Box>
                     </Box>
                     {/* 4. Cost */}
@@ -732,7 +747,7 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
                           <AppTextField 
                             label={t('rdMaterial.price', 'Price')} size="small" type="number" inputProps={{ min: 0 }}
                             value={form.price ?? ''} debounceMs={200} onDebounceChange={(val) => set('price', val)} 
-                            sx={{ flexGrow: 1, '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }}
+                            sx={{ flexGrow: 1, '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover':{bgcolor: 'background.default'}, '&.Mui-focused':{bgcolor: 'background.paper'} } }}
                           />
                           <Autocomplete 
                             componentsProps={{ popper: { style: { zIndex: 10000 } } }} 
@@ -761,7 +776,7 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
                                   borderColor: errors.currency ? '#ef4444' : undefined,
                                 },
                                 '&:hover': { bgcolor: errors.currency ? '#fef2f2' : '#f1f5f9' },
-                                '&.Mui-focused': { bgcolor: '#fff' }
+                                '&.Mui-focused': { bgcolor: 'background.paper' }
                               },
                               animation: shakeFields.currency ? 'shake 0.5s ease-in-out' : 'none',
                               '@keyframes shake': {
@@ -808,7 +823,7 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
                                   borderColor: errors.priceUnit ? '#ef4444' : undefined,
                                 },
                                 '&:hover': { bgcolor: errors.priceUnit ? '#fef2f2' : '#f1f5f9' },
-                                '&.Mui-focused': { bgcolor: '#fff' }
+                                '&.Mui-focused': { bgcolor: 'background.paper' }
                               },
                               animation: shakeFields.priceUnit ? 'shake 0.5s ease-in-out' : 'none',
                               '@keyframes shake': {
@@ -823,7 +838,7 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
                         
                         <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
                           <AppTextField label={t('rdMaterial.moqMcq', 'MOQ/MCQ')} fullWidth size="small" 
-                            sx={{ flexGrow: 1, '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }}
+                            sx={{ flexGrow: 1, '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover':{bgcolor: 'background.default'}, '&.Mui-focused':{bgcolor: 'background.paper'} } }}
                             value={form.moqMcq || ''} debounceMs={200} onDebounceChange={(val) => set('moqMcq', val)} 
                           />
                           <Autocomplete 
@@ -834,10 +849,10 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
                             onChange={(_, v) => set('moqMcqUnit', v || '')} 
                             onInputChange={(_, v, reason) => { if (reason === 'input' || reason === 'clear') set('moqMcqUnit', v); }} 
                             sx={{ width: 110 }} 
-                            renderInput={(params) => <TextField {...params} label={t('rdMaterial.unit', 'Unit')} size="small" sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1 } }} />} 
+                            renderInput={(params) => <TextField {...params} label={t('rdMaterial.unit', 'Unit')} size="small" sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1 } }} />} 
                           />
                         </Box>
-                        <AppTextField label={t('rdMaterial.surcharge_str', 'Surcharge ($)')} size="small" multiline rows={3} value={form.surchargeStr ?? ''} debounceMs={200} onDebounceChange={(val) => set('surchargeStr', val)} sx={{ gridColumn: '1/-1', '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
+                        <AppTextField label={t('rdMaterial.surcharge_str', 'Surcharge ($)')} size="small" multiline rows={3} value={form.surchargeStr ?? ''} debounceMs={200} onDebounceChange={(val) => set('surchargeStr', val)} sx={{ gridColumn: '1/-1', '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover':{bgcolor: 'background.default'}, '&.Mui-focused':{bgcolor: 'background.paper'} } }} />
                         <Autocomplete
                           componentsProps={{ popper: { style: { zIndex: 10000 } } }}
                           forcePopupIcon
@@ -853,17 +868,17 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
                               label={t('rdMaterial.customer', 'Customer')} 
                               sx={{ 
                                 '& .MuiOutlinedInput-root': { 
-                                  bgcolor: '#f8fafc', 
+                                  bgcolor: 'background.default', 
                                   borderRadius: 1, 
-                                  '&:hover': { bgcolor: '#f1f5f9' }, 
-                                  '&.Mui-focused': { bgcolor: '#fff' } 
+                                  '&:hover': { bgcolor: 'background.default' }, 
+                                  '&.Mui-focused': { bgcolor: 'background.paper' } 
                                 } 
                               }} 
                             />
                           )}
                         />
-                        <AppTextField label={t('rdMaterial.leadtime_with_greige', 'Leadtime with greige')} size="small" multiline rows={3} value={form.leadtimeWithGreige ?? ''} debounceMs={200} onDebounceChange={(val) => set('leadtimeWithGreige', val)} sx={{ gridColumn: '1/-1', '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
-                        <AppTextField label={t('rdMaterial.leadtime_without_greige', 'Leadtime without greige')} size="small" multiline rows={3} value={form.leadtimeWithoutGreige ?? ''} debounceMs={200} onDebounceChange={(val) => set('leadtimeWithoutGreige', val)} sx={{ gridColumn: '1/-1', '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
+                        <AppTextField label={t('rdMaterial.leadtime_with_greige', 'Leadtime with greige')} size="small" multiline rows={3} value={form.leadtimeWithGreige ?? ''} debounceMs={200} onDebounceChange={(val) => set('leadtimeWithGreige', val)} sx={{ gridColumn: '1/-1', '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover':{bgcolor: 'background.default'}, '&.Mui-focused':{bgcolor: 'background.paper'} } }} />
+                        <AppTextField label={t('rdMaterial.leadtime_without_greige', 'Leadtime without greige')} size="small" multiline rows={3} value={form.leadtimeWithoutGreige ?? ''} debounceMs={200} onDebounceChange={(val) => set('leadtimeWithoutGreige', val)} sx={{ gridColumn: '1/-1', '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover':{bgcolor: 'background.default'}, '&.Mui-focused':{bgcolor: 'background.paper'} } }} />
                       </Box>
                     </Box>
  
@@ -924,7 +939,7 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
                                 borderColor: errors.quantity ? '#ef4444' : undefined,
                               },
                               '&:hover': { bgcolor: errors.quantity ? '#fef2f2' : '#f1f5f9' }, 
-                              '&.Mui-focused': { bgcolor: '#fff' } 
+                              '&.Mui-focused': { bgcolor: 'background.paper' } 
                             },
                             animation: shakeFields.quantity ? 'shake 0.5s ease-in-out' : 'none',
                             '@keyframes shake': {
@@ -934,8 +949,8 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
                             }
                           }} 
                         />
-                        <AppTextField label={t('rdMaterial.location', 'Hanger location')} size="small" value={form.location ?? ''} debounceMs={200} onDebounceChange={(val) => set('location', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
-                        <AppTextField label={t('rdMaterial.remark', 'Remark')} size="small" multiline rows={3} value={form.remark ?? ''} debounceMs={200} onDebounceChange={(val) => set('remark', val)} sx={{ gridColumn: '1/-1', '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc', borderRadius: 1, '&:hover':{bgcolor:'#f1f5f9'}, '&.Mui-focused':{bgcolor:'#fff'} } }} />
+                        <Autocomplete componentsProps={{ popper: { style: { zIndex: 10000 } } }} forcePopupIcon options={locationOpts} freeSolo size="small" value={form.location ?? ''} onChange={(_, val) => set('location', val || '')} onInputChange={(_, val, reason) => { if (reason === 'input' || reason === 'clear') set('location', val); }} renderInput={(params) => <TextField {...params} label={t('rdMaterial.location', 'Hanger location')} sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover':{bgcolor: 'background.default'}, '&.Mui-focused':{bgcolor: 'background.paper'} } }} />} />
+                        <AppTextField label={t('rdMaterial.remark', 'Remark')} size="small" multiline rows={3} value={form.remark ?? ''} debounceMs={200} onDebounceChange={(val) => set('remark', val)} sx={{ gridColumn: '1/-1', '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover':{bgcolor: 'background.default'}, '&.Mui-focused':{bgcolor: 'background.paper'} } }} />
                         <Box sx={{ gridColumn: '1/-1', display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
                           <Box sx={{ bgcolor: '#f0fdf4', p: 1.5, borderRadius: 1, border: '1px solid #bbf7d0', display: 'inline-flex', width: 'fit-content' }}>
                             <FormControlLabel
@@ -964,8 +979,8 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
     </Box>
 
       {/* Footer */}
-      <Box sx={{ position: 'sticky', bottom: 0, zIndex: 10, px: 4, py: 2.5, borderTop: '1px solid rgba(0,0,0,0.05)', bgcolor: '#fff', display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-        <Button onClick={onClose} variant="outlined" sx={{ borderRadius: 1, px: 3, fontWeight: 700, borderColor: '#cbd5e1', color: '#64748b', '&:hover': { borderColor: '#94a3b8', bgcolor: '#f8fafc' } }}>
+      <Box sx={{ position: 'sticky', bottom: 0, zIndex: 10, px: 4, py: 2.5, borderTop: '1px solid rgba(0,0,0,0.05)', bgcolor: 'background.paper', display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+        <Button onClick={onClose} variant="outlined" sx={{ borderRadius: 1, px: 3, fontWeight: 700, borderColor: '#cbd5e1', color: '#64748b', '&:hover': { borderColor: '#94a3b8', bgcolor: 'background.default' } }}>
           {t('rdMaterial.cancel', 'Cancel')}
         </Button>
         <Button data-testid="rd-fabric-form-btn-save" onClick={() => handleSave(false)} variant="contained" disabled={loading} sx={{ borderRadius: 1, px: 4, fontWeight: 700, bgcolor: '#2e7d32', '&:hover': { bgcolor: '#1b5e20' }, boxShadow: '0 4px 14px 0 rgba(46, 125, 50, 0.39)' }}>
@@ -991,7 +1006,7 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
             Detected {pastedFiles.length} image(s) from clipboard. Where do you want to paste?
           </Typography>
           {pastedFiles.length > 0 && (
-            <Box sx={{ width: 120, height: 120, borderRadius: 1, overflow: 'hidden', border: '1px solid #e2e8f0' }}>
+            <Box sx={{ width: 120, height: 120, borderRadius: 1, overflow: 'hidden', border: '1px solid', borderColor: 'divider' }}>
               <PreviewImage file={pastedFiles[0]} alt="preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </Box>
           )}
@@ -1042,7 +1057,7 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
             return (
               <Box sx={{ overflowX: 'auto' }}>
                 <Table size="small" sx={{ minWidth: 600 }}>
-                  <TableHead sx={{ bgcolor: '#f8fafc' }}>
+                  <TableHead sx={{ bgcolor: 'background.default' }}>
                     <TableRow>
                       <TableCell sx={{ fontWeight: 700, py: 1.5 }}>Date</TableCell>
                       <TableCell sx={{ fontWeight: 700, py: 1.5 }}>Customer</TableCell>

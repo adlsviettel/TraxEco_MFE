@@ -36,7 +36,7 @@ export const CustomerDonutChart: React.FC<CustomerDonutChartProps> = ({
       elevation={0}
       sx={{ 
         borderRadius: '8px', 
-        border: '1px solid #e2e8f0', 
+        border: '1px solid', borderColor: 'divider', 
         boxShadow: '0 1px 3px rgba(0,0,0,0.02)',
         display: 'flex',
         flexDirection: 'column',
@@ -84,7 +84,7 @@ export const CustomerDonutChart: React.FC<CustomerDonutChartProps> = ({
                       if (active && payload && payload.length) {
                         const item = payload[0];
                         return (
-                          <Paper elevation={0} sx={{ p: 1.2, border: '1px solid #e2e8f0', borderRadius: '8px' }}>
+                          <Paper elevation={0} sx={{ p: 1.2, border: '1px solid', borderColor: 'divider', borderRadius: '8px' }}>
                             <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, display: 'block', mb: 0.2 }}>
                               {item.name}
                             </Typography>
