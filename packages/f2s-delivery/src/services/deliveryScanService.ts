@@ -74,7 +74,7 @@ export const deliveryScanService = {
     // Server có thể trả về 400 hoặc 500 kèm JSON error message, nên ta bắt lỗi kĩ
     const data = await res.json();
     if (!res.ok) {
-      throw new Error(data.error || data.message || 'Lỗi khi xác nhận giao hàng');
+      throw new Error(data.error || data.message || 'Error confirming delivery');
     }
     return data;
   },
@@ -90,7 +90,7 @@ export const deliveryScanService = {
     });
     const data = await res.json();
     if (!res.ok) {
-      throw new Error(data.error || data.message || 'Lỗi khi xử lý yêu cầu');
+      throw new Error(data.error || data.message || 'Error processing request');
     }
     return data;
   },
@@ -122,9 +122,55 @@ export const deliveryScanService = {
     });
     const data = await res.json();
     if (!res.ok) {
-      throw new Error(data.error || data.message || 'Lỗi khi xác nhận nhận hàng');
+      throw new Error(data.error || data.message || 'Error confirming receipt');
     }
     return data;
+  },
+
+  /**
+   * Xác nhận nhận hàng loạt theo danh sách barcode và số lượng
+   */
+  batchConfirmImportSewing: async (
+    items: { barcode: string; actualQty: number; poNo?: string }[]
+  ): Promise<{ successCount: number; failedCount: number; errors: string[] }> => {
+    try {
+      // 1. Thử gọi API batch-confirm nếu backend đã hỗ trợ
+      const res = await authFetch(`f2s-delivery/receive/batch-confirm`, {
+        method: 'POST',
+        body: JSON.stringify({ items }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        return {
+          successCount: data.successCount ?? items.length,
+          failedCount: data.failedCount ?? 0,
+          errors: data.errors || [],
+        };
+      }
+    } catch {
+      // Fallback nếu API batch không tồn tại hoặc có lỗi kết nối
+    }
+
+    // 2. Fallback xử lý tuần tự/song song qua confirmImportSewing
+    let successCount = 0;
+    const errors: string[] = [];
+
+    const promises = items.map(async (item) => {
+      try {
+        await deliveryScanService.confirmImportSewing(item.barcode, item.actualQty);
+        successCount++;
+      } catch (err: any) {
+        errors.push(`PO ${item.poNo || item.barcode}: ${err.message || 'Confirmation error'}`);
+      }
+    });
+
+    await Promise.all(promises);
+
+    return {
+      successCount,
+      failedCount: items.length - successCount,
+      errors,
+    };
   },
 
   /**
@@ -134,8 +180,33 @@ export const deliveryScanService = {
     const res = await authFetch(`f2s-delivery/receive/${encodeURIComponent(barcode)}/history`);
     const data = await res.json();
     if (!res.ok) {
-      throw new Error(data.error || 'Lỗi lấy lịch sử');
+      throw new Error(data.error || 'Error loading history');
     }
     return data.data || [];
   },
 };
+
+export interface PendingImportItem {
+  RecNo?: string;
+  BarCode?: string;
+  id?: string;
+  PONo?: string;
+  JobNo?: string;
+  FacLine?: string;
+  DateCreate?: string;
+  ColorName?: string;
+  ColorID?: string;
+  SizeName?: string;
+  SizeID?: string;
+  TotalQty?: number;
+  BookQty?: number;
+  QtyConfirm?: number;
+  ScanQty?: number;
+  ScannedQty?: number;
+  DkQty?: number;
+  MetalScanQty?: number;
+  Comment?: string;
+  WHStt?: string;
+  [key: string]: any;
+}
+

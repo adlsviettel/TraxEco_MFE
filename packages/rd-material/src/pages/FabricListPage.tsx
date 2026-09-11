@@ -23,7 +23,7 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import SyncIcon from '@mui/icons-material/Sync';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import { authService, AppButton, AppTextField, AdvancedFilterDrawer, columnFilterStore, TableExcelColumnMenu } from '@traxeco/shared';
+import { authService, AppButton, AppTextField, AdvancedFilterDrawer, columnFilterStore, TableExcelColumnMenu, scrollToTop } from '@traxeco/shared';
 import { format } from 'date-fns';
 import { exportFabricSubmissionToExcel } from '../utils/excelExport';
 import { rdItemApi } from '../services/rdMaterialApi';
@@ -159,14 +159,16 @@ const FabricListPage: React.FC = () => {
     let val: any;
     switch(field) {
       // Common fields
-      case 'Name': val = row.name; break;
+      case 'Name': val = row.fabric?.fabricName || row.name; break;
       case 'Item Code': val = row.itemCode; break;
       case 'Supplier': val = row.supplierName; break;
       case 'Origin': val = row.origin; break;
       case 'Price': val = row.price ? `${row.price}${row.currency ? ' ' + row.currency : ''}${row.priceUnit ? '/' + row.priceUnit : ''}` : undefined; break;
+      case 'MOQ / MCQ': val = row.moqMcq ? `${row.moqMcq} ${row.moqMcqUnit ?? ''}`.trim() : undefined; break;
+      case 'Surcharge': val = [row.moqSurcharge ? `MOQ: ${row.moqSurcharge}` : '', row.mcqSurcharge ? `MCQ: ${row.mcqSurcharge}` : ''].filter(Boolean).join(' | ') || undefined; break;
       case 'Location': val = row.location; break;
       case 'Holder': val = row.holder; break;
-      case 'Qty': val = row.quantity ? `${row.quantity} ${row.quantityUnit || 'pcs'}` : undefined; break;
+      case 'Qty': val = row.quantity ? `${row.quantity}${row.quantityUnit ? ' ' + row.quantityUnit : (row.priceUnit ? ' ' + row.priceUnit : '')}` : undefined; break;
       case 'Created At': 
         if (row.createdAt) {
           try { val = new Date(row.createdAt).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }); } catch {}
@@ -239,6 +241,10 @@ const FabricListPage: React.FC = () => {
   useEffect(() => {
     setPage(0);
   }, [columnFilters, keyword, itemCode, supplierName, color, origin, location, holder]);
+
+  useEffect(() => {
+    scrollToTop(dragRef);
+  }, [page]);
 
   columnFilterStore.register(window.location.pathname, columnFilters, setColumnFilters, items);
 
@@ -901,20 +907,9 @@ const FabricListPage: React.FC = () => {
         {columns.map((col) => (
           <MenuItem key={col.id} onClick={() => setVisibleColumns(prev => ({ ...prev, [col.id]: prev[col.id] === false }))} sx={{ py: 0.5, borderRadius: 1 }}>
             <Checkbox size="small" checked={visibleColumns[col.id] !== false} onChange={() => {}} sx={{ mr: 1, p: 0, pointerEvents: 'none' }} />
-            <Typography fontSize={13} fontWeight={500} sx={{ pointerEvents: 'none' }}><Box sx={{ display: 'flex', alignItems: 'center', justifyContent: col.isCenter ? 'center' : col.isRight ? 'flex-end' : 'flex-start' }}>
-                          <span>{col.label}</span>
-                          {col.id !== 'Image' && col.id !== 'Actions' && (
-                            <TableExcelColumnMenu 
-                              field={col.id}
-                              allRows={items}
-                              columnFilters={columnFilters}
-                              setColumnFilters={setColumnFilters}
-                              getFieldValue={getFieldValueForFilter}
-                              onSortAsc={() => setSortConfig({ field: col.id, direction: 'asc' })}
-                              onSortDesc={() => setSortConfig({ field: col.id, direction: 'desc' })}
-                            />
-                          )}
-                        </Box></Typography>
+            <Typography fontSize={13} fontWeight={500} sx={{ pointerEvents: 'none' }}>
+              {col.label}
+            </Typography>
           </MenuItem>
         ))}
       </Menu>
@@ -1293,7 +1288,10 @@ const FabricListPage: React.FC = () => {
           <Pagination
             count={Math.ceil(filteredItems.length / rowsPerPage) || 1}
             page={page + 1}
-            onChange={(_, p) => { setPage(p - 1); }}
+            onChange={(_, p) => { 
+              setPage(p - 1); 
+              scrollToTop(dragRef);
+            }}
             color="primary" 
             shape="rounded"
             size={isMobile ? 'small' : 'medium'}
@@ -1313,7 +1311,11 @@ const FabricListPage: React.FC = () => {
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, color: '#3f4945', fontSize: { xs: 11, sm: 12 }, flexShrink: 0 }}>
             <Select
               value={rowsPerPage}
-              onChange={(e) => { setRowsPerPage(Number(e.target.value)); setPage(0); }}
+              onChange={(e) => { 
+                setRowsPerPage(Number(e.target.value)); 
+                setPage(0); 
+                scrollToTop(dragRef);
+              }}
               size="small"
               sx={{ height: 24, fontSize: 11, bgcolor: '#f3f4f5', '& fieldset': { border: 'none' }, '&:hover fieldset': { border: '1px solid #bfc9c4' } }}
             >

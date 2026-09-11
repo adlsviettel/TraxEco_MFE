@@ -31,6 +31,7 @@ import { Html5QrcodePlugin } from '@traxeco/shared';
 const F2S_STORAGE_KEY = 'f2sDeliveryState';
 
 function ManualTab() {
+  const { t } = useTranslation();
   // Khôi phục state từ sessionStorage
   const saved = (() => {
     try {
@@ -98,16 +99,16 @@ function ManualTab() {
   const handleDelete = (row: any) => {
     setConfirmDlg({
       open: true,
-      message: 'Bạn có chắc chắn muốn XÓA dòng này không?',
+      message: t('f2s.deliver.confirmDelete', 'Bạn có chắc chắn muốn XÓA dòng này không?'),
       onConfirm: async () => {
         setConfirmDlg(prev => ({ ...prev, open: false }));
         try {
           const xmlString = buildXml(row);
           await deliveryScanService.updateOrDeleteDelivery(0, xmlString);
-          showSnack('Xóa thành công!');
+          showSnack(t('f2s.deliver.deleteSuccess', 'Xóa thành công!'));
           if (selectedPO) await loadDetails(selectedPO);
         } catch (err: any) {
-          showSnack('Lỗi khi xóa: ' + err.message, 'error');
+          showSnack(t('f2s.deliver.deleteError', 'Lỗi khi xóa: {{msg}}', { msg: err.message }), 'error');
         }
       },
     });
@@ -119,12 +120,12 @@ function ManualTab() {
     try {
       const xmlString = buildXml(editRow, editQty);
       await deliveryScanService.updateOrDeleteDelivery(1, xmlString);
-      showSnack('Cập nhật thành công!');
+      showSnack(t('f2s.deliver.updateSuccess', 'Cập nhật thành công!'));
       setEditDialogOpen(false);
       setEditQty('');
       if (selectedPO) await loadDetails(selectedPO);
     } catch (err: any) {
-      showSnack('Lỗi khi cập nhật: ' + err.message, 'error');
+      showSnack(t('f2s.deliver.updateError', 'Lỗi khi cập nhật: {{msg}}', { msg: err.message }), 'error');
     }
   };
 
@@ -160,7 +161,7 @@ function ManualTab() {
       {/* Bước 1: Tìm PO hoặc SO (UI Mới gọn gàng hơn) */}
       <Box>
         <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#2e7d32', mb: 1, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 1 }}>
-          <SearchIcon fontSize="small" /> Bước 1: Tìm PO hoặc SO
+          <SearchIcon fontSize="small" /> {t("f2s.deliver.step1Title", "Bước 1: Tìm PO hoặc SO")}
         </Typography>
         <Paper elevation={0} sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: '100%', maxWidth: '100%', borderRadius: 2, border: '1px solid', borderColor: 'divider', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
           {/* Toggle PO/SO */}
@@ -214,7 +215,7 @@ function ManualTab() {
           renderInput={(params) => (
             <TextField
               {...params}
-              placeholder={`Nhập số ${searchType} và bấm Enter...`}
+              placeholder={t("f2s.deliver.step1Placeholder", "Nhập số {{type}} và bấm Enter...", { type: searchType })}
               variant="standard"
               InputProps={{
                 ...params.InputProps,
@@ -252,7 +253,7 @@ function ManualTab() {
       {selectedPO && (
         <Paper elevation={0} sx={{ p: 2, borderRadius: 2, border: '1px solid', borderColor: 'divider' }}>
           <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#2e7d32', mb: 2, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 1 }}>
-            <ListIcon /> Bước 2: Chọn Dòng ({searchType}: {selectedPO})
+            <ListIcon /> {t("f2s.deliver.step2Title", "Bước 2: Chọn Dòng ({{type}}: {{val}})", { type: searchType, val: selectedPO })}
           </Typography>
 
           {loadingDetails ? (
@@ -260,7 +261,7 @@ function ManualTab() {
               <CircularProgress />
             </Box>
           ) : details.length === 0 ? (
-            <Typography variant="body2" color="text.secondary" sx={{ py: 2, textAlign: 'center' }}>Không có dữ liệu chi tiết cho mã này.</Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ py: 2, textAlign: 'center' }}>{t("f2s.deliver.noDetail", "Không có dữ liệu chi tiết cho mã này.")}</Typography>
           ) : (
             <TableContainer sx={{ border: '1px solid #eee', borderRadius: 1 }}>
               <Table size="small" sx={{ '& .MuiTableCell-root': { py: { xs: 0.5, lg: 1 }, px: { xs: 1, lg: 2 }, fontSize: { xs: '0.75rem', lg: '0.85rem' } } }}>
@@ -272,7 +273,7 @@ function ManualTab() {
                     <TableCell sx={{ fontWeight: 700, textAlign: 'right' }}>PackedQtyLine</TableCell>
                     <TableCell sx={{ fontWeight: 700, textAlign: 'right' }}>QtyFromLine</TableCell>
                     <TableCell sx={{ fontWeight: 700, textAlign: 'right' }}>Balance</TableCell>
-                    <TableCell sx={{ fontWeight: 700, textAlign: 'center', position: 'sticky', right: 0, backgroundColor: '#f5f5f5', borderLeft: '1px solid #eee', zIndex: 2 }}>Hành động</TableCell>
+                    <TableCell sx={{ fontWeight: 700, textAlign: 'center', position: 'sticky', right: 0, backgroundColor: '#f5f5f5', borderLeft: '1px solid #eee', zIndex: 2 }}>{t("f2s.deliver.colAction", "Hành động")}</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -315,7 +316,7 @@ function ManualTab() {
                             disabled={isDisabled}
                             sx={{ minWidth: 80, textTransform: 'none' }}
                           >
-                            {isDisabled ? 'Hết hàng' : 'Chọn'}
+                            {isDisabled ? t('f2s.deliver.outOfStock', 'Hết hàng') : t('f2s.deliver.select', 'Chọn')}
                           </Button>
                         </TableCell>
                       </TableRow>
@@ -332,7 +333,7 @@ function ManualTab() {
       {selectedPO && history.length > 0 && (
         <Paper elevation={0} sx={{ p: 2, borderRadius: 2, border: '1px solid', borderColor: 'divider', backgroundColor: '#fafafa' }}>
           <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#455a64', mb: 2, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 1 }}>
-            <ListIcon /> Kết quả giao hàng (Lịch sử & Tổng hợp)
+            <ListIcon /> {t("f2s.deliver.step3Title", "Kết quả giao hàng (Lịch sử & Tổng hợp)")}
           </Typography>
           <TableContainer sx={{ border: '1px solid #eee', borderRadius: 1, backgroundColor: 'background.paper' }}>
             <Table size="small">
@@ -341,7 +342,7 @@ function ManualTab() {
                   {['RecNo', 'JobNo', 'PONo', 'BuyerItem', 'ManuSize', 'CustSize', 'Balance'].map((col) => (
                     <TableCell key={col} sx={{ fontWeight: 700 }}>{col}</TableCell>
                   ))}
-                  <TableCell sx={{ fontWeight: 700, textAlign: 'center', width: 100, position: 'sticky', right: 0, backgroundColor: '#eeeeee', borderLeft: '1px solid #ddd', zIndex: 2 }}>Hành động</TableCell>
+                  <TableCell sx={{ fontWeight: 700, textAlign: 'center', width: 100, position: 'sticky', right: 0, backgroundColor: '#eeeeee', borderLeft: '1px solid #ddd', zIndex: 2 }}>{t("f2s.deliver.colAction", "Hành động")}</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -359,7 +360,7 @@ function ManualTab() {
                         sx={{ textTransform: 'none' }}
                         onClick={() => handleDelete(row)}
                       >
-                        Xóa
+                        {t('f2s.deliver.btnDelete', 'Xóa')}
                       </Button>
                     </TableCell>
                   </TableRow>
@@ -381,7 +382,7 @@ function ManualTab() {
         }}
       >
         <DialogTitle sx={{ fontWeight: 700, color: '#1B5E20', display: 'flex', alignItems: 'center', gap: 1 }}>
-          <CheckIcon /> Xác Nhận Giao Hàng
+          <CheckIcon /> {t("f2s.deliver.confirmDelivery", "Xác Nhận Giao Hàng")}
         </DialogTitle>
         <DialogContent dividers>
           {activeRow && (() => {
@@ -391,28 +392,35 @@ function ManualTab() {
             return (
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
                 <Box sx={{ backgroundColor: '#f1f8e9', p: 2, borderRadius: 1 }}>
-                  <Typography variant="body2" color="text.secondary">Mã PO / SO:</Typography>
+                  <Typography variant="body2" color="text.secondary">{t("f2s.deliver.poSoCode", "Mã PO / SO:")}</Typography>
                   <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>{activeRow.JobNo}</Typography>
 
-                  <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>Size hiện tại:</Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>{t("f2s.deliver.currentSize", "Size hiện tại:")}</Typography>
                   <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
                     {activeRow.ManuSize}
                   </Typography>
 
-                  <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>Số lượng còn lại (Balance): <Box component="span" sx={{ color: '#d32f2f', fontWeight: 700 }}>{activeRow.Balance}</Box></Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>{t("f2s.deliver.balance", "Số lượng còn lại (Balance):")} <Box component="span" sx={{ color: '#d32f2f', fontWeight: 700 }}>{activeRow.Balance}</Box></Typography>
                 </Box>
 
                 <TextField
-                  label="Nhập số lượng giao (Qty)"
+                  label={t("f2s.deliver.inputQty", "Nhập số lượng giao (Qty)")}
                   type="number"
                   variant="outlined"
                   fullWidth
                   autoFocus
                   error={isOver}
-                  helperText={isOver ? `Không thể vượt quá Balance (${activeRow.Balance})` : ' '}
+                  helperText={isOver ? t("f2s.deliver.overBalance", "Không thể vượt quá Balance ({{max}})", { max: activeRow.Balance }) : ' '}
                   value={manualQty}
-                  onChange={(e) => setManualQty(e.target.value)}
+                  onChange={(e) => {
+                    const clean = e.target.value.replace(/[^0-9]/g, '');
+                    setManualQty(clean);
+                  }}
                   onKeyDown={async (e) => {
+                    if (['-', '+', '.', ',', 'e', 'E'].includes(e.key)) {
+                      e.preventDefault();
+                      return;
+                    }
                     if (e.key === 'Enter') {
                       if (!String(manualQty).trim() || Number(manualQty) <= 0 || (activeRow && Number(manualQty) > activeRow.Balance)) return;
                       e.preventDefault();
@@ -420,7 +428,7 @@ function ManualTab() {
                     }
                   }}
                   InputProps={{ 
-                    inputProps: { min: 1, max: activeRow.Balance > 0 ? activeRow.Balance : undefined },
+                    inputProps: { inputMode: 'numeric', pattern: '[0-9]*', min: 1, max: activeRow.Balance > 0 ? activeRow.Balance : undefined },
                     endAdornment: (
                       <InputAdornment position="end">
                         <Button
@@ -436,7 +444,7 @@ function ManualTab() {
                               
                               await deliveryScanService.confirmManualDelivery(xmlString);
                               
-                              showSnack('Xác nhận giao hàng thành công!');
+                              showSnack(t('f2s.deliver.deliverSuccess', 'Xác nhận giao hàng thành công!'));
                               setDialogOpen(false);
                               setManualQty('');
                               
@@ -444,11 +452,11 @@ function ManualTab() {
                                 await loadDetails(selectedPO);
                               }
                             } catch (err: any) {
-                              showSnack('Lỗi giao hàng: ' + err.message, 'error');
+                              showSnack(t('f2s.deliver.deliverError', 'Lỗi giao hàng: {{msg}}', { msg: err.message }), 'error');
                             }
                           }}
                         >
-                          LƯU
+                          {t("f2s.deliver.btnSave", "LƯU")}
                         </Button>
                       </InputAdornment>
                     )
@@ -461,7 +469,7 @@ function ManualTab() {
         </DialogContent>
         <DialogActions sx={{ p: 2 }}>
           <Button onClick={() => setDialogOpen(false)} color="inherit" sx={{ fontWeight: 600 }}>
-            Hủy Bỏ / Đóng
+            {t('f2s.deliver.btnCancel', 'Hủy Bỏ / Đóng')}
           </Button>
         </DialogActions>
       </Dialog>
@@ -475,7 +483,7 @@ function ManualTab() {
         PaperProps={{ sx: { borderRadius: 2, padding: 1 } }}
       >
         <DialogTitle sx={{ fontWeight: 700, color: '#2e7d32', display: 'flex', alignItems: 'center', gap: 1 }}>
-          <EditIcon /> Sửa Số Lượng
+          <EditIcon /> {t("f2s.deliver.editQtyTitle", "Sửa Số Lượng")}
         </DialogTitle>
         <DialogContent dividers>
           {editRow && (
@@ -485,18 +493,25 @@ function ManualTab() {
                 <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>{editRow.JobNo}</Typography>
                 <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>PONo:</Typography>
                 <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>{editRow.PONo}</Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>Qty hiện tại:</Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>{t("f2s.deliver.currentQty", "Qty hiện tại:")}</Typography>
                 <Typography variant="subtitle1" sx={{ fontWeight: 700, color: '#d32f2f' }}>{editRow.Qty}</Typography>
               </Box>
               <TextField
-                label="Nhập số lượng mới"
+                label={t("f2s.deliver.inputNewQty", "Nhập số lượng mới")}
                 type="number"
                 variant="outlined"
                 fullWidth
                 autoFocus
                 value={editQty}
-                onChange={(e) => setEditQty(e.target.value)}
+                onChange={(e) => {
+                  const clean = e.target.value.replace(/[^0-9]/g, '');
+                  setEditQty(clean);
+                }}
                 onKeyDown={(e) => {
+                  if (['-', '+', '.', ',', 'e', 'E'].includes(e.key)) {
+                    e.preventDefault();
+                    return;
+                  }
                   if (e.key === 'Enter') {
                     if (!String(editQty).trim() || Number(editQty) <= 0) return;
                     e.preventDefault();
@@ -504,7 +519,7 @@ function ManualTab() {
                   }
                 }}
                 InputProps={{ 
-                  inputProps: { min: 1 },
+                  inputProps: { inputMode: 'numeric', pattern: '[0-9]*', min: 1 },
                   endAdornment: (
                     <InputAdornment position="end">
                       <Button
@@ -515,7 +530,7 @@ function ManualTab() {
                         disabled={!String(editQty).trim() || Number(editQty) <= 0}
                         onClick={handleEditConfirm}
                       >
-                        CẬP NHẬT
+                        {t("f2s.deliver.btnUpdate", "CẬP NHẬT")}
                       </Button>
                     </InputAdornment>
                   )
@@ -526,7 +541,7 @@ function ManualTab() {
           )}
         </DialogContent>
         <DialogActions sx={{ p: 2 }}>
-          <Button onClick={() => setEditDialogOpen(false)} color="inherit" sx={{ fontWeight: 600 }}>Hủy / Đóng</Button>
+          <Button onClick={() => setEditDialogOpen(false)} color="inherit" sx={{ fontWeight: 600 }}>{t("f2s.deliver.btnCancel", "Hủy / Đóng")}</Button>
         </DialogActions>
       </Dialog>
 
@@ -539,14 +554,14 @@ function ManualTab() {
         PaperProps={{ sx: { borderRadius: 2 } }}
       >
         <DialogTitle sx={{ fontWeight: 700, color: '#e65100', display: 'flex', alignItems: 'center', gap: 1 }}>
-          <WarningIcon /> Xác nhận
+          <WarningIcon /> {t("f2s.deliver.confirmTitle", "Xác nhận")}
         </DialogTitle>
         <DialogContent>
           <Typography>{confirmDlg.message}</Typography>
         </DialogContent>
         <DialogActions sx={{ p: 2 }}>
-          <Button onClick={() => setConfirmDlg(prev => ({ ...prev, open: false }))} color="inherit" sx={{ fontWeight: 600 }}>Hủy</Button>
-          <Button variant="contained" color="error" sx={{ fontWeight: 700 }} onClick={confirmDlg.onConfirm}>Đồng ý</Button>
+          <Button onClick={() => setConfirmDlg(prev => ({ ...prev, open: false }))} color="inherit" sx={{ fontWeight: 600 }}>{t("f2s.deliver.btnCancelSimple", "Hủy")}</Button>
+          <Button variant="contained" color="error" sx={{ fontWeight: 700 }} onClick={confirmDlg.onConfirm}>{t("f2s.deliver.btnAgree", "Đồng ý")}</Button>
         </DialogActions>
       </Dialog>
 
@@ -579,6 +594,7 @@ interface PackDialogProps {
 }
 
 function PackDialog({ open, item, packTypes, usedCrates, onClose, onConfirm }: PackDialogProps) {
+  const { t } = useTranslation();
   const [selectedPackType, setSelectedPackType] = useState('');
   const [crateBarcode, setCrateBarcode] = useState('');
   const [crateValidating, setCrateValidating] = useState(false);
@@ -600,7 +616,7 @@ function PackDialog({ open, item, packTypes, usedCrates, onClose, onConfirm }: P
     
     const trimmedBarcode = crateBarcode.trim();
     if (usedCrates.includes(trimmedBarcode)) {
-      setCrateError('❌ Mã thùng nhựa này đang được dùng trong Hàng Chờ!');
+      setCrateError(t('f2s.deliver.crateInQueue', '❌ Mã thùng nhựa này đang được dùng trong Hàng Chờ!'));
       return;
     }
 
@@ -609,12 +625,12 @@ function PackDialog({ open, item, packTypes, usedCrates, onClose, onConfirm }: P
     try {
       const result = await autoDeliveryService.validateCrate(crateBarcode);
       if (!result.valid) {
-        setCrateError(result.message || 'Mã thùng nhựa không hợp lệ');
+        setCrateError(result.message || t('f2s.deliver.crateInvalid', 'Mã thùng nhựa không hợp lệ'));
         setCrateValidating(false);
         return;
       }
     } catch {
-      setCrateError('Lỗi khi kiểm tra mã thùng');
+      setCrateError(t('f2s.deliver.crateCheckError', 'Lỗi khi kiểm tra mã thùng'));
       setCrateValidating(false);
       return;
     }
@@ -625,7 +641,7 @@ function PackDialog({ open, item, packTypes, usedCrates, onClose, onConfirm }: P
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth PaperProps={{ sx: { borderRadius: 3 } }}>
       <DialogTitle sx={{ fontWeight: 700, color: '#2e7d32', display: 'flex', alignItems: 'center', gap: 1, borderBottom: '1px solid', borderColor: 'divider' }}>
-        <AutoIcon /> Giao Thùng #{item?.cartonNo}
+        <AutoIcon /> {t('f2s.deliver.deliverCarton', 'Giao Thùng #{{no}}', { no: item?.cartonNo })}
       </DialogTitle>
       <DialogContent sx={{ pt: 3 }}>
         {item && (
@@ -634,11 +650,11 @@ function PackDialog({ open, item, packTypes, usedCrates, onClose, onConfirm }: P
             <Paper elevation={0} sx={{ p: 2, borderRadius: 2, bgcolor: '#f1f8e9', border: '1px solid #c8e6c9' }}>
               <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1 }}>
                 <Box>
-                  <Typography variant="caption" color="text.secondary">Thùng số</Typography>
+                  <Typography variant="caption" color="text.secondary">{t("f2s.deliver.cartonNo", "Thùng số")}</Typography>
                   <Typography variant="h6" sx={{ fontWeight: 800 }}>#{item.cartonNo}</Typography>
                 </Box>
                 <Box>
-                  <Typography variant="caption" color="text.secondary">Tổng PCS</Typography>
+                  <Typography variant="caption" color="text.secondary">{t("f2s.deliver.totalPcs", "Tổng PCS")}</Typography>
                   <Typography variant="h6" sx={{ fontWeight: 800, color: '#2e7d32' }}>{item.totalPcs}</Typography>
                 </Box>
               </Box>
@@ -646,12 +662,12 @@ function PackDialog({ open, item, packTypes, usedCrates, onClose, onConfirm }: P
 
             {/* Size Breakdown */}
             <Box>
-              <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1 }}>Chi tiết Size trong thùng:</Typography>
+              <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1 }}>{t("f2s.deliver.cartonSizeDetail", "Chi tiết Size trong thùng:")}</Typography>
               <Table size="small" sx={{ '& .MuiTableCell-root': { py: 0.5, px: 1.5 } }}>
                 <TableHead sx={{ bgcolor: '#f5f5f5' }}>
                   <TableRow>
                     <TableCell sx={{ fontWeight: 700 }}>Size</TableCell>
-                    <TableCell sx={{ fontWeight: 700, textAlign: 'right' }}>Số lượng</TableCell>
+                    <TableCell sx={{ fontWeight: 700, textAlign: 'right' }}>{t("f2s.deliver.qty", "Số lượng")}</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -667,7 +683,7 @@ function PackDialog({ open, item, packTypes, usedCrates, onClose, onConfirm }: P
 
             {/* Pack Type Visual Selector */}
             <Box sx={{ mb: 1 }}>
-              <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1 }}>Chọn loại rổ/thùng/partition:</Typography>
+              <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1 }}>{t("f2s.deliver.selectContainerType", "Chọn loại rổ/thùng/partition:")}</Typography>
               <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 1.5 }}>
                 {packTypes.map(pt => (
                   <Paper
@@ -710,8 +726,8 @@ function PackDialog({ open, item, packTypes, usedCrates, onClose, onConfirm }: P
 
             {/* Crate Barcode */}
             <TextField
-              label="Scan mã thùng nhựa"
-              placeholder="Quét hoặc nhập mã thùng nhựa..."
+              label={t("f2s.deliver.scanCrateLabel", "Scan mã thùng nhựa")}
+              placeholder={t("f2s.deliver.scanCratePlaceholder", "Quét hoặc nhập mã thùng nhựa...")}
               value={crateBarcode}
               onChange={(e) => { setCrateBarcode(e.target.value); setCrateError(''); }}
               onKeyDown={(e) => { 
@@ -759,7 +775,7 @@ function PackDialog({ open, item, packTypes, usedCrates, onClose, onConfirm }: P
         )}
       </DialogContent>
       <DialogActions sx={{ p: 2, borderTop: '1px solid', borderColor: 'divider' }}>
-        <Button onClick={onClose} color="inherit" sx={{ fontWeight: 600 }}>Hủy</Button>
+        <Button onClick={onClose} color="inherit" sx={{ fontWeight: 600 }}>{t("f2s.deliver.btnCancelSimple", "Hủy")}</Button>
         <Button
           variant="contained"
           onClick={handlePackConfirm}
@@ -770,7 +786,7 @@ function PackDialog({ open, item, packTypes, usedCrates, onClose, onConfirm }: P
             '&:hover': { background: '#1b5e20' },
           }}
         >
-          {crateValidating ? 'Đang kiểm tra...' : 'Giao Hàng'}
+          {crateValidating ? t('f2s.deliver.checking', 'Đang kiểm tra...') : t('f2s.deliver.btnDeliver', 'Giao Hàng')}
         </Button>
       </DialogActions>
     </Dialog>
@@ -863,7 +879,7 @@ function AutoTab() {
       setActivePO(targetPo);
       setQueue([]);
     } catch {
-      setSnack({ open: true, msg: 'Lỗi khi tải dữ liệu', severity: 'error' });
+      setSnack({ open: true, msg: t('f2s.deliver.loadDataError', 'Lỗi khi tải dữ liệu'), severity: 'error' });
     } finally {
       setLoading(false);
     }
@@ -878,7 +894,7 @@ function AutoTab() {
     try {
       const res = await autoDeliveryService.searchPOs(term);
       if (res.length === 0) {
-        setSnack({ open: true, msg: 'Không tìm thấy mã PO nào khớp', severity: 'error' });
+        setSnack({ open: true, msg: t('f2s.deliver.noPoMatched', 'Không tìm thấy mã PO nào khớp'), severity: 'error' });
       } else if (res.length === 1 && res[0] === term) {
         // Gõ full y xì đúc 100% -> Tự động load dữ liệu luôn cho lẹ, khỏi bắt sếp click 2 lần
         setPoOptions([]);
@@ -888,7 +904,7 @@ function AutoTab() {
         setPoOptions(res);
       }
     } catch (err) {
-      setSnack({ open: true, msg: 'Lỗi API: Không kết nối được Backend (Chưa restart BE?)', severity: 'error' });
+      setSnack({ open: true, msg: t('f2s.deliver.apiConnectError', 'Lỗi API: Không kết nối được Backend'), severity: 'error' });
     } finally {
       setPoSearching(false);
     }
@@ -913,7 +929,7 @@ function AutoTab() {
     };
     setQueue(prev => [...prev, queueItem]);
     setPackDlgOpen(false);
-    setSnack({ open: true, msg: `Thùng #${item.cartonNo} đã vào hàng chờ`, severity: 'success' });
+    setSnack({ open: true, msg: t('f2s.deliver.cartonQueued', 'Thùng #{{no}} đã vào hàng chờ', { no: item.cartonNo }), severity: 'success' });
   }, []);
 
   const removeFromQueue = useCallback((cartonNo: number) => {
@@ -934,7 +950,7 @@ function AutoTab() {
     try {
       const result = await autoDeliveryService.confirmAutoPack(activePO, queue, callAgv);
       if (result.success) {
-        setSnack({ open: true, msg: result.message || 'Lưu thành công!', severity: 'success' });
+        setSnack({ open: true, msg: result.message || t('f2s.deliver.saveSuccess', 'Lưu thành công!'), severity: 'success' });
         // Mark packed in local state
         setPackingPlan(prev => prev.map(p =>
           queue.some(q => q.cartonNo === p.cartonNo) ? { ...p, packStt: p.ctnSeriNo } : p
@@ -953,10 +969,10 @@ function AutoTab() {
         })));
         setQueue([]);
       } else {
-        setSnack({ open: true, msg: 'Lưu thất bại', severity: 'error' });
+        setSnack({ open: true, msg: t('f2s.deliver.saveFailed', 'Lưu thất bại'), severity: 'error' });
       }
     } catch {
-      setSnack({ open: true, msg: 'Lỗi khi lưu dữ liệu', severity: 'error' });
+      setSnack({ open: true, msg: t('f2s.deliver.saveError', 'Lỗi khi lưu dữ liệu'), severity: 'error' });
     } finally {
       setSaving(false);
     }
@@ -1223,14 +1239,14 @@ function AutoTab() {
       <Dialog open={confirmSaveOpen} onClose={closeConfirmDialog} maxWidth="xs" fullWidth PaperProps={{ sx: { borderRadius: 3, p: 1 } }}>
         <DialogTitle sx={{ fontWeight: 800, color: '#1b5e20', display: 'flex', alignItems: 'center', gap: 1.5 }}>
           <WarningIcon sx={{ color: '#f59e0b', fontSize: 28 }} />
-          Xác nhận Giao Nhận
+          {t("f2s.deliver.confirmQueueTitle", "Xác nhận Giao Nhận")}
         </DialogTitle>
         <DialogContent>
           <Typography variant="body1" sx={{ fontSize: '1.05rem', color: '#374151' }}>
-            Bạn có chắc chắn muốn chốt và đẩy <strong>{queue.length} thùng</strong> hàng này xuống hệ thống không?
+            {t("f2s.deliver.confirmQueueDesc", "Bạn có chắc chắn muốn chốt và đẩy {{count}} thùng hàng này xuống hệ thống không?", { count: queue.length })}
           </Typography>
           <Typography variant="body2" sx={{ mt: 1.5, color: '#6b7280', bgcolor: '#f3f4f6', p: 1.5, borderRadius: 2 }}>
-            Hãy chọn hình thức giao hàng (Có báo xe AGV tới lấy hay không).
+            {t("f2s.deliver.confirmQueueSub", "Hãy chọn hình thức giao hàng (Có báo xe AGV tới lấy hay không).")}
           </Typography>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 3, display: 'flex', flexDirection: 'column', gap: 1.5 }}>
@@ -1244,7 +1260,7 @@ function AutoTab() {
               boxShadow: '0 4px 12px rgba(46,125,50,0.3)'
             }}
           >
-            🚀 Giao Nhận & GỌI XE AGV
+            {t('f2s.deliver.btnDeliverAgv', '🚀 Giao Nhận & GỌI XE AGV')}
           </Button>
           <Button 
             onClick={handleSaveNoAgv} 
@@ -1253,7 +1269,7 @@ function AutoTab() {
             fullWidth 
             sx={{ fontWeight: 700, borderRadius: 2, py: 1, textTransform: 'none', borderWidth: 2, '&:hover': { borderWidth: 2 } }}
           >
-            📦 Chỉ Giao Kho (Không gọi xe)
+            {t('f2s.deliver.btnDeliverManualWarehouse', '📦 Chỉ Giao Kho (Không gọi xe)')}
           </Button>
           <Button 
             onClick={closeConfirmDialog} 
@@ -1261,7 +1277,7 @@ function AutoTab() {
             fullWidth 
             sx={{ fontWeight: 600, textTransform: 'none', mt: 0.5, color: '#6b7280' }}
           >
-            Hủy thao tác
+            {t('f2s.deliver.btnCancelAction', 'Hủy thao tác')}
           </Button>
         </DialogActions>
       </Dialog>
@@ -1287,6 +1303,7 @@ function AutoTab() {
 
 // ─── Main Page ───
 export default function DeliverPage() {
+  const { t } = useTranslation();
   const [tab, setTab] = useState(0);
 
   return (
@@ -1303,8 +1320,8 @@ export default function DeliverPage() {
             '& .MuiTabs-indicator': { backgroundColor: '#2e7d32' },
           }}
         >
-          <Tab icon={<ManualIcon />} iconPosition="start" label="Giao Thủ Công" />
-          <Tab icon={<AutoIcon />} iconPosition="start" label="Giao Auto (AGV)" />
+          <Tab icon={<ManualIcon />} iconPosition="start" label={t("f2s.deliver.tabManual", "Giao Thủ Công")} />
+          <Tab icon={<AutoIcon />} iconPosition="start" label={t("f2s.deliver.tabAuto", "Giao Tự Động (AGV)")} />
         </Tabs>
         <Box sx={{ p: { xs: 1, md: 2 } }}>
           {tab === 0 && <ManualTab />}

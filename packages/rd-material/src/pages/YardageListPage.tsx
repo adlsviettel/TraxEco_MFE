@@ -21,8 +21,7 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import SyncIcon from '@mui/icons-material/Sync';
 import TextureIcon from '@mui/icons-material/Texture';
 import LaunchIcon from '@mui/icons-material/Launch';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import { authService, AppButton, AppTextField, AdvancedFilterDrawer, columnFilterStore, TableExcelColumnMenu } from '@traxeco/shared';
+import { authService, AppButton, AppTextField, AdvancedFilterDrawer, columnFilterStore, TableExcelColumnMenu, scrollToTop } from '@traxeco/shared';
 import { format } from 'date-fns';
 import { exportYardageInventoryToExcel } from '../utils/excelExport';
 import { rdItemApi } from '../services/rdMaterialApi';
@@ -153,14 +152,16 @@ const YardageListPage: React.FC = () => {
     let val: any;
     switch(field) {
       // Common fields
-      case 'Name': val = row.name; break;
+      case 'Name': val = row.fabric?.fabricName || row.name; break;
       case 'Item Code': val = row.itemCode; break;
       case 'Supplier': val = row.supplierName; break;
       case 'Origin': val = row.origin; break;
       case 'Price': val = row.price ? `${row.price}${row.currency ? ' ' + row.currency : ''}${row.priceUnit ? '/' + row.priceUnit : ''}` : undefined; break;
+      case 'MOQ / MCQ': val = row.moqMcq ? `${row.moqMcq} ${row.moqMcqUnit ?? ''}`.trim() : undefined; break;
+      case 'Surcharge': val = [row.moqSurcharge ? `MOQ: ${row.moqSurcharge}` : '', row.mcqSurcharge ? `MCQ: ${row.mcqSurcharge}` : ''].filter(Boolean).join(' | ') || undefined; break;
       case 'Location': val = row.location; break;
       case 'Holder': val = row.holder; break;
-      case 'Qty': val = row.quantity ? `${row.quantity} ${row.quantityUnit || 'pcs'}` : undefined; break;
+      case 'Qty': val = row.quantity ? `${row.quantity}${row.quantityUnit ? ' ' + row.quantityUnit : (row.priceUnit ? ' ' + row.priceUnit : '')}` : undefined; break;
       case 'Created At': 
         if (row.createdAt) {
           try { val = new Date(row.createdAt).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }); } catch {}
@@ -232,6 +233,10 @@ const YardageListPage: React.FC = () => {
   useEffect(() => {
     setPage(0);
   }, [columnFilters, keyword, parentId, itemCode, supplierName, color, origin, location, holder]);
+
+  useEffect(() => {
+    scrollToTop(dragRef);
+  }, [page]);
 
   columnFilterStore.register(window.location.pathname, columnFilters, setColumnFilters, items);
 
@@ -815,20 +820,9 @@ const YardageListPage: React.FC = () => {
         {columns.map((col) => (
           <MenuItem key={col.id} onClick={() => setVisibleColumns(prev => ({ ...prev, [col.id]: prev[col.id] === false }))} sx={{ py: 0.5, borderRadius: 1 }}>
             <Checkbox size="small" checked={visibleColumns[col.id] !== false} sx={{ mr: 1, p: 0, pointerEvents: 'none' }} />
-            <Typography fontSize={13} fontWeight={500} sx={{ pointerEvents: 'none' }}><Box sx={{ display: 'flex', alignItems: 'center', justifyContent: col.isCenter ? 'center' : col.isRight ? 'flex-end' : 'flex-start' }}>
-                          <span>{col.label}</span>
-                          {col.id !== 'Image' && col.id !== 'Actions' && (
-                            <TableExcelColumnMenu 
-                              field={col.id}
-                              allRows={items}
-                              columnFilters={columnFilters}
-                              setColumnFilters={setColumnFilters}
-                              getFieldValue={getFieldValueForFilter}
-                              onSortAsc={() => setSortConfig({ field: col.id, direction: 'asc' })}
-                              onSortDesc={() => setSortConfig({ field: col.id, direction: 'desc' })}
-                            />
-                          )}
-                        </Box></Typography>
+            <Typography fontSize={13} fontWeight={500} sx={{ pointerEvents: 'none' }}>
+              {col.label}
+            </Typography>
           </MenuItem>
         ))}
       </Menu>
@@ -1211,7 +1205,10 @@ const YardageListPage: React.FC = () => {
           <Pagination
             count={Math.ceil(filteredItems.length / rowsPerPage) || 1}
             page={page + 1}
-            onChange={(_, p) => { setPage(p - 1); }}
+            onChange={(_, p) => { 
+              setPage(p - 1); 
+              scrollToTop(dragRef);
+            }}
             color="primary" 
             shape="rounded"
             size={isMobile ? 'small' : 'medium'}

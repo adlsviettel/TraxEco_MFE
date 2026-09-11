@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
-  LayoutDashboard, Database, ArrowDownCircle, ArrowUpCircle,
+  Database, ArrowDownCircle, ArrowUpCircle,
   ClipboardCheck, SlidersHorizontal, Send, ClipboardList, Settings,
   Monitor, ChevronLeft, Menu as MenuIcon, Globe, Link, ChevronDown, ChevronRight
 } from 'lucide-react';
@@ -41,7 +41,6 @@ export default function Sidebar() {
   };
 
   const navItems: NavItem[] = [
-    { to: `${BASE}/`, icon: LayoutDashboard, label: t('nav.dashboard'), pageCode: 'it_dashboard', end: true },
     { to: `${BASE}/master-data`, icon: Database, label: t('nav.masterData'), pageCode: 'it_master_data' },
     { to: `${BASE}/pemasukan`, icon: ArrowDownCircle, label: t('nav.pemasukan'), pageCode: 'it_inbound' },
     { to: `${BASE}/pengeluaran`, icon: ArrowUpCircle, label: t('nav.pengeluaran'), pageCode: 'it_outbound' },
@@ -51,15 +50,15 @@ export default function Sidebar() {
       label: t('nav.stockOpname'), 
       pageCode: 'it_stock_opname',
       subItems: [
-        { to: `${BASE}/stock-opname/machinery`, label: 'Machinery And Equipment' },
-        { to: `${BASE}/stock-opname/auxiliary`, label: 'Auxiliary Materials' },
-        { to: `${BASE}/stock-opname/wip`, label: 'Work-in-Process' },
-        { to: `${BASE}/stock-opname/finished`, label: 'Finished Goods' },
-        { to: `${BASE}/stock-opname/scrap`, label: 'Material Waste & Scrap Management' }
+        { to: `${BASE}/stock-opname/machinery`, label: t('categories.machinery', 'Machinery & Equipment') },
+        { to: `${BASE}/stock-opname/auxiliary`, label: t('categories.auxiliary', 'Auxiliary Materials') },
+        { to: `${BASE}/stock-opname/wip`, label: t('categories.wip', 'Work-in-Process (WIP)') },
+        { to: `${BASE}/stock-opname/finished`, label: t('categories.finished', 'Finished Goods') },
+        { to: `${BASE}/stock-opname/scrap`, label: t('categories.scrap', 'Material Waste & Scrap Management') }
       ]
     },
     { to: `${BASE}/adjustment`, icon: SlidersHorizontal, label: t('nav.adjustment'), pageCode: 'it_adjustment' },
-    { to: `${BASE}/insw-mapping`, icon: Link, label: 'INSW Mapping', pageCode: 'it_insw_mapping' },
+    { to: `${BASE}/insw-mapping`, icon: Link, label: t('insw_mapping.title', 'INSW Mapping'), pageCode: 'it_insw_mapping' },
     { to: `${BASE}/insw-push`, icon: Send, label: t('nav.inswPush'), pageCode: 'it_insw_push' },
     { to: `${BASE}/logs`, icon: ClipboardList, label: t('nav.logs'), pageCode: 'it_logs' },
   ];

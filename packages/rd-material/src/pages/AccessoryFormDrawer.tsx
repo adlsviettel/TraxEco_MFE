@@ -119,11 +119,12 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
     if (item) {
       setForm({
         ...item,
-        specification: item.accessory?.specification,
-        description: item.description,
-        accessoryDescription: item.accessory?.description,
-        size: item.accessory?.size,
-        color: item.accessory?.color,
+        specification: item.accessory?.specification || item.category || '',
+        supplierName: item.supplierName || '',
+        description: item.description || '',
+        accessoryDescription: item.accessory?.description || '',
+        size: item.accessory?.size || '',
+        color: item.accessory?.color || '',
         currency: item.currency || 'USD',
       });
     } else {
@@ -647,17 +648,15 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
                           size="small" 
                           value={(form as any).specification ?? ''} 
                           onChange={(_, val) => {
-                            set('specification', val);
+                            set('specification', val || '');
                             if (errors.specification) {
                               setErrors(prev => ({ ...prev, specification: false }));
                             }
                           }} 
-                          onInputChange={(_, val, reason) => { 
-                            if (reason === 'input' || reason === 'clear') {
-                              set('specification', val);
-                              if (errors.specification) {
-                                setErrors(prev => ({ ...prev, specification: false }));
-                              }
+                          onInputChange={(_, val) => { 
+                            set('specification', val || '');
+                            if (errors.specification) {
+                              setErrors(prev => ({ ...prev, specification: false }));
                             }
                           }} 
                           renderInput={(params) => (
@@ -704,12 +703,10 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
                           size="small" 
                           value={(form as any).color ?? ''} 
                           onChange={(_, val) => {
-                            set('color', val);
+                            set('color', val || '');
                           }} 
-                          onInputChange={(_, val, reason) => { 
-                            if (reason === 'input' || reason === 'clear') {
-                              set('color', val);
-                            }
+                          onInputChange={(_, val) => { 
+                            set('color', val || '');
                           }} 
                           renderInput={(params) => (
                             <TextField 
@@ -742,12 +739,10 @@ const AccessoryFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onS
                           size="small" 
                           value={form.supplierName ?? ''} 
                           onChange={(_, val) => {
-                            set('supplierName', val);
+                            set('supplierName', val || '');
                           }} 
-                          onInputChange={(_, val, reason) => { 
-                            if (reason === 'input' || reason === 'clear') {
-                              set('supplierName', val);
-                            }
+                          onInputChange={(_, val) => { 
+                            set('supplierName', val || '');
                           }} 
                           renderInput={(params) => (
                             <TextField 

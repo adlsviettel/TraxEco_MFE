@@ -22,7 +22,7 @@ import CategoryIcon from '@mui/icons-material/Category';
 import SyncIcon from '@mui/icons-material/Sync';
 import TextureIcon from '@mui/icons-material/Texture';
 import LaunchIcon from '@mui/icons-material/Launch';
-import { authService, ConfirmDialog, defaultConfirmDialog, AppButton, AppTextField } from '@traxeco/shared';
+import { authService, ConfirmDialog, defaultConfirmDialog, AppButton, AppTextField, scrollToTop } from '@traxeco/shared';
 import type { ConfirmDialogState } from '@traxeco/shared';
 import { rdItemApi } from '../services/rdMaterialApi';
 import type { Item, ItemType } from '../types';
@@ -177,6 +177,10 @@ const GenericItemList: React.FC<GenericItemListProps> = ({ title, subtitle, item
       return prev;
     });
   }, [columns, itemType]);
+
+  useEffect(() => {
+    scrollToTop(dragRef);
+  }, [page]);
 
   useEffect(() => {
     localStorage.setItem(`rd-columns-${itemType}`, JSON.stringify(visibleColumns));
@@ -1060,7 +1064,7 @@ const GenericItemList: React.FC<GenericItemListProps> = ({ title, subtitle, item
           <Pagination
             count={Math.ceil(total / rowsPerPage) || 1}
             page={page + 1}
-            onChange={(_, p) => { setPage(p - 1); }}
+            onChange={(_, p) => { setPage(p - 1); scrollToTop(dragRef); }}
             color="primary" 
             shape="rounded"
             size={isMobile ? 'small' : 'medium'}
@@ -1080,7 +1084,7 @@ const GenericItemList: React.FC<GenericItemListProps> = ({ title, subtitle, item
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, color: '#3f4945', fontSize: { xs: 11, sm: 12 }, flexShrink: 0 }}>
             <Select
               value={rowsPerPage}
-              onChange={(e) => { setRowsPerPage(Number(e.target.value)); setPage(0); }}
+              onChange={(e) => { setRowsPerPage(Number(e.target.value)); setPage(0); scrollToTop(dragRef); }}
               size="small"
               sx={{ height: 24, fontSize: 11, bgcolor: '#f3f4f5', '& fieldset': { border: 'none' }, '&:hover fieldset': { border: '1px solid #bfc9c4' } }}
             >

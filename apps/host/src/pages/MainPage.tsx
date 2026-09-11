@@ -168,14 +168,6 @@ export default function MainPage() {
         };
       });
 
-  // Tạm thời hiển thị app COO & QC_ACCESSORY cho mọi người để review UI
-  if (!visibleApps.find(a => a.appCode === 'COO')) {
-    visibleApps.push({ appCode: 'COO', appName: 'COO Data Import', isActive: true });
-  }
-  if (!visibleApps.find(a => a.appCode === 'QC_ACCESSORY')) {
-    visibleApps.push({ appCode: 'QC_ACCESSORY', appName: 'QC Phụ Liệu (QC Accessory)', isActive: true });
-  }
-
   // Đã bỏ tính năng auto-redirect nếu user chỉ có 1 app (theo yêu cầu fix lỗi chớp màn hình)
 
   const handleLogout = () => {

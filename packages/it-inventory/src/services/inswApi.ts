@@ -459,3 +459,109 @@ export async function pushToInsw(parsedData: ParsedDataSuccess, kdKegiatan: stri
     };
   }
 }
+
+// ─── Push Stock Opname / Mutasi (kdKegiatan: 32) ──────────────────────────────
+export async function pushStockOpnameToInsw(
+  items: Array<{
+    itemCode: string;
+    itemDescription: string;
+    quantity: number;
+    uom: string;
+    valueRp: number;
+    warehouse: string;
+  }>,
+  docNo: string = 'SO-CUTOFF-5AM',
+  cutoffDate: string = new Date().toISOString(),
+  kdKegiatan: string = '32'
+): Promise<InswResponse> {
+  try {
+    const mappings = await getMappings();
+    const config = await getInswConfig();
+
+    const barangTransaksi = items.map((item, idx) => {
+      const mapped = mappings.find(m => m.kodeBarang === item.itemCode);
+      const kategori = mapped?.kategoriBarang || detectKategoriBarang(item.itemDescription, item.itemCode);
+      return {
+        kdKategoriBarang: String(kategori || '1'),
+        kdBarang: (item.itemCode || `ITEM-${idx + 1}`).trim(),
+        uraianBarang: (item.itemDescription || item.itemCode || 'Barang Transaksi').trim(),
+        jumlah: Math.abs(Number(item.quantity) || 1),
+        kdSatuan: mapKdSatuan(item.uom, idx + 1),
+        nilai: Math.abs(Number(item.valueRp) || 0),
+        dokumen: [],
+      };
+    });
+
+    const body = {
+      data: [
+        {
+          kdKegiatan,
+          dokumenKegiatan: [
+            {
+              nomorDokKegiatan: (docNo || `SO-${cutoffDate.slice(0, 10)}`).trim(),
+              tanggalKegiatan: formatInswDate(cutoffDate),
+              namaEntitas: 'PT. TRAX APPAREL INDONESIA',
+              barangTransaksi,
+            },
+          ],
+        },
+      ],
+    };
+
+    console.log(`--- INSW PUSH (kdKegiatan: ${kdKegiatan}) PAYLOAD:\n`, JSON.stringify(body, null, 2));
+
+    const BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+    const token = localStorage.getItem('token');
+    
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      'x-inswkey': config.xInswKey,
+      'x-unique-key': config.xUniqueKey,
+    };
+    
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    const res = await fetch(`${BASE_URL}/insw/proxy/transaksi`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(body),
+    });
+
+    const responseData = await res.json().catch(() => null);
+
+    if (res.ok) {
+      return { success: true, status: res.status, data: responseData };
+    } else {
+      let errMsg = responseData?.message || responseData?.error || responseData?.detail || '';
+      if (!errMsg && responseData) {
+        if (typeof responseData === 'string') {
+          errMsg = responseData;
+        } else if (Array.isArray(responseData)) {
+          errMsg = responseData.map(e => typeof e === 'object' ? (e.message || e.detail || JSON.stringify(e)) : String(e)).join('; ');
+        } else if (typeof responseData === 'object') {
+          errMsg = JSON.stringify(responseData);
+        }
+      }
+      if (!errMsg) {
+        errMsg = `HTTP ${res.status}: ${res.statusText || 'Bad Request'}`;
+      }
+
+      const isAlreadySent = errMsg.toLowerCase().includes('sudah pernah dikirim') || errMsg.toLowerCase().includes('already') || errMsg.toLowerCase().includes('duplicate');
+      if (isAlreadySent) {
+        return { success: true, status: res.status, error: errMsg, data: responseData };
+      }
+
+      return { success: false, status: res.status, error: errMsg, data: responseData };
+    }
+  } catch (err: unknown) {
+    const error = err as Error;
+    return {
+      success: false,
+      status: 0,
+      error: error.message || 'Lỗi kết nối mạng khi gửi dữ liệu lên INSW',
+      data: null,
+    };
+  }
+}

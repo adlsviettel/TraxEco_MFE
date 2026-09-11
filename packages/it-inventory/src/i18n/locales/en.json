@@ -100,7 +100,12 @@
     "import": "Import",
     "processing": "Processing...",
     "success": "Import successful",
-    "noData": "No Stock Opname records found for this date"
+    "noData": "No Stock Opname records found for this date",
+    "totalRecords": "Total Records",
+    "totalQty": "Total Quantity",
+    "totalValue": "Total Value (Nilai)",
+    "queryingErp": "Querying Linked Server ERP Stock Opname Journal...",
+    "noDataHint": "Click Sync from ERP or select another date."
   },
   "adjustment": {
     "title": "Inventory Adjustment",
@@ -121,7 +126,12 @@
     "import": "Import",
     "processing": "Processing...",
     "success": "Import successful",
-    "noData": "No Adjustment records found for this date"
+    "noData": "No Adjustment records found for this date",
+    "totalRecords": "Total Records",
+    "totalQty": "Total Quantity",
+    "totalValue": "Total Value (Nilai)",
+    "queryingErp": "Querying Linked Server ERP Adjustment Journal...",
+    "noDataHint": "Click Sync Adjustments from ERP or select another date."
   },
   "masterData": {
     "title": "Daftar Barang Master (Customs Item Master)",
@@ -155,7 +165,7 @@
     "warehouse": "Warehouse",
     "status": "INSW Status",
     "hsCode": "HS Code (Tariff)",
-    "kategori": "Kategori INSW",
+    "kategori": "INSW Category",
     "country": "Origin"
   },
   "erpData": {
@@ -299,5 +309,31 @@
     "note": "Note",
     "saveBtn": "Save Mapping",
     "noData": "No mapping configured yet"
+  },
+  "categories": {
+    "machinery": "Machinery & Equipment",
+    "auxiliary": "Auxiliary Materials",
+    "wip": "Work-in-Process (WIP)",
+    "finished": "Finished Goods",
+    "scrap": "Material Waste & Scrap Management"
+  },
+  "statusDetail": {
+    "titleFailed": "INSW Push Failed (HTTP 400)",
+    "titleSuccess": "INSW Push Success (HTTP 200)",
+    "titlePending": "INSW Push Status",
+    "responseFailed": "Indonesian Customs Portal (api.insw.go.id) Response:",
+    "responseSuccess": "INSW Response Result:",
+    "businessExplanation": "Business Explanation:",
+    "masterDataMissingTip": "Item code {{code}} is not registered in Indonesian Customs Master Data (PER-24/BC/2023). Once Customs synchronizes this item into Master Data, submissions will succeed (HTTP 200).",
+    "docAndErpInfo": "Document & ERP Item Details:",
+    "docNo": "Doc No / Production Order:",
+    "actualTimestamp": "ERP Recorded Time:",
+    "itemCode": "Item Code (kdBarang):",
+    "quantityAndUom": "Quantity & UOM:",
+    "description": "Item Description (uraianBarang):",
+    "warehouse": "Warehouse (kho):",
+    "value": "Value (nilai):",
+    "copyLog": "Copy Push Log",
+    "copied": "Copied!"
   }
 }

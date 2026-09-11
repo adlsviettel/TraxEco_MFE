@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Sidebar from './Sidebar.tsx';
-import Dashboard from '../pages/Dashboard.tsx';
 import MasterData from '../pages/MasterData.tsx';
 import Pemasukan from '../pages/Inbound.tsx';
 import Pengeluaran from '../pages/Outbound.tsx';
@@ -22,7 +21,6 @@ import InswMapping from '../pages/InswMapping.tsx';
 const BASE = '/it-inventory';
 
 const PAGES = [
-  { path: '/',              component: <Dashboard />, pageCode: 'it_dashboard' },
   { path: '/master-data',   component: <MasterData />, pageCode: 'it_master_data' },
   { path: '/pemasukan',     component: <Pemasukan />, pageCode: 'it_inbound' },
   { path: '/pengeluaran',   component: <Pengeluaran />, pageCode: 'it_outbound' },

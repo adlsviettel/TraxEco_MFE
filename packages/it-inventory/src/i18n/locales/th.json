@@ -82,7 +82,7 @@
     "noData": "ยังไม่มีข้อมูล"
   },
   "stockOpname": {
-    "title": "ตรวจนับสต็อก",
+    "title": "การตรวจนับสต็อก (Stock Opname)",
     "uploadPdf": "อัปโหลด PDF",
     "dragDrop": "ลากและวางไฟล์ PDF ที่นี่ หรือคลิกเพื่อเลือก",
     "supportedFormat": "รูปแบบที่รองรับ: PDF",
@@ -97,10 +97,18 @@
     "import": "นำเข้า",
     "processing": "กำลังประมวลผล...",
     "success": "นำเข้าสำเร็จ",
-    "noData": "ยังไม่มีข้อมูล"
+    "noData": "ไม่พบข้อมูลการตรวจนับสต็อกสำหรับวันนี้",
+    "subtitle": "จัดการและส่งข้อมูลการตรวจนับสต็อกไปยัง INSW",
+    "syncErp": "ซิงค์การตรวจนับจาก ERP",
+    "pushInsw": "ส่งไปยัง INSW (kdKegiatan: 32)",
+    "totalRecords": "รายการทั้งหมด",
+    "totalQty": "จำนวนรวม",
+    "totalValue": "มูลค่ารวม (Nilai)",
+    "queryingErp": "กำลังดึงข้อมูลบันทึก Stock Opname จากเซิร์ฟเวอร์ ERP...",
+    "noDataHint": "คลิก ซิงค์จาก ERP หรือเลือกวันที่อื่น"
   },
   "adjustment": {
-    "title": "ปรับปรุง",
+    "title": "การปรับปรุงสต็อก (Adjustment)",
     "uploadPdf": "อัปโหลด PDF",
     "dragDrop": "ลากและวางไฟล์ PDF ที่นี่ หรือคลิกเพื่อเลือก",
     "supportedFormat": "รูปแบบที่รองรับ: PDF",
@@ -115,7 +123,15 @@
     "import": "นำเข้า",
     "processing": "กำลังประมวลผล...",
     "success": "นำเข้าสำเร็จ",
-    "noData": "ยังไม่มีข้อมูล"
+    "noData": "ไม่พบข้อมูลการปรับปรุงสำหรับวันนี้",
+    "subtitle": "จัดการและส่งข้อมูลการปรับปรุงสต็อกไปยัง INSW",
+    "syncErp": "ซิงค์การปรับปรุงจาก ERP",
+    "pushInsw": "ส่งไปยัง INSW (kdKegiatan: 33)",
+    "totalRecords": "รายการทั้งหมด",
+    "totalQty": "จำนวนรวม",
+    "totalValue": "มูลค่ารวม (Nilai)",
+    "queryingErp": "กำลังดึงข้อมูลการปรับปรุงสต็อก จากเซิร์ฟเวอร์ ERP...",
+    "noDataHint": "คลิก ซิงค์การปรับปรุงจาก ERP หรือเลือกวันที่อื่น"
   },
   "masterData": {
     "title": "ข้อมูลหลัก",
@@ -262,5 +278,46 @@
     "note": "Note",
     "saveBtn": "Save Mapping",
     "noData": "No mapping configured yet"
+  },
+  "categories": {
+    "machinery": "เครื่องจักรและอุปกรณ์",
+    "auxiliary": "วัสดุช่วย",
+    "wip": "งานระหว่างทำ (WIP)",
+    "finished": "สินค้าสำเร็จรูป (Finished Goods)",
+    "scrap": "เศษวัสดุและของเสีย"
+  },
+  "table": {
+    "docNo": "เลขที่เอกสาร / อ้างอิง",
+    "actualTimestamp": "เวลาจริง",
+    "cutoffDate": "วันที่ตัดรอบ 05:00 น.",
+    "itemCode": "รหัสสินค้า",
+    "description": "รายละเอียดสินค้า",
+    "qty": "จำนวน",
+    "uom": "หน่วยนับ",
+    "value": "มูลค่า (Rp)",
+    "warehouse": "คลังสินค้า",
+    "status": "สถานะ INSW",
+    "hsCode": "รหัส HS",
+    "kategori": "หมวดหมู่ INSW",
+    "country": "ประเทศต้นทาง"
+  },
+  "statusDetail": {
+    "titleFailed": "ส่ง INSW ล้มเหลว (HTTP 400)",
+    "titleSuccess": "ส่ง INSW สำเร็จ (HTTP 200)",
+    "titlePending": "สถานะการส่ง INSW",
+    "responseFailed": "การตอบกลับจากพอร์ทัลศุลกากรอินโดนีเซีย (api.insw.go.id):",
+    "responseSuccess": "ผลการตอบกลับจาก INSW:",
+    "businessExplanation": "คำอธิบายทางธุรกิจ:",
+    "masterDataMissingTip": "รหัสสินค้า {{code}} ยังไม่ได้ลงทะเบียนในข้อมูลหลักของศุลกากรอินโดนีเซีย (PER-24/BC/2023) เมื่อศุลกากรซิงค์รหัสนี้แล้ว การส่งจะสำเร็จ (HTTP 200)",
+    "docAndErpInfo": "รายละเอียดเอกสารและรายการสินค้า ERP:",
+    "docNo": "เลขที่เอกสาร / ใบสั่งผลิต:",
+    "actualTimestamp": "เวลาที่บันทึก ERP:",
+    "itemCode": "รหัสสินค้า (kdBarang):",
+    "quantityAndUom": "จำนวนและหน่วยนับ:",
+    "description": "รายละเอียดสินค้า (uraianBarang):",
+    "warehouse": "คลังสินค้า (kho):",
+    "value": "มูลค่า (nilai):",
+    "copyLog": "คัดลอกบันทึก Log",
+    "copied": "คัดลอกแล้ว!"
   }
 }

@@ -106,9 +106,17 @@ export default function AppShell({
     return navItems.filter(item => authService.hasPageAccess(item.pageCode));
   }, [navItems]);
 
-  const activeIndex = filteredMenuItems.findIndex(item => 
-    location.pathname === item.path || location.pathname.startsWith(item.path + '/')
-  );
+  const isNavMatched = (itemPath: string) => {
+    if (location.pathname === itemPath || location.pathname === itemPath + '/') return true;
+    if (!location.pathname.startsWith(itemPath + '/')) return false;
+    return !filteredMenuItems.some(other => 
+      other.path !== itemPath && 
+      other.path.length > itemPath.length && 
+      (location.pathname === other.path || location.pathname.startsWith(other.path + '/'))
+    );
+  };
+
+  const activeIndex = filteredMenuItems.findIndex(item => isNavMatched(item.path));
   
   const currentPath = location.pathname;
   const activeColor = theme.palette.mode === 'dark' ? '#4ade80' : accentColor;
@@ -245,7 +253,7 @@ export default function AppShell({
           <Divider />
           <List sx={{ px: 1, pt: 2 }}>
             {filteredMenuItems.map((item) => {
-              const isSelected = location.pathname === item.path || location.pathname.startsWith(item.path + '/');
+              const isSelected = isNavMatched(item.path);
               return (
                 <ListItem key={item.text} disablePadding sx={{ display: 'block', mb: 1 }}>
                   <ListItemButton onClick={() => navigate(item.path)} selected={isSelected}
@@ -300,7 +308,14 @@ export default function AppShell({
         {isMobile ? <Toolbar sx={{ minHeight: 'calc(52px + env(safe-area-inset-top)) !important', p: 0, m: 0 }} /> : <Toolbar sx={{ minHeight: 'calc(64px + env(safe-area-inset-top)) !important', p: 0, m: 0 }} />}
         <Box sx={{ width: '100%', flexGrow: 1, minHeight: 0, display: 'flex', flexDirection: 'column', position: 'relative' }} className="animate-slide-up">
           {pages.map(({ path, component }) => {
-            const isActive = currentPath === path || currentPath.startsWith(path + '/');
+            const isExact = currentPath === path || currentPath === path + '/';
+            const isSubpath = currentPath.startsWith(path + '/');
+            const hasMoreSpecificPage = pages.some(other =>
+              other.path !== path &&
+              other.path.length > path.length &&
+              (currentPath === other.path || currentPath.startsWith(other.path + '/'))
+            );
+            const isActive = isExact || (isSubpath && !hasMoreSpecificPage);
             // Lazy mount: track which pages have been visited
             if (isActive && !mountedPagesRef.current.has(path)) {
               mountedPagesRef.current.add(path);

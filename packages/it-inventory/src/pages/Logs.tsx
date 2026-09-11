@@ -37,8 +37,14 @@ export default function Logs() {
   async function loadLogs() {
     setLoading(true);
     try {
-      const res = await getAuditLogs();
-      if (res.success && res.data) setLogs(res.data);
+      const res: any = await getAuditLogs();
+      // BE returns { code: 200, message, data } — NOT { success, data }
+      const data = res.data ?? res;
+      if (Array.isArray(data)) {
+        setLogs(data);
+      } else if (res.code === 200 && Array.isArray(res.data)) {
+        setLogs(res.data);
+      }
     } catch (err) {
       console.error('Failed to load logs:', err);
     } finally {
@@ -59,7 +65,9 @@ export default function Logs() {
         l.action?.toLowerCase().includes(filter.toLowerCase()) ||
         l.username?.toLowerCase().includes(filter.toLowerCase()) ||
         l.detail?.toLowerCase().includes(filter.toLowerCase()) ||
-        l.entityType?.toLowerCase().includes(filter.toLowerCase())
+        l.entityType?.toLowerCase().includes(filter.toLowerCase()) ||
+        String(l.entityId || '').includes(filter.trim().replace(/^#/, '')) ||
+        String(l.logId || '').includes(filter.trim())
       )
     : logs;
 
@@ -148,8 +156,24 @@ export default function Logs() {
                             {log.action}
                           </span>
                         </td>
-                        <td className="text-muted" style={{ textTransform: 'capitalize' }}>{log.entityType || '—'}</td>
-                        <td className="text-muted" style={{ maxWidth: 300, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        <td className="text-muted" style={{ textTransform: 'capitalize' }}>
+                          {log.entityType || '—'}
+                          {log.entityId ? (
+                            <span style={{
+                              marginLeft: 6,
+                              fontSize: 11,
+                              background: 'var(--bg-secondary, #f3f4f6)',
+                              color: 'var(--text-secondary, #4b5563)',
+                              padding: '2px 6px',
+                              borderRadius: 4,
+                              fontFamily: 'monospace',
+                              fontWeight: 600,
+                            }}>
+                              #{log.entityId}
+                            </span>
+                          ) : null}
+                        </td>
+                        <td className="text-muted" style={{ maxWidth: 380, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={log.detail || ''}>
                           {log.detail || '—'}
                         </td>
                         <td className="text-muted" style={{ whiteSpace: 'nowrap' }}>

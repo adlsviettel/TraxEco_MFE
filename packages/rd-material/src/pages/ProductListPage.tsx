@@ -28,8 +28,7 @@ import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import SlideshowIcon from '@mui/icons-material/Slideshow';
 
 import { DraggableFab } from '../components/DraggableFab';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { authService, AppButton, AppTextField, AdvancedFilterDrawer, columnFilterStore, TableExcelColumnMenu } from '@traxeco/shared';
+import { authService, AppButton, AppTextField, AdvancedFilterDrawer, columnFilterStore, TableExcelColumnMenu, scrollToTop } from '@traxeco/shared';
 import { exportRdItemsToExcel } from '../utils/excelExport';
 import { saveFileWithPicker } from '../utils/fileSaveHelper';
 import { rdItemApi } from '../services/rdMaterialApi';
@@ -255,21 +254,27 @@ const ProductListPage: React.FC = () => {
   const getFieldValueForFilter = useCallback((row: Item, field: string): string => {
     let val: any = '';
     switch (field) {
-      case 'Project': val = row.product?.projectName; break;
+      case 'Project': val = row.product?.projectName || row.name; break;
       case 'Item Code': val = row.itemCode; break;
       case 'Category': val = row.product?.garmentCategory || row.category; break;
       case 'Sport': val = row.product?.sportCategory; break;
       case 'Style Name': val = row.product?.styleName; break;
       case 'Stage': val = row.product?.sampleStage; break;
-      case 'Color': val = row.color; break;
+      case 'Color': val = row.product?.color || row.color; break;
       case 'Size': val = row.product?.size; break;
       case 'Gender': val = row.product?.gender; break;
       case 'Pattern Marker': val = row.product?.patternMarker; break;
       case 'Allocation': val = row.product?.allocation; break;
       case 'Garment Test': val = row.product?.garmentTest ? 'Yes' : 'No'; break;
-      case 'FOB Price': val = row.product?.fobPrice; break;
+      case 'Main Composition': val = row.product?.mainComposition; break;
+      case 'FOB Price': val = row.product?.fobPrice ? `$${row.product.fobPrice}` : undefined; break;
       case 'Location': val = row.location; break;
       case 'Qty': val = row.quantity; break;
+      case 'Created At':
+        if (row.createdAt) {
+          try { val = new Date(row.createdAt).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }); } catch {}
+        }
+        break;
       case 'Remark': val = row.remark; break;
       default: val = row[field as keyof Item];
     }
@@ -307,6 +312,10 @@ const ProductListPage: React.FC = () => {
   useEffect(() => {
     setPage(0);
   }, [columnFilters, keyword, categoryFilter, garmentCategory, sportCategory, styleNo, sampleStage]);
+
+  useEffect(() => {
+    scrollToTop(dragRef);
+  }, [page]);
 
   columnFilterStore.register(window.location.pathname, columnFilters, setColumnFilters, items);
 
@@ -2035,7 +2044,10 @@ const ProductListPage: React.FC = () => {
           <Pagination
             count={Math.ceil(filteredItems.length / rowsPerPage) || 1}
             page={page + 1}
-            onChange={(_, p) => { setPage(p - 1); }}
+            onChange={(_, p) => { 
+              setPage(p - 1); 
+              scrollToTop(dragRef);
+            }}
             color="primary" 
             shape="rounded"
             size={isMobile ? 'small' : 'medium'}
@@ -2055,7 +2067,11 @@ const ProductListPage: React.FC = () => {
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, color: '#3f4945', fontSize: { xs: 11, sm: 12 }, flexShrink: 0 }}>
             <Select
               value={rowsPerPage}
-              onChange={(e) => { setRowsPerPage(Number(e.target.value)); setPage(0); }}
+              onChange={(e) => { 
+                setRowsPerPage(Number(e.target.value)); 
+                setPage(0); 
+                scrollToTop(dragRef);
+              }}
               size="small"
               sx={{ height: 24, fontSize: 11, bgcolor: '#f3f4f5', '& fieldset': { border: 'none' }, '&:hover fieldset': { border: '1px solid #bfc9c4' } }}
             >

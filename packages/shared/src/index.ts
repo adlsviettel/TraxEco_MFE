@@ -44,7 +44,7 @@ export { ColorModeProvider, useColorMode } from './contexts/ColorModeContext';
 
 // Utils
 export { playScanSound, playErrorSound, playWarningSound, playFactoryMismatchSound, playQASound, playCustomSound } from './utils/sound';
-export { getInitials } from './utils/helpers';
+export { getInitials, scrollToTop } from './utils/helpers';
 
 // Theme
 export { lightTheme, darkTheme } from './theme';

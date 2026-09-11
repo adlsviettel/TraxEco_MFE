@@ -339,7 +339,7 @@ const AccessoryDetailPage: React.FC = () => {
                     <InfoRow label="Item Code" value={item.itemCode} />
                     <InfoRow label="ERP Number" value={item.name} />
                     <InfoRow label="Master Description" value={item.description} />
-                    <InfoRow label="Category" value={item.accessory?.specification} />
+                    <InfoRow label="Category" value={item.accessory?.specification || item.category} />
                     <InfoRow label="Size" value={item.accessory?.size} />
                     <InfoRow label="Color" value={item.accessory?.color} />
                     <InfoRow label="Accessory Description" value={item.accessory?.description} />

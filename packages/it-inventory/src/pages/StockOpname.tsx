@@ -5,7 +5,9 @@ import {
   ArrowUpRight
 } from 'lucide-react';
 import Header from '../components/Header.tsx';
+import StatusDetailModal from '../components/StatusDetailModal.tsx';
 import { fetchErpStockOpname } from '../services/api.ts';
+import { pushStockOpnameToInsw } from '../services/inswApi.ts';
 
 interface StockOpnameProps {
   category?: 'machinery' | 'auxiliary' | 'wip' | 'finished' | 'scrap';
@@ -88,6 +90,7 @@ export default function StockOpname({ category = 'wip' }: StockOpnameProps) {
   const [loadingERP, setLoadingERP] = useState<boolean>(false);
   const [pushingINSW, setPushingINSW] = useState<boolean>(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [selectedDetailItem, setSelectedDetailItem] = useState<StockItem | null>(null);
 
   // Pagination states
   const [page, setPage] = useState<number>(1);
@@ -95,7 +98,7 @@ export default function StockOpname({ category = 'wip' }: StockOpnameProps) {
 
   const [items, setItems] = useState<StockItem[]>([]);
 
-  const title = CATEGORY_NAMES[category] || 'Stock Opname';
+  const title = t(`categories.${category}`, CATEGORY_NAMES[category] || 'Stock Opname');
   const categoryCode = CATEGORY_CODES[category] || 'ALL';
 
   useEffect(() => {
@@ -150,6 +153,15 @@ export default function StockOpname({ category = 'wip' }: StockOpnameProps) {
   const totalQty = useMemo(() => filteredItems.reduce((acc, i) => acc + Math.abs(i.jumlah), 0), [filteredItems]);
   const totalNilai = useMemo(() => filteredItems.reduce((acc, i) => acc + i.nilai, 0), [filteredItems]);
 
+  const formatQuantity = (qty: number) => {
+    const abs = Math.abs(qty);
+    if (abs === 0) return '0';
+    if (abs < 0.01) {
+      return abs.toFixed(6).replace(/\.?0+$/, '');
+    }
+    return abs.toLocaleString('en-US', { maximumFractionDigits: 4 });
+  };
+
   // Selection toggle
   const allSelected = pagedItems.length > 0 && pagedItems.every(i => selectedIds.has(i.id));
   const toggleSelectAll = () => {
@@ -177,14 +189,16 @@ export default function StockOpname({ category = 'wip' }: StockOpnameProps) {
     });
   };
 
-  // Push to INSW
-  const handlePushINSW = () => {
+  // Push to INSW (Real API Call)
+  const handlePushINSW = async () => {
     if (filteredItems.length === 0) return;
     setPushingINSW(true);
 
     const idsToPush = selectedIds.size > 0
       ? Array.from(selectedIds)
       : pagedItems.map(i => i.id);
+
+    const targetItems = items.filter(i => idsToPush.includes(i.id));
 
     setItems(prev => prev.map(item => {
       if (idsToPush.includes(item.id)) {
@@ -193,16 +207,51 @@ export default function StockOpname({ category = 'wip' }: StockOpnameProps) {
       return item;
     }));
 
-    setTimeout(() => {
+    try {
+      const formattedItems = targetItems.map(i => ({
+        itemCode: i.kdBarang,
+        itemDescription: i.uraianBarang,
+        quantity: Math.abs(i.jumlah),
+        uom: i.kdSatuan,
+        valueRp: i.nilai,
+        warehouse: i.kho,
+      }));
+      const docNo = targetItems[0]?.nomorDokKegiatan || `SO-${categoryCode}-${targetDate}`;
+      const res = await pushStockOpnameToInsw(formattedItems, docNo, targetDate, '32');
+      
       setItems(prev => prev.map(item => {
         if (idsToPush.includes(item.id)) {
-          return { ...item, statusPush: 'success', pushMessage: 'Successfully pushed to INSW (API 200)' };
+          if (res.success) {
+            return {
+              ...item,
+              statusPush: 'success',
+              pushMessage: res.error || 'Successfully pushed to INSW (API 200 OK)',
+            };
+          } else {
+            return {
+              ...item,
+              statusPush: 'failed',
+              pushMessage: res.error || 'Failed to push to INSW',
+            };
+          }
         }
         return item;
       }));
+    } catch (err: any) {
+      setItems(prev => prev.map(item => {
+        if (idsToPush.includes(item.id)) {
+          return {
+            ...item,
+            statusPush: 'failed',
+            pushMessage: err.message || 'Network error connecting to INSW API',
+          };
+        }
+        return item;
+      }));
+    } finally {
       setPushingINSW(false);
       setSelectedIds(new Set());
-    }, 1200);
+    }
   };
 
   return (
@@ -276,8 +325,8 @@ export default function StockOpname({ category = 'wip' }: StockOpnameProps) {
               <Database size={20} />
             </div>
             <div>
-              <div style={{ fontSize: 12, color: '#64748b', fontWeight: 500 }}>Total Records</div>
-              <div style={{ fontSize: 18, fontWeight: 700, color: '#0f172a' }}>{filteredItems.length} items</div>
+              <div style={{ fontSize: 12, color: '#64748b', fontWeight: 500 }}>{t('stockOpname.totalRecords', 'Total Records')}</div>
+              <div style={{ fontSize: 18, fontWeight: 700, color: '#0f172a' }}>{filteredItems.length} {t('common.items', 'items')}</div>
             </div>
           </div>
 
@@ -286,7 +335,7 @@ export default function StockOpname({ category = 'wip' }: StockOpnameProps) {
               <Layers size={20} />
             </div>
             <div>
-              <div style={{ fontSize: 12, color: '#64748b', fontWeight: 500 }}>Total Quantity</div>
+              <div style={{ fontSize: 12, color: '#64748b', fontWeight: 500 }}>{t('stockOpname.totalQty', 'Total Quantity')}</div>
               <div style={{ fontSize: 18, fontWeight: 700, color: '#0f172a' }}>{totalQty.toLocaleString('en-US', { maximumFractionDigits: 2 })}</div>
             </div>
           </div>
@@ -296,7 +345,7 @@ export default function StockOpname({ category = 'wip' }: StockOpnameProps) {
               <ArrowUpRight size={20} />
             </div>
             <div>
-              <div style={{ fontSize: 12, color: '#64748b', fontWeight: 500 }}>Total Value (Nilai)</div>
+              <div style={{ fontSize: 12, color: '#64748b', fontWeight: 500 }}>{t('stockOpname.totalValue', 'Total Value (Nilai)')}</div>
               <div style={{ fontSize: 18, fontWeight: 700, color: '#0f172a' }}>Rp {totalNilai.toLocaleString('en-US', { minimumFractionDigits: 2 })}</div>
             </div>
           </div>
@@ -332,13 +381,13 @@ export default function StockOpname({ category = 'wip' }: StockOpnameProps) {
           {loadingERP ? (
             <div style={{ textAlign: 'center', padding: '60px 20px', flex: 1 }}>
               <RefreshCw size={32} className="spin" style={{ margin: '0 auto 12px', display: 'block', color: 'var(--primary, #3ba55c)' }} />
-              <p style={{ color: '#64748b', margin: 0 }}>Querying Linked Server [192.168.70.115_tsiiplan].AXDB Stock Opname Journal...</p>
+              <p style={{ color: '#64748b', margin: 0 }}>{t('stockOpname.queryingErp', 'Querying Linked Server [192.168.70.115_tsiiplan].AXDB Stock Opname Journal...')}</p>
             </div>
           ) : filteredItems.length === 0 ? (
             <div style={{ padding: '60px 20px', textAlign: 'center', color: '#94a3b8', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', flex: 1 }}>
               <AlertCircle size={44} style={{ opacity: 0.4 }} />
               <p style={{ fontSize: '1.1rem', fontWeight: 500, margin: 0, color: '#475569' }}>{t('stockOpname.noData', 'No Stock Opname records found for this date')}</p>
-              <p style={{ margin: 0, fontSize: 13 }}>Click "Sync from ERP" or select another date.</p>
+              <p style={{ margin: 0, fontSize: 13 }}>{t('stockOpname.noDataHint', 'Click "Sync from ERP" or select another date.')}</p>
             </div>
           ) : (
             <>
@@ -381,8 +430,8 @@ export default function StockOpname({ category = 'wip' }: StockOpnameProps) {
                           <td style={{ maxWidth: 220, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', padding: '10px', color: '#334155' }} title={item.uraianBarang}>
                             {item.uraianBarang}
                           </td>
-                          <td style={{ textAlign: 'right', fontWeight: 600, color: item.jumlah < 0 ? '#ef4444' : '#10b981', padding: '10px' }}>
-                            {item.jumlah.toLocaleString('en-US', { maximumFractionDigits: 2 })}
+                          <td style={{ textAlign: 'right', fontWeight: 600, color: '#10b981', padding: '10px' }}>
+                            {formatQuantity(item.jumlah)}
                           </td>
                           <td style={{ padding: '10px' }}><code style={{ color: '#475569' }}>{item.kdSatuan}</code></td>
                           <td style={{ textAlign: 'right', padding: '10px', color: '#0f172a' }}>
@@ -391,16 +440,30 @@ export default function StockOpname({ category = 'wip' }: StockOpnameProps) {
                           <td style={{ padding: '10px' }}><span className="status-badge" style={{ background: 'background.default', color: '#475569' }}>{item.kho}</span></td>
                           <td style={{ textAlign: 'center', padding: '10px' }}>
                             {item.statusPush === 'idle' && (
-                              <span className="status-badge" style={{ background: 'background.default', color: '#64748b' }}><Clock size={12} /> Pending</span>
+                              <span className="status-badge" style={{ background: 'background.default', color: '#64748b' }}><Clock size={12} /> {t('common.pending', 'Pending')}</span>
                             )}
                             {item.statusPush === 'pushing' && (
-                              <span className="status-badge" style={{ background: '#e0f2fe', color: '#0284c7' }}><RefreshCw size={12} className="spin" /> Pushing...</span>
+                              <span className="status-badge" style={{ background: '#e0f2fe', color: '#0284c7' }}><RefreshCw size={12} className="spin" /> {t('common.pushing', 'Pushing...')}</span>
                             )}
                             {item.statusPush === 'success' && (
-                              <span className="status-badge active" title={item.pushMessage} style={{ background: '#e8f7ec', color: '#2e8b4a' }}><CheckCircle size={12} /> Pushed</span>
+                              <span
+                                className="status-badge active"
+                                title={item.pushMessage || 'Pushed successfully'}
+                                style={{ background: '#e8f7ec', color: '#2e8b4a', cursor: 'pointer' }}
+                                onClick={() => setSelectedDetailItem(item)}
+                              >
+                                <CheckCircle size={12} /> {t('common.pushed', 'Pushed')}
+                              </span>
                             )}
                             {item.statusPush === 'failed' && (
-                              <span className="status-badge" style={{ background: '#fef2f2', color: '#ef4444' }}><XCircle size={12} /> Failed</span>
+                              <span
+                                className="status-badge"
+                                title={item.pushMessage || 'Click to view error details'}
+                                style={{ background: '#fef2f2', color: '#ef4444', cursor: 'pointer', border: '1px solid #fecaca' }}
+                                onClick={() => setSelectedDetailItem(item)}
+                              >
+                                <XCircle size={12} /> {t('common.failed', 'Failed')}
+                              </span>
                             )}
                           </td>
                         </tr>
@@ -505,6 +568,14 @@ export default function StockOpname({ category = 'wip' }: StockOpnameProps) {
             </>
           )}
         </div>
+
+        {/* INSW Status & Error Detail Modal */}
+        <StatusDetailModal
+          open={Boolean(selectedDetailItem)}
+          onClose={() => setSelectedDetailItem(null)}
+          item={selectedDetailItem}
+          categoryTitle={title}
+        />
 
       </div>
     </div>

@@ -11,6 +11,11 @@ import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { DataEvents } from '../utils/dataEvents.ts';
 
+function normalizePath(p: string): string {
+  const stripped = p.replace(/^\/it-inventory/, '');
+  return stripped === '' ? '/' : stripped;
+}
+
 export function usePageVisible(pagePath: string, onVisible: () => void, events?: string[]) {
   const location = useLocation();
   const isFirst = useRef(true);
@@ -19,7 +24,7 @@ export function usePageVisible(pagePath: string, onVisible: () => void, events?:
 
   // Trigger on route change
   useEffect(() => {
-    const isActive = location.pathname === pagePath;
+    const isActive = normalizePath(location.pathname) === normalizePath(pagePath);
 
     if (isActive) {
       if (isFirst.current) {
@@ -32,10 +37,15 @@ export function usePageVisible(pagePath: string, onVisible: () => void, events?:
 
   // Listen for data events (only refresh if page is currently active)
   useEffect(() => {
-    const eventTypes = events || [DataEvents.DATA_CHANGED];
+    const eventTypes = events || [
+      DataEvents.DATA_CHANGED,
+      DataEvents.FILE_DELETED,
+      DataEvents.FILE_IMPORTED,
+      DataEvents.PUSH_COMPLETED,
+    ];
     const unsubscribes = eventTypes.map(event =>
       DataEvents.on(event, () => {
-        if (location.pathname === pagePath) {
+        if (normalizePath(location.pathname) === normalizePath(pagePath)) {
           callbackRef.current();
         }
       })

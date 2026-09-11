@@ -17,7 +17,7 @@ import ImageIcon from '@mui/icons-material/Image';
 import { rdItemApi } from '../services/rdMaterialApi';
 import type { ScanLog } from '../types';
 import { useTranslation } from 'react-i18next';
-import { AdvancedFilterDrawer, AppButton, AppTextField } from '@traxeco/shared';
+import { AdvancedFilterDrawer, AppButton, AppTextField, scrollToTop } from '@traxeco/shared';
 
 const ScanHistoryPage: React.FC = () => {
   const { t } = useTranslation();
@@ -73,6 +73,7 @@ const ScanHistoryPage: React.FC = () => {
 
   useEffect(() => {
     fetchLogs();
+    scrollToTop();
   }, [page, keyword, rowsPerPage]);
 
   const [exporting, setExporting] = useState(false);
@@ -433,7 +434,10 @@ const ScanHistoryPage: React.FC = () => {
           <Pagination
             count={totalPages}
             page={page + 1}
-            onChange={(_, p) => setPage(p - 1)}
+            onChange={(_, p) => { 
+              setPage(p - 1); 
+              scrollToTop();
+            }}
             color="primary"
             shape="rounded"
             size="small"

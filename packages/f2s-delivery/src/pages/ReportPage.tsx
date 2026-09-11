@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Box, Typography, Paper, TextField, Button,
   CircularProgress, Alert, Card, RadioGroup, FormControlLabel, Radio,
@@ -20,13 +21,9 @@ import {
 import { authService, ConfirmDialog, defaultConfirmDialog } from '@traxeco/shared';
 import type { ConfirmDialogState } from '@traxeco/shared';
 
-const DELIVERY_METHODS = [
-  { value: 'MANUAL', label: 'Thủ công' },
-  { value: 'AUTO', label: 'Máy tự động' },
-];
-
 export default function ReportPage() {
-  const [deliveryMethod, setDeliveryMethod] = useState(DELIVERY_METHODS[0].value);
+  const { t } = useTranslation();
+  const [deliveryMethod, setDeliveryMethod] = useState('MANUAL');
   const [reportLevel, setReportLevel] = useState('DETAIL');
   const [showFilters, setShowFilters] = useState(true);
 
@@ -109,7 +106,7 @@ export default function ReportPage() {
 
   const handleDeleteClick = async (row: any) => {
     const id = deliveryMethod === 'AUTO' ? row.Id : row.RecNo;
-    showConfirm('Xác nhận xóa', 'Bạn có chắc chắn muốn xóa bản ghi này?', async () => {
+    showConfirm(t('f2s.report.confirmDeleteTitle', 'Xác nhận xóa'), t('f2s.report.confirmDelete', 'Bạn có chắc chắn muốn xóa bản ghi này?'), async () => {
       try {
       const token = localStorage.getItem('token');
       const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8100/api'}/f2s/reports/delete/${deliveryMethod.toLowerCase()}/${id}`, {
@@ -117,14 +114,14 @@ export default function ReportPage() {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (response.ok) {
-        setSuccess('Xóa dữ liệu thành công!');
+        setSuccess(t('f2s.report.deleteSuccess', 'Xóa dữ liệu thành công!'));
         handleSearch(); // Reload table
       } else {
         const errorData = await response.json().catch(()=>({}));
-        setError(errorData.message || 'Lỗi khi xóa dòng');
+        setError(errorData.message || t('f2s.report.deleteError', 'Lỗi khi xóa dòng'));
       }
     } catch(err: any) {
-      setError(err.message || 'Lỗi hệ thống');
+      setError(err.message || t('f2s.report.systemError', 'Lỗi hệ thống'));
     }
     });
   };
@@ -148,15 +145,15 @@ export default function ReportPage() {
         body: JSON.stringify(editingRow)
       });
       if (response.ok) {
-        setSuccess('Cập nhật dữ liệu thành công!');
+        setSuccess(t('f2s.report.updateSuccess', 'Cập nhật dữ liệu thành công!'));
         setEditDialogOpen(false);
         handleSearch();
       } else {
         const errorData = await response.json().catch(()=>({}));
-        setError(errorData.message || 'Lỗi cập nhật dòng');
+        setError(errorData.message || t('f2s.report.updateError', 'Lỗi cập nhật dòng'));
       }
     } catch(err: any) {
-      setError(err.message || 'Lỗi hệ thống');
+      setError(err.message || t('f2s.report.systemError', 'Lỗi hệ thống'));
     }
   };
 
@@ -197,7 +194,7 @@ export default function ReportPage() {
       });
 
       if (!response.ok) {
-        throw new Error('Lỗi server khi tìm kiếm');
+        throw new Error(t('f2s.report.serverSearchError', 'Lỗi server khi tìm kiếm'));
       }
 
       const jsonData = await response.json();
@@ -210,10 +207,10 @@ export default function ReportPage() {
       
       if (dataArray.length === 0) {
         // Only set error if we couldn't parse the array or it's empty
-        setError(jsonData.message || 'Không tìm thấy dữ liệu trong khoảng thời gian này.');
+        setError(jsonData.message || t('f2s.report.noData', 'Không tìm thấy dữ liệu trong khoảng thời gian này.'));
       }
     } catch (err: any) {
-      setError('Lỗi khi tải dữ liệu tìm kiếm. Vui lòng thử lại sau.');
+      setError(t('f2s.report.loadError', 'Lỗi khi tải dữ liệu tìm kiếm. Vui lòng thử lại sau.'));
     } finally {
       setLoading(false);
     }
@@ -252,9 +249,9 @@ export default function ReportPage() {
       link.parentNode?.removeChild(link);
       window.URL.revokeObjectURL(downloadUrl);
 
-      setSuccess(`Đã tải thành công báo cáo [${deliveryMethod === 'MANUAL' ? 'Thủ công' : 'Máy tự động'}] từ ${fromDate} đến ${toDate}.`);
+      setSuccess(t('f2s.report.downloadSuccess', 'Đã tải thành công báo cáo [{{method}}] từ {{from}} đến {{to}}.', { method: deliveryMethod === 'MANUAL' ? t('f2s.report.manual', 'Thủ công') : t('f2s.report.auto', 'Tự động'), from: fromDate, to: toDate }));
     } catch (err: any) {
-      setError('Lỗi khi tải báo cáo. Vui lòng thử lại sau.');
+      setError(t('f2s.report.downloadError', 'Lỗi khi tải báo cáo. Vui lòng thử lại sau.'));
     } finally {
       setLoading(false);
     }
@@ -281,7 +278,7 @@ export default function ReportPage() {
             onClick={() => setShowFilters(!showFilters)}
           >
              <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-               BỘ LỌC TÌM KIẾM DỮ LIỆU
+               {t('f2s.report.filterTitle', 'BỘ LỌC TÌM KIẾM DỮ LIỆU')}
              </Typography>
              <IconButton size="small" sx={{ color: '#64748b' }}>
                {showFilters ? <ExpandLessIcon /> : <ExpandMoreIcon />}
@@ -293,22 +290,22 @@ export default function ReportPage() {
             {/* CỘT 1: CẤU HÌNH BÁO CÁO */}
             <Box sx={{ width: { xs: '100%', md: '33.333%' }, px: 1.5, pb: { xs: 3, md: 0 } }}>
               <Typography variant="body2" sx={{ fontWeight: 600, color: '#64748b', mb: 1.5, textTransform: 'uppercase', letterSpacing: '0.5px', fontSize: '0.75rem' }}>
-                1. Phân loại báo cáo
+                {t('f2s.report.cat1', '1. Phân loại báo cáo')}
               </Typography>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
                 <Box sx={{ px: 2, py: 0.5, borderRadius: 2, border: '1px solid', borderColor: 'divider', bgcolor: 'background.paper', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <Typography variant="body2" sx={{ fontWeight: 500, color: '#334155' }}>Giao hàng</Typography>
+                  <Typography variant="body2" sx={{ fontWeight: 500, color: '#334155' }}>{t('f2s.report.deliveryMethod', 'Giao hàng')}</Typography>
                   <RadioGroup row value={deliveryMethod} onChange={(e) => handleConfigChange(setDeliveryMethod, e.target.value)} sx={{ gap: 1, flexWrap: 'nowrap' }}>
-                    <FormControlLabel value="MANUAL" control={<Radio size="small" sx={{ p: 0.5, '&.Mui-checked': { color: '#2e7d32' } }} />} label={<Typography variant="body2" sx={{ fontWeight: 600, color: deliveryMethod === 'MANUAL' ? '#2e7d32' : '#64748b' }}>Thủ công</Typography>} sx={{ m: 0, width: 95 }} />
-                    <FormControlLabel value="AUTO" control={<Radio size="small" sx={{ p: 0.5, '&.Mui-checked': { color: '#2e7d32' } }} />} label={<Typography variant="body2" sx={{ fontWeight: 600, color: deliveryMethod === 'AUTO' ? '#2e7d32' : '#64748b' }}>Tự động</Typography>} sx={{ m: 0, width: 95 }} />
+                    <FormControlLabel value="MANUAL" control={<Radio size="small" sx={{ p: 0.5, '&.Mui-checked': { color: '#2e7d32' } }} />} label={<Typography variant="body2" sx={{ fontWeight: 600, color: deliveryMethod === 'MANUAL' ? '#2e7d32' : '#64748b' }}>{t('f2s.report.manual', 'Thủ công')}</Typography>} sx={{ m: 0, width: 95 }} />
+                    <FormControlLabel value="AUTO" control={<Radio size="small" sx={{ p: 0.5, '&.Mui-checked': { color: '#2e7d32' } }} />} label={<Typography variant="body2" sx={{ fontWeight: 600, color: deliveryMethod === 'AUTO' ? '#2e7d32' : '#64748b' }}>{t('f2s.report.auto', 'Tự động')}</Typography>} sx={{ m: 0, width: 95 }} />
                   </RadioGroup>
                 </Box>
 
                 <Box sx={{ px: 2, py: 0.5, borderRadius: 2, border: '1px solid', borderColor: 'divider', bgcolor: 'background.paper', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <Typography variant="body2" sx={{ fontWeight: 500, color: '#334155' }}>Mức độ</Typography>
+                  <Typography variant="body2" sx={{ fontWeight: 500, color: '#334155' }}>{t('f2s.report.reportLevel', 'Mức độ')}</Typography>
                   <RadioGroup row value={reportLevel} onChange={(e) => handleConfigChange(setReportLevel, e.target.value)} sx={{ gap: 1, flexWrap: 'nowrap' }}>
-                    <FormControlLabel value="DETAIL" control={<Radio size="small" sx={{ p: 0.5, '&.Mui-checked': { color: '#2e7d32' } }} />} label={<Typography variant="body2" sx={{ fontWeight: 600, color: reportLevel === 'DETAIL' ? '#2e7d32' : '#64748b' }}>Chi tiết</Typography>} sx={{ m: 0, width: 95 }} />
-                    <FormControlLabel value="SUMMARY" control={<Radio size="small" sx={{ p: 0.5, '&.Mui-checked': { color: '#2e7d32' } }} />} label={<Typography variant="body2" sx={{ fontWeight: 600, color: reportLevel === 'SUMMARY' ? '#2e7d32' : '#64748b' }}>Tổng hợp</Typography>} sx={{ m: 0, width: 95 }} />
+                    <FormControlLabel value="DETAIL" control={<Radio size="small" sx={{ p: 0.5, '&.Mui-checked': { color: '#2e7d32' } }} />} label={<Typography variant="body2" sx={{ fontWeight: 600, color: reportLevel === 'DETAIL' ? '#2e7d32' : '#64748b' }}>{t('f2s.report.detail', 'Chi tiết')}</Typography>} sx={{ m: 0, width: 95 }} />
+                    <FormControlLabel value="SUMMARY" control={<Radio size="small" sx={{ p: 0.5, '&.Mui-checked': { color: '#2e7d32' } }} />} label={<Typography variant="body2" sx={{ fontWeight: 600, color: reportLevel === 'SUMMARY' ? '#2e7d32' : '#64748b' }}>{t('f2s.report.summary', 'Tổng hợp')}</Typography>} sx={{ m: 0, width: 95 }} />
                   </RadioGroup>
                 </Box>
               </Box>
@@ -317,14 +314,14 @@ export default function ReportPage() {
             {/* CỘT 2: THỜI GIAN */}
             <Box sx={{ width: { xs: '100%', md: '33.333%' }, px: 1.5, pb: { xs: 3, md: 0 } }}>
               <Typography variant="body2" sx={{ fontWeight: 600, color: '#64748b', mb: 1.5, textTransform: 'uppercase', letterSpacing: '0.5px', fontSize: '0.75rem' }}>
-                2. Khung thời gian
+                {t('f2s.report.cat2', '2. Khung thời gian')}
               </Typography>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
                 <Box sx={{ display: 'flex', gap: 1 }}>
                   <TextField
                     fullWidth
                     size="small"
-                    label="Từ ngày"
+                    label={t('f2s.report.fromDate', 'Từ ngày')}
                     type="date"
                     value={fromDate}
                     onChange={(e) => setFromDate(e.target.value)}
@@ -334,7 +331,7 @@ export default function ReportPage() {
                   />
                   <TextField
                     size="small"
-                    label="Giờ"
+                    label={t('f2s.report.fromTime', 'Giờ')}
                     type="time"
                     value={fromTime}
                     onChange={(e) => setFromTime(e.target.value)}
@@ -348,7 +345,7 @@ export default function ReportPage() {
                   <TextField
                     fullWidth
                     size="small"
-                    label="Đến ngày"
+                    label={t('f2s.report.toDate', 'Đến ngày')}
                     type="date"
                     value={toDate}
                     onChange={(e) => setToDate(e.target.value)}
@@ -358,7 +355,7 @@ export default function ReportPage() {
                   />
                   <TextField
                     size="small"
-                    label="Giờ"
+                    label={t('f2s.report.fromTime', 'Giờ')}
                     type="time"
                     value={toTime}
                     onChange={(e) => setToTime(e.target.value)}
@@ -374,14 +371,14 @@ export default function ReportPage() {
             {/* CỘT 3: TÌM KIẾM THEO PO & HÀNH ĐỘNG */}
             <Box sx={{ width: { xs: '100%', md: '33.333%' }, px: 1.5, display: 'flex', flexDirection: 'column' }}>
               <Typography variant="body2" sx={{ fontWeight: 600, color: '#64748b', mb: 1.5, textTransform: 'uppercase', letterSpacing: '0.5px', fontSize: '0.75rem' }}>
-                3. Tra cứu đích danh
+                {t('f2s.report.cat3', '3. Tra cứu đích danh')}
               </Typography>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, flex: 1 }}>
                 <TextField
                   fullWidth
                   size="small"
-                  label="Nhập Số PO"
-                  placeholder="Bỏ qua filter ngày nếu nhập PO..."
+                  label={t('f2s.report.searchPO', 'Nhập Số PO')}
+                  placeholder={t('f2s.report.searchPOPlaceholder', 'Bỏ qua filter ngày nếu nhập PO...')}
                   value={searchPO}
                   onChange={(e) => setSearchPO(e.target.value)}
                   InputLabelProps={{ shrink: true }}
@@ -414,7 +411,7 @@ export default function ReportPage() {
                       }
                     }}
                   >
-                    Duyệt
+                    {t('f2s.report.search', 'Duyệt')}
                   </Button>
                   <Button
                     fullWidth
@@ -441,7 +438,7 @@ export default function ReportPage() {
                       }
                     }}
                   >
-                    Xuất Excel
+                    {t('f2s.report.download', 'Xuất Excel')}
                   </Button>
                 </Box>
               </Box>
@@ -469,22 +466,22 @@ export default function ReportPage() {
           {/* Lệnh hiển thị chú giải màu sắc bảng Auto - Detail */}
           {deliveryMethod === 'AUTO' && reportLevel === 'DETAIL' && (
             <Box sx={{ display: 'flex', gap: 3, px: 2, py: 1.5, bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider', flexWrap: 'wrap', alignItems: 'center' }}>
-              <Typography variant="body2" sx={{ fontWeight: 700, color: '#475569', display: 'flex', alignItems: 'center', textTransform: 'uppercase', fontSize: '0.7rem', letterSpacing: '0.5px' }}>Chú giải màu:</Typography>
+              <Typography variant="body2" sx={{ fontWeight: 700, color: '#475569', display: 'flex', alignItems: 'center', textTransform: 'uppercase', fontSize: '0.7rem', letterSpacing: '0.5px' }}>{t('f2s.report.colorLegend', 'Chú giải màu:')}</Typography>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8 }}>
                 <Box sx={{ width: 14, height: 14, borderRadius: '4px', bgcolor: 'rgba(239, 68, 68, 0.3)', border: '1px solid #ef4444' }} />
-                <Typography variant="caption" sx={{ fontWeight: 600, color: '#334155' }}>Đã bị xóa (Delete)</Typography>
+                <Typography variant="caption" sx={{ fontWeight: 600, color: '#334155' }}>{t('f2s.report.legendDeleted', 'Đã bị xóa (Delete)')}</Typography>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8 }}>
                 <Box sx={{ width: 14, height: 14, borderRadius: '4px', bgcolor: 'rgba(16, 185, 129, 0.3)', border: '1px solid #10b981' }} />
-                <Typography variant="caption" sx={{ fontWeight: 600, color: '#334155' }}>Đóng gói hoàn tất</Typography>
+                <Typography variant="caption" sx={{ fontWeight: 600, color: '#334155' }}>{t('f2s.report.legendDone', 'Đóng gói hoàn tất')}</Typography>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8 }}>
                 <Box sx={{ width: 14, height: 14, borderRadius: '4px', bgcolor: 'rgba(25, 118, 210, 0.3)', border: '1px solid #1976d2' }} />
-                <Typography variant="caption" sx={{ fontWeight: 600, color: '#334155' }}>Đang trong quá trình đóng gói</Typography>
+                <Typography variant="caption" sx={{ fontWeight: 600, color: '#334155' }}>{t('f2s.report.legendPacking', 'Đang trong quá trình đóng gói')}</Typography>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8 }}>
                 <Box sx={{ width: 14, height: 14, borderRadius: '4px', bgcolor: 'background.paper', border: '1px solid', borderColor: 'divider' }} />
-                <Typography variant="caption" sx={{ fontWeight: 600, color: '#334155' }}>Đang chờ / Trống</Typography>
+                <Typography variant="caption" sx={{ fontWeight: 600, color: '#334155' }}>{t('f2s.report.legendWaiting', 'Đang chờ / Trống')}</Typography>
               </Box>
             </Box>
           )}
@@ -495,7 +492,7 @@ export default function ReportPage() {
                 <TableRow>
                   <TableCell sx={{ bgcolor: 'background.default', width: 50, fontWeight: 700, color: '#475569', borderBottom: '2px solid #e2e8f0' }}>STT</TableCell>
                   {hasActions && reportLevel === 'DETAIL' && (
-                    <TableCell sx={{ bgcolor: 'background.default', width: 80, fontWeight: 700, color: '#475569', borderBottom: '2px solid #e2e8f0', textAlign: 'center' }}>Thao tác</TableCell>
+                    <TableCell sx={{ bgcolor: 'background.default', width: 80, fontWeight: 700, color: '#475569', borderBottom: '2px solid #e2e8f0', textAlign: 'center' }}>{t('f2s.report.colAction', 'Thao tác')}</TableCell>
                   )}
                   {Array.from(new Set(data.flatMap(row => Object.keys(row)))).map(key => {
                     const isActive = !!columnFilters[key];
@@ -554,12 +551,12 @@ export default function ReportPage() {
                         <TableCell sx={{ whiteSpace: 'nowrap', textAlign: 'center', p: 0.5 }}>
                           <Box sx={{ display: 'flex', justifyContent: 'center', gap: 0.5 }}>
                             {canEdit && !isDeleted && (
-                              <IconButton size="small" color="primary" onClick={() => handleEditClick(row)} title="Sửa">
+                              <IconButton size="small" color="primary" onClick={() => handleEditClick(row)} title={t('f2s.report.btnEdit', 'Sửa')}>
                                 <EditIcon fontSize="small" />
                               </IconButton>
                             )}
                             {canDelete && !isDeleted && (
-                              <IconButton size="small" color="error" onClick={() => handleDeleteClick(row)} title="Xóa">
+                              <IconButton size="small" color="error" onClick={() => handleDeleteClick(row)} title={t('f2s.report.btnDelete', 'Xóa')}>
                                 <DeleteIcon fontSize="small" />
                               </IconButton>
                             )}
@@ -605,7 +602,7 @@ export default function ReportPage() {
           </TableContainer>
           <Box sx={{ borderTop: '1px solid', borderColor: 'divider', bgcolor: 'background.paper', p: 1.5, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Typography variant="body2" sx={{ color: '#475569', fontWeight: 500 }}>Dòng / trang:</Typography>
+              <Typography variant="body2" sx={{ color: '#475569', fontWeight: 500 }}>{t('f2s.report.rowsPerPage', 'Dòng / trang:')}</Typography>
               <Select
                 size="small"
                 value={rowsPerPage}
@@ -652,13 +649,13 @@ export default function ReportPage() {
             }}
           >
             <Typography variant="body2" sx={{ mb: 1, fontWeight: 600, color: '#334155' }}>
-              Lọc cột {filterAnchorEl?.column}
+              {t('f2s.report.filterCol', 'Lọc cột {{col}}', { col: filterAnchorEl?.column })}
             </Typography>
             <TextField
               size="small"
               fullWidth
               autoFocus
-              placeholder="Nhập từ khoá..."
+              placeholder={t('f2s.report.filterKeyword', 'Nhập từ khoá...')}
               value={filterAnchorEl ? (columnFilters[filterAnchorEl.column] || '') : ''}
               onChange={(e) => filterAnchorEl && handleFilterChange(filterAnchorEl.column, e.target.value)}
               InputProps={{
@@ -677,7 +674,7 @@ export default function ReportPage() {
           {/* Edit Dialog */}
           <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)} maxWidth="md" fullWidth>
             <DialogTitle sx={{ fontWeight: 700, color: '#334155', borderBottom: '1px solid', borderColor: 'divider' }}>
-              Chỉnh sửa thông tin {deliveryMethod === 'AUTO' ? '(Giao Tự Động)' : '(Giao Thủ Công)'}
+              {t('f2s.report.editTitle', 'Chỉnh sửa thông tin {{method}}', { method: deliveryMethod === 'AUTO' ? t('f2s.report.editMethodAuto', '(Giao Tự Động)') : t('f2s.report.editMethodManual', '(Giao Thủ Công)') })}
             </DialogTitle>
             <DialogContent sx={{ p: 3, pt: '24px !important', maxHeight: '60vh' }}>
               <Grid container spacing={2}>
@@ -705,7 +702,7 @@ export default function ReportPage() {
                         onChange={(e) => setEditingRow({ ...editingRow, [key]: e.target.value })}
                         disabled={isReadOnly}
                         sx={{ bgcolor: isReadOnly ? '#f8fafc' : '#fff' }}
-                        helperText={!canEditAll && !isReadOnlySys && !editableColsForUser.includes(keyLower) ? "Chỉ admin mới được sửa cột này" : ""}
+                        helperText={!canEditAll && !isReadOnlySys && !editableColsForUser.includes(keyLower) ? t('f2s.report.adminOnly', 'Chỉ admin mới được sửa cột này') : ""}
                         FormHelperTextProps={{ sx: { fontSize: '0.65rem' } }}
                       />
                     </Grid>
@@ -715,10 +712,10 @@ export default function ReportPage() {
             </DialogContent>
             <DialogActions sx={{ p: 2, borderTop: '1px solid', borderColor: 'divider', bgcolor: 'background.default' }}>
               <Button onClick={() => setEditDialogOpen(false)} color="inherit" sx={{ fontWeight: 600 }}>
-                Hủy bỏ
+                {t('f2s.report.btnCancel', 'Hủy bỏ')}
               </Button>
               <Button onClick={handleEditSave} variant="contained" color="primary" disableElevation sx={{ fontWeight: 600 }}>
-                Lưu Thay Đổi
+                {t('f2s.report.btnSave', 'Lưu Thay Đổi')}
               </Button>
             </DialogActions>
           </Dialog>

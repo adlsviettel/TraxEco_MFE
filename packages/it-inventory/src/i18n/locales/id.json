@@ -100,12 +100,17 @@
     "import": "Impor",
     "processing": "Memproses...",
     "success": "Impor berhasil",
-    "noData": "Tidak ada catatan Stock Opname pada tanggal ini"
+    "noData": "Tidak ada data Stock Opname untuk tanggal ini",
+    "totalRecords": "Total Catatan",
+    "totalQty": "Total Jumlah",
+    "totalValue": "Total Nilai (Nilai)",
+    "queryingErp": "Menanyakan Jurnal Stock Opname dari Linked Server ERP...",
+    "noDataHint": "Klik Sinkronkan Stock Opname dari ERP atau pilih tanggal lain."
   },
   "adjustment": {
     "title": "Penyesuaian Inventaris (Adjustment)",
-    "subtitle": "Kelola & Kirim Data Adjustment ke INSW",
-    "syncErp": "Sinkronkan Adjustment dari ERP",
+    "subtitle": "Kelola & Kirim Data Penyesuaian ke INSW",
+    "syncErp": "Sinkronkan Penyesuaian dari ERP",
     "pushInsw": "Kirim ke INSW (kdKegiatan: 33)",
     "uploadPdf": "Unggah PDF",
     "dragDrop": "Seret & jatuhkan file PDF di sini, atau klik untuk memilih",
@@ -121,7 +126,12 @@
     "import": "Impor",
     "processing": "Memproses...",
     "success": "Impor berhasil",
-    "noData": "Tidak ada catatan Adjustment pada tanggal ini"
+    "noData": "Tidak ada data Penyesuaian untuk tanggal ini",
+    "totalRecords": "Total Catatan",
+    "totalQty": "Total Jumlah",
+    "totalValue": "Total Nilai (Nilai)",
+    "queryingErp": "Menanyakan Jurnal Penyesuaian dari Linked Server ERP...",
+    "noDataHint": "Klik Sinkronkan Penyesuaian dari ERP atau pilih tanggal lain."
   },
   "masterData": {
     "title": "Daftar Barang Master (Customs Item Master)",
@@ -144,15 +154,15 @@
     "latestDocNo": "Dokumen Terakhir"
   },
   "table": {
-    "docNo": "No. Dokumen / Ref",
+    "docNo": "Nomor Dokumen / SPK",
     "actualTimestamp": "Waktu Aktual",
-    "cutoffDate": "Tanggal Cutoff 5:00 AM",
+    "cutoffDate": "Tanggal Cutoff 05:00",
     "itemCode": "Kode Barang",
     "description": "Uraian Barang",
     "qty": "Jumlah",
     "uom": "Satuan",
     "value": "Nilai (Rp)",
-    "warehouse": "Kode Gudang",
+    "warehouse": "Gudang",
     "status": "Status INSW",
     "hsCode": "Kode HS",
     "kategori": "Kategori INSW",
@@ -299,5 +309,31 @@
     "note": "Catatan",
     "saveBtn": "Simpan Mapping",
     "noData": "Belum ada mapping yang dikonfigurasi"
+  },
+  "categories": {
+    "machinery": "Mesin & Peralatan",
+    "auxiliary": "Bahan Penolong",
+    "wip": "Barang Dalam Proses (WIP)",
+    "finished": "Barang Jadi (Finished Goods)",
+    "scrap": "Sisa Bahan & Scrap"
+  },
+  "statusDetail": {
+    "titleFailed": "Pengiriman INSW Gagal (HTTP 400)",
+    "titleSuccess": "Pengiriman INSW Berhasil (HTTP 200)",
+    "titlePending": "Status Pengiriman INSW",
+    "responseFailed": "Respons Portal Bea Cukai Indonesia (api.insw.go.id):",
+    "responseSuccess": "Hasil Respons INSW:",
+    "businessExplanation": "Penjelasan Bisnis:",
+    "masterDataMissingTip": "Kode barang {{code}} belum terdaftar dalam Data Master Bea Cukai Indonesia (PER-24/BC/2023). Setelah Bea Cukai menyinkronkan barang ini ke Data Master, pengiriman akan berhasil (HTTP 200).",
+    "docAndErpInfo": "Detail Dokumen & Barang ERP:",
+    "docNo": "Nomor Dokumen / SPK:",
+    "actualTimestamp": "Waktu Tercatat ERP:",
+    "itemCode": "Kode Barang (kdBarang):",
+    "quantityAndUom": "Jumlah & Satuan:",
+    "description": "Uraian Barang (uraianBarang):",
+    "warehouse": "Gudang (kho):",
+    "value": "Nilai (nilai):",
+    "copyLog": "Salin Log Pengiriman",
+    "copied": "Tersalin!"
   }
 }

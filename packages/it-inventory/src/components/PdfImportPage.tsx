@@ -401,6 +401,7 @@ export default function PdfImportPage({ titleKey, sectionKey, fileType, pagePath
   const [jsonModalContent, setJsonModalContent] = useState('');
   const [jsonModalTitle, setJsonModalTitle] = useState('');
   const fileRef = useRef<HTMLInputElement>(null);
+  const username = localStorage.getItem('employeeCode') || localStorage.getItem('employeeName') || JSON.parse(localStorage.getItem('user') || '{}').username || 'system';
 
   // Multi-select helpers
   const processedFiles = files.filter(f => f.status === 'processed');
@@ -493,8 +494,6 @@ export default function PdfImportPage({ titleKey, sectionKey, fileType, pagePath
     setActionLoading(null);
     DataEvents.emit(DataEvents.DATA_CHANGED);
   }
-
-  const username = JSON.parse(localStorage.getItem('user') || '{}').username || 'system';
 
   async function handleViewJson(file: FileEntry) {
     try {
@@ -677,10 +676,7 @@ export default function PdfImportPage({ titleKey, sectionKey, fileType, pagePath
       const startTime = Date.now();
       const res = await pushToInsw(selectedParsedData, kdKegiatan);
       const duration = Date.now() - startTime;
-      
-      const user = JSON.parse(localStorage.getItem('user') || '{}');
       const requestBody = JSON.stringify(await buildInswRequestBody(selectedParsedData, kdKegiatan));
-      
       await savePushLog({
         fileId: viewFile.id,
         status: res.success ? 'success' : 'failed',
@@ -689,7 +685,7 @@ export default function PdfImportPage({ titleKey, sectionKey, fileType, pagePath
         responseBody: JSON.stringify(res.data),
         errorMessage: res.error || null,
         duration,
-      }, user.username || 'admin').catch(() => {});
+      }, username).catch(() => {});
 
       if (res.success) {
         updatePushState(viewFile.id, { status: 'success' });

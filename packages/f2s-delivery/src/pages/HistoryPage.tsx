@@ -71,7 +71,7 @@ function ManualTab() {
       <Paper elevation={0} sx={{ p: 1.5, mb: 2, borderRadius: 2.5, border: '1px solid', borderColor: 'divider', bgcolor: 'background.paper' }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap' }}>
           <TextField
-            label="Từ ngày"
+            label={t('f2s.history.fromDate', 'Từ ngày')}
             type="date"
             size="small"
             value={fromDate}
@@ -80,7 +80,7 @@ function ManualTab() {
             sx={{ width: isMobile ? '100%' : 160, '& .MuiOutlinedInput-root': { borderRadius: 1.5, height: 32, fontSize: '0.8rem' } }}
           />
           <TextField
-            label="Đến ngày"
+            label={t('f2s.history.toDate', 'Đến ngày')}
             type="date"
             size="small"
             value={toDate}
@@ -89,12 +89,12 @@ function ManualTab() {
             sx={{ width: isMobile ? '100%' : 160, '& .MuiOutlinedInput-root': { borderRadius: 1.5, height: 32, fontSize: '0.8rem' } }}
           />
           <TextField
-            label="Tìm PO"
+            label={t('f2s.history.searchPO', 'Tìm PO')}
             size="small"
             value={poNo}
             onChange={e => setPoNo(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && load()}
-            placeholder={t('f2s.history.searchPOPlaceholder')}
+            placeholder={t('f2s.history.searchPOPlaceholder', 'Nhập PO No...')}
             InputProps={{ startAdornment: <InputAdornment position="start"><SearchIcon sx={{ fontSize: 18, color: '#94a3b8' }} /></InputAdornment> }}
             sx={{ width: isMobile ? '100%' : 200, '& .MuiOutlinedInput-root': { borderRadius: 1.5, height: 32, fontSize: '0.8rem' } }}
           />
@@ -261,7 +261,7 @@ function AutoTab() {
       <Paper elevation={0} sx={{ p: 1.5, mb: 2, borderRadius: 2.5, border: '1px solid', borderColor: 'divider', bgcolor: 'background.paper' }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap' }}>
           <TextField
-            label="Từ ngày"
+            label={t('f2s.history.fromDate', 'Từ ngày')}
             type="date"
             size="small"
             value={fromDate}
@@ -270,7 +270,7 @@ function AutoTab() {
             sx={{ width: isMobile ? '100%' : 160, '& .MuiOutlinedInput-root': { borderRadius: 1.5, height: 32, fontSize: '0.8rem' } }}
           />
           <TextField
-            label="Đến ngày"
+            label={t('f2s.history.toDate', 'Đến ngày')}
             type="date"
             size="small"
             value={toDate}
@@ -279,12 +279,12 @@ function AutoTab() {
             sx={{ width: isMobile ? '100%' : 160, '& .MuiOutlinedInput-root': { borderRadius: 1.5, height: 32, fontSize: '0.8rem' } }}
           />
           <TextField
-            label="Tìm PO"
+            label={t('f2s.history.searchPO', 'Tìm PO')}
             size="small"
             value={poNo}
             onChange={e => setPoNo(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && load()}
-            placeholder="Nhập PO No..."
+            placeholder={t('f2s.history.searchPOPlaceholder', 'Nhập PO No...')}
             InputProps={{ startAdornment: <InputAdornment position="start"><SearchIcon sx={{ fontSize: 18, color: '#94a3b8' }} /></InputAdornment> }}
             sx={{ width: isMobile ? '100%' : 200, '& .MuiOutlinedInput-root': { borderRadius: 1.5, height: 32, fontSize: '0.8rem' } }}
           />
@@ -297,7 +297,7 @@ function AutoTab() {
             size="small"
             sx={{ fontWeight: 700, borderRadius: 1.5, height: 32, fontSize: '0.8rem', px: 2, textTransform: 'none', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', boxShadow: 'none', '&:hover': { background: 'linear-gradient(135deg, #34d399 0%, #10b981 100%)' } }}
           >
-            Tìm
+            {t('f2s.history.search', 'Tìm')}
           </Button>
           {searched && (
             <Chip size="small"
@@ -313,7 +313,7 @@ function AutoTab() {
       {!searched && !loading && (
         <Box sx={{ textAlign: 'center', py: 8, color: 'text.secondary' }}>
           <AutoIcon sx={{ fontSize: 64, opacity: 0.12, mb: 1 }} />
-          <Typography>Chọn khoảng thời gian và nhấn Tìm</Typography>
+          <Typography>{t('f2s.history.selectTimeAndSearch', 'Chọn khoảng thời gian và nhấn Tìm')}</Typography>
         </Box>
       )}
 
@@ -325,7 +325,7 @@ function AutoTab() {
 
       {searched && !loading && data.length === 0 && (
         <Box sx={{ textAlign: 'center', py: 6, color: 'text.secondary' }}>
-          <Typography>Không có dữ liệu</Typography>
+          <Typography>{t('f2s.history.noData', 'Không có dữ liệu')}</Typography>
         </Box>
       )}
 
@@ -377,7 +377,7 @@ function AutoTab() {
       {searched && !loading && totalElements > 0 && (
         <Box sx={{ borderTop: '1px solid', borderColor: 'divider', backgroundColor: '#fafafa', p: 1.5, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', justifyContent: 'space-between', gap: 2, borderRadius: '0 0 8px 8px' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Typography variant="body2" sx={{ color: '#475569', fontWeight: 500 }}>Dòng / trang:</Typography>
+            <Typography variant="body2" sx={{ color: '#475569', fontWeight: 500 }}>{t('f2s.history.rowsPerPage', 'Dòng / trang:')}</Typography>
             <Select
               size="small"
               value={rowsPerPage}
@@ -390,7 +390,7 @@ function AutoTab() {
               {[15, 50, 100, 200].map(v => <MenuItem key={v} value={v}>{v}</MenuItem>)}
             </Select>
             <Typography variant="body2" sx={{ color: '#64748b', ml: 1 }}>
-              {page * rowsPerPage + 1}-{Math.min((page + 1) * rowsPerPage, totalElements)} trong {totalElements}
+              {page * rowsPerPage + 1}-{Math.min((page + 1) * rowsPerPage, totalElements)} {t('f2s.history.inOf', 'trong')} {totalElements}
             </Typography>
           </Box>
           <Pagination

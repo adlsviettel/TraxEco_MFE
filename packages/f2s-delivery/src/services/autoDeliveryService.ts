@@ -62,7 +62,7 @@ export const autoDeliveryService = {
   async getAutoDeliveryData(po: string): Promise<AutoDeliveryData> {
     const userDept = localStorage.getItem('dept') || 'FGS';
     const res = await authFetch(`f2s-delivery/auto/data?poNo=${encodeURIComponent(po)}&facLine=${encodeURIComponent(userDept)}`);
-    if (!res.ok) throw new Error('Lỗi khi tải dữ liệu cấu trúc (BE chưa start hoặc lỗi SQL)');
+    if (!res.ok) throw new Error('Failed to load auto delivery data');
     return await res.json();
   },
 
@@ -77,7 +77,7 @@ export const autoDeliveryService = {
     const userDept = localStorage.getItem('dept') || 'FGS';
     
     const res = await authFetch(`f2s-delivery/auto/search-po?poNo=${encodeURIComponent(term)}&facLine=${encodeURIComponent(userDept)}`);
-    if (!res.ok) throw new Error('Lỗi khi tải danh sách PO gợi ý');
+    if (!res.ok) throw new Error('Failed to search POs');
     
     const data = await res.json();
     return data;
@@ -98,7 +98,7 @@ export const autoDeliveryService = {
   async validateCrate(crateBarcode: string): Promise<{ valid: boolean; message?: string }> {
     const trimmed = crateBarcode.trim();
     if (!trimmed) {
-      return { valid: false, message: 'Mã thùng nhựa không được để trống' };
+      return { valid: false, message: 'Crate barcode cannot be empty' };
     }
     
     try {
@@ -106,11 +106,11 @@ export const autoDeliveryService = {
       if (!res.ok) throw new Error('API Error');
       const isFree = await res.json();
       if (!isFree) {
-        return { valid: false, message: `Thùng nhựa [${trimmed}] đang kẹt chứa hàng, chưa được giải phóng khỏi kho!` };
+        return { valid: false, message: `Crate [${trimmed}] is occupied and not cleared!` };
       }
       return { valid: true };
     } catch (e) {
-      return { valid: false, message: 'Không thể kết nối máy chủ để kiểm tra mã thùng' };
+      return { valid: false, message: 'Unable to connect to server' };
     }
   },
 
@@ -140,13 +140,13 @@ export const autoDeliveryService = {
       
       if (!res.ok) {
         const errMsg = data?.message || data?.error || `HTTP ${res.status}`;
-        return { success: false, message: `Lỗi từ server: ${errMsg}` };
+        return { success: false, message: `Server error: ${errMsg}` };
       }
       
       return data;
     } catch (e: any) {
       console.error('❌ confirmAutoPack error:', e);
-      return { success: false, message: `Lỗi: ${e.message || 'Không kết nối được server'}` };
+      return { success: false, message: `Error: ${e.message || 'Cannot connect to server'}` };
     }
   },
 };

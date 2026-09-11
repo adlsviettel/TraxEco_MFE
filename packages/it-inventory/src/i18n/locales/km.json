@@ -82,7 +82,7 @@
     "noData": "មិនទាន់មានទិន្នន័យ"
   },
   "stockOpname": {
-    "title": "ពិនិត្យស្តុក",
+    "title": "ការត្រួតពិនិត្យស្តុក (Stock Opname)",
     "uploadPdf": "បញ្ចូល PDF",
     "dragDrop": "អូសនិងទម្លាក់ឯកសារ PDF នៅទីនេះ ឬចុចដើម្បីជ្រើសរើស",
     "supportedFormat": "ទម្រង់ដែលគាំទ្រ: PDF",
@@ -97,10 +97,18 @@
     "import": "នាំចូល",
     "processing": "កំពុងដំណើរការ...",
     "success": "នាំចូលបានជោគជ័យ",
-    "noData": "មិនទាន់មានទិន្នន័យ"
+    "noData": "រកមិនឃើញទិន្នន័យត្រួតពិនិត្យស្តុកសម្រាប់កាលបរិច្ឆេទនេះទេ",
+    "subtitle": "គ្រប់គ្រង និងរុញទិន្នន័យត្រួតពិនិត្យស្តុកទៅ INSW",
+    "syncErp": "សមកាលកម្មការត្រួតពិនិត្យពី ERP",
+    "pushInsw": "រុញទៅ INSW (kdKegiatan: 32)",
+    "totalRecords": "កំណត់ត្រាសរុប",
+    "totalQty": "បរិមាណសរុប",
+    "totalValue": "តម្លៃសរុប (Nilai)",
+    "queryingErp": "កំពុងទាញទិន្នន័យ Stock Opname ពីម៉ាស៊ីនបម្រើ ERP...",
+    "noDataHint": "ចុច សមកាលកម្មពី ERP ឬជ្រើសរើសកាលបរិច្ឆេទផ្សេងទៀត"
   },
   "adjustment": {
-    "title": "កែសម្រួល",
+    "title": "ការកែតម្រូវស្តុក (Adjustment)",
     "uploadPdf": "បញ្ចូល PDF",
     "dragDrop": "អូសនិងទម្លាក់ឯកសារ PDF នៅទីនេះ ឬចុចដើម្បីជ្រើសរើស",
     "supportedFormat": "ទម្រង់ដែលគាំទ្រ: PDF",
@@ -115,7 +123,15 @@
     "import": "នាំចូល",
     "processing": "កំពុងដំណើរការ...",
     "success": "នាំចូលបានជោគជ័យ",
-    "noData": "មិនទាន់មានទិន្នន័យ"
+    "noData": "រកមិនឃើញទិន្នន័យកែតម្រូវសម្រាប់កាលបរិច្ឆេទនេះទេ",
+    "subtitle": "គ្រប់គ្រង និងរុញទិន្នន័យកែតម្រូវស្តុកទៅ INSW",
+    "syncErp": "សមកាលកម្មការកែតម្រូវពី ERP",
+    "pushInsw": "រុញទៅ INSW (kdKegiatan: 33)",
+    "totalRecords": "កំណត់ត្រាសរុប",
+    "totalQty": "បរិមាណសរុប",
+    "totalValue": "តម្លៃសរុប (Nilai)",
+    "queryingErp": "កំពុងទាញទិន្នន័យកែតម្រូវពីម៉ាស៊ីនបម្រើ ERP...",
+    "noDataHint": "ចុច សមកាលកម្មការកែតម្រូវពី ERP ឬជ្រើសរើសកាលបរិច្ឆេទផ្សេងទៀត"
   },
   "masterData": {
     "title": "ទិន្នន័យមេ",
@@ -262,5 +278,46 @@
     "note": "Note",
     "saveBtn": "Save Mapping",
     "noData": "No mapping configured yet"
+  },
+  "categories": {
+    "machinery": "គ្រឿងម៉ាស៊ីន និងឧបករណ៍",
+    "auxiliary": "សម្ភារៈជំនួយ",
+    "wip": "ការងារកំពុងដំណើរការ (WIP)",
+    "finished": "ទំនិញសម្រេច (Finished Goods)",
+    "scrap": "កាកសំណល់សម្ភារៈ និងអេតចាយ"
+  },
+  "table": {
+    "docNo": "លេខឯកសារ / យោង",
+    "actualTimestamp": "ពេលវេលាជាក់ស្តែង",
+    "cutoffDate": "កាលបរិច្ឆេទកាត់ត្រឹម 05:00",
+    "itemCode": "លេខកូដទំនិញ",
+    "description": "ការពិពណ៌នាទំនិញ",
+    "qty": "បរិមាណ",
+    "uom": "ខ្នាត",
+    "value": "តម្លៃ (Rp)",
+    "warehouse": "ឃ្លាំង",
+    "status": "ស្ថានភាព INSW",
+    "hsCode": "លេខកូដ HS",
+    "kategori": "ប្រភេទ INSW",
+    "country": "ប្រភពដើម"
+  },
+  "statusDetail": {
+    "titleFailed": "ការរុញ INSW បានបរាជ័យ (HTTP 400)",
+    "titleSuccess": "ការរុញ INSW បានជោគជ័យ (HTTP 200)",
+    "titlePending": "ស្ថានភាពការរុញ INSW",
+    "responseFailed": "ការឆ្លើយតបពីច្រកគយឥណ្ឌូណេស៊ី (api.insw.go.id):",
+    "responseSuccess": "លទ្ធផលឆ្លើយតបពី INSW:",
+    "businessExplanation": "ការពន្យល់អាជីវកម្ម:",
+    "masterDataMissingTip": "លេខកូដទំនិញ {{code}} មិនទាន់បានចុះឈ្មោះក្នុងទិន្នន័យមេគយឥណ្ឌូណេស៊ី (PER-24/BC/2023) ទេ។ នៅពេលគយធ្វើសមកាលកម្មទំនិញនេះ ការផ្ញើនឹងជោគជ័យ (HTTP 200)។",
+    "docAndErpInfo": "ព័ត៌មានលម្អិតឯកសារ និងទំនិញ ERP:",
+    "docNo": "លេខឯកសារ / បញ្ជាផលិត:",
+    "actualTimestamp": "ពេលវេលាកត់ត្រា ERP:",
+    "itemCode": "លេខកូដទំនិញ (kdBarang):",
+    "quantityAndUom": "បរិមាណ & ខ្នាត:",
+    "description": "ការពិពណ៌នាទំនិញ (uraianBarang):",
+    "warehouse": "ឃ្លាំង (kho):",
+    "value": "តម្លៃ (nilai):",
+    "copyLog": "ចម្លងកំណត់ហេតុ Log",
+    "copied": "បានចម្លង!"
   }
 }

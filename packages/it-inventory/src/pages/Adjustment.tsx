@@ -4,8 +4,10 @@ import {
   RefreshCw, Send, Calendar, Search, CheckCircle, XCircle, Clock, AlertCircle, SlidersHorizontal
 } from 'lucide-react';
 import Header from '../components/Header.tsx';
+import StatusDetailModal from '../components/StatusDetailModal.tsx';
 import type { StockItem } from './StockOpname.tsx';
 import { fetchErpAdjustment } from '../services/api.ts';
+import { pushStockOpnameToInsw } from '../services/inswApi.ts';
 
 export default function Adjustment() {
   const { t } = useTranslation();
@@ -15,6 +17,7 @@ export default function Adjustment() {
   const [loadingERP, setLoadingERP] = useState<boolean>(false);
   const [pushingINSW, setPushingINSW] = useState<boolean>(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [selectedDetailItem, setSelectedDetailItem] = useState<StockItem | null>(null);
 
   // Pagination states
   const [page, setPage] = useState<number>(1);
@@ -123,18 +126,59 @@ export default function Adjustment() {
     });
   };
 
-  const handlePushINSW = () => {
+  const handlePushINSW = async () => {
     if (filteredItems.length === 0) return;
     setPushingINSW(true);
     const idsToPush = selectedIds.size > 0 ? Array.from(selectedIds) : pagedItems.map(i => i.id);
+    const targetItems = items.filter(i => idsToPush.includes(i.id));
 
     setItems(prev => prev.map(item => idsToPush.includes(item.id) ? { ...item, statusPush: 'pushing' } : item));
 
-    setTimeout(() => {
-      setItems(prev => prev.map(item => idsToPush.includes(item.id) ? { ...item, statusPush: 'success', pushMessage: 'Successfully pushed adjustment to INSW (kdKegiatan: 33)' } : item));
+    try {
+      const formattedItems = targetItems.map(i => ({
+        itemCode: i.kdBarang,
+        itemDescription: i.uraianBarang,
+        quantity: i.jumlah,
+        uom: i.satuan,
+        valueRp: i.nilai,
+        warehouse: i.kho,
+      }));
+      const docNo = targetItems[0]?.nomorDokKegiatan || `ADJ-${targetDate}`;
+      const res = await pushStockOpnameToInsw(formattedItems, docNo, targetDate, '33');
+
+      setItems(prev => prev.map(item => {
+        if (idsToPush.includes(item.id)) {
+          if (res.success) {
+            return {
+              ...item,
+              statusPush: 'success',
+              pushMessage: res.error || 'Successfully pushed adjustment to INSW (API 200 OK)',
+            };
+          } else {
+            return {
+              ...item,
+              statusPush: 'failed',
+              pushMessage: res.error || 'Failed to push adjustment to INSW',
+            };
+          }
+        }
+        return item;
+      }));
+    } catch (err: any) {
+      setItems(prev => prev.map(item => {
+        if (idsToPush.includes(item.id)) {
+          return {
+            ...item,
+            statusPush: 'failed',
+            pushMessage: err.message || 'Network error connecting to INSW API',
+          };
+        }
+        return item;
+      }));
+    } finally {
       setPushingINSW(false);
       setSelectedIds(new Set());
-    }, 1200);
+    }
   };
 
   return (
@@ -195,7 +239,7 @@ export default function Adjustment() {
           {loadingERP ? (
             <div style={{ textAlign: 'center', padding: '60px 20px', flex: 1 }}>
               <RefreshCw size={32} className="spin" style={{ margin: '0 auto 12px', display: 'block', color: 'var(--primary, #3ba55c)' }} />
-              <p style={{ color: '#64748b', margin: 0 }}>Querying Linked Server [192.168.70.115_tsiiplan].AXDB Movement Journal...</p>
+              <p style={{ color: '#64748b', margin: 0 }}>{t('adjustment.queryingErp', 'Querying Linked Server [192.168.70.115_tsiiplan].AXDB Movement Journal...')}</p>
             </div>
           ) : filteredItems.length === 0 ? (
             <div style={{ padding: '60px 20px', textAlign: 'center', color: '#94a3b8', flex: 1 }}>
@@ -241,7 +285,26 @@ export default function Adjustment() {
                         <td style={{ textAlign: 'center', padding: '10px' }}>
                           {item.statusPush === 'idle' && <span className="status-badge" style={{ background: 'background.default', color: '#64748b' }}><Clock size={12} /> {t('common.pending', 'Pending')}</span>}
                           {item.statusPush === 'pushing' && <span className="status-badge" style={{ background: '#e0f2fe', color: '#0284c7' }}><RefreshCw size={12} className="spin" /> {t('common.pushing', 'Pushing...')}</span>}
-                          {item.statusPush === 'success' && <span className="status-badge active" style={{ background: '#e8f7ec', color: '#2e8b4a' }}><CheckCircle size={12} /> {t('common.pushed', 'Pushed')}</span>}
+                          {item.statusPush === 'success' && (
+                            <span
+                              className="status-badge active"
+                              title={item.pushMessage || 'Pushed successfully'}
+                              style={{ background: '#e8f7ec', color: '#2e8b4a', cursor: 'pointer' }}
+                              onClick={() => setSelectedDetailItem(item)}
+                            >
+                              <CheckCircle size={12} /> {t('common.pushed', 'Pushed')}
+                            </span>
+                          )}
+                          {item.statusPush === 'failed' && (
+                            <span
+                              className="status-badge"
+                              title={item.pushMessage || 'Click to view error details'}
+                              style={{ background: '#fef2f2', color: '#ef4444', cursor: 'pointer', border: '1px solid #fecaca' }}
+                              onClick={() => setSelectedDetailItem(item)}
+                            >
+                              <XCircle size={12} /> {t('common.failed', 'Failed')}
+                            </span>
+                          )}
                         </td>
                       </tr>
                     ))}
@@ -344,6 +407,14 @@ export default function Adjustment() {
             </>
           )}
         </div>
+
+        {/* INSW Status & Error Detail Modal */}
+        <StatusDetailModal
+          open={Boolean(selectedDetailItem)}
+          onClose={() => setSelectedDetailItem(null)}
+          item={selectedDetailItem}
+          categoryTitle={t('adjustment.title', 'Inventory Adjustment')}
+        />
 
       </div>
     </div>

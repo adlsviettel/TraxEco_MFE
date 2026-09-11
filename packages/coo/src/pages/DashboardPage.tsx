@@ -257,23 +257,25 @@ export const DashboardPage = () => {
                     const status = missingItems.join(', ');
 
                     // FormType & Remark rules specified by user:
-                    // 1. If Country is VNM or VN (or empty): FormType = '', Remark = ''
-                    // 2. If Country is VIETNAME / VIETNAM / VIỆT NAM: FormType = 'FORM EUR.1', Remark = ''
-                    // 3. Foreign Country (Thailand, China, etc.): FormType = 'FORM EUR.1-NO', Remark = 'Main Fabric Import from [Country]'
-                    formType = '';
-                    remark = '';
+                    // FormType & Remark MUST strictly follow the Country of the MAIN FABRIC item of the PO!
+                    const mainFabricCountry = (mainFabric && mainFabric.countryRegion && mainFabric.countryRegion.trim())
+                        ? mainFabric.countryRegion.trim()
+                        : countryByPo[po] || countryToUse || '';
 
-                    const countryUpper = (rawCountry || '').toUpperCase().trim();
+                    const mainCountryUpper = (mainFabricCountry || '').toUpperCase().trim();
 
-                    if (!countryUpper || countryUpper === 'VNM' || countryUpper === 'VN') {
+                    if (row.formType !== undefined && row.formType !== null) {
+                        formType = row.formType;
+                        remark = row.remark || '';
+                    } else if (!mainCountryUpper || mainCountryUpper === 'VNM' || mainCountryUpper === 'VN') {
                         formType = '';
                         remark = '';
-                    } else if (countryUpper === 'VIETNAME' || countryUpper === 'VIETNAM' || countryUpper === 'VIỆT NAM' || countryUpper === 'VIET NAM') {
+                    } else if (mainCountryUpper === 'VIETNAME' || mainCountryUpper === 'VIETNAM' || mainCountryUpper === 'VIỆT NAM' || mainCountryUpper === 'VIET NAM') {
                         formType = 'FORM EUR.1';
                         remark = '';
                     } else {
                         formType = 'FORM EUR.1-NO';
-                        let formattedCountry = rawCountry.split(' ').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+                        let formattedCountry = mainFabricCountry.split(' ').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
                         if (formattedCountry.toUpperCase() === 'THAILND' || formattedCountry.toUpperCase() === 'THAILAND') {
                             formattedCountry = 'Thailand';
                         }
@@ -289,6 +291,37 @@ export const DashboardPage = () => {
                         remark,
                         missingFromWeekly: status
                     };
+                });
+
+                const poIndexMap: Record<string, number> = {};
+                cleanPo.split(',').map((s: string) => s.trim()).filter(Boolean).forEach((p: string, idx: number) => {
+                    poIndexMap[p] = idx;
+                    if (p.startsWith('0')) poIndexMap[p.slice(1)] = idx;
+                });
+
+                data.sort((a: any, b: any) => {
+                    const poA = String(a.customerReference || '');
+                    const poB = String(b.customerReference || '');
+                    const idxA = poIndexMap[poA] !== undefined ? poIndexMap[poA] : 9999;
+                    const idxB = poIndexMap[poB] !== undefined ? poIndexMap[poB] : 9999;
+                    if (idxA !== idxB) return idxA - idxB;
+                    if (poA !== poB) return poA.localeCompare(poB);
+
+                    const prodA = String(a.productionNumber || '');
+                    const prodB = String(b.productionNumber || '');
+                    if (prodA !== prodB) return prodA.localeCompare(prodB);
+
+                    const matA = String(a.materialCode || '');
+                    const matB = String(b.materialCode || '');
+                    if (matA !== matB) return matA.localeCompare(matB);
+
+                    const recA = String(a.productReceipt || '');
+                    const recB = String(b.productReceipt || '');
+                    return recA.localeCompare(recB);
+                });
+
+                data.forEach((r: any, idx: number) => {
+                    r.id = `row-${idx}`;
                 });
 
                 searchCache.current[cleanPo] = data;
@@ -397,14 +430,41 @@ export const DashboardPage = () => {
             to: { row: 1, column: columns.length }
         };
 
+        const poIndexMap: Record<string, number> = {};
+        poNumber.replace(/[\r\n]+/g, ',').split(',').map((s: string) => s.trim()).filter(Boolean).forEach((p: string, idx: number) => {
+            poIndexMap[p] = idx;
+            if (p.startsWith('0')) poIndexMap[p.slice(1)] = idx;
+        });
+
+        const exportRows = [...filteredRows].sort((a, b) => {
+            const poA = String(a.customerReference || '');
+            const poB = String(b.customerReference || '');
+            const idxA = poIndexMap[poA] !== undefined ? poIndexMap[poA] : 9999;
+            const idxB = poIndexMap[poB] !== undefined ? poIndexMap[poB] : 9999;
+            if (idxA !== idxB) return idxA - idxB;
+            if (poA !== poB) return poA.localeCompare(poB);
+
+            const prodA = String(a.productionNumber || '');
+            const prodB = String(b.productionNumber || '');
+            if (prodA !== prodB) return prodA.localeCompare(prodB);
+
+            const matA = String(a.materialCode || '');
+            const matB = String(b.materialCode || '');
+            if (matA !== matB) return matA.localeCompare(matB);
+
+            const recA = String(a.productReceipt || '');
+            const recB = String(b.productReceipt || '');
+            return recA.localeCompare(recB);
+        });
+
         const posWithMainFabric = new Set<string>();
-        filteredRows.forEach(row => {
+        exportRows.forEach(row => {
             if (row.isMainFabric && row.customerReference) {
                 posWithMainFabric.add(row.customerReference);
             }
         });
 
-        filteredRows.forEach(row => {
+        exportRows.forEach(row => {
             const rowData = columns.map(col => {
                 let val = row[col.field as keyof ErpMaterial];
                 if (val === null || val === undefined) return '';

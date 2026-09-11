@@ -100,10 +100,15 @@
     "import": "Nhập",
     "processing": "Đang xử lý...",
     "success": "Nhập thành công",
-    "noData": "Không có bản ghi kiểm kê nào trong ngày"
+    "noData": "Không có dữ liệu kiểm kê cho ngày này",
+    "totalRecords": "Tổng số dòng",
+    "totalQty": "Tổng số lượng",
+    "totalValue": "Tổng giá trị (Nilai)",
+    "queryingErp": "Đang truy vấn sổ nhật ký Stock Opname từ Linked Server ERP...",
+    "noDataHint": "Nhấp Đồng Bộ Kiểm Kê Từ ERP hoặc chọn ngày khác."
   },
   "adjustment": {
-    "title": "Điều Chỉnh Kho (Inventory Adjustment)",
+    "title": "Điều Chỉnh Kho (Adjustment)",
     "subtitle": "Quản lý & Đẩy dữ liệu điều chỉnh kho lên INSW",
     "syncErp": "Đồng Bộ Điều Chỉnh Từ ERP",
     "pushInsw": "Đẩy Lên INSW (kdKegiatan: 33)",
@@ -121,7 +126,12 @@
     "import": "Nhập",
     "processing": "Đang xử lý...",
     "success": "Nhập thành công",
-    "noData": "Không có bản ghi điều chỉnh nào trong ngày"
+    "noData": "Không có dữ liệu điều chỉnh cho ngày này",
+    "totalRecords": "Tổng số dòng",
+    "totalQty": "Tổng số lượng",
+    "totalValue": "Tổng giá trị (Nilai)",
+    "queryingErp": "Đang truy vấn dữ liệu điều chỉnh kho từ ERP...",
+    "noDataHint": "Nhấp Đồng Bộ Điều Chỉnh Từ ERP hoặc chọn ngày khác."
   },
   "masterData": {
     "title": "Danh Mục Master Barang (Customs Item Master)",
@@ -144,19 +154,19 @@
     "latestDocNo": "Chứng Từ Gần Nhất"
   },
   "table": {
-    "docNo": "Số Chứng Từ / Ref",
-    "actualTimestamp": "Thời Gian Thực Tế",
-    "cutoffDate": "Ngày Chốt 5:00 AM",
-    "itemCode": "Mã Vật Tư / Hàng",
-    "description": "Mô Tả Hàng Hóa",
-    "qty": "Số Lượng",
+    "docNo": "Mã chứng từ / Lệnh SX",
+    "actualTimestamp": "Thời gian thực tế",
+    "cutoffDate": "Ngày chốt 5:00 AM",
+    "itemCode": "Mã hàng hóa",
+    "description": "Mô tả hàng hóa",
+    "qty": "Số lượng",
     "uom": "ĐVT",
-    "value": "Giá Trị (Rp)",
-    "warehouse": "Mã Kho",
-    "status": "Trạng Thái INSW",
-    "hsCode": "Mã Biểu Thuế (HS Code)",
+    "value": "Giá trị (Rp)",
+    "warehouse": "Mã kho",
+    "status": "Trạng thái INSW",
+    "hsCode": "Mã HS",
     "kategori": "Kategori INSW",
-    "country": "Xuất Xứ"
+    "country": "Xuất xứ"
   },
   "common": {
     "save": "Lưu",
@@ -285,5 +295,31 @@
     "requestBody": "Request Body",
     "ceisaTooltip": "Tờ khai thuộc hệ thống CEISA 4.0 (BC 2.7, BC 4.1, BC 2.6.1, BC 2.5). Dữ liệu đã lưu IT Inventory, không cần Push INSW.",
     "copiedClipboard": "Đã copy JSON Payload vào clipboard!"
+  },
+  "categories": {
+    "machinery": "Máy Móc & Thiết Bị",
+    "auxiliary": "Phụ Liệu & Hóa Chất",
+    "wip": "Bán Thành Phẩm (WIP)",
+    "finished": "Thành Phẩm (Finished Goods)",
+    "scrap": "Phế Liệu & Phế Phẩm"
+  },
+  "statusDetail": {
+    "titleFailed": "Đẩy INSW Thất Bại (HTTP 400)",
+    "titleSuccess": "Đẩy INSW Thành Công (HTTP 200)",
+    "titlePending": "Trạng Thái Đẩy INSW",
+    "responseFailed": "Cổng Hải quan Indonesia (api.insw.go.id) phản hồi:",
+    "responseSuccess": "Kết quả phản hồi từ INSW:",
+    "businessExplanation": "Giải thích nghiệp vụ:",
+    "masterDataMissingTip": "Mã hàng {{code}} chưa được khai báo vào Master Data của Hải quan Indonesia (PER-24/BC/2023). Khi bộ phận Hải quan đồng bộ mã này vào danh mục Master Data, lệnh gửi sẽ trả về thành công (HTTP 200).",
+    "docAndErpInfo": "Thông tin chứng từ & Hàng hóa ERP:",
+    "docNo": "Mã chứng từ / Lệnh SX:",
+    "actualTimestamp": "Thời gian ghi nhận ERP:",
+    "itemCode": "Mã hàng hóa (kdBarang):",
+    "quantityAndUom": "Số lượng & ĐVT:",
+    "description": "Mô tả sản phẩm (uraianBarang):",
+    "warehouse": "Kho lưu trữ (kho):",
+    "value": "Giá trị tiền (nilai):",
+    "copyLog": "Sao chép chi tiết log",
+    "copied": "Đã sao chép!"
   }
 }
