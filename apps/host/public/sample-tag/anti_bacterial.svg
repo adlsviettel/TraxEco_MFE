@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="200" height="250">
+  <circle cx="100" cy="95" r="85" fill="none" stroke="#111111" stroke-width="7"/>
+  <circle cx="100" cy="95" r="30" fill="#111111"/>
+  <line x1="100" y1="50" x2="100" y2="65" stroke="#111111" stroke-width="7" stroke-linecap="round"/>
+  <line x1="100" y1="125" x2="100" y2="140" stroke="#111111" stroke-width="7" stroke-linecap="round"/>
+  <line x1="55" y1="95" x2="70" y2="95" stroke="#111111" stroke-width="7" stroke-linecap="round"/>
+  <line x1="130" y1="95" x2="145" y2="95" stroke="#111111" stroke-width="7" stroke-linecap="round"/>
+  <line x1="68" y1="63" x2="79" y2="74" stroke="#111111" stroke-width="6" stroke-linecap="round"/>
+  <line x1="121" y1="116" x2="132" y2="127" stroke="#111111" stroke-width="6" stroke-linecap="round"/>
+  <line x1="68" y1="127" x2="79" y2="116" stroke="#111111" stroke-width="6" stroke-linecap="round"/>
+  <line x1="121" y1="74" x2="132" y2="63" stroke="#111111" stroke-width="6" stroke-linecap="round"/>
+  <text x="100" y="218" font-family="-apple-system, BlinkMacSystemFont, Arial, sans-serif" font-weight="900" font-size="16" text-anchor="middle" fill="#111111" letter-spacing="0.5">ANTI-</text>
+  <text x="100" y="238" font-family="-apple-system, BlinkMacSystemFont, Arial, sans-serif" font-weight="900" font-size="16" text-anchor="middle" fill="#111111" letter-spacing="0.5">BACTERIAL</text>
+</svg>

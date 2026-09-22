@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="200" height="250">
+  <circle cx="100" cy="95" r="85" fill="none" stroke="#111111" stroke-width="7"/>
+  <path d="M50 115 Q100 105 150 115" fill="none" stroke="#111111" stroke-width="7" stroke-linecap="round"/>
+  <path d="M70 100 C65 80 75 65 70 50" fill="none" stroke="#111111" stroke-width="5" stroke-linecap="round"/>
+  <path d="M66 54 L70 46 L76 54" fill="none" stroke="#111111" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M100 100 C95 75 105 60 100 42" fill="none" stroke="#111111" stroke-width="6" stroke-linecap="round"/>
+  <path d="M95 48 L100 38 L107 48" fill="none" stroke="#111111" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M130 100 C125 80 135 65 130 50" fill="none" stroke="#111111" stroke-width="5" stroke-linecap="round"/>
+  <path d="M126 54 L130 46 L136 54" fill="none" stroke="#111111" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="100" y="228" font-family="-apple-system, BlinkMacSystemFont, Arial, sans-serif" font-weight="900" font-size="17" text-anchor="middle" fill="#111111" letter-spacing="1">BREATHABLE</text>
+</svg>

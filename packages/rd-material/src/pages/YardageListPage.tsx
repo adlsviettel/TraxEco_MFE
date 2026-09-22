@@ -21,6 +21,7 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import SyncIcon from '@mui/icons-material/Sync';
 import TextureIcon from '@mui/icons-material/Texture';
 import LaunchIcon from '@mui/icons-material/Launch';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { authService, AppButton, AppTextField, AdvancedFilterDrawer, columnFilterStore, TableExcelColumnMenu, scrollToTop } from '@traxeco/shared';
 import { format } from 'date-fns';
 import { exportYardageInventoryToExcel } from '../utils/excelExport';
@@ -28,20 +29,22 @@ import { rdItemApi } from '../services/rdMaterialApi';
 import type { Item } from '../types';
 import GenericItemFormDrawer from '../components/GenericItemFormDrawer';
 import SwipeableItem from '../components/ui/SwipeableItem';
+import ImageZoomModal from '../components/ImageZoomModal';
 import { useTranslation } from 'react-i18next';
 import { useDragScroll } from '../hooks/useDragScroll';
 
 const BASE = '/rd-material';
 
 const getStickyHeaderStyle = (colId: string, filteredCols: any[]) => {
-  const stickyIds = ['Image', 'Name', 'Item Code'];
+  const stickyIds = ['Select', 'Image', 'Name', 'Item Code'];
   if (!stickyIds.includes(colId)) return {};
   
   let left = 0;
   for (const c of filteredCols) {
     if (c.id === colId) break;
     if (stickyIds.includes(c.id)) {
-      if (c.id === 'Image') left += 80;
+      if (c.id === 'Select') left += 44;
+      else if (c.id === 'Image') left += 80;
       else if (c.id === 'Name') left += 200;
       else if (c.id === 'Item Code') left += 240;
     }
@@ -56,28 +59,258 @@ const getStickyHeaderStyle = (colId: string, filteredCols: any[]) => {
   };
 };
 
-const getStickyBodyStyle = (colId: string, filteredCols: any[], rowBgColor: string) => {
-  const stickyIds = ['Image', 'Name', 'Item Code'];
-  if (!stickyIds.includes(colId)) return {};
-  
-  let left = 0;
-  for (const c of filteredCols) {
-    if (c.id === colId) break;
-    if (stickyIds.includes(c.id)) {
-      if (c.id === 'Image') left += 80;
-      else if (c.id === 'Name') left += 200;
-      else if (c.id === 'Item Code') left += 240;
-    }
-  }
-  
-  return {
-    position: 'sticky',
-    left,
-    zIndex: 10,
-    bgcolor: rowBgColor,
-    borderRight: colId === 'Item Code' ? '2px solid #bfc9c4' : undefined,
+interface YardageTableRowProps {
+  item: Item;
+  isSelected: boolean;
+  onToggleSelect: (id: number) => void;
+  filteredCols: any[];
+  stickyOffsets: Record<string, number>;
+  canEdit: boolean;
+  canAdd: boolean;
+  canDelete: boolean;
+  onOpenDetails: (id: number) => void;
+  onEdit: (item: Item) => void;
+  onCopy: (item: Item) => void;
+  onPrint: (id: number) => void;
+  onDelete: (id: number) => void;
+  onPreviewZoom: (item: Item) => void;
+}
+
+const YardageTableRow = React.memo<YardageTableRowProps>(({
+  item,
+  isSelected,
+  onToggleSelect,
+  filteredCols,
+  stickyOffsets,
+  canEdit,
+  canAdd,
+  canDelete,
+  onOpenDetails,
+  onEdit,
+  onCopy,
+  onPrint,
+  onDelete,
+  onPreviewZoom,
+}) => {
+  const { t } = useTranslation();
+  const rowBgColor = (item.quantity ?? 0) <= 0 ? '#fef2f2' : '#fff';
+
+  const getStickyStyle = (colId: string) => {
+    if (stickyOffsets[colId] === undefined) return {};
+    return {
+      position: 'sticky',
+      left: stickyOffsets[colId],
+      zIndex: 10,
+      bgcolor: rowBgColor,
+      borderRight: colId === 'Item Code' ? '2px solid #bfc9c4' : undefined,
+    };
   };
-};
+
+  return (
+    <TableRow
+      hover
+      onClick={() => onOpenDetails(item.id!)}
+      sx={{ 
+        cursor: 'pointer',
+        bgcolor: rowBgColor,
+        transition: 'background-color 0.2s',
+        '&:hover': { bgcolor: '#F9FAFA !important' },
+        '& .action-buttons': { opacity: 0, transition: 'opacity 0.2s' },
+        '&:hover .action-buttons': { opacity: 1 }
+      }}
+    >
+      {filteredCols.map((col) => {
+        const colId = col.id;
+        switch (colId) {
+          case 'Select':
+            return (
+              <TableCell
+                key={colId}
+                align="center"
+                onClick={(e) => e.stopPropagation()}
+                sx={{
+                  py: 1, px: 0.5,
+                  ...getStickyStyle('Select'),
+                  width: 44, minWidth: 44, maxWidth: 44
+                } as any}
+              >
+                <Checkbox
+                  size="small"
+                  checked={isSelected}
+                  onChange={() => onToggleSelect(item.id!)}
+                  sx={{ p: 0.5 }}
+                />
+              </TableCell>
+            );
+          case 'Image':
+            return (
+              <TableCell key={colId} sx={{
+                px: 2, py: 1.5, textAlign: 'center',
+                ...getStickyStyle('Image'),
+                width: 80, minWidth: 80, maxWidth: 80
+              } as any}>
+                {rdItemApi.hasImage(item.mainImage) ? (
+                  <Tooltip
+                    title={
+                      <Box sx={{ width: 280, height: 280, bgcolor: 'background.paper', borderRadius: 2, overflow: 'hidden', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', p: 1 }}>
+                        <img src={rdItemApi.getFirstImageUrl(item.mainImage)} alt="" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                        <Typography sx={{ fontSize: 11, color: '#16a34a', fontWeight: 600, mt: 0.5 }}>🔍 {t('rdMaterial.click_to_zoom', 'Nhấp để phóng to / soi ảnh')}</Typography>
+                      </Box>
+                    }
+                    placement="right"
+                    componentsProps={{ tooltip: { sx: { bgcolor: 'background.paper', boxShadow: '0 4px 20px rgba(0,0,0,0.15)', p: 0.5, border: '1px solid', borderColor: 'divider' } } }}
+                  >
+                    <Box 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onPreviewZoom(item);
+                      }}
+                      sx={{ 
+                        width: 48, height: 48, borderRadius: 1.5, overflow: 'hidden', bgcolor: 'background.default', 
+                        display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #bfc9c4', mx: 'auto',
+                        cursor: 'pointer', transition: 'all 0.2s',
+                        '&:hover': { borderColor: '#16a34a', boxShadow: '0 0 0 2px rgba(22, 163, 74, 0.25)', transform: 'scale(1.08)' }
+                      }}
+                    >
+                      <img src={rdItemApi.getFirstImageUrl(item.mainImage)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    </Box>
+                  </Tooltip>
+                ) : (
+                  <Box sx={{ width: 48, height: 48, borderRadius: 1.5, overflow: 'hidden', bgcolor: 'background.default', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #bfc9c4', mx: 'auto' }}>
+                    <Typography sx={{ fontSize: 10, color: '#94a3b8', textAlign: 'center', lineHeight: 1.1, fontWeight: 600 }}>No Image</Typography>
+                  </Box>
+                )}
+              </TableCell>
+            );
+          case 'Name':
+            return (
+              <TableCell key={colId} sx={{
+                py: 1.5, fontSize: 13, color: '#191c1d',
+                ...getStickyStyle('Name'),
+                width: 200, minWidth: 200, maxWidth: 200
+              } as any}>
+                <Typography fontSize={13} color="#191c1d" fontWeight={700} noWrap sx={{ maxWidth: 200 }}>
+                  {item.fabric?.fabricName || '–'}
+                </Typography>
+                <Typography fontSize={11} color="text.secondary" noWrap sx={{ maxWidth: 200 }}>
+                  {item.name}
+                </Typography>
+              </TableCell>
+            );
+          case 'Item Code':
+            return (
+              <TableCell key={colId} sx={{
+                py: 1.5, fontSize: 13,
+                ...getStickyStyle('Item Code'),
+                minWidth: 180, width: 220,
+                overflow: 'hidden'
+              } as any}>
+                <Tooltip title={item.itemCode || '—'} arrow placement="top">
+                  <Typography 
+                    component="div" 
+                    sx={{ 
+                      fontSize: 13, 
+                      color: '#1a73e8', 
+                      fontWeight: 500, 
+                      cursor: 'pointer', 
+                      wordBreak: 'break-word',
+                      overflowWrap: 'anywhere',
+                      lineHeight: 1.35,
+                      display: 'block',
+                      '&:hover': { textDecoration: 'underline' } 
+                    }}
+                  >
+                    {item.itemCode || '—'}
+                  </Typography>
+                </Tooltip>
+              </TableCell>
+            );
+          case 'Structure':
+            return (
+              <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945' }}>{item.fabric?.structure || '—'}</TableCell>
+            );
+          case 'Composition':
+            return (
+              <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945' }}>{item.fabric?.composition || '—'}</TableCell>
+            );
+          case 'Function':
+            return (
+              <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945' }}>{item.fabric?.function || '—'}</TableCell>
+            );
+          case 'GSM':
+            return (
+              <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945' }}>
+                {item.fabric?.weightGsm ? `${item.fabric.weightGsm} gsm` : '—'}
+              </TableCell>
+            );
+          case 'Width':
+            return (
+              <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945' }}>
+                {item.fabric?.cuttableWidth ? `${item.fabric.cuttableWidth} inch` : '—'}
+              </TableCell>
+            );
+          case 'Supplier':
+            return (
+              <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945' }}>{item.supplierName || '—'}</TableCell>
+            );
+          case 'Origin':
+            return (
+              <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945' }}>{item.origin || '—'}</TableCell>
+            );
+          case 'Color':
+            return (
+              <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945' }}>{item.category || '—'}</TableCell>
+            );
+          case 'Qty':
+            return (
+              <TableCell key={colId} sx={{ py: 1.5, textAlign: 'center' }}>
+                <Box sx={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', px: 1.25, py: 0.5, borderRadius: '6px', bgcolor: 'rgba(46,125,50,0.1)', color: '#2e7d32', fontFamily: 'monospace', fontSize: 13, fontWeight: 700, minWidth: 36 }}>
+                  {item.quantity ?? 0} {item.quantityUnit || 'Yd'}
+                </Box>
+              </TableCell>
+            );
+          case 'Location':
+            return (
+              <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945' }}>{item.location || '—'}</TableCell>
+            );
+          case 'Created At':
+            return (
+              <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945', whiteSpace: 'nowrap' }}>
+                {item.createdAt ? new Date(item.createdAt).toLocaleString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '–'}
+              </TableCell>
+            );
+          case 'Actions':
+            return (
+              <TableCell onClick={(e) => e.stopPropagation()} key={colId} sx={{ py: 1.5, textAlign: 'right', pr: 3 }}>
+                <Box className="action-buttons" sx={{ display: 'flex', gap: 0.5, justifyContent: 'flex-end' }}>
+                  {canEdit && (
+                    <IconButton size="small" onClick={() => onEdit(item)} sx={{ color: '#707975', '&:hover': { color: '#2e7d32', bgcolor: '#f3f4f5' } }}>
+                      <EditIcon sx={{ fontSize: 18 }} />
+                    </IconButton>
+                  )}
+                  {canAdd && (
+                    <IconButton size="small" onClick={() => onCopy(item)} sx={{ color: '#707975', '&:hover': { color: '#0284c7', bgcolor: '#e0f2fe' } }}>
+                      <ContentCopyIcon sx={{ fontSize: 18 }} />
+                    </IconButton>
+                  )}
+                  <IconButton size="small" onClick={() => onPrint(item.id!)} sx={{ color: '#707975', '&:hover': { color: '#2e7d32', bgcolor: '#f3f4f5' } }}>
+                    <PrintIcon sx={{ fontSize: 18 }} />
+                  </IconButton>
+                  {canDelete && (
+                    <IconButton size="small" onClick={() => onDelete(item.id!)} sx={{ color: '#707975', '&:hover': { color: '#ba1a1a', bgcolor: '#ffdad6' } }}>
+                      <DeleteIcon sx={{ fontSize: 18 }} />
+                    </IconButton>
+                  )}
+                </Box>
+              </TableCell>
+            );
+          default:
+            return null;
+        }
+      })}
+    </TableRow>
+  );
+});
 
 const InfoRow = ({ label, value }: { label: string; value?: React.ReactNode }) => (
   <Box sx={{ py: 1.25, borderBottom: '1px solid', borderColor: 'divider', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 2 }}>
@@ -132,6 +365,7 @@ const YardageListPage: React.FC = () => {
   const [hasSearched, setHasSearched] = useState(stateParentId || stateKeyword ? true : (init.hasSearched ?? false));
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: 'success' | 'error' | 'warning' | 'info' }>({ open: false, message: '', severity: 'success' });
+  const [previewZoomItem, setPreviewZoomItem] = useState<Item | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isCopy, setIsCopy] = useState(false);
   const [editItem, setEditItem] = useState<Item | null>(null);
@@ -238,7 +472,9 @@ const YardageListPage: React.FC = () => {
     scrollToTop(dragRef);
   }, [page]);
 
-  columnFilterStore.register(window.location.pathname, columnFilters, setColumnFilters, items);
+  useEffect(() => {
+    columnFilterStore.register(window.location.pathname, columnFilters, setColumnFilters, items);
+  }, [columnFilters, items]);
 
   const activeFiltersCount = (itemCode.length > 0 ? 1 : 0) + (supplierName.length > 0 ? 1 : 0) + (color.length > 0 ? 1 : 0) + (origin.length > 0 ? 1 : 0) + (location.length > 0 ? 1 : 0) + (holder.length > 0 ? 1 : 0);
 
@@ -258,7 +494,7 @@ const YardageListPage: React.FC = () => {
 
   const [columnOrder, setColumnOrder] = useState<string[]>(() => {
     const defaultOrder = [
-      'Image', 'Name', 'Item Code', 'Structure', 'Composition', 'Function', 'GSM',
+      'Select', 'Image', 'Name', 'Item Code', 'Structure', 'Composition', 'Function', 'GSM',
       'Width', 'Supplier', 'Origin', 'Color', 'Qty', 'Location', 'Created At', 'Actions'
     ];
     try {
@@ -266,10 +502,10 @@ const YardageListPage: React.FC = () => {
       if (saved) {
         const parsed = JSON.parse(saved) as string[];
         const cleanedSaved = parsed.filter(id => id !== 'Actions');
-        const defaultWithoutActions = defaultOrder.filter(id => id !== 'Actions');
+        const defaultWithoutActions = defaultOrder.filter(id => id !== 'Actions' && id !== 'Select');
         const validSaved = cleanedSaved.filter(id => defaultWithoutActions.includes(id));
         const missing = defaultWithoutActions.filter(id => !validSaved.includes(id));
-        return [...validSaved, ...missing, 'Actions'];
+        return ['Select', ...validSaved, ...missing, 'Actions'];
       }
     } catch { /* ignore */ }
     return defaultOrder;
@@ -282,7 +518,8 @@ const YardageListPage: React.FC = () => {
   const [draggedColId, setDraggedColId] = useState<string | null>(null);
   const [dragOverColId, setDragOverColId] = useState<string | null>(null);
 
-  const columns = [
+  const columns = useMemo(() => [
+    { id: 'Select', label: '', isCenter: true },
     { id: 'Image', label: 'Image', isCenter: true },
     { id: 'Name', label: 'Fabric Name' },
     { id: 'Item Code', label: 'Item Code' },
@@ -298,174 +535,66 @@ const YardageListPage: React.FC = () => {
     { id: 'Location', label: 'Location' },
     { id: 'Created At', label: 'Created At' },
     { id: 'Actions', label: 'Actions', isRight: true }
-  ];
+  ], []);
 
-  const sortedColumns = [...columns].sort((a, b) => {
+  const sortedColumns = useMemo(() => [...columns].sort((a, b) => {
     const idxA = columnOrder.indexOf(a.id);
     const idxB = columnOrder.indexOf(b.id);
     return (idxA !== -1 ? idxA : 999) - (idxB !== -1 ? idxB : 999);
-  });
+  }), [columns, columnOrder]);
 
-  const filteredCols = sortedColumns.filter(col => visibleColumns[col.id] !== false);
+  const filteredCols = useMemo(() => sortedColumns.filter(col => visibleColumns[col.id] !== false), [sortedColumns, visibleColumns]);
   const colSpanCount = filteredCols.length;
 
-  const renderRowCell = (item: Item, colId: string, rowBgColor: string) => {
-    switch (colId) {
-      case 'Image':
-        return (
-          <TableCell key={colId} sx={{
-            px: 2, py: 1.5, textAlign: 'center',
-            ...getStickyBodyStyle('Image', filteredCols, rowBgColor),
-            width: 80, minWidth: 80, maxWidth: 80
-          } as any}>
-            {item.mainImage ? (
-              <Tooltip
-                title={
-                  <Box sx={{ width: 240, height: 240, bgcolor: 'background.paper', borderRadius: 1, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <img src={rdItemApi.getImageUrl(item.mainImage.split(',')[0])} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-                  </Box>
-                }
-                placement="right"
-                componentsProps={{ tooltip: { sx: { bgcolor: 'background.paper', boxShadow: '0 4px 20px rgba(0,0,0,0.15)', p: 0.5, border: '1px solid', borderColor: 'divider' } } }}
-              >
-                <Box sx={{ width: 48, height: 48, borderRadius: 1, overflow: 'hidden', bgcolor: 'background.default', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #bfc9c4', mx: 'auto' }}>
-                  <img src={rdItemApi.getImageUrl(item.mainImage.split(',')[0])} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                </Box>
-              </Tooltip>
-            ) : (
-              <Box sx={{ width: 48, height: 48, borderRadius: 1, overflow: 'hidden', bgcolor: 'background.default', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #bfc9c4', mx: 'auto' }}>
-                <Typography sx={{ fontSize: 10, color: '#94a3b8', textAlign: 'center', lineHeight: 1.1, fontWeight: 600 }}>No Image</Typography>
-              </Box>
-            )}
-          </TableCell>
-        );
-      case 'Name':
-        return (
-          <TableCell key={colId} sx={{
-            py: 1.5, fontSize: 13, color: '#191c1d',
-            ...getStickyBodyStyle('Name', filteredCols, rowBgColor),
-            width: 200, minWidth: 200, maxWidth: 200
-          } as any}>
-            <Typography fontSize={13} color="#191c1d" fontWeight={700} noWrap sx={{ maxWidth: 200 }}>
-              {item.fabric?.fabricName || '–'}
-            </Typography>
-            <Typography fontSize={11} color="text.secondary" noWrap sx={{ maxWidth: 200 }}>
-              {item.name}
-            </Typography>
-          </TableCell>
-        );
-      case 'Item Code':
-        return (
-          <TableCell key={colId} sx={{
-            py: 1.5, fontSize: 13,
-            ...getStickyBodyStyle('Item Code', filteredCols, rowBgColor),
-            minWidth: 180, width: 220,
-            overflow: 'hidden'
-          } as any}>
-            <Tooltip title={item.itemCode || '—'} arrow placement="top">
-              <Typography 
-                component="div" 
-                onClick={() => React.startTransition(() => navigate(`${BASE}/yardage/${item.id}`))}
-                sx={{ 
-                  fontSize: 13, 
-                  color: '#1a73e8', 
-                  fontWeight: 500, 
-                  cursor: 'pointer', 
-                  wordBreak: 'break-word',
-                  overflowWrap: 'anywhere',
-                  lineHeight: 1.35,
-                  display: 'block',
-                  '&:hover': { textDecoration: 'underline' } 
-                }}
-              >
-                {item.itemCode || '—'}
-              </Typography>
-            </Tooltip>
-          </TableCell>
-        );
-      case 'Structure':
-        return (
-          <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945' }}>{item.fabric?.structure || '—'}</TableCell>
-        );
-      case 'Composition':
-        return (
-          <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945' }}>{item.fabric?.composition || '—'}</TableCell>
-        );
-      case 'Function':
-        return (
-          <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945' }}>{item.fabric?.function || '—'}</TableCell>
-        );
-      case 'GSM':
-        return (
-          <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945' }}>
-            {item.fabric?.weightGsm ? `${item.fabric.weightGsm} gsm` : '—'}
-          </TableCell>
-        );
-      case 'Width':
-        return (
-          <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945' }}>
-            {item.fabric?.cuttableWidth ? `${item.fabric.cuttableWidth} inch` : '—'}
-          </TableCell>
-        );
-      case 'Supplier':
-        return (
-          <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945' }}>{item.supplierName || '—'}</TableCell>
-        );
-      case 'Origin':
-        return (
-          <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945' }}>{item.origin || '—'}</TableCell>
-        );
-      case 'Color':
-        return (
-          <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945' }}>{item.category || '—'}</TableCell>
-        );
-      case 'Qty':
-        return (
-          <TableCell key={colId} sx={{ py: 1.5, textAlign: 'center' }}>
-            <Box sx={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', px: 1.25, py: 0.5, borderRadius: '6px', bgcolor: 'rgba(46,125,50,0.1)', color: '#2e7d32', fontFamily: 'monospace', fontSize: 13, fontWeight: 700, minWidth: 36 }}>
-              {item.quantity ?? 0} {item.quantityUnit || 'Yd'}
-            </Box>
-          </TableCell>
-        );
-      case 'Location':
-        return (
-          <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945' }}>{item.location || '—'}</TableCell>
-        );
-      case 'Created At':
-        return (
-          <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945', whiteSpace: 'nowrap' }}>
-            {item.createdAt ? new Date(item.createdAt).toLocaleString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '–'}
-          </TableCell>
-        );
-      case 'Actions':
-        return (
-          <TableCell onClick={(e) => e.stopPropagation()} key={colId} sx={{ py: 1.5, textAlign: 'right', pr: 3 }}>
-            <Box className="action-buttons" sx={{ display: 'flex', gap: 0.5, justifyContent: 'flex-end' }}>
-              {canEdit && (
-                <IconButton size="small" onClick={() => { setIsCopy(false); setEditItem(item); setDrawerOpen(true); }} sx={{ color: '#707975', '&:hover': { color: '#2e7d32', bgcolor: '#f3f4f5' } }}>
-                  <EditIcon sx={{ fontSize: 18 }} />
-                </IconButton>
-              )}
-              {canAdd && (
-                <IconButton size="small" onClick={() => { setIsCopy(true); setEditItem(item); setDrawerOpen(true); }} sx={{ color: '#707975', '&:hover': { color: '#0284c7', bgcolor: '#e0f2fe' } }}>
-                  <ContentCopyIcon sx={{ fontSize: 18 }} />
-                </IconButton>
-              )}
-              <IconButton size="small" onClick={() => navigate(`${BASE}/label/${item.id}`)} sx={{ color: '#707975', '&:hover': { color: '#2e7d32', bgcolor: '#f3f4f5' } }}>
-                <PrintIcon sx={{ fontSize: 18 }} />
-              </IconButton>
-              {canDelete && (
-                <IconButton size="small" onClick={() => handleDelete(item.id)} sx={{ color: '#707975', '&:hover': { color: '#ba1a1a', bgcolor: '#ffdad6' } }}>
-                  <DeleteIcon sx={{ fontSize: 18 }} />
-                </IconButton>
-              )}
-            </Box>
-          </TableCell>
-        );
-      default:
-        return null;
+  const stickyOffsets = useMemo(() => {
+    const stickyIds = ['Select', 'Image', 'Name', 'Item Code'];
+    const offsets: Record<string, number> = {};
+    let left = 0;
+    for (const c of filteredCols) {
+      if (stickyIds.includes(c.id)) {
+        offsets[c.id] = left;
+        if (c.id === 'Select') left += 44;
+        else if (c.id === 'Image') left += 80;
+        else if (c.id === 'Name') left += 200;
+        else if (c.id === 'Item Code') left += 240;
+      }
     }
-  };
+    return offsets;
+  }, [filteredCols]);
+
+  const selectedSet = useMemo(() => new Set(selectedIds), [selectedIds]);
+
+  const handleToggleSelect = useCallback((id: number) => {
+    setSelectedIds(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
+  }, []);
+
+  const handleOpenDetails = useCallback((id: number) => {
+    React.startTransition(() => navigate(`${BASE}/yardage/${id}`));
+  }, [navigate]);
+
+  const handleEdit = useCallback((item: Item) => {
+    setIsCopy(false);
+    setEditItem(item);
+    setDrawerOpen(true);
+  }, []);
+
+  const handleCopy = useCallback((item: Item) => {
+    setIsCopy(true);
+    setEditItem(item);
+    setDrawerOpen(true);
+  }, []);
+
+  const handlePrint = useCallback((id: number) => {
+    navigate(`${BASE}/label/${id}`);
+  }, [navigate]);
+
+  const handleDelete = useCallback((id: number) => {
+    setDeleteId(id);
+  }, []);
+
+  const handlePreviewZoom = useCallback((item: Item) => {
+    setPreviewZoomItem(item);
+  }, []);
 
   const load = useCallback(async (options?: { forceLoading?: boolean }) => {
     if (!hasSearched) return;
@@ -552,10 +681,6 @@ const YardageListPage: React.FC = () => {
     } finally {
       setDeleteId(null);
     }
-  };
-
-  const handleDelete = (id: number) => {
-    setDeleteId(id);
   };
 
   const handleExport = async () => {
@@ -657,6 +782,25 @@ const YardageListPage: React.FC = () => {
                 <Divider sx={{ flexGrow: 1, ml: 1.5, borderColor: 'rgba(0,0,0,0.06)' }} />
               </Box>
             )}
+            {selectedIds.length > 0 && (
+              <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', mt: 0.5 }}>
+                <Chip 
+                  label={t('rdMaterial.selected_count', { count: selectedIds.length, defaultValue: `Đã chọn ${selectedIds.length} mục` })} 
+                  onDelete={() => setSelectedIds([])}
+                  sx={{ borderRadius: 1.5, fontWeight: 600, bgcolor: '#e0f2fe', color: '#0369a1', '& .MuiChip-deleteIcon': { color: '#0369a1' } }} 
+                />
+                <AppButton
+                  variant="contained"
+                  customVariant="primary"
+                  size="small"
+                  startIcon={<PrintIcon sx={{ fontSize: '16px !important' }} />}
+                  onClick={() => navigate(`${BASE}/label?ids=${selectedIds.join(',')}`)}
+                  sx={{ height: 32, px: 1.5, bgcolor: '#0284c7', '&:hover': { bgcolor: '#0369a1' }, fontSize: 12 }}
+                >
+                  {t('rdMaterial.print_label_count', { count: selectedIds.length, defaultValue: `In Tem (${selectedIds.length})` })}
+                </AppButton>
+              </Box>
+            )}
           </Box>
 
           <Menu
@@ -694,29 +838,51 @@ const YardageListPage: React.FC = () => {
             flex: '1 1 auto', 
             minWidth: 0 
           }}>
-            {/* Sub-group 1: Search box & Chip selection info */}
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flex: { xs: '1 1 100%', sm: '0 1 auto' }, minWidth: 200 }}>
-              <AppTextField placeholder={t('rdMaterial.search_placeholder', 'Search by name, code...')}
-                value={keyword} debounceMs={400} onDebounceChange={setKeyword}
-                InputProps={{
-                  startAdornment: <InputAdornment position="start"><SearchIcon sx={{ fontSize: 20, color: '#707975' }} /></InputAdornment>,
-                  endAdornment: keyword ? (
-                    <InputAdornment position="end">
-                      <IconButton size="small" onClick={() => setKeyword('')}><ClearIcon sx={{ fontSize: 16 }} /></IconButton>
-                    </InputAdornment>
-                  ) : null,
-                }}
-                sx={{ width: '100%', minWidth: 200, maxWidth: { sm: 280, md: 320 } }}
-              />
+            {/* Sub-group 1: Search box */}
+            <AppTextField placeholder={t('rdMaterial.search_placeholder', 'Search by name, code...')}
+              value={keyword} debounceMs={400} onDebounceChange={setKeyword}
+              InputProps={{
+                startAdornment: <InputAdornment position="start"><SearchIcon sx={{ fontSize: 20, color: '#707975' }} /></InputAdornment>,
+                endAdornment: keyword ? (
+                  <InputAdornment position="end">
+                    <IconButton size="small" onClick={() => setKeyword('')}><ClearIcon sx={{ fontSize: 16 }} /></IconButton>
+                  </InputAdornment>
+                ) : null,
+              }}
+              sx={{ width: { xs: '100%', sm: 240, md: 280 } }}
+            />
 
-              {selectedIds.length > 0 && (
+            {/* Selection Action Bar */}
+            {selectedIds.length > 0 && (
+              <Box sx={{ 
+                display: 'inline-flex', 
+                alignItems: 'center', 
+                gap: 1, 
+                bgcolor: '#f0f9ff', 
+                border: '1px solid #bae6fd', 
+                px: 1.25, 
+                py: 0.5, 
+                borderRadius: 2,
+                flexShrink: 0
+              }}>
                 <Chip 
-                  label={`Đã chọn ${selectedIds.length} mục`} 
+                  size="small"
+                  label={t('rdMaterial.selected_count', { count: selectedIds.length, defaultValue: `Đã chọn ${selectedIds.length}` })} 
                   onDelete={() => setSelectedIds([])}
-                  sx={{ borderRadius: 1.5, fontWeight: 600, bgcolor: '#e0f2fe', color: '#0369a1', '& .MuiChip-deleteIcon': { color: '#0369a1' } }} 
+                  sx={{ fontWeight: 600, bgcolor: '#e0f2fe', color: '#0369a1', '& .MuiChip-deleteIcon': { color: '#0369a1' } }} 
                 />
-              )}
-            </Box>
+                <AppButton
+                  variant="contained"
+                  customVariant="primary"
+                  size="small"
+                  startIcon={<PrintIcon sx={{ fontSize: '16px !important' }} />}
+                  onClick={() => navigate(`${BASE}/label?ids=${selectedIds.join(',')}`)}
+                  sx={{ height: 30, px: 1.5, bgcolor: '#0284c7', '&:hover': { bgcolor: '#0369a1' }, fontSize: 12.5, whiteSpace: 'nowrap' }}
+                >
+                  {t('rdMaterial.print_label_a4_count', { count: selectedIds.length, defaultValue: `In Tem A4 (${selectedIds.length})` })}
+                </AppButton>
+              </Box>
+            )}
 
             {/* Sub-group 2: Filter trigger */}
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'nowrap' }}>
@@ -964,10 +1130,10 @@ const YardageListPage: React.FC = () => {
                           flexShrink: 0 
                         }}
                       >
-                        {item.mainImage ? (
-                          <img src={rdItemApi.getImageUrl(item.mainImage.split(',')[0])} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        {rdItemApi.hasImage(item.mainImage) ? (
+                          <img src={rdItemApi.getFirstImageUrl(item.mainImage)} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                         ) : (
-                          <Typography sx={{ fontSize: 10, color: '#94a3b8', fontWeight: 600 }}>No Image</Typography>
+                          <TextureIcon sx={{ fontSize: 24, color: '#cbd5e1' }} />
                         )}
                       </Box>
 
@@ -1048,10 +1214,43 @@ const YardageListPage: React.FC = () => {
                 <TableRow>
                   {filteredCols.map((col) => {
                     const stickyStyle = getStickyHeaderStyle(col.id, filteredCols);
-                    const widthStyle = col.id === 'Image' ? { width: 80, minWidth: 80, maxWidth: 80 }
+                    const widthStyle = col.id === 'Select' ? { width: 44, minWidth: 44, maxWidth: 44 }
+                                     : col.id === 'Image' ? { width: 80, minWidth: 80, maxWidth: 80 }
                                      : col.id === 'Name' ? { width: 200, minWidth: 200, maxWidth: 200 }
                                      : col.id === 'Item Code' ? { width: 240, minWidth: 240, maxWidth: 240 }
                                      : {};
+
+                    if (col.id === 'Select') {
+                      const isAllChecked = items.length > 0 && selectedIds.length === items.length;
+                      const isIndeterminate = selectedIds.length > 0 && selectedIds.length < items.length;
+                      return (
+                        <TableCell
+                          key={col.id}
+                          align="center"
+                          sx={{
+                            py: 1, px: 0.5,
+                            bgcolor: '#F9FAFA',
+                            borderBottom: '1px solid', borderColor: 'divider',
+                            ...stickyStyle,
+                            ...widthStyle,
+                          }}
+                        >
+                          <Checkbox
+                            size="small"
+                            checked={isAllChecked}
+                            indeterminate={isIndeterminate}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setSelectedIds(items.map(i => i.id!).filter(Boolean));
+                              } else {
+                                setSelectedIds([]);
+                              }
+                            }}
+                            sx={{ p: 0.5 }}
+                          />
+                        </TableCell>
+                      );
+                    }
                     return (
                       <TableCell
                         key={col.id}
@@ -1160,26 +1359,25 @@ const YardageListPage: React.FC = () => {
                     </Box>
                   </TableCell></TableRow>
                 ) : (
-                  pagedItems.map((item) => {
-                    const rowBgColor = (item.quantity ?? 0) <= 0 ? '#fef2f2' : '#fff';
-                    return (
-                      <TableRow 
-                        key={item.id} 
-                        hover
-                        onClick={() => React.startTransition(() => navigate(`${BASE}/yardage/${item.id}`))}
-                        sx={{ 
-                          cursor: 'pointer', 
-                          bgcolor: rowBgColor,
-                          transition: 'background-color 0.2s',
-                          '&:hover': { bgcolor: '#F9FAFA !important' },
-                          '& .action-buttons': { opacity: 0, transition: 'opacity 0.2s' },
-                          '&:hover .action-buttons': { opacity: 1 }
-                        }}
-                      >
-                        {filteredCols.map((col) => renderRowCell(item, col.id, rowBgColor))}
-                      </TableRow>
-                    );
-                  })
+                  pagedItems.map((item) => (
+                    <YardageTableRow
+                      key={item.id}
+                      item={item}
+                      isSelected={selectedSet.has(item.id!)}
+                      onToggleSelect={handleToggleSelect}
+                      filteredCols={filteredCols}
+                      stickyOffsets={stickyOffsets}
+                      canEdit={canEdit}
+                      canAdd={canAdd}
+                      canDelete={canDelete}
+                      onOpenDetails={handleOpenDetails}
+                      onEdit={handleEdit}
+                      onCopy={handleCopy}
+                      onPrint={handlePrint}
+                      onDelete={handleDelete}
+                      onPreviewZoom={handlePreviewZoom}
+                    />
+                  ))
                 )}
               </TableBody>
             </Table>
@@ -1256,6 +1454,17 @@ const YardageListPage: React.FC = () => {
       <Snackbar open={snackbar.open} autoHideDuration={3000} onClose={() => setSnackbar({ ...snackbar, open: false })} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
         <Alert severity={(snackbar.severity as 'success' | 'error' | 'warning' | 'info') || 'success'} sx={{ width: '100%', borderRadius: 2 }}>{snackbar.message}</Alert>
       </Snackbar>
+
+      {/* Full-screen Rich Image Zoom & Pan Modal */}
+      <ImageZoomModal
+        open={!!previewZoomItem}
+        onClose={() => setPreviewZoomItem(null)}
+        images={[
+          ...(rdItemApi.hasImage(previewZoomItem?.mainImage) ? previewZoomItem!.mainImage!.split(',').filter(Boolean) : []),
+          ...(rdItemApi.hasImage(previewZoomItem?.stickerImage) ? previewZoomItem!.stickerImage!.split(',').filter(Boolean) : []),
+        ]}
+        title={previewZoomItem ? `${previewZoomItem.name || ''} (${previewZoomItem.itemCode || ''})` : ''}
+      />
     </Box>
   );
 };

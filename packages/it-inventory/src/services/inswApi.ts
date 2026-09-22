@@ -10,31 +10,56 @@ import { getInswConfig } from '../utils/inswConfig.ts';
 
 // ─── INSW Request Types ──────────────────────────────────────────────────────
 
-interface InswBarang {
+export interface InswDokumenPabean {
+  kodeDokumen: string;
+  nomorDokumen: string;
+  tanggalDokumen: string;
+}
+
+export interface InswBarang {
   kdKategoriBarang: string;
   kdBarang: string;
   uraianBarang: string;
   jumlah: number;
   kdSatuan: string;
   nilai: number;
-  dokumen: unknown[];
+  dokumen: InswDokumenPabean[];
 }
 
-interface InswDokumenKegiatan {
+export interface InswDokumenKegiatan {
   nomorDokKegiatan: string;
   tanggalKegiatan: string;
+  keterangan?: string;
   namaEntitas: string;
   barangTransaksi: InswBarang[];
 }
 
-interface InswDataItem {
+export interface InswDataItem {
   kdKegiatan: string;
   dokumenKegiatan: InswDokumenKegiatan[];
 }
 
-interface InswRequestBody {
+export interface InswRequestBody {
   data: InswDataItem[];
 }
+
+// ─── Standard Category Reference (PIA v1.6.01 Page 29) ──────────────────────
+export interface InswKategoriOption {
+  code: string;
+  name: string;
+  desc: string;
+}
+
+export const INSW_KATEGORI_OPTIONS: InswKategoriOption[] = [
+  { code: '1', name: 'Bahan Baku', desc: 'Nguyên liệu thô / Vải chính / Yarn' },
+  { code: '2', name: 'Bahan Penolong', desc: 'Nguyên phụ liệu (chỉ, cúc, chun, nhãn, túi, thùng...)' },
+  { code: '3', name: 'Bahan Habis Pakai', desc: 'Vật tư tiêu hao (kim may, dầu máy, phấn...)' },
+  { code: '4', name: 'Barang Dagangan', desc: 'Hàng hóa thương mại' },
+  { code: '5', name: 'Mesin dan Peralatan', desc: 'Máy móc, thiết bị sản xuất & linh kiện thay thế' },
+  { code: '6', name: 'Barang dalam proses', desc: 'Bán thành phẩm / WIP (đang trên chuyền may)' },
+  { code: '7', name: 'Barang Jadi', desc: 'Thành phẩm may mặc (quần, áo, jacket, polo...)' },
+  { code: '8', name: 'Barang Reject & Scrap', desc: 'Phế liệu, phế phẩm, vải vụn, rác' },
+];
 
 // ─── Response Type ───────────────────────────────────────────────────────────
 
@@ -86,7 +111,7 @@ export async function getMappings(): Promise<InswCategoryMapping[]> {
 export function detectKategoriBarang(item: { kodeHS?: string; kategoriBarang?: string; uraianBarang?: string; kodeBarang?: string }, mappings: InswCategoryMapping[] = []): string {
   const rawCat = (item.kategoriBarang || '').trim();
   
-  // 0. FIRST & FOREMOST: If rawCat is explicitly set by user, ALWAYS RESPECT IT!
+  // 0. FIRST & FOREMOST: If rawCat is explicitly set by user (1-8), ALWAYS RESPECT IT!
   if (/^[1-8]$/.test(rawCat)) return rawCat;
 
   const numMatch = rawCat.match(/^([1-8])\s*[\-\:\.\s]/);
@@ -94,14 +119,14 @@ export function detectKategoriBarang(item: { kodeHS?: string; kategoriBarang?: s
 
   const catLower = rawCat.toLowerCase();
   if (catLower) {
-    if (catLower.includes('mesin') || catLower.includes('peralatan') || catLower.includes('modal')) return '1';
-    if (catLower.includes('hasil produksi') || catLower.includes('thành phẩm') || catLower.includes('finished')) return '2';
-    if (catLower.includes('bahan baku') || catLower.includes('penolong') || catLower.includes('raw material')) return '3';
-    if (catLower.includes('pengemas') || catLower.includes('packaging')) return '4';
-    if (catLower.includes('sisa') || catLower.includes('scrap') || catLower.includes('waste')) return '5';
-    if (catLower.includes('sampul') || catLower.includes('contoh')) return '6';
-    if (catLower.includes('bangunan') || catLower.includes('konstruksi')) return '7';
-    if (catLower.includes('wip') || catLower.includes('bán thành')) return '8';
+    if (catLower.includes('bahan baku') || catLower.includes('raw material') || catLower.includes('nguyên liệu')) return '1';
+    if (catLower.includes('bahan penolong') || catLower.includes('auxiliary') || catLower.includes('phụ liệu')) return '2';
+    if (catLower.includes('habis pakai') || catLower.includes('consumable') || catLower.includes('tiêu hao')) return '3';
+    if (catLower.includes('dagangan') || catLower.includes('merchandise') || catLower.includes('thương mại')) return '4';
+    if (catLower.includes('mesin') || catLower.includes('peralatan') || catLower.includes('machine') || catLower.includes('equipment') || catLower.includes('thiết bị')) return '5';
+    if (catLower.includes('dalam proses') || catLower.includes('wip') || catLower.includes('bán thành')) return '6';
+    if (catLower.includes('barang jadi') || catLower.includes('hasil produksi') || catLower.includes('thành phẩm') || catLower.includes('finished')) return '7';
+    if (catLower.includes('reject') || catLower.includes('scrap') || catLower.includes('waste') || catLower.includes('phế liệu') || catLower.includes('sisa')) return '8';
   }
 
   const uraian = (item.uraianBarang || '').toLowerCase();
@@ -120,51 +145,116 @@ export function detectKategoriBarang(item: { kodeHS?: string; kategoriBarang?: s
     }
   }
 
-  // 2. HS Code Tariff Classification Rules (Indonesia Customs Standard)
-  if (hs.length >= 2) {
-    const chapter = parseInt(hs.substring(0, 2), 10);
-    // Machinery & Assets (Ch. 84 - 85)
-    if (chapter === 84 || chapter === 85) return '1';
-    // Finished Goods Garments (Ch. 61 - 62)
-    if (chapter === 61 || chapter === 62) return '2';
-    // Raw Materials & Textiles (Ch. 50 - 60, 39, 48, 96)
-    if ((chapter >= 50 && chapter <= 60) || chapter === 39 || chapter === 48 || chapter === 96) return '3';
-    // Capital Goods & Metal Tools (Ch. 72 - 83)
-    if (chapter >= 72 && chapter <= 83) return '4';
-    // Scrap (3915, 5505, 6310)
-    if (hs.startsWith('3915') || hs.startsWith('5505') || hs.startsWith('6310')) return '5';
-  }
-
-  // 3. Built-in Keyword Dictionary Rules
+  // 2. Built-in Keyword Dictionary Rules (Specific keywords take priority over broad HS chapters)
   const combinedText = `${uraian} ${kdBarang} ${rawCat}`.toLowerCase();
 
-  // Machinery & Asset
-  if (/\b(máy|machine|mc-|motor|equipment|sparepart|juki|eastman|jack|brother|pewanti|thiết bị)\b/i.test(combinedText)) {
-    return '1';
-  }
-
-  // Finished Goods
-  if (/\b(t-shirt|shirt|pant|jacket|polo|garment|thành phẩm|áo|quần|trang phục|s2706|fg-)\b/i.test(combinedText)) {
-    return '2';
-  }
-
-  // Scrap & Waste
-  if (/\b(scrap|phế|vải vụn|rác|waste|phế liệu|đầu mẫu)\b/i.test(combinedText)) {
-    return '5';
-  }
-
-  // Work In Process (WIP)
-  if (/\b(wip|prodline|bán thành phẩm|cutting|panel|thùng bán thành)\b/i.test(combinedText)) {
-    return '8';
-  }
-
-  // Auxiliary Materials & Raw Materials (Default for textile/garment production inputs)
-  if (/\b(vải|fabric|jersey|cotton|poly|thread|chỉ|elastic|thun|button|cúc|zipper|khóa|label|nhãn|polybag|túi|box|hộp|tape|băng|yarn|sợi|sub-)\b/i.test(combinedText)) {
+  // 3 - Consumables / Vật tư tiêu hao (kim may, dao cắt, phấn, dầu máy)
+  if (/\b(dầu máy|oil|phấn|chalk|kim may|needle|blade|lưỡi dao|lubricant)\b/i.test(combinedText)) {
     return '3';
   }
 
-  // Safe Default for Import Materials (Category 3 = Bahan Baku / Penolong)
-  return '3';
+  // 2 - Auxiliary Materials / Phụ liệu may (chỉ, cúc, khóa, nhãn, chun, bao bì)
+  if (/\b(thread|chỉ|elastic|thun|button|cúc|zipper|khóa|label|nhãn|polybag|túi|box|hộp|tape|băng|interlining|mex|hanger|móc|tag|seal)\b/i.test(combinedText)) {
+    return '2';
+  }
+
+  // 8 - Scrap & Waste
+  if (/\b(scrap|phế|vải vụn|rác|waste|phế liệu|đầu mẫu|reject)\b/i.test(combinedText)) {
+    return '8';
+  }
+
+  // 6 - Work In Process (WIP)
+  if (/\b(wip|prodline|bán thành phẩm|cutting|panel|thùng bán thành)\b/i.test(combinedText)) {
+    return '6';
+  }
+
+  // 7 - Finished Goods (Garment)
+  if (/\b(t-shirt|shirt|pant|jacket|polo|garment|thành phẩm|áo|quần|trang phục|s2706|fg-)\b/i.test(combinedText)) {
+    return '7';
+  }
+
+  // 5 - Machinery & Asset
+  if (/\b(máy|machine|mc-|motor|equipment|sparepart|juki|eastman|jack|brother|pewanti|thiết bị)\b/i.test(combinedText)) {
+    return '5';
+  }
+
+  // 1 - Raw Materials (Fabric / Yarn / Vải)
+  if (/\b(vải|fabric|jersey|cotton|poly|yarn|sợi|sub-|dệt|knitted|woven|spandex)\b/i.test(combinedText)) {
+    return '1';
+  }
+
+  // 3. HS Code Tariff Classification Rules (Indonesia Customs Standard Fallback)
+  if (hs.length >= 2) {
+    const chapter = parseInt(hs.substring(0, 2), 10);
+    // 5: Machinery & Assets (Ch. 84 - 85)
+    if (chapter === 84 || chapter === 85) return '5';
+    // 7: Finished Goods Garments (Ch. 61 - 62)
+    if (chapter === 61 || chapter === 62) return '7';
+    // 8: Scrap (3915, 5505, 6310)
+    if (hs.startsWith('3915') || hs.startsWith('5505') || hs.startsWith('6310')) return '8';
+    // 2: Auxiliary & Trims / Packaging (Ch. 39, 48, 96)
+    if (chapter === 39 || chapter === 48 || chapter === 96) return '2';
+    // 1: Raw Materials / Textiles (Ch. 50 - 60)
+    if (chapter >= 50 && chapter <= 60) return '1';
+  }
+
+  // Safe Default for Import Materials (Category 1 = Bahan Baku)
+  return '1';
+}
+
+/**
+ * Detect official 7-digit Customs Document Code (Dokumen Pabean) from PIA v1.6.01 Page 29
+ */
+export function detectKodeDokumen(parsedData: any): string {
+  const fileName = (parsedData?.fileName || '').toLowerCase();
+  const docFmt = ((parsedData as any)?.docFormat || '').toLowerCase();
+  const nomorPengajuan = (parsedData?.header?.nomorPengajuan || '').toLowerCase();
+  const combined = `${fileName} ${docFmt} ${nomorPengajuan}`;
+
+  // PPKEK Pemasukan TLDDP (0407613)
+  if (combined.includes('tlddp') && (combined.includes('pemasukan') || combined.includes('masuk') || combined.includes('inbound') || combined.includes('09.'))) {
+    return '0407613';
+  }
+  // PPKEK Pemasukan LDP (0407611)
+  if ((combined.includes('ldp') || combined.includes('pemasukan') || combined.includes('masuk')) && !combined.includes('pengeluaran') && !combined.includes('keluar')) {
+    if (combined.includes('ppkek') || combined.includes('kek')) return '0407611';
+  }
+  // PPKEK Pengeluaran TLDDP (0407632)
+  if (combined.includes('tlddp') && (combined.includes('pengeluaran') || combined.includes('keluar') || combined.includes('outbound'))) {
+    return '0407632';
+  }
+  // PPKEK Pengeluaran LDP (0407631)
+  if (combined.includes('pengeluaran') || combined.includes('keluar') || combined.includes('outbound')) {
+    if (combined.includes('fasilitas')) return '0407621'; // PPKEK Pengeluaran Fasilitas
+    if (combined.includes('ppkek') || combined.includes('kek') || combined.includes('ldp')) return '0407631';
+  }
+  // BC 2.0 (0407020)
+  if (combined.includes('bc 2.0') || combined.includes('bc20') || combined.includes('bc2.0') || combined.includes('2.0')) {
+    return '0407020';
+  }
+  // BC 2.3 (0407023)
+  if (combined.includes('bc 2.3') || combined.includes('bc23') || combined.includes('bc2.3') || combined.includes('2.3')) {
+    return '0407023';
+  }
+  // BC 2.7 (0407027)
+  if (combined.includes('bc 2.7') || combined.includes('bc27') || combined.includes('bc2.7') || combined.includes('2.7')) {
+    return '0407027';
+  }
+  // BC 3.0 (0407030)
+  if (combined.includes('bc 3.0') || combined.includes('bc30') || combined.includes('bc3.0') || combined.includes('3.0')) {
+    return '0407030';
+  }
+  // FTZ 02 (0407052)
+  if (combined.includes('ftz 02') || combined.includes('ftz02') || combined.includes('ftz')) {
+    return '0407052';
+  }
+  // Free movement (0407008)
+  if (combined.includes('free movement') || combined.includes('perpindahan')) {
+    return '0407008';
+  }
+
+  // Fallback generic customs document
+  return '0407000';
 }
 
 async function mapKategoriBarangAsync(kategoriText: string, uraianBarang: string): Promise<string> {
@@ -272,6 +362,41 @@ export async function buildInswRequestBody(parsedData: ParsedDataSuccess, kdKegi
     negara: 'ID'
   }];
 
+  // Sanitize and clean Nomor Pengajuan / Nomor Pendaftaran
+  let rawNomor = (parsedData.header?.nomorPengajuan || parsedData.header?.nomorPendaftaran || parsedData.fileName || 'DOK-001').trim();
+  
+  // Extract 26-digit official registration number if available
+  const match26 = rawNomor.match(/([0-9]{6}[A-Z0-9]{3,6}[0-9]{10,14})/i) || 
+                  (parsedData.fileName || '').match(/([0-9]{6}[A-Z0-9]{3,6}[0-9]{10,14})/i);
+  if (match26) {
+    rawNomor = match26[1];
+  } else if (rawNomor.toLowerCase().startsWith('a.') || rawNomor.toLowerCase().startsWith('d.') || rawNomor.toLowerCase().includes('tanggal') || rawNomor.length < 5) {
+    // Try extracting 6-digit registration number
+    const match6 = (parsedData.header?.nomorPendaftaran || rawNomor || '').match(/([0-9]{6})/);
+    if (match6) {
+      rawNomor = match6[1];
+    } else {
+      // Clean leading garbage prefix
+      rawNomor = rawNomor.replace(/^(a\.|d\.|tanggal|nomor)\s*/i, '').trim() || parsedData.fileName || 'DOK-001';
+    }
+  }
+
+  const rawTanggal = parsedData.header?.tanggalPengajuan || parsedData.header?.tanggalPendaftaran || parsedData.importedAt || '';
+  const rawEntitas = (parsedData.header?.penerimaBarang || parsedData.header?.pengirimBarang || 'PT. TRAX APPAREL INDONESIA').trim();
+
+  // Customs document code (7 digits) and document details according to PIA v1.6.01
+  const kodeDokumen = detectKodeDokumen(parsedData);
+  const cleanNomorDokumen = (parsedData.header?.nomorPendaftaran || parsedData.header?.nomorPengajuan || rawNomor).trim();
+  const cleanTanggalDokumen = formatInswDate(rawTanggal);
+
+  const dokumenList: InswDokumenPabean[] = cleanNomorDokumen ? [
+    {
+      kodeDokumen,
+      nomorDokumen: cleanNomorDokumen,
+      tanggalDokumen: cleanTanggalDokumen,
+    }
+  ] : [];
+
   for (const item of rawItems) {
     const jumlahNum = parseNumber(item.jumlah);
     const nilaiNum = parseNumber(item.nilaiPabean || item.amount || item.harga);
@@ -295,31 +420,9 @@ export async function buildInswRequestBody(parsedData: ParsedDataSuccess, kdKegi
       jumlah: jumlahNum > 0 ? jumlahNum : 1,
       kdSatuan: mapKdSatuan(item.satuan, item.no),
       nilai: nilaiNum >= 0 ? nilaiNum : 0,
-      dokumen: [],
+      dokumen: dokumenList,
     });
   }
-
-  // Sanitize and clean Nomor Pengajuan / Nomor Pendaftaran
-  let rawNomor = (parsedData.header?.nomorPengajuan || parsedData.header?.nomorPendaftaran || parsedData.fileName || 'DOK-001').trim();
-  
-  // Extract 26-digit official registration number if available
-  const match26 = rawNomor.match(/([0-9]{6}[A-Z0-9]{3,6}[0-9]{10,14})/i) || 
-                  (parsedData.fileName || '').match(/([0-9]{6}[A-Z0-9]{3,6}[0-9]{10,14})/i);
-  if (match26) {
-    rawNomor = match26[1];
-  } else if (rawNomor.toLowerCase().startsWith('a.') || rawNomor.toLowerCase().startsWith('d.') || rawNomor.toLowerCase().includes('tanggal') || rawNomor.length < 5) {
-    // Try extracting 6-digit registration number
-    const match6 = (parsedData.header?.nomorPendaftaran || rawNomor || '').match(/([0-9]{6})/);
-    if (match6) {
-      rawNomor = match6[1];
-    } else {
-      // Clean leading garbage prefix
-      rawNomor = rawNomor.replace(/^(a\.|d\.|tanggal|nomor)\s*/i, '').trim() || parsedData.fileName || 'DOK-001';
-    }
-  }
-
-  const rawTanggal = parsedData.header?.tanggalPengajuan || parsedData.header?.tanggalPendaftaran || parsedData.importedAt || '';
-  const rawEntitas = (parsedData.header?.penerimaBarang || parsedData.header?.pengirimBarang || 'PT. TRAX APPAREL INDONESIA').trim();
 
   // Auto-correct kdKegiatan based on document format (31 for Outbound, 30 for Inbound)
   const docFmt = ((parsedData as any).docFormat || parsedData.fileName || '').toLowerCase();
@@ -460,7 +563,7 @@ export async function pushToInsw(parsedData: ParsedDataSuccess, kdKegiatan: stri
   }
 }
 
-// ─── Push Stock Opname / Mutasi (kdKegiatan: 32) ──────────────────────────────
+// ─── Push Stock Opname / Mutasi (kdKegiatan: 32) & Adjustment (kdKegiatan: 33) ───
 export async function pushStockOpnameToInsw(
   items: Array<{
     itemCode: string;
@@ -472,34 +575,44 @@ export async function pushStockOpnameToInsw(
   }>,
   docNo: string = 'SO-CUTOFF-5AM',
   cutoffDate: string = new Date().toISOString(),
-  kdKegiatan: string = '32'
+  kdKegiatan: string = '32',
+  keterangan: string = ''
 ): Promise<InswResponse> {
   try {
     const mappings = await getMappings();
     const config = await getInswConfig();
 
     const barangTransaksi = items.map((item, idx) => {
-      const mapped = mappings.find(m => m.kodeBarang === item.itemCode);
-      const kategori = mapped?.kategoriBarang || detectKategoriBarang(item.itemDescription, item.itemCode);
+      const mapped = mappings.find(m => m.keyword.toLowerCase() === item.itemCode.toLowerCase());
+      const rawCat = mapped?.inswCode || detectKategoriBarang({ uraianBarang: item.itemDescription, kodeBarang: item.itemCode }, mappings);
+      
+      // For Adjustment (33), quantity can be negative (+/-) to indicate stock reduction (PIA v1.6.01 page 15)
+      const rawQty = Number(item.quantity);
+      const jumlahFinal = kdKegiatan === '33' 
+        ? (!isNaN(rawQty) ? rawQty : 0)
+        : Math.abs(!isNaN(rawQty) ? rawQty : 1);
+
       return {
-        kdKategoriBarang: String(kategori || '1'),
+        kdKategoriBarang: String(rawCat || '1'),
         kdBarang: (item.itemCode || `ITEM-${idx + 1}`).trim(),
         uraianBarang: (item.itemDescription || item.itemCode || 'Barang Transaksi').trim(),
-        jumlah: Math.abs(Number(item.quantity) || 1),
+        jumlah: jumlahFinal,
         kdSatuan: mapKdSatuan(item.uom, idx + 1),
         nilai: Math.abs(Number(item.valueRp) || 0),
         dokumen: [],
       };
     });
 
+    const defaultDocNo = kdKegiatan === '33' ? `ADJ-${cutoffDate.slice(0, 10)}` : `SO-${cutoffDate.slice(0, 10)}`;
     const body = {
       data: [
         {
           kdKegiatan,
           dokumenKegiatan: [
             {
-              nomorDokKegiatan: (docNo || `SO-${cutoffDate.slice(0, 10)}`).trim(),
+              nomorDokKegiatan: (docNo || defaultDocNo).trim(),
               tanggalKegiatan: formatInswDate(cutoffDate),
+              ...(kdKegiatan === '33' ? { keterangan: keterangan || 'Adjustment bulanan' } : {}),
               namaEntitas: 'PT. TRAX APPAREL INDONESIA',
               barangTransaksi,
             },

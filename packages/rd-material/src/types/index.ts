@@ -107,6 +107,34 @@ export interface ItemProduct {
   liningComposition?: string;
   fobPrice?: number;
   garmentTest?: boolean;
+  technology?: string;
+  sampleTagConfig?: string; // Stored JSON configuration for Sample Tag print
+}
+
+export interface GarmentTagFabricSlot {
+  slot: 'A' | 'B' | 'C';
+  label: string; // e.g. "Fabric A- Body"
+  bomId?: number;
+  itemCode?: string;
+  detail: string;
+}
+
+export interface GarmentTagSpecialPropertyItem {
+  id?: string;
+  name: string;
+  iconUrl?: string;
+}
+
+export interface GarmentSampleTagConfig {
+  date?: string;
+  fabrics?: GarmentTagFabricSlot[];
+  specialProperty?: GarmentTagSpecialPropertyItem; // legacy single property
+  specialProperties?: GarmentTagSpecialPropertyItem[]; // multiple special properties
+  technology?: {
+    name: string;
+    iconUrl?: string;
+  };
+  specialFeatures?: string;
 }
 
 export interface ItemPattern {

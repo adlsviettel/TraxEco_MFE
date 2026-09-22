@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="200" height="250">
+  <circle cx="100" cy="95" r="85" fill="none" stroke="#111111" stroke-width="7"/>
+  <path d="M125 50 C125 50 145 75 145 95 C145 120 125 140 125 140" fill="none" stroke="#111111" stroke-width="7" stroke-linecap="round"/>
+  <path d="M50 70 H105 A14 14 0 0 0 119 56 A14 14 0 0 0 105 42" fill="none" stroke="#111111" stroke-width="7" stroke-linecap="round"/>
+  <path d="M42 95 H115 A14 14 0 0 1 129 109 A14 14 0 0 1 115 123" fill="none" stroke="#111111" stroke-width="7" stroke-linecap="round"/>
+  <path d="M55 120 H95 A12 12 0 0 0 107 108 A12 12 0 0 0 95 96" fill="none" stroke="#111111" stroke-width="6" stroke-linecap="round"/>
+  <text x="100" y="228" font-family="-apple-system, BlinkMacSystemFont, Arial, sans-serif" font-weight="900" font-size="17" text-anchor="middle" fill="#111111" letter-spacing="1">WINDPROOF</text>
+</svg>

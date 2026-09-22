@@ -5,6 +5,7 @@ import {
   BugReport as InspectIcon,
   ViewList as ListIcon,
   ManageAccounts as AdminIcon,
+  FactCheck as FactCheckIcon,
 } from '@mui/icons-material';
 import { AppShell, AdminPage , authService } from '@traxeco/shared';
 import DailyReportPage from '../pages/DailyReportPage';
@@ -15,6 +16,7 @@ import FabricInspectionPage from '../pages/FabricInspectionPage';
 import InspectionHistoryPage from '../pages/InspectionHistoryPage';
 import QCInspectionMockupPage from '../pages/QCInspectionMockupPage';
 import ScannerSimulatorPage from '../pages/ScannerSimulatorPage';
+import FabricStatusUpdatePage from '../pages/FabricStatusUpdatePage';
 
 export default function QCFBLayout() {
   const { t } = useTranslation();
@@ -22,6 +24,7 @@ export default function QCFBLayout() {
 
   const navItems = useMemo(() => {
     const items = [
+      { text: t('qcfb.nav.FabricStatusUpdate', 'Fabric Status Update'), icon: <FactCheckIcon />, path: '/qcfb-wh/fabric-status-update', pageCode: 'qcfb-fabric-inspection' },
       { text: t('qcfb.nav.FabricInspection', 'Fabric Inspection'), icon: <InspectIcon />, path: '/qcfb-wh/fabric-inspection', pageCode: 'qcfb-fabric-inspection' },
       { text: t('qcfb.nav.InspectionHistory', 'Inspection History'), icon: <ListIcon />, path: '/qcfb-wh/inspection-history', pageCode: 'qcfb-inspection-history' },
       { text: t('qcfb.nav.DailyReport', 'Daily Report'), icon: <ReportIcon />, path: '/qcfb-wh/daily-report', pageCode: 'qcfb-daily-report' },
@@ -38,6 +41,7 @@ export default function QCFBLayout() {
   }, [t, roleLevel]);
 
   const pages = useMemo(() => [
+    { path: '/qcfb-wh/fabric-status-update', component: <FabricStatusUpdatePage /> },
     { path: '/qcfb-wh/fabric-inspection', component: <FabricInspectionPage /> },
     { path: '/qcfb-wh/inspection-history', component: <InspectionHistoryPage /> },
     { path: '/qcfb-wh/daily-report', component: <DailyReportPage /> },

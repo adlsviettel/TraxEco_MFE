@@ -106,13 +106,13 @@ export default defineConfig(({ mode }) => {
           rewrite: (path: string) => path.replace(/^\/api-insw/, ''),
         },
         '/api': {
-          target: 'http://localhost:8100',
+          target: 'http://127.0.0.1:8100',
           changeOrigin: true,
           secure: false,
           xfwd: true,
         },
         '/ws-qc': {
-          target: 'http://localhost:8100',
+          target: 'http://127.0.0.1:8100',
           ws: true,
         },
         '/php-server': {
@@ -120,6 +120,16 @@ export default defineConfig(({ mode }) => {
           changeOrigin: true,
           secure: false,
           rewrite: (path) => path.replace(/^\/php-server/, ''),
+        },
+        '/RDMaterialLib': {
+          target: 'http://192.168.1.248',
+          changeOrigin: true,
+          secure: false,
+        },
+        '/FGsWHSign': {
+          target: 'http://192.168.1.248',
+          changeOrigin: true,
+          secure: false,
         },
       },
     },

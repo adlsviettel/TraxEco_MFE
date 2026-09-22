@@ -182,7 +182,29 @@ export default function Settings() {
                 </div>
 
                 <div className="form-group" style={{ marginTop: 4 }}>
-                  <label htmlFor="insw-url">API URL</label>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+                    <label htmlFor="insw-url" style={{ margin: 0 }}>API URL (Endpoint Giao Dịch)</label>
+                    <div style={{ display: 'flex', gap: 6 }}>
+                      <button
+                        type="button"
+                        className="btn-secondary"
+                        style={{ padding: '2px 8px', fontSize: 11, cursor: 'pointer' }}
+                        onClick={() => setConfig(prev => ({ ...prev, 'api-url': 'https://api.insw.go.id/api-prod/inventory/temp/transaksi' }))}
+                        title="Môi trường Sandbox / Thử nghiệm của Hải quan"
+                      >
+                        🧪 Dummy (Thử nghiệm)
+                      </button>
+                      <button
+                        type="button"
+                        className="btn-secondary"
+                        style={{ padding: '2px 8px', fontSize: 11, cursor: 'pointer' }}
+                        onClick={() => setConfig(prev => ({ ...prev, 'api-url': 'https://api.insw.go.id/api-prod/inventory/transaksi' }))}
+                        title="Môi trường Production / Dữ liệu thực của Hải quan"
+                      >
+                        🚀 Real (Chính thức)
+                      </button>
+                    </div>
+                  </div>
                   <input
                     id="insw-url"
                     type="text"

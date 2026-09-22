@@ -18,6 +18,8 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { rdItemApi } from '../services/rdMaterialApi';
 import type { Item, ScanLog } from '../types';
 import ProductFormDrawer from './ProductFormDrawer';
+import ImageGallery from '../components/ImageGallery';
+import ImageZoomModal from '../components/ImageZoomModal';
 
 const BASE = '/rd-material';
 
@@ -27,62 +29,11 @@ const InfoRow = ({ label, value, italic }: { label: string; value?: React.ReactN
     <Typography sx={{ fontSize: 12, fontWeight: 600, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.05em', mb: 0.5 }}>
       {label}
     </Typography>
-    <Typography component="div" sx={{ fontSize: 16, color: value ? '#111827' : '#6b7280', fontWeight: value ? 600 : 500, fontStyle: italic ? 'italic' : 'normal' }}>
+    <Typography component="div" sx={{ fontSize: 16, color: value ? '#111827' : '#6b7280', fontWeight: value ? 600 : 500, fontStyle: italic ? 'italic' : 'normal', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
       {value ?? '—'}
     </Typography>
   </Box>
 );
-
-const ImageGallery = ({ images }: { images: string[] }) => {
-  const [activeIdx, setActiveIdx] = useState(0);
-  const [fullscreenOpen, setFullscreenOpen] = useState(false);
-  if (!images || images.length === 0) {
-    return (
-      <Box sx={{ width: '100%', aspectRatio: '4/5', bgcolor: '#f3f4f6', borderRadius: 3, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#9ca3af' }}>
-        <ImageIcon sx={{ fontSize: 48, mb: 1, opacity: 0.5 }} />
-        <Typography variant="caption" fontWeight={500}>No Image</Typography>
-      </Box>
-    );
-  }
-  return (
-    <Box>
-      <Box 
-        sx={{ width: '100%', aspectRatio: '4/5', bgcolor: '#f3f4f6', borderRadius: 3, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', cursor: 'zoom-in', position: 'relative', '&:hover .overlay': { opacity: 1 } }}
-        onClick={() => setFullscreenOpen(true)}
-      >
-        <img src={rdItemApi.getImageUrl(images[activeIdx])} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.3s', transform: 'scale(1)' }} onMouseOver={e => e.currentTarget.style.transform = 'scale(1.05)'} onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'} />
-        <Box className="overlay" sx={{ position: 'absolute', inset: 0, bgcolor: 'rgba(0,0,0,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0, transition: 'opacity 0.2s', pointerEvents: 'none' }}>
-           <Box sx={{ p: 1.5, borderRadius: '50%', bgcolor: 'rgba(255,255,255,0.9)', color: '#1f2937', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}><ImageIcon fontSize="small" /></Box>
-        </Box>
-      </Box>
-      {images.length > 1 && (
-        <Box sx={{ display: 'flex', gap: 1.5, pt: 2, overflowX: 'auto', '&::-webkit-scrollbar': { height: 0 } }}>
-          {images.map((img, idx) => (
-            <Box 
-              key={idx} onClick={() => setActiveIdx(idx)}
-              sx={{ 
-                width: 64, height: 64, flexShrink: 0, borderRadius: 2, overflow: 'hidden', cursor: 'pointer',
-                border: activeIdx === idx ? '2px solid #22c55e' : '1px solid transparent',
-                opacity: activeIdx === idx ? 1 : 0.6,
-                transition: 'all 0.2s',
-                '&:hover': { opacity: 1 }
-              }}
-            >
-              <img src={rdItemApi.getImageUrl(img)} alt={`Thumb ${idx+1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-            </Box>
-          ))}
-        </Box>
-      )}
-
-      <Dialog open={fullscreenOpen} onClose={() => setFullscreenOpen(false)} maxWidth="lg" fullWidth PaperProps={{ sx: { bgcolor: 'transparent', boxShadow: 'none', overflow: 'hidden' } }}>
-        <Box sx={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh', p: 0 }} onClick={() => setFullscreenOpen(false)}>
-          <img src={rdItemApi.getImageUrl(images[activeIdx])} alt="Fullscreen" style={{ maxWidth: '100%', maxHeight: '90vh', objectFit: 'contain', cursor: 'zoom-out' }} />
-          <IconButton onClick={(e) => { e.stopPropagation(); setFullscreenOpen(false); }} sx={{ position: 'absolute', top: 8, right: 8, bgcolor: 'rgba(0,0,0,0.5)', color: '#fff', '&:hover': { bgcolor: 'rgba(0,0,0,0.8)' } }}><CloseIcon /></IconButton>
-        </Box>
-      </Dialog>
-    </Box>
-  );
-};
 
 const ProductDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -119,8 +70,21 @@ const ProductDetailPage: React.FC = () => {
   const [previewPhotoUrl, setPreviewPhotoUrl] = useState<string | null>(null);
   const [expandName, setExpandName] = useState(false);
 
-  const handleOpenItemPopup = async (itemId: number) => {
-    if (!itemId) return;
+  const handleOpenItemPopup = async (itemId?: number, fallbackRow?: any) => {
+    if (!itemId) {
+      if (fallbackRow) {
+        setPopupItem({
+          id: 0,
+          itemCode: fallbackRow.itemCode,
+          name: fallbackRow.name,
+          category: fallbackRow.usage,
+          mainImage: fallbackRow.image,
+          ...fallbackRow
+        } as any);
+        setPopupItemId(999999);
+      }
+      return;
+    }
     setPopupItemId(itemId);
     setLoadingPopupItem(true);
     setPopupItem(null);
@@ -137,7 +101,7 @@ const ProductDetailPage: React.FC = () => {
             name: itemData.name,
             quantity: itemData.quantity,
             location: itemData.location || parentData.location,
-            mainImage: itemData.mainImage || parentData.mainImage,
+            mainImage: itemData.mainImage || parentData.mainImage || fallbackRow?.image,
             stickerImage: itemData.stickerImage || parentData.stickerImage,
             remark: itemData.remark || parentData.remark,
             itemType: 'YARDAGE'
@@ -146,9 +110,22 @@ const ProductDetailPage: React.FC = () => {
           console.error("Failed to load parent fabric for yardage item", e);
         }
       }
+      if (itemData && (!itemData.mainImage || itemData.mainImage.trim() === '') && fallbackRow?.image) {
+        itemData = { ...itemData, mainImage: fallbackRow.image };
+      }
       setPopupItem(itemData);
     } catch (err) {
       console.error("Failed to load item details for popup", err);
+      if (fallbackRow) {
+        setPopupItem({
+          id: itemId,
+          itemCode: fallbackRow.itemCode,
+          name: fallbackRow.name,
+          category: fallbackRow.usage,
+          mainImage: fallbackRow.image,
+          ...fallbackRow
+        } as any);
+      }
     } finally {
       setLoadingPopupItem(false);
     }
@@ -354,12 +331,12 @@ const ProductDetailPage: React.FC = () => {
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
               <Card elevation={0} sx={{ borderRadius: 4, p: 3, bgcolor: 'background.paper', border: '1px solid #f3f4f6', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)' }}>
                 <Typography fontSize={12} fontWeight={700} color="#9ca3af" textTransform="uppercase" letterSpacing="0.05em" mb={2}>{t('rdMaterial.product_images', 'Product Images')}</Typography>
-                <ImageGallery images={item.mainImage ? item.mainImage.split(',').filter(Boolean) : []} />
+                <ImageGallery images={rdItemApi.hasImage(item.mainImage) ? item.mainImage!.split(',').filter(Boolean) : (rdItemApi.hasImage(item.stickerImage) ? item.stickerImage!.split(',').filter(Boolean) : [])} />
               </Card>
-              {item.stickerImage && item.stickerImage.split(',').filter(Boolean).length > 0 && (
+              {rdItemApi.hasImage(item.mainImage) && rdItemApi.hasImage(item.stickerImage) && (
                 <Card elevation={0} sx={{ borderRadius: 4, p: 3, bgcolor: 'background.paper', border: '1px solid #f3f4f6', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)' }}>
                   <Typography fontSize={12} fontWeight={700} color="#9ca3af" textTransform="uppercase" letterSpacing="0.05em" mb={2}>{t('rdMaterial.sticker_images', 'Sticker Images')}</Typography>
-                  <ImageGallery images={item.stickerImage.split(',').filter(Boolean)} />
+                  <ImageGallery images={item.stickerImage!.split(',').filter(Boolean)} />
                 </Card>
               )}
             </Box>
@@ -401,8 +378,9 @@ const ProductDetailPage: React.FC = () => {
                     <InfoRow label="Garment Test" value={item.product?.garmentTest ? 'Yes' : 'No'} />
                     <InfoRow label="Location" value={item.location} />
                     <InfoRow label="FOB Price" value={item.product?.fobPrice ? <>{item.product.fobPrice} USD <Typography component="span" fontSize={14} color="#6b7280" fontWeight={400}>/ pcs</Typography></> : undefined} />
+                    <InfoRow label="Technology" value={item.product?.technology} />
                     <Box sx={{ gridColumn: '1/-1', pt: 3, borderTop: '1px solid #f3f4f6' }}>
-                      <InfoRow label="Description" value={item.description || 'No description added.'} italic={!item.description} />
+                      <InfoRow label="Special Feature" value={item.description || 'No special feature added.'} italic={!item.description} />
                     </Box>
                     <Box sx={{ gridColumn: '1/-1', pt: 1 }}>
                       <InfoRow label="Notes" value={item.remark || 'No notes added.'} italic={!item.remark} />
@@ -425,6 +403,7 @@ const ProductDetailPage: React.FC = () => {
                               <Table size="small">
                                 <TableHead sx={{ bgcolor: 'background.default' }}>
                                   <TableRow>
+                                    <TableCell sx={{ fontWeight: 700, width: 64 }}>{t('rdMaterial.image', 'Image')}</TableCell>
                                     <TableCell sx={{ fontWeight: 700, width: 150 }}>Usage</TableCell>
                                     <TableCell sx={{ fontWeight: 700, width: 150 }}>Item Code</TableCell>
                                     <TableCell sx={{ fontWeight: 700 }}>Item Name</TableCell>
@@ -432,30 +411,78 @@ const ProductDetailPage: React.FC = () => {
                                   </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                  {list.map((row: any, idx: number) => (
-                                    <TableRow key={row.id || idx}>
-                                      <TableCell sx={{ fontWeight: 500 }}>{row.usage}</TableCell>
-                                      <TableCell>
-                                        <Button 
-                                          size="small" 
-                                          onClick={() => handleOpenItemPopup(row.itemId)}
-                                          sx={{ 
-                                            fontWeight: 600, 
-                                            color: '#166534', 
-                                            textTransform: 'none', 
-                                            minWidth: 0, 
-                                            p: 0, 
-                                            textDecoration: 'underline',
-                                            '&:hover': { color: '#14532d', bgcolor: 'transparent', textDecoration: 'underline' } 
-                                          }}
-                                        >
-                                          {row.itemCode}
-                                        </Button>
-                                      </TableCell>
-                                      <TableCell>{row.name}</TableCell>
-                                      <TableCell>{row.color || '–'}</TableCell>
-                                    </TableRow>
-                                  ))}
+                                  {list.map((row: any, idx: number) => {
+                                    const rowImg = row.image || row.mainImage || '';
+                                    return (
+                                      <TableRow key={row.id || idx}>
+                                        <TableCell sx={{ py: 1 }}>
+                                          {rdItemApi.hasImage(rowImg) ? (
+                                            <Tooltip title={t('rdMaterial.click_to_zoom', 'Click to zoom')}>
+                                              <Box
+                                                onClick={() => setLightboxImage(rdItemApi.getFirstImageUrl(rowImg))}
+                                                sx={{
+                                                  width: 44,
+                                                  height: 44,
+                                                  borderRadius: 1.5,
+                                                  overflow: 'hidden',
+                                                  cursor: 'pointer',
+                                                  border: '1px solid #e5e7eb',
+                                                  bgcolor: '#fff',
+                                                  display: 'flex',
+                                                  alignItems: 'center',
+                                                  justifyContent: 'center',
+                                                  transition: 'all 0.2s',
+                                                  '&:hover': { borderColor: '#16a34a', transform: 'scale(1.08)', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }
+                                                }}
+                                              >
+                                                <img
+                                                  src={rdItemApi.getFirstImageUrl(rowImg)}
+                                                  alt=""
+                                                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                                />
+                                              </Box>
+                                            </Tooltip>
+                                          ) : (
+                                            <Box
+                                              sx={{
+                                                width: 44,
+                                                height: 44,
+                                                borderRadius: 1.5,
+                                                bgcolor: '#f3f4f6',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                border: '1px solid #e5e7eb',
+                                                color: '#9ca3af'
+                                              }}
+                                            >
+                                              <ImageIcon sx={{ fontSize: 22, opacity: 0.6 }} />
+                                            </Box>
+                                          )}
+                                        </TableCell>
+                                        <TableCell sx={{ fontWeight: 500 }}>{row.usage}</TableCell>
+                                        <TableCell>
+                                          <Button 
+                                            size="small" 
+                                            onClick={() => handleOpenItemPopup(row.itemId, row)}
+                                            sx={{ 
+                                              fontWeight: 600, 
+                                              color: '#166534', 
+                                              textTransform: 'none', 
+                                              minWidth: 0, 
+                                              p: 0, 
+                                              textDecoration: 'underline',
+                                              '&:hover': { color: '#14532d', bgcolor: 'transparent', textDecoration: 'underline' } 
+                                            }}
+                                          >
+                                            {row.itemCode}
+                                          </Button>
+                                        </TableCell>
+                                        <TableCell>{row.name}</TableCell>
+                                        <TableCell>{row.color || '–'}</TableCell>
+                                      </TableRow>
+                                    );
+                                  })}
                                 </TableBody>
                               </Table>
                             </TableContainer>
@@ -747,42 +774,21 @@ const ProductDetailPage: React.FC = () => {
         <Alert severity={snackbar.severity as any} sx={{ width: '100%', borderRadius: 2 }}>{snackbar.message}</Alert>
       </Snackbar>
 
-      {/* Lightbox Image Zoom */}
-      <Dialog 
+      {/* Rich Zoom & Pan Lightbox Modal for BOM Item Image */}
+      <ImageZoomModal 
         open={!!lightboxImage} 
         onClose={() => setLightboxImage(null)} 
-        maxWidth="lg" 
-        sx={{ zIndex: 99999 }} 
-        PaperProps={{ sx: { bgcolor: 'transparent', boxShadow: 'none' } }}
-      >
-        <Box position="relative">
-          <IconButton 
-            onClick={() => setLightboxImage(null)} 
-            sx={{ position: 'absolute', right: -20, top: -20, color: 'white', bgcolor: 'rgba(0,0,0,0.5)', '&:hover': { bgcolor: 'red' } }}
-          >
-            <CloseIcon />
-          </IconButton>
-          <img src={lightboxImage || ''} alt="Full Size" style={{ maxWidth: '100%', maxHeight: '90vh', objectFit: 'contain' }} />
-        </Box>
-      </Dialog>
+        images={lightboxImage || ''}
+        title="Material Detail Image"
+      />
 
-      <Dialog open={!!previewPhotoUrl} onClose={() => setPreviewPhotoUrl(null)} maxWidth="md" fullWidth>
-        <DialogContent sx={{ p: 0, bgcolor: '#0f172a', display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative', minHeight: 200 }}>
-          <IconButton
-            onClick={() => setPreviewPhotoUrl(null)}
-            sx={{ position: 'absolute', top: 12, right: 12, color: '#fff', bgcolor: 'rgba(0,0,0,0.5)', '&:hover': { bgcolor: 'rgba(0,0,0,0.7)' }, zIndex: 10 }}
-          >
-            <CloseIcon />
-          </IconButton>
-          {previewPhotoUrl && (
-            <img
-              src={rdItemApi.getImageUrl(previewPhotoUrl)}
-              alt="Preview Evidence"
-              style={{ maxWidth: '100%', maxHeight: '80vh', objectFit: 'contain', display: 'block' }}
-            />
-          )}
-        </DialogContent>
-      </Dialog>
+      {/* Rich Zoom & Pan Lightbox Modal for Scan Evidence Photo */}
+      <ImageZoomModal 
+        open={!!previewPhotoUrl} 
+        onClose={() => setPreviewPhotoUrl(null)} 
+        images={previewPhotoUrl || ''}
+        title="Scan Evidence Photo"
+      />
     </Box>
   );
 };

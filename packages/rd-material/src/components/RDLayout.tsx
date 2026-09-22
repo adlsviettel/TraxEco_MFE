@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import React, { useMemo } from 'react';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   Texture as TextureIcon,
@@ -13,14 +13,13 @@ import {
   Warehouse as WarehouseIcon,
 } from '@mui/icons-material';
 import { AppShell , authService } from '@traxeco/shared';
-import RDSettingsDialog from './RDSettingsDialog';
 import { IconButton } from '@mui/material';
 
 const BASE = '/rd-material';
 
 export default function RDLayout() {
   const { t } = useTranslation();
-  const [settingsOpen, setSettingsOpen] = useState(false);
+  const navigate = useNavigate();
   const roleLevel = Number(localStorage.getItem('roleLevel') || '99');
 
   const navItems = useMemo(() => {
@@ -45,30 +44,27 @@ export default function RDLayout() {
   ], []);
 
   const headerExtra = (
-    <IconButton onClick={() => setSettingsOpen(true)} size="small" sx={{ color: 'text.secondary', mr: 1, display: { xs: 'inline-flex', md: 'none' } }}>
+    <IconButton onClick={() => navigate(`${BASE}/settings`)} size="small" sx={{ color: 'text.secondary', mr: 1, display: { xs: 'inline-flex', md: 'none' } }}>
       <SettingsIcon />
     </IconButton>
   );
 
   return (
-    <>
-      <AppShell
-        appTitle="R&D Material Library"
-        appTitleShort="R&D MATERIAL"
-        appLogo={<WarehouseIcon sx={{ color: '#fff', fontSize: 20 }} />}
-        accentColor="#2e7d32"
-        drawerWidth={240}
-        navItems={navItems}
-        pages={pages}
-        storageKey="rd_layout_open"
-        versionString="R&D v1.0.0"
-        headerExtra={headerExtra}
-        onSettingsClick={() => setSettingsOpen(true)}
-        settingsText={t('rdMaterial.settings', 'Settings')}
-        fallbackPath="/rd-material/fabric"
-        rootPath="/rd-material"
-      />
-      <RDSettingsDialog open={settingsOpen} onClose={() => setSettingsOpen(false)} />
-    </>
+    <AppShell
+      appTitle="R&D Material Library"
+      appTitleShort="R&D MATERIAL"
+      appLogo={<WarehouseIcon sx={{ color: '#fff', fontSize: 20 }} />}
+      accentColor="#2e7d32"
+      drawerWidth={240}
+      navItems={navItems}
+      pages={pages}
+      storageKey="rd_layout_open"
+      versionString="R&D v1.0.0"
+      headerExtra={headerExtra}
+      onSettingsClick={() => navigate(`${BASE}/settings`)}
+      settingsText={t('rdMaterial.settings', 'Settings')}
+      fallbackPath="/rd-material/fabric"
+      rootPath="/rd-material"
+    />
   );
 }

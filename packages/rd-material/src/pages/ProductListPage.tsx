@@ -26,6 +26,7 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import TableChartIcon from '@mui/icons-material/TableChart';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import SlideshowIcon from '@mui/icons-material/Slideshow';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 import { DraggableFab } from '../components/DraggableFab';
 import { authService, AppButton, AppTextField, AdvancedFilterDrawer, columnFilterStore, TableExcelColumnMenu, scrollToTop } from '@traxeco/shared';
@@ -38,6 +39,7 @@ import ProductPdfExport, { PdfProductData } from '../components/ProductPdfExport
 import { useTranslation } from 'react-i18next';
 import { useDragScroll } from '../hooks/useDragScroll';
 import SwipeableItem from '../components/ui/SwipeableItem';
+import ImageZoomModal from '../components/ImageZoomModal';
 
 const BASE = '/rd-material';
 
@@ -124,29 +126,328 @@ const getStickyHeaderStyle = (colId: string, filteredCols: any[]): any => {
   };
 };
 
-const getStickyBodyStyle = (colId: string, filteredCols: any[], rowBgColor: string): any => {
-  const stickyIds = ['Select', 'Image', 'Project', 'Item Code'];
-  if (!stickyIds.includes(colId)) return {};
-  
-  let left = 0;
-  for (const c of filteredCols) {
-    if (c.id === colId) break;
-    if (stickyIds.includes(c.id)) {
-      if (c.id === 'Select') left += 44;
-      else if (c.id === 'Image') left += 80;
-      else if (c.id === 'Project') left += 200;
-      else if (c.id === 'Item Code') left += 240;
-    }
-  }
-  
-  return {
-    position: 'sticky',
-    left,
-    zIndex: 10,
-    bgcolor: rowBgColor,
-    borderRight: colId === 'Item Code' ? '2px solid #bfc9c4' : undefined,
+interface ProductTableRowProps {
+  item: Item;
+  isSelected: boolean;
+  onToggleSelect: (id: number) => void;
+  filteredCols: any[];
+  stickyOffsets: Record<string, number>;
+  canEdit: boolean;
+  canAdd: boolean;
+  canDelete: boolean;
+  onOpenDetails: (id: number) => void;
+  onEdit: (item: Item) => void;
+  onCopy: (item: Item) => void;
+  onPrint: (id: number) => void;
+  onDelete: (id: number) => void;
+  onPreviewZoom: (item: Item) => void;
+}
+
+const ProductTableRow = React.memo<ProductTableRowProps>(({
+  item,
+  isSelected,
+  onToggleSelect,
+  filteredCols,
+  stickyOffsets,
+  canEdit,
+  canAdd,
+  canDelete,
+  onOpenDetails,
+  onEdit,
+  onCopy,
+  onPrint,
+  onDelete,
+  onPreviewZoom,
+}) => {
+  const { t } = useTranslation();
+  const rowBgColor = '#fff';
+
+  const getStickyStyle = (colId: string) => {
+    if (stickyOffsets[colId] === undefined) return {};
+    return {
+      position: 'sticky',
+      left: stickyOffsets[colId],
+      zIndex: 10,
+      bgcolor: rowBgColor,
+      borderRight: colId === 'Item Code' ? '2px solid #bfc9c4' : undefined,
+    };
   };
-};
+
+  return (
+    <TableRow
+      hover
+      sx={{ 
+        '&:last-child td': { borderBottom: 0 },
+        bgcolor: rowBgColor,
+        transition: 'background-color 0.2s',
+        '&:hover': { bgcolor: '#F9FAFA !important' },
+        '&:hover td': { bgcolor: '#F9FAFA !important' },
+        '& .action-buttons': { opacity: 0, transition: 'opacity 0.2s' },
+        '&:hover .action-buttons': { opacity: 1 }
+      }}
+    >
+      {filteredCols.map((col) => {
+        const colId = col.id;
+        switch (colId) {
+          case 'Select':
+            return (
+              <TableCell
+                key={colId}
+                align="center"
+                onClick={(e) => e.stopPropagation()}
+                sx={{
+                  py: 1, px: 0.5,
+                  ...getStickyStyle('Select'),
+                  width: 44, minWidth: 44, maxWidth: 44
+                } as any}
+              >
+                <Checkbox
+                  size="small"
+                  checked={isSelected}
+                  onChange={() => onToggleSelect(item.id!)}
+                  sx={{ p: 0.5 }}
+                />
+              </TableCell>
+            );
+          case 'Image':
+            return (
+              <TableCell key={colId} sx={{
+                px: 2, py: 1.5, textAlign: 'center',
+                ...getStickyStyle('Image'),
+                width: 80, minWidth: 80, maxWidth: 80
+              } as any}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5 }}>
+                  {rdItemApi.hasImage(item.mainImage) ? (
+                    <Tooltip
+                      title={
+                        <Box sx={{ width: 280, height: 280, bgcolor: 'background.paper', borderRadius: 2, overflow: 'hidden', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', p: 1 }}>
+                          <img src={rdItemApi.getFirstImageUrl(item.mainImage)} alt="" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                          <Typography sx={{ fontSize: 11, color: '#16a34a', fontWeight: 600, mt: 0.5 }}>🔍 {t('rdMaterial.click_to_zoom', 'Nhấp để phóng to / soi ảnh')}</Typography>
+                        </Box>
+                      }
+                      placement="right"
+                      componentsProps={{ tooltip: { sx: { bgcolor: 'background.paper', boxShadow: '0 4px 20px rgba(0,0,0,0.15)', p: 0.5, border: '1px solid', borderColor: 'divider' } } }}
+                    >
+                      <Box 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onPreviewZoom(item);
+                        }}
+                        sx={{ 
+                          width: 48, height: 48, borderRadius: 1.5, overflow: 'hidden', bgcolor: 'background.default', 
+                          display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #bfc9c4', mx: 'auto',
+                          cursor: 'pointer', transition: 'all 0.2s',
+                          '&:hover': { borderColor: '#16a34a', boxShadow: '0 0 0 2px rgba(22, 163, 74, 0.25)', transform: 'scale(1.08)' }
+                        }}
+                      >
+                        <img src={rdItemApi.getFirstImageUrl(item.mainImage)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      </Box>
+                    </Tooltip>
+                  ) : (
+                    <Box sx={{ width: 48, height: 48, borderRadius: 1.5, overflow: 'hidden', bgcolor: 'background.default', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #bfc9c4', mx: 'auto' }}>
+                      <Typography sx={{ fontSize: 10, color: '#94a3b8', textAlign: 'center', lineHeight: 1.1, fontWeight: 600 }}>No Image</Typography>
+                    </Box>
+                  )}
+                  <Chip 
+                    label={(item.category || 'Garment').toUpperCase()} 
+                    size="small" 
+                    sx={{ 
+                      height: 14, fontSize: 8, fontWeight: 800, letterSpacing: '0.5px',
+                      bgcolor: item.category === 'Mockup' ? '#fef3c7' : '#dcfce7', 
+                      color: item.category === 'Mockup' ? '#d97706' : '#16a34a',
+                      '& .MuiChip-label': { px: 0.5 }
+                    }} 
+                  />
+                </Box>
+              </TableCell>
+            );
+          case 'Project':
+            return (
+              <TableCell key={colId} sx={{
+                py: 1.5, fontSize: 13, color: '#3f4945',
+                ...getStickyStyle('Project'),
+                width: 200, minWidth: 200, maxWidth: 200
+              } as any}>
+                {item.product?.projectName || item.name}
+              </TableCell>
+            );
+          case 'Item Code':
+            return (
+              <TableCell key={colId} sx={{
+                py: 1.5, fontSize: 13, fontWeight: 600, color: '#191c1d',
+                ...getStickyStyle('Item Code'),
+                minWidth: 180, width: 220,
+                overflow: 'hidden'
+              } as any}>
+                <Tooltip title={item.itemCode || '–'} arrow placement="top">
+                  <Typography 
+                    component="div"
+                    fontWeight={500} 
+                    fontSize={13} 
+                    color="#1a73e8" 
+                    sx={{ 
+                      cursor: 'pointer', 
+                      wordBreak: 'break-word',
+                      overflowWrap: 'anywhere',
+                      lineHeight: 1.35,
+                      display: 'block',
+                      '&:hover': { textDecoration: 'underline' } 
+                    }}
+                    onClick={() => onOpenDetails(item.id!)}
+                  >
+                    {item.itemCode || '–'}
+                  </Typography>
+                </Tooltip>
+              </TableCell>
+            );
+          case 'Category':
+            return (
+              <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945' }}>
+                {item.product?.garmentCategory || '–'}
+              </TableCell>
+            );
+          case 'Sport':
+            return (
+              <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945' }}>
+                {item.product?.sportCategory || '–'}
+              </TableCell>
+            );
+          case 'Style Name':
+            return (
+              <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945' }}>
+                {item.product?.styleName || '–'}
+              </TableCell>
+            );
+          case 'Stage':
+            return (
+              <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945' }}>
+                <Chip label={item.product?.sampleStage || 'N/A'} size="small" sx={{ fontSize: 11, height: 20 }} />
+              </TableCell>
+            );
+          case 'Color':
+            return (
+              <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945' }}>
+                {item.product?.color || '–'}
+              </TableCell>
+            );
+          case 'Size':
+            return (
+              <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945' }}>
+                {item.product?.size || '–'}
+              </TableCell>
+            );
+          case 'Gender':
+            return (
+              <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945' }}>
+                {item.product?.gender || '–'}
+              </TableCell>
+            );
+          case 'Pattern Marker':
+            return (
+              <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945' }}>
+                {item.product?.patternMarker || '–'}
+              </TableCell>
+            );
+          case 'Allocation':
+            return (
+              <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945' }}>
+                {item.product?.allocation || '–'}
+              </TableCell>
+            );
+          case 'Garment Test':
+            return (
+              <TableCell key={colId} align="center" sx={{ py: 1.5, fontSize: 13 }}>
+                {item.product?.garmentTest ? (
+                  <Chip label="Yes" size="small" color="primary" sx={{ height: 22, fontSize: 11, fontWeight: 700 }} />
+                ) : (
+                  <Typography fontSize={13} color="text.secondary">—</Typography>
+                )}
+              </TableCell>
+            );
+          case 'Main Composition':
+            return (
+              <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945' }}>
+                {renderCompositionCell(item.product?.mainComposition)}
+              </TableCell>
+            );
+          case 'Description':
+            return (
+              <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945', minWidth: 200, maxWidth: 350, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+                {item.description || '—'}
+              </TableCell>
+            );
+          case 'Technology':
+            return (
+              <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945', minWidth: 140 }}>
+                {item.product?.technology || '—'}
+              </TableCell>
+            );
+          case 'FOB Price':
+            return (
+              <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#191c1d', fontWeight: 500 }}>
+                {item.product?.fobPrice ? `$${item.product.fobPrice}` : '–'}
+              </TableCell>
+            );
+          case 'Location':
+            return (
+              <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945' }}>
+                {item.location || '–'}
+              </TableCell>
+            );
+          case 'Qty':
+            return (
+              <TableCell key={colId} sx={{ py: 1.5, textAlign: 'center' }}>
+                <Box sx={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', px: 1.25, py: 0.5, borderRadius: '6px', bgcolor: 'rgba(46,125,50,0.1)', color: '#2e7d32', fontFamily: 'monospace', fontSize: 13, fontWeight: 700, minWidth: 36 }}>
+                  {item.quantity ?? 0}
+                </Box>
+              </TableCell>
+            );
+          case 'Created At':
+            return (
+              <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945', whiteSpace: 'nowrap' }}>
+                {item.createdAt ? new Date(item.createdAt).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '–'}
+              </TableCell>
+            );
+          case 'Remark':
+            return (
+              <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945' }}>
+                {item.remark || '–'}
+              </TableCell>
+            );
+          case 'Actions':
+            return (
+              <TableCell key={colId} sx={{ py: 1.5, textAlign: 'right', pr: 3 }} onClick={(e) => e.stopPropagation()}>
+                <Box className="action-buttons" sx={{ display: 'flex', gap: 0.5, justifyContent: 'flex-end' }}>
+                  {canEdit && (
+                    <IconButton size="small" onClick={() => onEdit(item)} sx={{ color: '#707975', '&:hover': { color: '#2e7d32', bgcolor: '#f3f4f5' } }}>
+                      <EditIcon sx={{ fontSize: 18 }} />
+                    </IconButton>
+                  )}
+                  {canAdd && (
+                    <IconButton size="small" onClick={() => onCopy(item)} sx={{ color: '#707975', '&:hover': { color: '#0284c7', bgcolor: '#e0f2fe' } }}>
+                      <ContentCopyIcon sx={{ fontSize: 18 }} />
+                    </IconButton>
+                  )}
+                  <Tooltip title={t('rdMaterial.print_sample_tag', 'In Sample Tag')}>
+                    <IconButton size="small" onClick={() => onPrint(item.id!)} sx={{ color: '#707975', '&:hover': { color: '#0284c7', bgcolor: '#e0f2fe' } }}>
+                      <PrintIcon sx={{ fontSize: 18 }} />
+                    </IconButton>
+                  </Tooltip>
+                  {canDelete && (
+                    <IconButton size="small" onClick={() => onDelete(item.id!)} sx={{ color: '#707975', '&:hover': { color: '#ba1a1a', bgcolor: '#ffdad6' } }}>
+                      <DeleteIcon sx={{ fontSize: 18 }} />
+                    </IconButton>
+                  )}
+                </Box>
+              </TableCell>
+            );
+          default:
+            return null;
+        }
+      })}
+    </TableRow>
+  );
+});
 
 const ProductListPage: React.FC = () => {
   const navigate = useNavigate();
@@ -226,7 +527,7 @@ const ProductListPage: React.FC = () => {
     const defaultOrder = [
       'Select', 'Image', 'Project', 'Item Code', 'Category', 'Sport', 'Style Name', 'Stage',
       'Color', 'Size', 'Gender', 'Pattern Marker', 'Allocation', 'Garment Test', 'Main Composition',
-      'FOB Price', 'Location', 'Qty', 'Created At', 'Remark', 'Actions'
+      'Description', 'Technology', 'FOB Price', 'Location', 'Qty', 'Created At', 'Remark', 'Actions'
     ];
     try {
       const saved = localStorage.getItem('rd-product-column-order');
@@ -246,6 +547,7 @@ const ProductListPage: React.FC = () => {
 
   const [draggedColId, setDraggedColId] = useState<string | null>(null);
   const [dragOverColId, setDragOverColId] = useState<string | null>(null);
+  const [previewZoomItem, setPreviewZoomItem] = useState<Item | null>(null);
 
   // Column Filters and Sorting Logic
   const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
@@ -267,6 +569,8 @@ const ProductListPage: React.FC = () => {
       case 'Allocation': val = row.product?.allocation; break;
       case 'Garment Test': val = row.product?.garmentTest ? 'Yes' : 'No'; break;
       case 'Main Composition': val = row.product?.mainComposition; break;
+      case 'Description': val = row.description; break;
+      case 'Technology': val = row.product?.technology; break;
       case 'FOB Price': val = row.product?.fobPrice ? `$${row.product.fobPrice}` : undefined; break;
       case 'Location': val = row.location; break;
       case 'Qty': val = row.quantity; break;
@@ -317,9 +621,11 @@ const ProductListPage: React.FC = () => {
     scrollToTop(dragRef);
   }, [page]);
 
-  columnFilterStore.register(window.location.pathname, columnFilters, setColumnFilters, items);
+  useEffect(() => {
+    columnFilterStore.register(window.location.pathname, columnFilters, setColumnFilters, items);
+  }, [columnFilters, items]);
 
-  const columns = [
+  const columns = useMemo(() => [
     { id: 'Select', label: '', isCenter: true },
     { id: 'Image', label: t('rdMaterial.image', 'Image'), isCenter: true },
     { id: 'Project', label: t('rdMaterial.project', 'Project') },
@@ -335,260 +641,70 @@ const ProductListPage: React.FC = () => {
     { id: 'Allocation', label: t('rdMaterial.allocation', 'Allocation') },
     { id: 'Garment Test', label: 'Garment Test', isCenter: true },
     { id: 'Main Composition', label: t('rdMaterial.material_info', 'Material Information') },
+    { id: 'Description', label: t('rdMaterial.special_feature', 'Special Feature') },
+    { id: 'Technology', label: t('rdMaterial.technology', 'Technology') },
     { id: 'FOB Price', label: t('rdMaterial.fob_price', 'FOB Price') },
     { id: 'Location', label: t('rdMaterial.location', 'Location') },
     { id: 'Qty', label: t('rdMaterial.quantity', 'Qty'), isCenter: true },
     { id: 'Created At', label: t('rdMaterial.created_at', 'Created At') },
     { id: 'Remark', label: t('rdMaterial.remark', 'Remark') },
     { id: 'Actions', label: t('rdMaterial.actions', 'Actions'), isRight: true }
-  ];
+  ], [t]);
 
-  const sortedColumns = [...columns].sort((a, b) => {
+  const sortedColumns = useMemo(() => [...columns].sort((a, b) => {
     const idxA = columnOrder.indexOf(a.id);
     const idxB = columnOrder.indexOf(b.id);
     return (idxA !== -1 ? idxA : 999) - (idxB !== -1 ? idxB : 999);
-  });
+  }), [columns, columnOrder]);
 
-  const filteredCols = sortedColumns.filter(col => visibleColumns[col.id] !== false);
+  const filteredCols = useMemo(() => sortedColumns.filter(col => visibleColumns[col.id] !== false), [sortedColumns, visibleColumns]);
   const colSpanCount = filteredCols.length;
 
-  const renderRowCell = (item: Item, colId: string, rowBgColor: string) => {
-    switch (colId) {
-      case 'Select':
-        return (
-          <TableCell
-            key={colId}
-            align="center"
-            sx={{
-              py: 1, px: 0.5,
-              ...getStickyBodyStyle('Select', filteredCols, rowBgColor),
-              width: 44, minWidth: 44, maxWidth: 44
-            }}
-          >
-            <Checkbox
-              size="small"
-              checked={selectedIds.includes(item.id!)}
-              onChange={(e) => {
-                if (e.target.checked) {
-                  setSelectedIds(prev => [...prev, item.id!]);
-                } else {
-                  setSelectedIds(prev => prev.filter(id => id !== item.id));
-                }
-              }}
-              sx={{ p: 0.5 }}
-            />
-          </TableCell>
-        );
-      case 'Image':
-        return (
-          <TableCell key={colId} sx={{
-            px: 2, py: 1.5, textAlign: 'center',
-            ...getStickyBodyStyle('Image', filteredCols, rowBgColor),
-            width: 80, minWidth: 80, maxWidth: 80
-          }}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5 }}>
-              {item.mainImage ? (
-                <Tooltip
-                  title={
-                    <Box sx={{ width: 240, height: 240, bgcolor: 'background.paper', borderRadius: 1, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <img src={rdItemApi.getImageUrl(item.mainImage.split(',')[0])} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-                    </Box>
-                  }
-                  placement="right"
-                  componentsProps={{ tooltip: { sx: { bgcolor: 'background.paper', boxShadow: '0 4px 20px rgba(0,0,0,0.15)', p: 0.5, border: '1px solid', borderColor: 'divider' } } }}
-                >
-                  <Box sx={{ width: 48, height: 48, borderRadius: 1, overflow: 'hidden', bgcolor: 'background.default', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #bfc9c4', mx: 'auto' }}>
-                    <img src={rdItemApi.getImageUrl(item.mainImage.split(',')[0])} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  </Box>
-                </Tooltip>
-              ) : (
-                <Box sx={{ width: 48, height: 48, borderRadius: 1, overflow: 'hidden', bgcolor: 'background.default', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #bfc9c4', mx: 'auto' }}>
-                  <Typography sx={{ fontSize: 10, color: '#94a3b8', textAlign: 'center', lineHeight: 1.1, fontWeight: 600 }}>No Image</Typography>
-                </Box>
-              )}
-              <Chip 
-                label={(item.category || 'Garment').toUpperCase()} 
-                size="small" 
-                sx={{ 
-                  height: 14, fontSize: 8, fontWeight: 800, letterSpacing: '0.5px',
-                  bgcolor: item.category === 'Mockup' ? '#fef3c7' : '#dcfce7', 
-                  color: item.category === 'Mockup' ? '#d97706' : '#16a34a',
-                  '& .MuiChip-label': { px: 0.5 }
-                }} 
-              />
-            </Box>
-          </TableCell>
-        );
-      case 'Project':
-        return (
-          <TableCell key={colId} sx={{
-            py: 1.5, fontSize: 13, color: '#3f4945',
-            ...getStickyBodyStyle('Project', filteredCols, rowBgColor),
-            width: 200, minWidth: 200, maxWidth: 200
-          }}>
-            {item.product?.projectName || item.name}
-          </TableCell>
-        );
-      case 'Item Code':
-        return (
-          <TableCell key={colId} sx={{
-            py: 1.5, fontSize: 13, fontWeight: 600, color: '#191c1d',
-            ...getStickyBodyStyle('Item Code', filteredCols, rowBgColor),
-            minWidth: 180, width: 220,
-            overflow: 'hidden'
-          }}>
-            <Tooltip title={item.itemCode || '–'} arrow placement="top">
-              <Typography 
-                component="div"
-                fontWeight={500} 
-                fontSize={13} 
-                color="#1a73e8" 
-                sx={{ 
-                  cursor: 'pointer', 
-                  wordBreak: 'break-word',
-                  overflowWrap: 'anywhere',
-                  lineHeight: 1.35,
-                  display: 'block',
-                  '&:hover': { textDecoration: 'underline' } 
-                }}
-                onClick={() => React.startTransition(() => navigate(`${BASE}/product/${item.id}`))}
-              >
-                {item.itemCode || '–'}
-              </Typography>
-            </Tooltip>
-          </TableCell>
-        );
-      case 'Category':
-        return (
-          <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945' }}>
-            {item.product?.garmentCategory || '–'}
-          </TableCell>
-        );
-      case 'Sport':
-        return (
-          <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945' }}>
-            {item.product?.sportCategory || '–'}
-          </TableCell>
-        );
-      case 'Style Name':
-        return (
-          <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945' }}>
-            {item.product?.styleName || '–'}
-          </TableCell>
-        );
-      case 'Stage':
-        return (
-          <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945' }}>
-            <Chip label={item.product?.sampleStage || 'N/A'} size="small" sx={{ fontSize: 11, height: 20 }} />
-          </TableCell>
-        );
-      case 'Color':
-        return (
-          <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945' }}>
-            {item.product?.color || '–'}
-          </TableCell>
-        );
-      case 'Size':
-        return (
-          <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945' }}>
-            {item.product?.size || '–'}
-          </TableCell>
-        );
-      case 'Gender':
-        return (
-          <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945' }}>
-            {item.product?.gender || '–'}
-          </TableCell>
-        );
-      case 'Pattern Marker':
-        return (
-          <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945' }}>
-            {item.product?.patternMarker || '–'}
-          </TableCell>
-        );
-      case 'Allocation':
-        return (
-          <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945' }}>
-            {item.product?.allocation || '–'}
-          </TableCell>
-        );
-      case 'Garment Test':
-        return (
-          <TableCell key={colId} align="center" sx={{ py: 1.5, fontSize: 13 }}>
-            {item.product?.garmentTest ? (
-              <Chip label="Yes" size="small" color="primary" sx={{ height: 22, fontSize: 11, fontWeight: 700 }} />
-            ) : (
-              <Typography fontSize={13} color="text.secondary">—</Typography>
-            )}
-          </TableCell>
-        );
-      case 'Main Composition':
-        return (
-          <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945' }}>
-            {renderCompositionCell(item.product?.mainComposition)}
-          </TableCell>
-        );
-      case 'FOB Price':
-        return (
-          <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#191c1d', fontWeight: 500 }}>
-            {item.product?.fobPrice ? `$${item.product.fobPrice}` : '–'}
-          </TableCell>
-        );
-      case 'Location':
-        return (
-          <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945' }}>
-            {item.location || '–'}
-          </TableCell>
-        );
-      case 'Qty':
-        return (
-          <TableCell key={colId} sx={{ py: 1.5, textAlign: 'center' }}>
-            <Box sx={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', px: 1.25, py: 0.5, borderRadius: '6px', bgcolor: 'rgba(46,125,50,0.1)', color: '#2e7d32', fontFamily: 'monospace', fontSize: 13, fontWeight: 700, minWidth: 36 }}>
-              {item.quantity ?? 0}
-            </Box>
-          </TableCell>
-        );
-      case 'Created At':
-        return (
-          <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945', whiteSpace: 'nowrap' }}>
-            {item.createdAt ? new Date(item.createdAt).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '–'}
-          </TableCell>
-        );
-      case 'Remark':
-        return (
-          <TableCell key={colId} sx={{ py: 1.5, fontSize: 13, color: '#3f4945' }}>
-            {item.remark || '–'}
-          </TableCell>
-        );
-      case 'Actions':
-        return (
-          <TableCell key={colId} sx={{ py: 1.5, textAlign: 'right', pr: 3 }}>
-            <Box className="action-buttons" sx={{ display: 'flex', gap: 0.5, justifyContent: 'flex-end' }}>
-              {canEdit && (
-                <IconButton size="small" onClick={() => { setIsCopy(false); setEditItem(item); setDrawerOpen(true); }} sx={{ color: '#707975', '&:hover': { color: '#2e7d32', bgcolor: '#f3f4f5' } }}>
-                  <EditIcon sx={{ fontSize: 18 }} />
-                </IconButton>
-              )}
-              {canAdd && (
-                <IconButton size="small" onClick={() => { setIsCopy(true); setEditItem(item); setDrawerOpen(true); }} sx={{ color: '#707975', '&:hover': { color: '#0284c7', bgcolor: '#e0f2fe' } }}>
-                  <ContentCopyIcon sx={{ fontSize: 18 }} />
-                </IconButton>
-              )}
-              <IconButton size="small" onClick={() => navigate(`${BASE}/label/${item.id}`)} sx={{ color: '#707975', '&:hover': { color: '#2e7d32', bgcolor: '#f3f4f5' } }}>
-                <PrintIcon sx={{ fontSize: 18 }} />
-              </IconButton>
-              {canDelete && (
-                <IconButton size="small" onClick={() => handleDelete(item.id)} sx={{ color: '#707975', '&:hover': { color: '#ba1a1a', bgcolor: '#ffdad6' } }}>
-                  <DeleteIcon sx={{ fontSize: 18 }} />
-                </IconButton>
-              )}
-            </Box>
-          </TableCell>
-        );
-      default:
-        return null;
+  const stickyOffsets = useMemo(() => {
+    const stickyIds = ['Select', 'Image', 'Project', 'Item Code'];
+    const offsets: Record<string, number> = {};
+    let left = 0;
+    for (const c of filteredCols) {
+      if (stickyIds.includes(c.id)) {
+        offsets[c.id] = left;
+        if (c.id === 'Select') left += 44;
+        else if (c.id === 'Image') left += 80;
+        else if (c.id === 'Project') left += 200;
+        else if (c.id === 'Item Code') left += 240;
+      }
     }
-  };
+    return offsets;
+  }, [filteredCols]);
+
+  const selectedSet = useMemo(() => new Set(selectedIds), [selectedIds]);
+
+  const handleToggleSelect = useCallback((id: number) => {
+    setSelectedIds(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
+  }, []);
+
+  const handleOpenDetails = useCallback((id: number) => {
+    React.startTransition(() => navigate(`${BASE}/product/${id}`));
+  }, [navigate]);
+
+  const handleEdit = useCallback((item: Item) => {
+    setIsCopy(false);
+    setEditItem(item);
+    setDrawerOpen(true);
+  }, []);
+
+  const handleCopy = useCallback((item: Item) => {
+    setIsCopy(true);
+    setEditItem(item);
+    setDrawerOpen(true);
+  }, []);
+
+  const handlePrint = useCallback((id: number) => {
+    navigate(`${BASE}/label/${id}`);
+  }, [navigate]);
+
+  const handlePreviewZoom = useCallback((item: Item) => {
+    setPreviewZoomItem(item);
+  }, []);
 
   const load = useCallback(async (options?: { forceLoading?: boolean }) => {
     if (!hasSearched) return;
@@ -645,9 +761,9 @@ const ProductListPage: React.FC = () => {
     load(); 
   }, [load, keyword, garmentCategory, sportCategory, styleNo, sampleStage, categoryFilter, hasSearched, items.length]);
 
-  const handleDelete = (id: number) => {
+  const handleDelete = useCallback((id: number) => {
     setDeleteId(id);
-  };
+  }, []);
 
   const confirmDelete = async () => {
     if (deleteId === null) return;
@@ -666,7 +782,7 @@ const ProductListPage: React.FC = () => {
   const handleExportPdf = async () => {
     const targetItems = selectedIds.length > 0 ? items.filter(i => selectedIds.includes(i.id!)) : items;
     if (targetItems.length === 0) {
-      setSnackbar({ open: true, message: 'Không có dữ liệu để xuất PDF', severity: 'warning' });
+      setSnackbar({ open: true, message: t('rdMaterial.no_export_data_pdf', 'Không có dữ liệu để xuất PDF'), severity: 'warning' });
       return;
     }
 
@@ -932,7 +1048,7 @@ const ProductListPage: React.FC = () => {
   const handleExportPpt = async () => {
     const targetItems = selectedIds.length > 0 ? items.filter(i => selectedIds.includes(i.id!)) : items;
     if (targetItems.length === 0) {
-      setSnackbar({ open: true, message: 'Không có dữ liệu để xuất PPT', severity: 'warning' });
+      setSnackbar({ open: true, message: t('rdMaterial.no_export_data_ppt', 'Không có dữ liệu để xuất PPT'), severity: 'warning' });
       return;
     }
 
@@ -1110,7 +1226,14 @@ const ProductListPage: React.FC = () => {
 
         // Top right Trax Group Logo (positioned in top header area above cards)
         if (logoBase64) {
-          slide.addImage({ data: logoBase64, x: 10.9, y: 0.18, w: 1.8, h: 0.42 });
+          slide.addImage({ 
+            data: logoBase64, 
+            x: 11.5, 
+            y: 0.18, 
+            w: 1.4, 
+            h: 0.42, 
+            sizing: { type: 'contain', w: 1.4, h: 0.42 } 
+          });
         } else {
           slide.addText('Trax Group', { x: 10.9, y: 0.18, w: 1.8, h: 0.42, fontSize: 13, bold: true, align: 'right', color: '000000' });
         }
@@ -1154,38 +1277,39 @@ const ProductListPage: React.FC = () => {
             }
           }
 
-          const imgW = 1.9;
+          const imgX = pos.x + 0.15;
+          const imgW = 2.15;
           if (base64Images.length === 1) {
             slide.addImage({
               data: base64Images[0],
-              x: pos.x + 0.12,
-              y: pos.y + 0.12,
+              x: imgX,
+              y: pos.y + 0.15,
               w: imgW,
-              h: 2.95,
-              sizing: { type: 'contain' }
+              h: 2.8,
+              sizing: { type: 'contain', w: imgW, h: 2.8 }
             });
           } else if (base64Images.length >= 2) {
             slide.addImage({
               data: base64Images[0],
-              x: pos.x + 0.12,
-              y: pos.y + 0.12,
+              x: imgX,
+              y: pos.y + 0.15,
               w: imgW,
-              h: 1.4,
-              sizing: { type: 'contain' }
+              h: 1.35,
+              sizing: { type: 'contain', w: imgW, h: 1.35 }
             });
             slide.addImage({
               data: base64Images[1],
-              x: pos.x + 0.12,
-              y: pos.y + 1.6,
+              x: imgX,
+              y: pos.y + 1.58,
               w: imgW,
-              h: 1.4,
-              sizing: { type: 'contain' }
+              h: 1.35,
+              sizing: { type: 'contain', w: imgW, h: 1.35 }
             });
           }
 
           // 3. Native Editable Text Box Frame
-          const textX = pos.x + 2.25;
-          const textW = pos.w - 2.4;
+          const textX = pos.x + 2.4;
+          const textW = pos.w - 2.55;
 
           const textObjects: any[] = [];
 
@@ -1201,24 +1325,27 @@ const ProductListPage: React.FC = () => {
             options: { fontSize: 9.5, color: '1E293B', breakLine: true }
           });
 
+          // Remark (if exists)
+          if (product.remark) {
+            textObjects.push({
+              text: `(~${product.remark}/ garment)`,
+              options: { fontSize: 9.0, color: '1E293B', breakLine: true }
+            });
+          }
+
           // BOM Lines
           enrichedBom.forEach(bom => {
             const usageStr = (bom.usage || '').trim();
             const supp = (bom.supplierName || '').trim();
             const code = (bom.itemCode || '').trim();
             const color = (bom.color || '').trim();
-            const struct = (bom.structure || '').trim();
             const comp = (bom.composition || '').trim();
-            const tech = (bom.technology || '').trim();
-            const func = (bom.function || '').trim();
-            const weight = (bom.weightGsm !== undefined && bom.weightGsm !== null && bom.weightGsm !== '') ? `${String(bom.weightGsm).trim()} gsm` : '';
-            const width = (bom.cuttableWidth !== undefined && bom.cuttableWidth !== null && bom.cuttableWidth !== '') ? `${String(bom.cuttableWidth).trim()} inch` : '';
+            const weight = (bom.weightGsm !== undefined && bom.weightGsm !== null && bom.weightGsm !== '') ? String(bom.weightGsm).trim() : '';
+            const width = (bom.cuttableWidth !== undefined && bom.cuttableWidth !== null && bom.cuttableWidth !== '') ? String(bom.cuttableWidth).trim() : '';
 
-            const part1 = (supp && code) ? `${supp} - ${code}` : (supp || code);
-            const part2 = color;
-            const part3 = [struct, comp, tech, func, weight, width].filter(Boolean).join(', ');
-
-            const lineDetail = [part1, part2, part3].filter(Boolean).join('/ ');
+            // Format: [Usage]: [Supplier]/ [Item Code]/ [Color]/ [Composition], [Weight], [Width]
+            const part3 = [comp, weight, width].filter(Boolean).join(', ');
+            const lineDetail = [supp, code, color, part3].filter(Boolean).join('/ ');
             const lineText = usageStr ? `${usageStr}: ${lineDetail}` : lineDetail;
             if (lineText) {
               textObjects.push({
@@ -1368,7 +1495,7 @@ const ProductListPage: React.FC = () => {
 
             {selectedIds.length > 0 && (
               <Chip 
-                label={`Đã chọn ${selectedIds.length} mục`} 
+                label={t('rdMaterial.selected_count', { count: selectedIds.length, defaultValue: `Đã chọn ${selectedIds.length} mục` })} 
                 onDelete={() => setSelectedIds([])}
                 sx={{ borderRadius: 1.5, fontWeight: 600, bgcolor: '#e0f2fe', color: '#0369a1', '& .MuiChip-deleteIcon': { color: '#0369a1' }, alignSelf: 'flex-start', mt: 0.5 }} 
               />
@@ -1425,29 +1552,51 @@ const ProductListPage: React.FC = () => {
             flex: '1 1 auto', 
             minWidth: 0 
           }}>
-            {/* Sub-group 1: Search box & Chip selection info */}
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flex: { xs: '1 1 100%', sm: '0 1 auto' }, minWidth: 200 }}>
-              <AppTextField placeholder={t('rdMaterial.search_placeholder', 'Search by name, code...')}
-                value={keyword} debounceMs={400} onDebounceChange={setKeyword}
-                InputProps={{
-                  startAdornment: <InputAdornment position="start"><SearchIcon sx={{ fontSize: 20, color: '#707975' }} /></InputAdornment>,
-                  endAdornment: keyword ? (
-                    <InputAdornment position="end">
-                      <IconButton size="small" onClick={() => setKeyword('')}><ClearIcon sx={{ fontSize: 16 }} /></IconButton>
-                    </InputAdornment>
-                  ) : null,
-                }}
-                sx={{ width: '100%', minWidth: 200, maxWidth: { sm: 280, md: 320 } }}
-              />
+            {/* Sub-group 1: Search box */}
+            <AppTextField placeholder={t('rdMaterial.search_placeholder', 'Search by name, code...')}
+              value={keyword} debounceMs={400} onDebounceChange={setKeyword}
+              InputProps={{
+                startAdornment: <InputAdornment position="start"><SearchIcon sx={{ fontSize: 20, color: '#707975' }} /></InputAdornment>,
+                endAdornment: keyword ? (
+                  <InputAdornment position="end">
+                    <IconButton size="small" onClick={() => setKeyword('')}><ClearIcon sx={{ fontSize: 16 }} /></IconButton>
+                  </InputAdornment>
+                ) : null,
+              }}
+              sx={{ width: { xs: '100%', sm: 240, md: 280 } }}
+            />
 
-              {selectedIds.length > 0 && (
+            {/* Selection Action Bar */}
+            {selectedIds.length > 0 && (
+              <Box sx={{ 
+                display: 'inline-flex', 
+                alignItems: 'center', 
+                gap: 1, 
+                bgcolor: '#f0f9ff', 
+                border: '1px solid #bae6fd', 
+                px: 1.25, 
+                py: 0.5, 
+                borderRadius: 2,
+                flexShrink: 0
+              }}>
                 <Chip 
-                  label={`Đã chọn ${selectedIds.length} mục`} 
+                  size="small"
+                  label={t('rdMaterial.selected_count', { count: selectedIds.length, defaultValue: `Đã chọn ${selectedIds.length}` })} 
                   onDelete={() => setSelectedIds([])}
-                  sx={{ borderRadius: 1.5, fontWeight: 600, bgcolor: '#e0f2fe', color: '#0369a1', '& .MuiChip-deleteIcon': { color: '#0369a1' } }} 
+                  sx={{ fontWeight: 600, bgcolor: '#e0f2fe', color: '#0369a1', '& .MuiChip-deleteIcon': { color: '#0369a1' } }} 
                 />
-              )}
-            </Box>
+                <AppButton
+                  variant="contained"
+                  customVariant="primary"
+                  size="small"
+                  startIcon={<PrintIcon sx={{ fontSize: '16px !important' }} />}
+                  onClick={() => navigate(`${BASE}/label?ids=${selectedIds.join(',')}`)}
+                  sx={{ height: 30, px: 1.5, bgcolor: '#0284c7', '&:hover': { bgcolor: '#0369a1' }, fontSize: 12.5, whiteSpace: 'nowrap' }}
+                >
+                  {t('rdMaterial.print_sample_tag_count', { count: selectedIds.length, defaultValue: `In Sample Tag (${selectedIds.length})` })}
+                </AppButton>
+              </Box>
+            )}
 
             {/* Sub-group 2: Category Toggle (if present) & Filter trigger */}
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'nowrap' }}>
@@ -1723,9 +1872,9 @@ const ProductListPage: React.FC = () => {
                   });
                 }
                 rightActions.push({
-                  label: t('rdMaterial.print', 'Print'),
+                  label: t('rdMaterial.print_sample_tag', 'In Sample Tag'),
                   icon: <PrintIcon fontSize="small" />,
-                  color: '#6366f1',
+                  color: '#0284c7',
                   onClick: () => navigate(`${BASE}/label/${item.id}`)
                 });
                 if (canDelete) {
@@ -1774,8 +1923,8 @@ const ProductListPage: React.FC = () => {
                           border: '1px solid rgba(0,0,0,0.04)'
                         }}
                       >
-                        {item.mainImage ? (
-                          <img src={rdItemApi.getImageUrl(item.mainImage.split(',')[0])} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        {rdItemApi.hasImage(item.mainImage) ? (
+                          <img src={rdItemApi.getFirstImageUrl(item.mainImage)} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                         ) : (
                           <TextureIcon sx={{ fontSize: 24, color: '#cbd5e1' }} />
                         )}
@@ -2001,25 +2150,25 @@ const ProductListPage: React.FC = () => {
                       </Typography>
                     </Box>
                   </TableCell></TableRow>
-                ) : pagedItems.map((item) => {
-                  const rowBgColor = '#fff';
-                  return (
-                    <TableRow
-                      key={item.id} hover
-                      sx={{ 
-                        '&:last-child td': { borderBottom: 0 },
-                        bgcolor: rowBgColor,
-                        transition: 'background-color 0.2s',
-                        '&:hover': { bgcolor: '#F9FAFA !important' },
-                        '&:hover td': { bgcolor: '#F9FAFA !important' },
-                        '& .action-buttons': { opacity: 0, transition: 'opacity 0.2s' },
-                        '&:hover .action-buttons': { opacity: 1 }
-                      }}
-                    >
-                      {filteredCols.map((col) => renderRowCell(item, col.id, rowBgColor))}
-                    </TableRow>
-                  );
-                })}
+                ) : pagedItems.map((item) => (
+                  <ProductTableRow
+                    key={item.id}
+                    item={item}
+                    isSelected={selectedSet.has(item.id!)}
+                    onToggleSelect={handleToggleSelect}
+                    filteredCols={filteredCols}
+                    stickyOffsets={stickyOffsets}
+                    canEdit={canEdit}
+                    canAdd={canAdd}
+                    canDelete={canDelete}
+                    onOpenDetails={handleOpenDetails}
+                    onEdit={handleEdit}
+                    onCopy={handleCopy}
+                    onPrint={handlePrint}
+                    onDelete={handleDelete}
+                    onPreviewZoom={handlePreviewZoom}
+                  />
+                ))}
               </TableBody>
             </Table>
           </TableContainer>
@@ -2103,6 +2252,17 @@ const ProductListPage: React.FC = () => {
       <Snackbar open={snackbar.open} autoHideDuration={3000} onClose={() => setSnackbar({ ...snackbar, open: false })} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
         <Alert severity={(snackbar.severity as 'success' | 'error' | 'warning' | 'info') || 'success'} sx={{ width: '100%', borderRadius: 2 }}>{snackbar.message}</Alert>
       </Snackbar>
+
+      {/* Full-screen Rich Image Zoom & Pan Modal */}
+      <ImageZoomModal
+        open={!!previewZoomItem}
+        onClose={() => setPreviewZoomItem(null)}
+        images={[
+          ...(rdItemApi.hasImage(previewZoomItem?.mainImage) ? previewZoomItem!.mainImage!.split(',').filter(Boolean) : []),
+          ...(rdItemApi.hasImage(previewZoomItem?.stickerImage) ? previewZoomItem!.stickerImage!.split(',').filter(Boolean) : []),
+        ]}
+        title={previewZoomItem ? `${previewZoomItem.name || ''} (${previewZoomItem.itemCode || ''})` : ''}
+      />
     </Box>
   );
 };

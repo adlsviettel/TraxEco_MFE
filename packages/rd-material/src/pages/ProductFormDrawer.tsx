@@ -15,6 +15,7 @@ import { rdItemApi } from '../services/rdMaterialApi';
 import type { Item } from '../types';
 import { useTranslation } from 'react-i18next';
 import { AppTextField, authService } from '@traxeco/shared';
+import ImageZoomModal from '../components/ImageZoomModal';
 
 const BASE = '/rd-material';
 
@@ -189,9 +190,11 @@ const ProductFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSav
         }
       } catch (e) {}
       setBomList(parsedBom);
+      const initTech = item.product?.technology || '';
       setForm({
         ...item,
         category: item.category || 'Garment',
+        description: item.description || '',
         projectName: item.product?.projectName,
         garmentCategory: item.product?.garmentCategory,
         sportCategory: item.product?.sportCategory,
@@ -207,17 +210,33 @@ const ProductFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSav
         liningComposition: item.product?.liningComposition,
         fobPrice: item.product?.fobPrice,
         garmentTest: item.product?.garmentTest ?? false,
+        technology: initTech,
       });
+
+      // If existing product has no technology set, auto-fill from the first Main Fabric in BOM if available
+      if (!initTech && parsedBom.length > 0) {
+        const firstMain = parsedBom.find((b: any) => (b.usage || '').toLowerCase().includes('main'));
+        if (firstMain && firstMain.itemId) {
+          rdItemApi.getById(firstMain.itemId).then(fItem => {
+            const tech = fItem?.fabric?.technology;
+            if (tech) {
+              setForm((prev: any) => (prev.technology ? prev : { ...prev, technology: tech }));
+            }
+          }).catch(() => {});
+        }
+      }
     } else {
       setBomList([]);
       setForm({
         category: 'Garment',
+        description: '',
         quantity: 1,
         itemCode: '',
         name: '',
         gender: '',
         fobPrice: undefined,
         garmentTest: false,
+        technology: '',
       } as any);
     }
     setPendingMainImages([]);
@@ -411,6 +430,7 @@ const ProductFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSav
           liningComposition: form.liningComposition || undefined,
           fobPrice: toNum(form.fobPrice),
           garmentTest: Boolean(form.garmentTest),
+          technology: form.technology || undefined,
         },
         priceHistory: currentHistory.length > 0 ? JSON.stringify(currentHistory) : undefined,
       };
@@ -550,7 +570,7 @@ const ProductFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSav
                           }
                         }} 
                       />
-                      <AppTextField label="Description" size="small" value={form.description ?? ''} debounceMs={200} onDebounceChange={(val) => set('description', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover': { bgcolor: 'background.default' }, '&.Mui-focused': { bgcolor: 'background.paper' } } }} />
+                      <AppTextField label={t('rdMaterial.special_feature', 'Special Feature')} size="small" value={form.description ?? ''} debounceMs={200} onDebounceChange={(val) => set('description', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover': { bgcolor: 'background.default' }, '&.Mui-focused': { bgcolor: 'background.paper' } } }} />
                     </Stack>
                   </CardContent>
                 </Collapse>
@@ -963,6 +983,24 @@ const ProductFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSav
                                 image: selectedMaterial.mainImage ? selectedMaterial.mainImage.split(',')[0] : null
                               }];
                               setBomList(newBom);
+
+                              // Auto-fill Technology from first Main Fabric item if available
+                              const isMainFabric = (selectedUsage || '').toLowerCase().includes('main');
+                              if (isMainFabric) {
+                                const hasExistingMain = bomList.some(b => (b.usage || '').toLowerCase().includes('main'));
+                                if (!hasExistingMain || !form.technology) {
+                                  if (selectedMaterial.fabric?.technology) {
+                                    set('technology', selectedMaterial.fabric.technology);
+                                  } else if (selectedMaterial.id) {
+                                    rdItemApi.getById(selectedMaterial.id).then(fItem => {
+                                      if (fItem?.fabric?.technology) {
+                                        set('technology', fItem.fabric.technology);
+                                      }
+                                    }).catch(() => {});
+                                  }
+                                }
+                              }
+
                               setSelectedMaterial(null);
                               setSearchKeyword('');
                             }}
@@ -1029,7 +1067,9 @@ const ProductFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSav
                     <Box p={4}>
                       <Box display="grid" gridTemplateColumns={{ xs: '1fr', sm: '1fr 1fr' }} gap={2.5}>
                         <AppTextField label={t('rdMaterial.fob_price', 'FOB Price (USD/pcs)')} size="small" type="number" value={form.fobPrice ?? ''} debounceMs={200} onDebounceChange={(val) => set('fobPrice', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover':{bgcolor: 'background.default'}, '&.Mui-focused':{bgcolor: 'background.paper'} } }} />
-                        <AppTextField label={t('rdMaterial.remark', 'Remark')} size="small" multiline rows={3} value={form.remark ?? ''} debounceMs={200} onDebounceChange={(val) => set('remark', val)} sx={{ gridColumn: '1/-1', '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover':{bgcolor: 'background.default'}, '&.Mui-focused':{bgcolor: 'background.paper'} } }} />
+                        <AppTextField label={t('rdMaterial.technology', 'Technology')} size="small" value={form.technology ?? ''} debounceMs={200} onDebounceChange={(val) => set('technology', val)} sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover':{bgcolor: 'background.default'}, '&.Mui-focused':{bgcolor: 'background.paper'} } }} />
+                        <AppTextField label={t('rdMaterial.special_feature', 'Special Feature')} size="small" multiline minRows={3} maxRows={15} value={form.description ?? ''} debounceMs={200} onDebounceChange={(val) => set('description', val)} sx={{ gridColumn: '1/-1', '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover':{bgcolor: 'background.default'}, '&.Mui-focused':{bgcolor: 'background.paper'} } }} />
+                        <AppTextField label={t('rdMaterial.remark', 'Remark / Notes')} size="small" multiline minRows={2} maxRows={10} value={form.remark ?? ''} debounceMs={200} onDebounceChange={(val) => set('remark', val)} sx={{ gridColumn: '1/-1', '& .MuiOutlinedInput-root': { bgcolor: 'background.default', borderRadius: 1, '&:hover':{bgcolor: 'background.default'}, '&.Mui-focused':{bgcolor: 'background.paper'} } }} />
                       </Box>
                     </Box>
 
@@ -1056,12 +1096,12 @@ const ProductFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSav
       <Snackbar open={snackbar.open} autoHideDuration={3000} onClose={() => setSnackbar({ ...snackbar, open: false })} anchorOrigin={{ vertical: 'top', horizontal: 'center' }} sx={{ zIndex: 99999 }}>
         <Alert severity={snackbar.severity as any} sx={{ width: '100%' }}>{snackbar.message}</Alert>
       </Snackbar>
-      <Dialog open={!!lightboxImage} onClose={() => setLightboxImage(null)} maxWidth="lg" sx={{ zIndex: 99999 }} PaperProps={{ sx: { bgcolor: 'transparent', boxShadow: 'none' } }}>
-        <Box position="relative">
-          <IconButton onClick={() => setLightboxImage(null)} sx={{ position: 'absolute', right: -20, top: -20, color: 'white', bgcolor: 'rgba(0,0,0,0.5)', '&:hover': { bgcolor: 'red' } }}><CloseIcon /></IconButton>
-          <img src={lightboxImage || ''} alt="Full Size" style={{ maxWidth: '100%', maxHeight: '90vh', objectFit: 'contain' }} />
-        </Box>
-      </Dialog>
+      <ImageZoomModal 
+        open={!!lightboxImage} 
+        onClose={() => setLightboxImage(null)} 
+        images={lightboxImage || ''} 
+        title="Image Preview"
+      />
 
       {/* Paste Selection Dialog */}
       <Dialog open={pastedFiles.length > 0} onClose={() => setPastedFiles([])} maxWidth="xs" fullWidth sx={{ zIndex: 99999 }} PaperProps={{ sx: { borderRadius: 2, p: 1 } }}>

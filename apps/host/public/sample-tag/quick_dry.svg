@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="200" height="250">
+  <circle cx="100" cy="95" r="85" fill="none" stroke="#111111" stroke-width="7"/>
+  <path d="M100 40 C85 68 65 92 65 115 A35 35 0 0 0 135 115 C135 92 115 68 100 40 Z" fill="#111111"/>
+  <path d="M52 85 Q70 90 85 80" fill="none" stroke="#111111" stroke-width="6" stroke-linecap="round"/>
+  <path d="M115 80 Q130 90 148 85" fill="none" stroke="#111111" stroke-width="6" stroke-linecap="round"/>
+  <path d="M56 125 Q70 130 82 122" fill="none" stroke="#111111" stroke-width="5" stroke-linecap="round"/>
+  <path d="M118 122 Q130 130 144 125" fill="none" stroke="#111111" stroke-width="5" stroke-linecap="round"/>
+  <text x="100" y="218" font-family="-apple-system, BlinkMacSystemFont, Arial, sans-serif" font-weight="900" font-size="18" text-anchor="middle" fill="#111111" letter-spacing="1">QUICK</text>
+  <text x="100" y="238" font-family="-apple-system, BlinkMacSystemFont, Arial, sans-serif" font-weight="900" font-size="18" text-anchor="middle" fill="#111111" letter-spacing="1">DRY</text>
+</svg>

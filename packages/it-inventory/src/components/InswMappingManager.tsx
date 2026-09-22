@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Settings2, Plus, Trash2, Edit2, CheckCircle, X, Save, Loader } from 'lucide-react';
 import type { InswCategoryMapping } from '../services/inswApi';
+import { INSW_KATEGORI_OPTIONS } from '../services/inswApi';
 
 export default function InswMappingManager() {
   const { t } = useTranslation();
@@ -88,7 +89,7 @@ export default function InswMappingManager() {
             <button 
               className="btn-primary" 
               onClick={() => {
-                setEditForm({ keyword: '', inswCode: '7', description: '' });
+                setEditForm({ keyword: '', inswCode: '1', description: '' });
                 setIsEditing(-1);
               }}
             >
@@ -108,24 +109,21 @@ export default function InswMappingManager() {
                 type="text" 
                 value={editForm.keyword || ''} 
                 onChange={e => setEditForm(prev => ({...prev, keyword: e.target.value}))}
-                placeholder="vd: hasil produksi"
+                placeholder="vd: vải thun, chỉ may, áo polo..."
               />
             </div>
-            <div className="form-group" style={{ margin: 0, flex: 1, minWidth: 150 }}>
-              <label style={{ fontSize: 12 }}>{t('insw_mapping.inswCode', 'Mã INSW (1-8)')}</label>
+            <div className="form-group" style={{ margin: 0, flex: 2, minWidth: 220 }}>
+              <label style={{ fontSize: 12 }}>{t('insw_mapping.inswCode', 'Mã INSW (1-8 theo PIA v1.6.01)')}</label>
               <select 
-                value={editForm.inswCode || '7'} 
+                value={editForm.inswCode || '1'} 
                 onChange={e => setEditForm(prev => ({...prev, inswCode: e.target.value}))}
                 style={{ padding: '8px 12px', width: '100%', borderRadius: 6, border: '1px solid var(--border-color)', background: 'var(--bg-primary)' }}
               >
-                <option value="1">1 - Mesin / Asset / Peralatan</option>
-                <option value="2">2 - Hasil Produksi (Garment / Thành phẩm)</option>
-                <option value="3">3 - Bahan Baku / Penolong (Nguyên phụ liệu)</option>
-                <option value="4">4 - Pengemas (Packaging / Bao bì)</option>
-                <option value="5">5 - Sisa / Scrap / Waste (Phế liệu)</option>
-                <option value="6">6 - Barang Contoh (Sample / Hàng mẫu)</option>
-                <option value="7">7 - Bangunan / Konstruksi</option>
-                <option value="8">8 - Barang Dalam Proses (WIP / Bán thành phẩm)</option>
+                {INSW_KATEGORI_OPTIONS.map(opt => (
+                  <option key={opt.code} value={opt.code}>
+                    {opt.code} - {opt.name} ({opt.desc})
+                  </option>
+                ))}
               </select>
             </div>
             <div className="form-group" style={{ margin: 0, flex: 2, minWidth: 200 }}>
@@ -173,8 +171,8 @@ export default function InswMappingManager() {
                     <td className="text-muted">#{m.id}</td>
                     <td style={{ fontWeight: 600 }}>{m.keyword}</td>
                     <td>
-                      <span className="status-badge" style={{ background: 'var(--primary)15', color: 'var(--primary)' }}>
-                        Code {m.inswCode}
+                      <span className="status-badge" style={{ background: 'var(--primary)15', color: 'var(--primary)' }} title={INSW_KATEGORI_OPTIONS.find(o => o.code === m.inswCode)?.desc || ''}>
+                        {m.inswCode} - {INSW_KATEGORI_OPTIONS.find(o => o.code === m.inswCode)?.name || `Code ${m.inswCode}`}
                       </span>
                     </td>
                     <td className="text-muted" style={{ fontSize: 13 }}>{m.description}</td>

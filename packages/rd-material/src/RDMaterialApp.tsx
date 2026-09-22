@@ -14,6 +14,7 @@ import ProductListPage from './pages/ProductListPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import YardageListPage from './pages/YardageListPage';
 import YardageDetailPage from './pages/YardageDetailPage';
+import RDSettingsPage from './pages/RDSettingsPage';
 import { AdminPage } from '@traxeco/shared';
 
 /**
@@ -39,12 +40,16 @@ const RDMaterialApp: React.FC = () => (
 
       {/* ── Tools ── */}
       <Route path="label/:id" element={<LabelPrintPage />} />
+      <Route path="label" element={<LabelPrintPage />} />
       <Route path="scan" element={<ScanOutPage />} />
       <Route path="scan-history" element={<ScanHistoryPage />} />
       <Route path="scan-query" element={<ScanQueryPage />} />
 
       {/* Admin */}
       <Route path="admin" element={<AdminPage />} />
+
+      {/* Settings */}
+      <Route path="settings" element={<RDSettingsPage />} />
 
       {/* Fallback */}
       <Route path="*" element={<Navigate to="/rd-material" replace />} />

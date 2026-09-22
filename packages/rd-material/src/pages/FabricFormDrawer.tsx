@@ -17,6 +17,7 @@ import { useTranslation } from 'react-i18next';
 import { AppTextField, authService } from '@traxeco/shared';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import { AiScanDialog } from '../components/AiScanDialog';
+import ImageZoomModal from '../components/ImageZoomModal';
 
 const BASE = '/rd-material';
 
@@ -991,12 +992,12 @@ const FabricFormDrawer: React.FC<Props> = ({ open, item, isCopy, onClose, onSave
       <Snackbar open={snackbar.open} autoHideDuration={3000} onClose={() => setSnackbar({ ...snackbar, open: false })} anchorOrigin={{ vertical: 'top', horizontal: 'center' }} sx={{ zIndex: 99999 }}>
         <Alert severity={snackbar.severity as any} sx={{ width: '100%' }}>{snackbar.message}</Alert>
       </Snackbar>
-      <Dialog open={!!lightboxImage} onClose={() => setLightboxImage(null)} maxWidth="lg" sx={{ zIndex: 99999 }} PaperProps={{ sx: { bgcolor: 'transparent', boxShadow: 'none' } }}>
-        <Box position="relative">
-          <IconButton onClick={() => setLightboxImage(null)} sx={{ position: 'absolute', right: -20, top: -20, color: 'white', bgcolor: 'rgba(0,0,0,0.5)', '&:hover': { bgcolor: 'red' } }}><CloseIcon /></IconButton>
-          <img src={lightboxImage || ''} alt="Full Size" style={{ maxWidth: '100%', maxHeight: '90vh', objectFit: 'contain' }} />
-        </Box>
-      </Dialog>
+      <ImageZoomModal 
+        open={!!lightboxImage} 
+        onClose={() => setLightboxImage(null)} 
+        images={lightboxImage || ''} 
+        title="Image Preview"
+      />
 
       {/* Paste Selection Dialog */}
       <Dialog open={pastedFiles.length > 0} onClose={() => setPastedFiles([])} maxWidth="xs" fullWidth sx={{ zIndex: 99999 }} PaperProps={{ sx: { borderRadius: 2, p: 1 } }}>

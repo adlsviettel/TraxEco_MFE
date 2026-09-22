@@ -118,6 +118,33 @@ export default function AppShell({
 
   const activeIndex = filteredMenuItems.findIndex(item => isNavMatched(item.path));
   
+  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
+
+  const mobileNavItems = useMemo(() => {
+    if (filteredMenuItems.length <= 5) {
+      return filteredMenuItems.map((item) => ({ ...item, isMore: false }));
+    }
+    const top4 = filteredMenuItems.slice(0, 4).map((item) => ({ ...item, isMore: false }));
+    return [
+      ...top4,
+      {
+        text: t('common.more_menu', 'Thêm'),
+        label: t('common.more_menu', 'Thêm'),
+        path: '__more__',
+        pageCode: '',
+        icon: <MenuIcon fontSize="small" />,
+        isMore: true,
+      },
+    ];
+  }, [filteredMenuItems, t]);
+
+  const mobileActiveValue = useMemo(() => {
+    if (activeIndex < 0) return 0;
+    if (filteredMenuItems.length <= 5) return activeIndex;
+    if (activeIndex < 4) return activeIndex;
+    return 4;
+  }, [activeIndex, filteredMenuItems.length]);
+
   const currentPath = location.pathname;
   const activeColor = theme.palette.mode === 'dark' ? '#4ade80' : accentColor;
 
@@ -154,7 +181,16 @@ export default function AppShell({
           borderBottom: `1px solid ${theme.palette.divider}`,
           color: theme.palette.text.primary,
         }}>
-          <Toolbar sx={{ minHeight: 'calc(52px + env(safe-area-inset-top)) !important', pt: 'env(safe-area-inset-top)', px: 2 }}>
+          <Toolbar sx={{ minHeight: 'calc(52px + env(safe-area-inset-top)) !important', pt: 'env(safe-area-inset-top)', px: 1.5 }}>
+            <IconButton
+              color="inherit"
+              onClick={() => setMobileDrawerOpen(true)}
+              edge="start"
+              sx={{ mr: 1, color: 'text.primary', p: 0.75 }}
+              aria-label="menu"
+            >
+              <MenuIcon />
+            </IconButton>
             {appLogo ? (
               <Box sx={{
                 width: 30, height: 30, borderRadius: 1.5, mr: 1.5,
@@ -270,13 +306,45 @@ export default function AppShell({
           {onSettingsClick && (
             <Box sx={{ mt: 'auto', px: 1 }}>
               <ListItem disablePadding sx={{ display: 'block', mb: 0 }}>
-                <ListItemButton onClick={onSettingsClick}
-                  sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'center', px: open ? 2.5 : 1, borderRadius: 2, '&:hover': { backgroundColor: `${accentColor}1A` } }}>
-                  <ListItemIcon sx={{ minWidth: 0, mr: open ? 2 : 'auto', justifyContent: 'center' }}>
-                    <SettingsIcon fontSize="small" />
-                  </ListItemIcon>
-                  <ListItemText primary={settingsText || t('nav.settings', 'Settings')} sx={{ opacity: open ? 1 : 0, '& .MuiTypography-root': { fontWeight: 500 } }} />
-                </ListItemButton>
+                {(() => {
+                  const isSettingsSelected = location.pathname.endsWith('/settings');
+                  return (
+                    <ListItemButton
+                      onClick={onSettingsClick}
+                      selected={isSettingsSelected}
+                      sx={{
+                        minHeight: 48,
+                        justifyContent: open ? 'initial' : 'center',
+                        px: open ? 2.5 : 1,
+                        borderRadius: 2,
+                        '&.Mui-selected': {
+                          backgroundColor: theme.palette.mode === 'dark' ? 'rgba(74, 222, 128, 0.15)' : `${accentColor}1A`,
+                          color: activeColor,
+                          fontWeight: 600,
+                          '&:hover': {
+                            backgroundColor: theme.palette.mode === 'dark' ? 'rgba(74, 222, 128, 0.25)' : `${accentColor}2A`
+                          },
+                          '& .MuiListItemIcon-root': { color: activeColor }
+                        },
+                        '&:hover': { backgroundColor: `${accentColor}1A` }
+                      }}
+                    >
+                      <ListItemIcon sx={{ minWidth: 0, mr: open ? 2 : 'auto', justifyContent: 'center', color: isSettingsSelected ? activeColor : 'inherit' }}>
+                        <SettingsIcon fontSize="small" />
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={settingsText || t('nav.settings', 'Settings')}
+                        sx={{
+                          opacity: open ? 1 : 0,
+                          '& .MuiTypography-root': {
+                            fontWeight: isSettingsSelected ? 600 : 500,
+                            color: isSettingsSelected ? activeColor : 'inherit'
+                          }
+                        }}
+                      />
+                    </ListItemButton>
+                  );
+                })()}
               </ListItem>
             </Box>
           )}
@@ -331,12 +399,167 @@ export default function AppShell({
         </Box>
       </Box>
 
-      {/* ─── MOBILE BOTTOM NAV (hidden on desktop) ─── */}
+      {/* ─── MOBILE TEMPORARY DRAWER (All menu items) ─── */}
+      {isMobile && (
+        <Drawer
+          variant="temporary"
+          open={mobileDrawerOpen}
+          onClose={() => setMobileDrawerOpen(false)}
+          ModalProps={{ keepMounted: true }}
+          sx={{
+            zIndex: 1300,
+            '& .MuiDrawer-paper': {
+              width: 280,
+              boxSizing: 'border-box',
+              backgroundColor: theme.palette.background.paper,
+              borderRight: `1px solid ${theme.palette.divider}`,
+              display: 'flex',
+              flexDirection: 'column',
+            },
+          }}
+        >
+          <Toolbar sx={{ minHeight: 'calc(56px + env(safe-area-inset-top)) !important', pt: 'env(safe-area-inset-top)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', px: 2 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+              {appLogo ? (
+                <Box sx={{
+                  width: 32, height: 32, borderRadius: 1.5,
+                  background: `linear-gradient(135deg, ${accentColor} 0%, #43a047 100%)`,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  boxShadow: `0 2px 6px ${accentColor}4D`,
+                }}>
+                  {appLogo}
+                </Box>
+              ) : null}
+              <Typography variant="subtitle1" sx={{ fontWeight: 800, color: accentColor }}>
+                {appTitleShort || appTitle}
+              </Typography>
+            </Box>
+            <IconButton onClick={() => setMobileDrawerOpen(false)}>
+              <ChevronLeftIcon />
+            </IconButton>
+          </Toolbar>
+          <Divider />
+          <List sx={{ px: 1.5, pt: 1.5, flex: 1, overflowY: 'auto' }}>
+            {filteredMenuItems.map((item) => {
+              const isSelected = isNavMatched(item.path);
+              return (
+                <ListItem key={item.text} disablePadding sx={{ display: 'block', mb: 0.75 }}>
+                  <ListItemButton
+                    onClick={() => {
+                      navigate(item.path);
+                      setMobileDrawerOpen(false);
+                    }}
+                    selected={isSelected}
+                    sx={{
+                      minHeight: 44,
+                      px: 2,
+                      borderRadius: 2,
+                      '&.Mui-selected': {
+                        backgroundColor: theme.palette.mode === 'dark' ? 'rgba(74, 222, 128, 0.15)' : `${accentColor}1A`,
+                        color: activeColor,
+                        fontWeight: 700,
+                        '&:hover': {
+                          backgroundColor: theme.palette.mode === 'dark' ? 'rgba(74, 222, 128, 0.25)' : `${accentColor}2A`,
+                        },
+                        '& .MuiListItemIcon-root': { color: activeColor },
+                      },
+                    }}
+                  >
+                    <ListItemIcon sx={{ minWidth: 36, color: isSelected ? activeColor : 'inherit' }}>
+                      {item.icon}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={item.text}
+                      primaryTypographyProps={{
+                        fontSize: '0.9rem',
+                        fontWeight: isSelected ? 700 : 500,
+                        color: isSelected ? activeColor : 'text.primary',
+                      }}
+                    />
+                  </ListItemButton>
+                </ListItem>
+              );
+            })}
+          </List>
+
+          {onSettingsClick && (
+            <Box sx={{ mt: 'auto', px: 1.5, pb: 1 }}>
+              <Divider sx={{ mb: 1.5 }} />
+              <ListItem disablePadding sx={{ display: 'block' }}>
+                <ListItemButton
+                  onClick={() => {
+                    onSettingsClick();
+                    setMobileDrawerOpen(false);
+                  }}
+                  selected={location.pathname.endsWith('/settings')}
+                  sx={{
+                    minHeight: 44,
+                    px: 2,
+                    borderRadius: 2,
+                    '&.Mui-selected': {
+                      backgroundColor: theme.palette.mode === 'dark' ? 'rgba(74, 222, 128, 0.15)' : `${accentColor}1A`,
+                      color: activeColor,
+                      fontWeight: 700,
+                    },
+                  }}
+                >
+                  <ListItemIcon sx={{ minWidth: 36, color: location.pathname.endsWith('/settings') ? activeColor : 'inherit' }}>
+                    <SettingsIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={settingsText || t('nav.settings', 'Settings')}
+                    primaryTypographyProps={{ fontSize: '0.9rem', fontWeight: 600 }}
+                  />
+                </ListItemButton>
+              </ListItem>
+            </Box>
+          )}
+
+          {versionString && (
+            <Box sx={{ pb: 2, textAlign: 'center' }}>
+              <Typography variant="caption" sx={{ color: 'text.disabled', fontWeight: 600, fontSize: '0.7rem' }}>
+                {versionString}
+              </Typography>
+            </Box>
+          )}
+        </Drawer>
+      )}
+
+      {/* ─── MOBILE BOTTOM NAV (Clean 4-5 items max) ─── */}
       {isMobile && (
         <Paper elevation={8} sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 1200, borderTop: '1px solid', borderColor: 'divider', bgcolor: 'background.paper' }}>
-          <BottomNavigation value={activeIndex >= 0 ? activeIndex : 0} onChange={(_, newValue) => navigate(filteredMenuItems[newValue].path)} showLabels
-            sx={{ height: 64, bgcolor: 'background.paper', '& .MuiBottomNavigationAction-root': { minWidth: 0, py: 1, color: 'text.secondary', '&.Mui-selected': { color: activeColor } }, '& .MuiBottomNavigationAction-label': { fontSize: '0.65rem', fontWeight: 600, '&.Mui-selected': { fontSize: '0.67rem', fontWeight: 700 } } }}>
-            {filteredMenuItems.map((item) => (
+          <BottomNavigation
+            value={mobileActiveValue}
+            onChange={(_, newValue) => {
+              const item = mobileNavItems[newValue];
+              if (item?.isMore) {
+                setMobileDrawerOpen(true);
+              } else if (item?.path) {
+                navigate(item.path);
+              }
+            }}
+            showLabels
+            sx={{
+              height: 58,
+              bgcolor: 'background.paper',
+              '& .MuiBottomNavigationAction-root': {
+                minWidth: 0,
+                py: 0.5,
+                color: 'text.secondary',
+                '&.Mui-selected': { color: activeColor },
+              },
+              '& .MuiBottomNavigationAction-label': {
+                fontSize: '0.68rem',
+                fontWeight: 600,
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                maxWidth: '72px',
+                '&.Mui-selected': { fontSize: '0.7rem', fontWeight: 700 },
+              },
+            }}
+          >
+            {mobileNavItems.map((item) => (
               <BottomNavigationAction key={item.path} label={item.text} icon={item.icon} />
             ))}
           </BottomNavigation>

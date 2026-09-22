@@ -9,7 +9,7 @@ import Header from './Header.tsx';
 import { parsePPKEKPDF } from '../utils/pdfParser.ts';
 import { getFiles, getFileDetail, uploadFile, saveParsedData, savePushLog, deleteFile as deleteFileApi } from '../services/api.ts';
 import type { PushLogDto } from '../services/api.ts';
-import { pushToInsw, buildInswRequestBody, getMappings, detectKategoriBarang, isCeisaDoc } from '../services/inswApi.ts';
+import { pushToInsw, buildInswRequestBody, getMappings, detectKategoriBarang, isCeisaDoc, INSW_KATEGORI_OPTIONS } from '../services/inswApi.ts';
 import type { FileEntry, ParsedDataSuccess } from '../types/index.ts';
 import { DataEvents } from '../utils/dataEvents.ts';
 import { usePush, getKdKegiatan } from '../contexts/PushContext.tsx';
@@ -236,14 +236,11 @@ function ParsedDataModal({ file, kdKegiatan, onClose, onPushSelected }: ParsedDa
                                 }}
                               >
                                 <option value="">{t('inswPush.selectCategory', '-- Select Category --')}</option>
-                                <option value="1">1 - Mesin / Asset / Peralatan</option>
-                                <option value="2">2 - Hasil Produksi (Garment / Thành phẩm)</option>
-                                <option value="3">3 - Bahan Baku / Penolong (Nguyên phụ liệu)</option>
-                                <option value="4">4 - Pengemas (Packaging / Bao bì)</option>
-                                <option value="5">5 - Sisa / Scrap / Waste (Phế liệu)</option>
-                                <option value="6">6 - Barang Contoh (Sample / Hàng mẫu)</option>
-                                <option value="7">7 - Bangunan / Konstruksi</option>
-                                <option value="8">8 - Barang Dalam Proses (WIP / Bán thành phẩm)</option>
+                                {INSW_KATEGORI_OPTIONS.map(opt => (
+                                  <option key={opt.code} value={opt.code}>
+                                    {opt.code} - {opt.name} ({opt.desc})
+                                  </option>
+                                ))}
                               </select>
                             </td>
                             <td>{row.kondisiBarang}</td>
@@ -279,14 +276,11 @@ function ParsedDataModal({ file, kdKegiatan, onClose, onPushSelected }: ParsedDa
                         }}
                       >
                         <option value="">{t('inswPush.bulkSetCategory', '-- Bulk Set Category --')}</option>
-                        <option value="1">1 - Mesin / Asset / Peralatan</option>
-                        <option value="2">2 - Hasil Produksi (Garment / Thành phẩm)</option>
-                        <option value="3">3 - Bahan Baku / Penolong (Nguyên phụ liệu)</option>
-                        <option value="4">4 - Pengemas (Packaging / Bao bì)</option>
-                        <option value="5">5 - Sisa / Scrap / Waste (Phế liệu)</option>
-                        <option value="6">6 - Barang Contoh (Sample / Hàng mẫu)</option>
-                        <option value="7">7 - Bangunan / Konstruksi</option>
-                        <option value="8">8 - Barang Dalam Proses (WIP / Bán thành phẩm)</option>
+                        {INSW_KATEGORI_OPTIONS.map(opt => (
+                          <option key={opt.code} value={opt.code}>
+                            {opt.code} - {opt.name} ({opt.desc})
+                          </option>
+                        ))}
                       </select>
                       <button
                         className="btn-secondary"

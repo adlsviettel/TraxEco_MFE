@@ -45,12 +45,10 @@ export const rdItemApi = {
   getById: async (id: number): Promise<Item> => {
     const authFetch = await getAuthFetch();
     const res = await authFetch(`rd-items/${id}`, { cache: 'no-store' });
-    try {
-      return await res.json();
-    } catch {
-      // Backend may return truncated JSON due to infinite recursion loop
-      return { id } as Item;
+    if (!res.ok) {
+      throw new Error(`Failed to load item ${id}: ${res.status} ${res.statusText}`);
     }
+    return res.json();
   },
 
   getChildren: async (id: number): Promise<Item[]> => {
@@ -348,11 +346,28 @@ export const rdItemApi = {
     }
   },
 
+  hasImage: (rawPath?: string | null): boolean => {
+    if (!rawPath) return false;
+    const clean = String(rawPath).replace(/^['"]+|['"]+$/g, '').trim();
+    if (!clean || clean === 'null' || clean === 'undefined') return false;
+    const parts = clean.split(',').map(s => s.replace(/^['"]+|['"]+$/g, '').trim()).filter(s => s && s !== 'null' && s !== 'undefined');
+    return parts.length > 0;
+  },
+
+  getFirstImageUrl: (rawPath?: string | null): string => {
+    if (!rawPath) return '';
+    const clean = String(rawPath).replace(/^['"]+|['"]+$/g, '').trim();
+    if (!clean || clean === 'null' || clean === 'undefined') return '';
+    const parts = clean.split(',').map(s => s.replace(/^['"]+|['"]+$/g, '').trim()).filter(s => s && s !== 'null' && s !== 'undefined');
+    if (parts.length === 0) return '';
+    return rdItemApi.getImageUrl(parts[0]);
+  },
+
   getImageUrl: (rawPath: string): string => {
     if (!rawPath) return '';
     // Strip quotes that might have been accidentally saved in the DB
-    let path = rawPath.replace(/^"|"$/g, '').trim();
-    if (!path) return '';
+    let path = String(rawPath).replace(/^['"]+|['"]+$/g, '').trim();
+    if (!path || path === 'null' || path === 'undefined') return '';
 
     const finalizeUrl = (finalUrl: string) => {
       if (finalUrl.startsWith('http://') && typeof window !== 'undefined' && window.location.protocol === 'https:') {

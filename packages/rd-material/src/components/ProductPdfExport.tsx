@@ -104,7 +104,7 @@ const ProductPdfExport: React.FC<ProductPdfExportProps> = ({ data }) => {
                   overflow: 'hidden' 
                 }}>
                   {/* Left: Image (Display up to first 2 images, strictly bounded) */}
-                  <Box sx={{ width: '38%', height: '100%', maxHeight: '78mm', mr: 1.5, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: '4px', flexShrink: 0, overflow: 'hidden' }}>
+                  <Box sx={{ width: '38%', height: '100%', maxHeight: '78mm', mr: 1.5, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'center', gap: '4px', flexShrink: 0, overflow: 'hidden' }}>
                     {imgUrls.length > 0 ? (
                       imgUrls.slice(0, 2).map((url, imgIdx) => (
                         <img 
@@ -114,7 +114,7 @@ const ProductPdfExport: React.FC<ProductPdfExportProps> = ({ data }) => {
                           alt={`${product.itemCode}-${imgIdx}`} 
                           style={{ 
                             maxWidth: '100%', 
-                            maxHeight: imgUrls.length > 1 ? '36mm' : '76mm', 
+                            maxHeight: imgUrls.length > 1 ? '36mm' : '74mm', 
                             width: 'auto', 
                             height: 'auto', 
                             objectFit: 'contain',
@@ -124,7 +124,7 @@ const ProductPdfExport: React.FC<ProductPdfExportProps> = ({ data }) => {
                         />
                       ))
                     ) : (
-                      <Box sx={{ width: '100%', height: '76mm', bgcolor: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 1 }}>
+                      <Box sx={{ width: '100%', height: '74mm', bgcolor: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 1 }}>
                         <Typography variant="caption" color="text.secondary">No Image</Typography>
                       </Box>
                     )}
@@ -139,25 +139,25 @@ const ProductPdfExport: React.FC<ProductPdfExportProps> = ({ data }) => {
                       {product.product?.styleName || product.name || '—'}
                     </Typography>
 
+                    {product.remark && (
+                      <Typography sx={{ fontSize: '9pt', color: '#1e293b', mb: 0.1, lineHeight: 1.2 }}>
+                        (~{product.remark}/ garment)
+                      </Typography>
+                    )}
+
                     <Box sx={{ mt: 0.5, overflowY: 'auto' }}>
                       {enrichedBom.map((bom, bIdx) => {
                         const usageStr = (bom.usage || '').trim();
                         const supp = (bom.supplierName || '').trim();
                         const code = (bom.itemCode || '').trim();
                         const color = (bom.color || '').trim();
-                        const struct = (bom.structure || '').trim();
                         const comp = (bom.composition || '').trim();
-                        const tech = (bom.technology || '').trim();
-                        const func = (bom.function || '').trim();
-                        const weight = (bom.weightGsm !== undefined && bom.weightGsm !== null && bom.weightGsm !== '') ? `${String(bom.weightGsm).trim()} gsm` : '';
-                        const width = (bom.cuttableWidth !== undefined && bom.cuttableWidth !== null && bom.cuttableWidth !== '') ? `${String(bom.cuttableWidth).trim()} inch` : '';
+                        const weight = (bom.weightGsm !== undefined && bom.weightGsm !== null && bom.weightGsm !== '') ? String(bom.weightGsm).trim() : '';
+                        const width = (bom.cuttableWidth !== undefined && bom.cuttableWidth !== null && bom.cuttableWidth !== '') ? String(bom.cuttableWidth).trim() : '';
 
-                        // Format: Usage: Supplier - Itemcode/ Color/ Structure, Composition, Technology, Function, Weight, Cuttable width
-                        const part1 = (supp && code) ? `${supp} - ${code}` : (supp || code);
-                        const part2 = color;
-                        const part3 = [struct, comp, tech, func, weight, width].filter(Boolean).join(', ');
-
-                        const lineDetail = [part1, part2, part3].filter(Boolean).join('/ ');
+                        // Format: [Usage]: [Supplier]/ [Item Code]/ [Color]/ [Composition], [Weight], [Width]
+                        const part3 = [comp, weight, width].filter(Boolean).join(', ');
+                        const lineDetail = [supp, code, color, part3].filter(Boolean).join('/ ');
                         const lineText = usageStr ? `${usageStr}: ${lineDetail}` : lineDetail;
 
                         return (

@@ -2,19 +2,23 @@
   "cookies": [],
   "origins": [
     {
-      "origin": "http://localhost:5173",
+      "origin": "http://127.0.0.1:5173",
       "localStorage": [
         {
           "name": "saved_username",
           "value": "shin"
         },
         {
-          "name": "traxeco_deploy_v",
-          "value": "v_20260626030610_noconsole"
-        },
-        {
           "name": "isAdmin",
           "value": "true"
+        },
+        {
+          "name": "isSuperAdmin",
+          "value": "true"
+        },
+        {
+          "name": "roleLevel",
+          "value": "0"
         },
         {
           "name": "roleLabel",
@@ -29,44 +33,28 @@
           "value": "CT"
         },
         {
-          "name": "i18nextLng",
-          "value": "vi"
-        },
-        {
-          "name": "token",
-          "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzaGluIiwiaWF0IjoxNzgzNDE0OTA5LCJleHAiOjE3ODM1MDEzMDl9.wDYTTeHI-a8UbFbkevRnhXgLD4ZUdfVU5vXI4u1mPlc"
-        },
-        {
-          "name": "isAuthenticated",
-          "value": "true"
-        },
-        {
-          "name": "roleLevel",
-          "value": "0"
-        },
-        {
-          "name": "mustChangePassword",
-          "value": "false"
-        },
-        {
           "name": "employeeName",
           "value": "Nguyễn Ngọc Khả Tú"
         },
         {
-          "name": "isSuperAdmin",
-          "value": "true"
+          "name": "employeeCode",
+          "value": "shin"
         },
         {
           "name": "section",
           "value": "Coder"
         },
         {
-          "name": "permissions",
-          "value": "[]"
+          "name": "isAuthenticated",
+          "value": "true"
         },
         {
-          "name": "employeeCode",
-          "value": "shin"
+          "name": "token",
+          "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzaGluIiwiaWF0IjoxNzg5OTgwOTA0LCJleHAiOjE3OTAwNjczMDR9.lEyfvOWa3VCQiudJaqhQIQknaTp_u3aD9Y_Cth_DfM8"
+        },
+        {
+          "name": "permissions",
+          "value": "[]"
         }
       ]
     }

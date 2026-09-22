@@ -25,6 +25,7 @@ import { rdItemApi } from '../services/rdMaterialApi';
 import type { Item, ScanLog } from '../types';
 import QRScannerDialog from '../components/QRScannerDialog';
 import { AppButton } from '@traxeco/shared';
+import ImageGallery from '../components/ImageGallery';
 
 const BASE = '/rd-material';
 
@@ -38,104 +39,6 @@ const InfoRow = ({ label, value }: { label: string; value?: React.ReactNode }) =
     </Typography>
   </Box>
 );
-
-const ImageGallery = ({ images }: { images: string[] }) => {
-  const { t } = useTranslation();
-  const [activeIdx, setActiveIdx] = useState(0);
-  const [fullscreenOpen, setFullscreenOpen] = useState(false);
-
-  if (!images || images.length === 0) {
-    return (
-      <Box sx={{ width: '100%', aspectRatio: '1', bgcolor: 'background.default', borderRadius: 3, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#cbd5e1', border: '1px dashed #e2e8f0' }}>
-        <ImageIcon sx={{ fontSize: 48, mb: 1, opacity: 0.5 }} />
-        <Typography variant="caption" fontWeight={600}>{t('rdMaterial.no_image', 'No Image')}</Typography>
-      </Box>
-    );
-  }
-
-  return (
-    <Box sx={{ mt: 2.5 }}>
-      <Box 
-        sx={{ 
-          width: '100%', 
-          aspectRatio: '1.2', 
-          bgcolor: 'background.default', 
-          borderRadius: 3, 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'center', 
-          overflow: 'hidden', 
-          cursor: 'zoom-in', 
-          position: 'relative',
-          border: '1px solid', borderColor: 'divider',
-          '&:hover .overlay': { opacity: 1 }
-        }}
-        onClick={() => setFullscreenOpen(true)}
-      >
-        <img 
-          src={rdItemApi.getImageUrl(images[activeIdx])} 
-          alt="Preview" 
-          style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-        />
-        <Box 
-          className="overlay" 
-          sx={{ 
-            position: 'absolute', 
-            inset: 0, 
-            bgcolor: 'rgba(0,0,0,0.15)', 
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'center', 
-            opacity: 0, 
-            transition: 'opacity 0.2s', 
-            pointerEvents: 'none' 
-          }}
-        >
-          <Box sx={{ p: 1, borderRadius: '50%', bgcolor: 'rgba(255,255,255,0.9)', color: '#0f172a', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}>
-            <ImageIcon fontSize="small" />
-          </Box>
-        </Box>
-      </Box>
-
-      {images.length > 1 && (
-        <Box sx={{ display: 'flex', gap: 1, pt: 1, overflowX: 'auto', '&::-webkit-scrollbar': { height: 4 } }}>
-          {images.map((img, idx) => (
-            <Box 
-              key={idx} 
-              onClick={() => setActiveIdx(idx)}
-              sx={{ 
-                width: 44, 
-                height: 44, 
-                flexShrink: 0, 
-                borderRadius: 1, 
-                overflow: 'hidden', 
-                cursor: 'pointer',
-                border: activeIdx === idx ? '2px solid #22c55e' : '1px solid #e2e8f0',
-                opacity: activeIdx === idx ? 1 : 0.6,
-                transition: 'all 0.2s',
-                '&:hover': { opacity: 1 }
-              }}
-            >
-              <img src={rdItemApi.getImageUrl(img)} alt={`Thumb ${idx + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-            </Box>
-          ))}
-        </Box>
-      )}
-
-      <Dialog 
-        open={fullscreenOpen} 
-        onClose={() => setFullscreenOpen(false)} 
-        maxWidth="lg" 
-        PaperProps={{ sx: { bgcolor: 'transparent', boxShadow: 'none', overflow: 'hidden' } }}
-      >
-        <Box sx={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh' }} onClick={() => setFullscreenOpen(false)}>
-          <img src={rdItemApi.getImageUrl(images[activeIdx])} alt="Fullscreen" style={{ maxWidth: '100%', maxHeight: '90vh', objectFit: 'contain', cursor: 'zoom-out' }} />
-          <IconButton onClick={(e) => { e.stopPropagation(); setFullscreenOpen(false); }} sx={{ position: 'absolute', top: 8, right: 8, bgcolor: 'rgba(0,0,0,0.5)', color: '#fff', '&:hover': { bgcolor: 'rgba(0,0,0,0.8)' } }}><CloseIcon /></IconButton>
-        </Box>
-      </Dialog>
-    </Box>
-  );
-};
 
 const ScanQueryPage: React.FC = () => {
   const { t } = useTranslation();

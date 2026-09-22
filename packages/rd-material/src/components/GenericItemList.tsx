@@ -776,8 +776,8 @@ const GenericItemList: React.FC<GenericItemListProps> = ({ title, subtitle, item
                             border: '1px solid rgba(0,0,0,0.04)'
                           }}
                         >
-                          {item.mainImage ? (
-                            <img src={rdItemApi.getImageUrl(item.mainImage.split(',')[0])} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                          {rdItemApi.hasImage(item.mainImage) ? (
+                            <img src={rdItemApi.getFirstImageUrl(item.mainImage)} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                           ) : (
                             <TextureIcon sx={{ fontSize: 24, color: '#cbd5e1' }} />
                           )}
@@ -925,18 +925,18 @@ const GenericItemList: React.FC<GenericItemListProps> = ({ title, subtitle, item
                     >
                       {visibleColumns['Image'] !== false && (
                         <TableCell sx={{ px: 2, py: 1.5, textAlign: 'center' }}>
-                          {item.mainImage ? (
+                          {rdItemApi.hasImage(item.mainImage) ? (
                             <Tooltip
                               title={
                                 <Box sx={{ width: 240, height: 240, bgcolor: 'background.paper', borderRadius: 1, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                  <img src={rdItemApi.getImageUrl(item.mainImage.split(',')[0])} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                                  <img src={rdItemApi.getFirstImageUrl(item.mainImage)} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                                 </Box>
                               }
                               placement="right"
                               componentsProps={{ tooltip: { sx: { bgcolor: 'background.paper', boxShadow: '0 4px 20px rgba(0,0,0,0.15)', p: 0.5, border: '1px solid', borderColor: 'divider' } } }}
                             >
                               <Box sx={{ width: 48, height: 48, borderRadius: 1, overflow: 'hidden', bgcolor: 'background.default', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #bfc9c4', mx: 'auto' }}>
-                                <img src={rdItemApi.getImageUrl(item.mainImage.split(',')[0])} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                <img src={rdItemApi.getFirstImageUrl(item.mainImage)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                               </Box>
                             </Tooltip>
                           ) : (

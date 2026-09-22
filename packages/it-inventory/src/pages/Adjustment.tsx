@@ -144,7 +144,7 @@ export default function Adjustment() {
         warehouse: i.kho,
       }));
       const docNo = targetItems[0]?.nomorDokKegiatan || `ADJ-${targetDate}`;
-      const res = await pushStockOpnameToInsw(formattedItems, docNo, targetDate, '33');
+      const res = await pushStockOpnameToInsw(formattedItems, docNo, targetDate, '33', 'Penyesuaian stok opname');
 
       setItems(prev => prev.map(item => {
         if (idsToPush.includes(item.id)) {
