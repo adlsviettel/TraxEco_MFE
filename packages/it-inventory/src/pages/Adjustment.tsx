@@ -33,47 +33,17 @@ export default function Adjustment() {
     setLoadingERP(true);
     try {
       const res = await fetchErpAdjustment(targetDate);
-      if (res && res.success && Array.isArray(res.data) && res.data.length > 0) {
+      if (res && res.success && Array.isArray(res.data)) {
         setItems(res.data.map((item, idx) => ({
           ...item,
           id: item.id || `adj-${idx + 1}-${Date.now()}`,
           statusPush: item.statusPush || 'idle'
         })));
       } else {
-        const mockAdjustments: StockItem[] = [
-          {
-            id: 'adj-1',
-            nomorDokKegiatan: 'MFAD0002077',
-            tanggalKegiatan: targetDate,
-            thoiGianThucTe: `${targetDate} 01:48:16`,
-            ngayBaoCaoCutoff5AM: targetDate,
-            kdBarang: '70005507-58',
-            uraianBarang: '100% RECYCLED POLYESTER FABRIC WIDTH 58"',
-            jumlah: 38,
-            kdSatuan: 'YRD',
-            nilai: 190000,
-            kho: 'F2-FB-REP',
-            statusPush: 'idle'
-          },
-          {
-            id: 'adj-2',
-            nomorDokKegiatan: 'MFAD0002080',
-            tanggalKegiatan: targetDate,
-            thoiGianThucTe: `${targetDate} 03:22:00`,
-            ngayBaoCaoCutoff5AM: targetDate,
-            kdBarang: '62584799-60',
-            uraianBarang: '100% RECYCLED POLYESTER FABRIC WIDTH 60"',
-            jumlah: -12.5,
-            kdSatuan: 'YRD',
-            nilai: 37500,
-            kho: 'SF2-FB-BK',
-            statusPush: 'idle'
-          }
-        ];
-        setItems(mockAdjustments);
+        setItems([]);
       }
     } catch {
-      // fallback
+      setItems([]);
     } finally {
       setSelectedIds(new Set());
       setPage(1);

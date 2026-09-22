@@ -109,19 +109,17 @@ export default function StockOpname({ category = 'wip' }: StockOpnameProps) {
     setLoadingERP(true);
     try {
       const res = await fetchErpStockOpname(category, targetDate);
-      if (res && res.success && Array.isArray(res.data) && res.data.length > 0) {
+      if (res && res.success && Array.isArray(res.data)) {
         setItems(res.data.map((item, idx) => ({
           ...item,
           id: item.id || `${category}-${idx + 1}-${Date.now()}`,
           statusPush: item.statusPush || 'idle'
         })));
       } else {
-        const mockData = GENERATE_MOCK_DATA(category, targetDate);
-        setItems(mockData);
+        setItems([]);
       }
     } catch {
-      const mockData = GENERATE_MOCK_DATA(category, targetDate);
-      setItems(mockData);
+      setItems([]);
     } finally {
       setSelectedIds(new Set());
       setPage(1);
