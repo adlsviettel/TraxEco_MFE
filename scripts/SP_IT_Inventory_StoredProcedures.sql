@@ -72,13 +72,14 @@ BEGIN
             COALESCE(NULLIF(tr.NAME, ''''''''), NULLIF(tr.DESCRIPTION, ''''''''), NULLIF(i.NAMEALIAS, ''''''''), t.ITEMID) AS uraianBarang, 
             i.ECCITEMCUSTOMCODE                                 AS hsCode, 
             t.QTY                                               AS jumlah, 
-            i.ECCITEMCUSTOMUNITID                               AS kdSatuan, 
+            COALESCE(NULLIF(m.UNITID, ''''''''), NULLIF(i.ECCITEMCUSTOMUNITID, ''''''''), ''''PCS'''') AS kdSatuan, 
             ISNULL(t.COSTAMOUNTPOSTED, t.COSTAMOUNTPHYSICAL)    AS nilai, 
             d.INVENTLOCATIONID                                  AS kho 
         FROM AXDB.dbo.INVENTTRANS t WITH (NOLOCK) 
         INNER JOIN AXDB.dbo.INVENTTRANSORIGIN o WITH (NOLOCK) ON t.INVENTTRANSORIGIN = o.RECID AND t.DATAAREAID = o.DATAAREAID 
         LEFT JOIN AXDB.dbo.INVENTTABLE i WITH (NOLOCK)         ON t.ITEMID = i.ITEMID AND t.DATAAREAID = i.DATAAREAID 
         LEFT JOIN AXDB.dbo.ECORESPRODUCTTRANSLATION tr WITH (NOLOCK) ON tr.PRODUCT = i.PRODUCT AND tr.LANGUAGEID = ''''en-US'''' 
+        LEFT JOIN AXDB.dbo.INVENTTABLEMODULE m WITH (NOLOCK)   ON m.ITEMID = i.ITEMID AND m.DATAAREAID = i.DATAAREAID AND m.MODULETYPE = 0 
         LEFT JOIN AXDB.dbo.INVENTDIM d WITH (NOLOCK)           ON t.INVENTDIMID = d.INVENTDIMID AND t.DATAAREAID = d.DATAAREAID 
         WHERE t.DATAAREAID = ''''tsi'''' 
           AND t.MODIFIEDDATETIME >= ''''' + @FromStr + ''''' 
