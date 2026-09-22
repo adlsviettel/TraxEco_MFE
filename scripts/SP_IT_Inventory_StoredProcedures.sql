@@ -69,7 +69,7 @@ BEGIN
                 ELSE CAST(o.REFERENCECATEGORY AS VARCHAR(10)) 
             END                                                 AS loaiGiaoDichAX, 
             t.ITEMID                                            AS kdBarang, 
-            ISNULL(i.ECCITEMCUSTOMNAME, i.NAMEALIAS)            AS uraianBarang, 
+            COALESCE(NULLIF(tr.NAME, ''''''''), NULLIF(tr.DESCRIPTION, ''''''''), NULLIF(i.NAMEALIAS, ''''''''), t.ITEMID) AS uraianBarang, 
             i.ECCITEMCUSTOMCODE                                 AS hsCode, 
             t.QTY                                               AS jumlah, 
             i.ECCITEMCUSTOMUNITID                               AS kdSatuan, 
@@ -78,6 +78,7 @@ BEGIN
         FROM AXDB.dbo.INVENTTRANS t WITH (NOLOCK) 
         INNER JOIN AXDB.dbo.INVENTTRANSORIGIN o WITH (NOLOCK) ON t.INVENTTRANSORIGIN = o.RECID AND t.DATAAREAID = o.DATAAREAID 
         LEFT JOIN AXDB.dbo.INVENTTABLE i WITH (NOLOCK)         ON t.ITEMID = i.ITEMID AND t.DATAAREAID = i.DATAAREAID 
+        LEFT JOIN AXDB.dbo.ECORESPRODUCTTRANSLATION tr WITH (NOLOCK) ON tr.PRODUCT = i.PRODUCT AND tr.LANGUAGEID = ''''en-US'''' 
         LEFT JOIN AXDB.dbo.INVENTDIM d WITH (NOLOCK)           ON t.INVENTDIMID = d.INVENTDIMID AND t.DATAAREAID = d.DATAAREAID 
         WHERE t.DATAAREAID = ''''tsi'''' 
           AND t.MODIFIEDDATETIME >= ''''' + @FromStr + ''''' 

@@ -50,7 +50,7 @@ const GENERATE_MOCK_DATA = (cat: string, dateStr: string): StockItem[] => {
     wip: [
       { nomorDokKegiatan: 'A1A25486721', tanggalKegiatan: dateStr, thoiGianThucTe: `${dateStr} 01:48:36`, ngayBaoCaoCutoff5AM: dateStr, kdBarang: 'RE-POLYBAG_PUMA-30CMX40CM', uraianBarang: 'POLYBAG PUMA 30CM X 40CM', jumlah: 455, kdSatuan: 'PCE', nilai: 13650, kho: 'SF1-AC-BK' },
       { nomorDokKegiatan: 'A1A25462843', tanggalKegiatan: dateStr, thoiGianThucTe: `${dateStr} 02:15:10`, ngayBaoCaoCutoff5AM: dateStr, kdBarang: '96000353', uraianBarang: 'ELASTIC TAPE 2.5CM BLACK', jumlah: 120, kdSatuan: 'MTR', nilai: 4800, kho: 'SF2-AC-BK' },
-      { nomorDokKegiatan: 'TAN-084616', tanggalKegiatan: dateStr, thoiGianThucTe: `${dateStr} 04:30:00`, ngayBaoCaoCutoff5AM: dateStr, kdBarang: 'FB-CAJ24837', uraianBarang: 'VẢI THUN SINGLE JERSEY 100% COTTON', jumlah: 77.28, kdSatuan: 'YRD', nilai: 386400, kho: 'F2-FB-REP' },
+      { nomorDokKegiatan: 'TAN-084616', tanggalKegiatan: dateStr, thoiGianThucTe: `${dateStr} 04:30:00`, ngayBaoCaoCutoff5AM: dateStr, kdBarang: 'FB-CAJ24837', uraianBarang: 'SINGLE JERSEY 100% COTTON KNITTED FABRIC', jumlah: 77.28, kdSatuan: 'YRD', nilai: 386400, kho: 'F2-FB-REP' },
       { nomorDokKegiatan: 'A1A25462850', tanggalKegiatan: dateStr, thoiGianThucTe: `${dateStr} 06:10:00`, ngayBaoCaoCutoff5AM: dateStr, kdBarang: '62782692', uraianBarang: 'SEWING THREAD 100% POLYESTER 40/2', jumlah: 50, kdSatuan: 'CNE', nilai: 7500, kho: 'SF1-AC-BK' },
       { nomorDokKegiatan: 'A1A25462860', tanggalKegiatan: dateStr, thoiGianThucTe: `${dateStr} 07:15:00`, ngayBaoCaoCutoff5AM: dateStr, kdBarang: 'SF2-FB-BK', uraianBarang: 'RIBBON TAPE WOVEN PUMA 1.5CM', jumlah: 300, kdSatuan: 'MTR', nilai: 15000, kho: 'SF2-FB-BK' },
     ],
@@ -60,16 +60,16 @@ const GENERATE_MOCK_DATA = (cat: string, dateStr: string): StockItem[] => {
       { nomorDokKegiatan: 'A1A25425100', tanggalKegiatan: dateStr, thoiGianThucTe: `${dateStr} 08:30:00`, ngayBaoCaoCutoff5AM: dateStr, kdBarang: 'PUMA-JKT-2026-BLK', uraianBarang: 'PUMA TRACK JACKET BLACK XL', jumlah: 95, kdSatuan: 'PCE', nilai: 237500, kho: 'CEN-WFG' },
     ],
     scrap: [
-      { nomorDokKegiatan: 'SCR-2026-0012', tanggalKegiatan: dateStr, thoiGianThucTe: `${dateStr} 02:05:00`, ngayBaoCaoCutoff5AM: dateStr, kdBarang: '62584799-60', uraianBarang: 'VẢI VỤN THUN 100% RECYCLE POLYESTER', jumlah: 105.5, kdSatuan: 'KGM', nilai: 15825, kho: 'F5-SCRAP' },
-      { nomorDokKegiatan: 'SCR-2026-0015', tanggalKegiatan: dateStr, thoiGianThucTe: `${dateStr} 04:12:00`, ngayBaoCaoCutoff5AM: dateStr, kdBarang: 'SCRAP-POLY-01', uraianBarang: 'PHẾ LIỆU POLYBAG & ĐẦU MẪU CẮT', jumlah: 42.0, kdSatuan: 'KGM', nilai: 4200, kho: 'F5-SCRAP' },
+      { nomorDokKegiatan: 'SCR-2026-0012', tanggalKegiatan: dateStr, thoiGianThucTe: `${dateStr} 02:05:00`, ngayBaoCaoCutoff5AM: dateStr, kdBarang: '62584799-60', uraianBarang: 'SCRAP FABRIC 100% RECYCLED POLYESTER', jumlah: 105.5, kdSatuan: 'KGM', nilai: 15825, kho: 'F5-SCRAP' },
+      { nomorDokKegiatan: 'SCR-2026-0015', tanggalKegiatan: dateStr, thoiGianThucTe: `${dateStr} 04:12:00`, ngayBaoCaoCutoff5AM: dateStr, kdBarang: 'SCRAP-POLY-01', uraianBarang: 'SCRAP POLYBAG & CUTTING SAMPLES', jumlah: 42.0, kdSatuan: 'KGM', nilai: 4200, kho: 'F5-SCRAP' },
     ],
     machinery: [
-      { nomorDokKegiatan: 'EQ-2026-0089', tanggalKegiatan: dateStr, thoiGianThucTe: `${dateStr} 09:00:00`, ngayBaoCaoCutoff5AM: dateStr, kdBarang: 'MC-JUKI-DDL9000C', uraianBarang: 'MÁY MAY 1 KIM ĐIỆN TỬ JUKI DDL-9000C', jumlah: 2, kdSatuan: 'SET', nilai: 4500000, kho: 'MC-WH' },
-      { nomorDokKegiatan: 'EQ-2026-0092', tanggalKegiatan: dateStr, thoiGianThucTe: `${dateStr} 11:30:00`, ngayBaoCaoCutoff5AM: dateStr, kdBarang: 'MC-EASTMAN-629X', uraianBarang: 'MÁY CẮT ĐỨNG EASTMAN 629X 8 INCH', jumlah: 1, kdSatuan: 'SET', nilai: 1800000, kho: 'MC-WH' },
+      { nomorDokKegiatan: 'EQ-2026-0089', tanggalKegiatan: dateStr, thoiGianThucTe: `${dateStr} 09:00:00`, ngayBaoCaoCutoff5AM: dateStr, kdBarang: 'MC-JUKI-DDL9000C', uraianBarang: '1-NEEDLE LOCKSTITCH MACHINE JUKI DDL-9000C', jumlah: 2, kdSatuan: 'SET', nilai: 4500000, kho: 'MC-WH' },
+      { nomorDokKegiatan: 'EQ-2026-0092', tanggalKegiatan: dateStr, thoiGianThucTe: `${dateStr} 11:30:00`, ngayBaoCaoCutoff5AM: dateStr, kdBarang: 'MC-EASTMAN-629X', uraianBarang: 'EASTMAN 629X 8 INCH VERTICAL CUTTING MACHINE', jumlah: 1, kdSatuan: 'SET', nilai: 1800000, kho: 'MC-WH' },
     ],
     auxiliary: [
-      { nomorDokKegiatan: 'POAD000085227', tanggalKegiatan: dateStr, thoiGianThucTe: `${dateStr} 01:10:00`, ngayBaoCaoCutoff5AM: dateStr, kdBarang: '62584799-60', uraianBarang: 'VẢI THUN 100% RECYCLE POLYESTER KHỔ 60"', jumlah: 407, kdSatuan: 'YRD', nilai: 1221000, kho: 'SF2-FB-BK' },
-      { nomorDokKegiatan: 'POAD000085216', tanggalKegiatan: dateStr, thoiGianThucTe: `${dateStr} 03:00:00`, ngayBaoCaoCutoff5AM: dateStr, kdBarang: '60036235-58', uraianBarang: 'VẢI LƯỚI 100% RECYCLE POLYESTER KHỔ 58"', jumlah: 17.5, kdSatuan: 'YRD', nilai: 87500, kho: 'SF2-FB-BK' },
+      { nomorDokKegiatan: 'POAD000085227', tanggalKegiatan: dateStr, thoiGianThucTe: `${dateStr} 01:10:00`, ngayBaoCaoCutoff5AM: dateStr, kdBarang: '62584799-60', uraianBarang: '100% RECYCLED POLYESTER FABRIC WIDTH 60"', jumlah: 407, kdSatuan: 'YRD', nilai: 1221000, kho: 'SF2-FB-BK' },
+      { nomorDokKegiatan: 'POAD000085216', tanggalKegiatan: dateStr, thoiGianThucTe: `${dateStr} 03:00:00`, ngayBaoCaoCutoff5AM: dateStr, kdBarang: '60036235-58', uraianBarang: '100% RECYCLED POLYESTER MESH FABRIC WIDTH 58"', jumlah: 17.5, kdSatuan: 'YRD', nilai: 87500, kho: 'SF2-FB-BK' },
     ]
   };
 
